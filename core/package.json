@@ -1,0 +1,26 @@
+{
+  "name": "instex-core",
+  "version": "0.0.1",
+  "private": true,
+  "main": "./src",
+  "scripts": {
+    "lint": "eslint ./src --ext .js,.jsx --ignore-pattern '/dist/' --ignore-pattern '*.prod.js' --ignore-pattern '*.test.js' --ignore-pattern '**/node_modules/*'",
+    "start": "webpack --config webpack.config.prod.js --watch",
+    "postinstall": "flow-typed install && yarn link"
+  },
+  "dependencies": {
+    "ramda": "0.25.0",
+    "redux": "3.7.2",
+    "redux-saga": "0.16.0",
+    "reselect": "3.0.1"
+  },
+  "devDependencies": {
+    "babel-core": "6.26.0",
+    "babel-loader": "7.1.2",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "6.24.1",
+    "babel-preset-stage-0": "6.24.1",
+    "flow-bin": "0.63.1",
+    "flow-typed": "2.2.3"
+  }
+}
