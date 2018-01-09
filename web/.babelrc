@@ -1,13 +1,19 @@
 {
   "presets": [
-    ["env", {
-      "targets": { "chrome": 52 },
-      "modules": false,
-      "useBuiltIns": true
-    }],
+    [
+      "env",
+      {
+        "targets": { "chrome": 52 },
+        "modules": false,
+        "useBuiltIns": true
+      }
+    ],
     "react",
     "stage-0",
+    "flow"
   ],
+  "retainLines": true,
+  "plugins": [["import", { "libraryName": "antd", "style": true }]],
   "env": {
     "production": {
       "plugins": ["transform-flow-strip-types"]
@@ -21,7 +27,7 @@
         // Actually this plugins already included in stage-0 and babel-preset-env
         // But we need it here because of ordering https://babeljs.io/docs/plugins/#plugin-preset-ordering
         "transform-class-properties",
-        "transform-es2015-classes",
+        "transform-es2015-classes"
       ]
     }
   }
