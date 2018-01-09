@@ -1,0 +1,19 @@
+{
+  "name": "instex",
+  "private": true,
+  "scripts": {
+    "commit": "git-cz",
+    "bootstrap": "cd ./core && yarn && cd ../web && yarn",
+    "lint": "concurrently --prefix-colors \"magenta,cyan\" --prefix \"{name}\" --names \"CORE -> ,WEB -> \" \"cd ./core && yarn lint\" \"cd ./web && yarn lint\"",
+    "test": "concurrently --prefix-colors \"magenta,cyan\" --prefix \"{name}\" --names \"CORE -> ,WEB -> \" \"cd ./core && yarn test\" \"cd ./web && yarn test\""
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-customizable"
+    }
+  },
+  "dependencies": {
+    "commitizen": "2.9.6",
+    "cz-customizable": "5.2.0"
+  }
+}

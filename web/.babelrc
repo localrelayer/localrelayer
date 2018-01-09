@@ -1,0 +1,28 @@
+{
+  "presets": [
+    ["env", {
+      "targets": { "chrome": 52 },
+      "modules": false,
+      "useBuiltIns": true
+    }],
+    "react",
+    "stage-0",
+  ],
+  "env": {
+    "production": {
+      "plugins": ["transform-flow-strip-types"]
+    },
+    "test": {
+      "presets": ["es2015", "react", "stage-0"]
+    },
+    "development": {
+      "plugins": [
+        "react-hot-loader/babel",
+        // Actually this plugins already included in stage-0 and babel-preset-env
+        // But we need it here because of ordering https://babeljs.io/docs/plugins/#plugin-preset-ordering
+        "transform-class-properties",
+        "transform-es2015-classes",
+      ]
+    }
+  }
+}
