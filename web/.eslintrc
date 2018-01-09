@@ -22,7 +22,7 @@
     "flowtype-errors/show-errors": 2
   },
   "plugins": [
-    "flowtype-errors"
-    "jest",
+    "flowtype-errors",
+    "jest"
   ]
 }
