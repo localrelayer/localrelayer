@@ -36,11 +36,11 @@ We use [conventional commits specification](https://conventionalcommits.org/) fo
 #### Commitizen
 To ensure that all commit messages are formatted correctly, we use [Commitizen](http://commitizen.github.io/cz-cli/) in this repository.
 It provides interactive interface that creates your commit messages for you.
-Running commitizen is as simple as running yarn run commit from the root of the repo.
+Running commitizen is as simple as running yarn commit from the root of the repo.
 You can pass all the same flags you would normally use with git commit.
 
 ```
-  yarn run commit
+  yarn commit
 ```
 
 When contributing, use this exact flow:

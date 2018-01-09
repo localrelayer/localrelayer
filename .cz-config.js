@@ -28,7 +28,7 @@ module.exports = {
   },
   scopeOverrides: {
     docs: [
-      {name: 'Readme.md.md'},
+      {name: 'Readme.md'},
     ]
   },
   // it needs to match the value for field type. Eg.: 'fix'
