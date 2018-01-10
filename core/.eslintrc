@@ -1,0 +1,17 @@
+{
+  "presets": [
+    [
+      "env",
+      {
+        "loose": true
+      }
+    ],
+    "flow",
+    "stage-0"
+  ],
+  "env": {
+    "development": {
+      "plugins": ["transform-class-properties", "transform-es2015-classes"]
+    }
+  }
+}
