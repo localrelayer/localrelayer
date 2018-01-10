@@ -1,48 +1,29 @@
 // @flow
 import React from 'react';
-import {
-  Table,
-} from 'antd';
+import { Table } from 'antd';
+import type { Node, StatelessFunctionalComponent } from 'react';
+import type { Order } from 'instex-core/types';
 
-import type {
-  Node,
-  StatelessFunctionalComponent,
-} from 'react';
-import type {
-  Order,
-} from 'instex-core/types';
-
+import { OrdersListContainer, TableTitle } from './styled';
 
 type Props = {
   /** Orders info */
   data: Array<Order>,
+  title: string,
+  columns: Array<Object>,
 };
-
-const columns = [
-  {
-    title: 'Price',
-    dataIndex: 'price',
-    key: 'price',
-  },
-  {
-    title: 'Amount',
-    dataIndex: 'amount',
-    key: 'amount',
-  },
-  {
-    title: 'Total',
-    dataIndex: 'total',
-    key: 'total',
-  },
-];
 
 /**
  * List of all orders
  * @version 1.0.0
  * @author [Tim Reznich](https://github.com/imbaniac)
  */
-const OrdersList: StatelessFunctionalComponent<Props> = ({ data }: Props): Node => (
-  <Table columns={columns} dataSource={data} />
+
+const OrdersList: StatelessFunctionalComponent<Props> = ({ data, title, columns }: Props): Node => (
+  <OrdersListContainer>
+    <TableTitle>{title}</TableTitle>
+    <Table bordered columns={columns} dataSource={data} />
+  </OrdersListContainer>
 );
 
 export default OrdersList;
