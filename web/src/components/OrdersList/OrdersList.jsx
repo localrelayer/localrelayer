@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import { Table } from 'antd';
-import type { Node, StatelessFunctionalComponent } from 'react';
+import type { Node } from 'react';
 import type { Order } from 'instex-core/types';
 
 import { OrdersListContainer, TableTitle } from './styled';
@@ -9,8 +9,18 @@ import { OrdersListContainer, TableTitle } from './styled';
 type Props = {
   /** Orders info */
   data: Array<Order>,
-  title: string,
+  /**
+   * Title above table
+   * */
+  title?: string,
+  /**
+   * List of columns
+   * */
   columns: Array<Object>,
+  /**
+   * Function that is called whenever row clicked
+   * */
+  onClick: (Object, number) => null,
 };
 
 /**
@@ -19,11 +29,26 @@ type Props = {
  * @author [Tim Reznich](https://github.com/imbaniac)
  */
 
-const OrdersList: StatelessFunctionalComponent<Props> = ({ data, title, columns }: Props): Node => (
+const OrdersList = ({
+  data, title, columns, onClick,
+}: Props): Node => (
   <OrdersListContainer>
     <TableTitle>{title}</TableTitle>
-    <Table bordered columns={columns} dataSource={data} />
+    <Table
+      size="small"
+      bordered
+      columns={columns}
+      dataSource={data}
+      onRow={(record, index) => ({
+        onClick: () => onClick(record, index),
+      })}
+    />
   </OrdersListContainer>
 );
+
+OrdersList.defaultProps = {
+  title: '',
+  onClick: () => {},
+};
 
 export default OrdersList;
