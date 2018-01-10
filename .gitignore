@@ -5,6 +5,7 @@ node_modules
 
 # testing
 /coverage
+__snapshots__/
 
 # production
 build
@@ -23,4 +24,5 @@ yarn-error.log*
 lerna-debug.log*
 
 .idea
+.vscode/
 .version.swp
