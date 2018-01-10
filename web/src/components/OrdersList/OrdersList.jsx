@@ -1,10 +1,19 @@
 // @flow
 import React from 'react';
-import { Table } from 'antd';
-import type { Node, StatelessFunctionalComponent } from 'react';
-import { Order } from '../../types/orders';
+import {
+  Table,
+} from 'antd';
 
-export type Props = {
+import type {
+  Node,
+  StatelessFunctionalComponent,
+} from 'react';
+import type {
+  Order,
+} from 'instex-core/types';
+
+
+type Props = {
   /** Orders info */
   data: Array<Order>,
 };
@@ -26,6 +35,7 @@ const columns = [
     key: 'total',
   },
 ];
+
 /**
  * List of all orders
  * @version 1.0.0

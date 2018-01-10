@@ -15,8 +15,12 @@
   },
   "jest": {
     "transform": {
-      "^.+\\.jsx?$": "babel-jest"
+      "^.+\\.jsx?$": "babel-jest",
+      "^.+\\.less$": "<rootDir>/config/jest/cssTransform.js"
     },
+    "transformIgnorePatterns": [
+      "[/\\\\]node_modules(?!/instex-core)[/\\\\].+\\.(js|jsx|mjs)$"
+    ],
     "setupTestFrameworkScriptFile": "<rootDir>/src/setupTests.js"
   },
   "dependencies": {
@@ -61,6 +65,7 @@
     "html-webpack-plugin": "2.30.1",
     "jest": "22.0.4",
     "jest-styled-components": "4.9.0",
+    "identity-obj-proxy": "3.0.0",
     "less": "2.7.3",
     "less-loader": "4.0.5",
     "react-hot-loader": "3.1.3",
