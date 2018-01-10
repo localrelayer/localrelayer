@@ -28,7 +28,7 @@ const generateTestData = key => ({
   total: '0.2165',
 });
   <div>
-    <OrdersList title="Test Title" data={times(generateTestData, 50)} columns={columns} />
+    <OrdersList title="Test Title" data={times(generateTestData, 50)} columns={columns} onClick={() => console.log('test')} />
     <OrdersList data={times(generateTestData, 3)} columns={columns} />
     <OrdersList title="Table with no data" />
   </div>

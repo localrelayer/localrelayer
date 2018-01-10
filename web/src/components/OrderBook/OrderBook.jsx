@@ -11,6 +11,10 @@ type Props = {
   buyOrders: Array<Order>,
   /** Sell orders */
   sellOrders: Array<Order>,
+  /**
+   * Function that is called whenever order clicked
+   * */
+  onClick: Function,
 };
 
 const columns = {
@@ -58,10 +62,14 @@ const columns = {
  * @author [Tim Reznich](https://github.com/imbaniac)
  */
 
-const OrderBook: StatelessFunctionalComponent<Props> = ({ buyOrders, sellOrders }: Props): Node => (
+const OrderBook: StatelessFunctionalComponent<Props> = ({
+  buyOrders,
+  sellOrders,
+  onClick,
+}: Props): Node => (
   <OrderBookContainer>
-    <OrdersList title="Sell orders" columns={columns.sell} data={sellOrders} />
-    <OrdersList title="Buy orders" columns={columns.buy} data={buyOrders} />
+    <OrdersList title="Sell orders" columns={columns.sell} data={sellOrders} onClick={onClick} />
+    <OrdersList title="Buy orders" columns={columns.buy} data={buyOrders} onClick={onClick} />
   </OrderBookContainer>
 );
 

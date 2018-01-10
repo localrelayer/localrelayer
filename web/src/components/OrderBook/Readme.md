@@ -11,6 +11,6 @@ const generateOrders = key => ({
 });
 
   <div>
-    <OrderBook buyOrders={times(generateOrders, 25)} sellOrders={times(generateOrders, 25)} />
+    <OrderBook buyOrders={times(generateOrders, 25)} sellOrders={times(generateOrders, 25)} onClick={(record) => console.log(record)} />
   </div>
 ```
