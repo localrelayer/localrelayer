@@ -14,4 +14,29 @@ export const testToken = {
   tradingVolume: 211,
   change24Hour: 11,
   lastPrice: '0.021',
+  id: 1,
 };
+
+export const testTokens = [
+  {
+    balance: '120.5422',
+    symbol: 'EQC',
+    name: 'Ethereum Qchain',
+    key: 1,
+    tradable: false,
+  },
+  {
+    balance: '50.00',
+    symbol: 'CMS',
+    name: 'Comsa',
+    key: 2,
+    tradable: true,
+  },
+  {
+    balance: '1.25',
+    symbol: 'TEST',
+    name: 'Test Wrapper',
+    key: 3,
+    tradable: false,
+  },
+];
