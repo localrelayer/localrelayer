@@ -6,4 +6,5 @@ export type Order = {
   total: string,
   id: number,
   action: string
+  expires: Date
 };
