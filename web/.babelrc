@@ -19,7 +19,7 @@
       "plugins": ["transform-flow-strip-types"]
     },
     "testing": {
-      "presets": ["es2015", "stage-0", "react", "flow"]
+      "presets": ["env", "stage-0", "react", "flow"]
     },
     "development": {
       "plugins": [
