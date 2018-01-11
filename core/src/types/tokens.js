@@ -8,5 +8,8 @@ export type Token = {
   lowPrice: string,
   tradingVolume: number,
   change24Hour: number,
-  lastPrice: string
+  lastPrice: string,
+  name: string
 };
+
+export type Tokens = Array<Token>;
