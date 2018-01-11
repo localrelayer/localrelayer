@@ -36,7 +36,6 @@ const OrdersList = ({
     <TableTitle>{title}</TableTitle>
     <Table
       size="small"
-      bordered
       columns={columns}
       dataSource={data}
       onRow={(record, index) => ({
