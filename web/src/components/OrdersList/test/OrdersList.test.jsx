@@ -2,15 +2,9 @@ import React from 'react';
 import { shallow, mount } from 'enzyme';
 import { times } from 'ramda';
 import OrdersList from '../OrdersList';
+import { generateTestOrders } from '../../../utils/mocks';
 
-const generateTestData = key => ({
-  key,
-  price: '0.00005',
-  amount: '4330.00',
-  total: '0.2165',
-});
-
-const testData = times(generateTestData, 50);
+const testData = times(generateTestOrders, 50);
 
 const columns = [
   {
