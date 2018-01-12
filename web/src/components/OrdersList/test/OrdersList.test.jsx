@@ -1,10 +1,9 @@
 import React from 'react';
 import { shallow, mount } from 'enzyme';
-import { times } from 'ramda';
 import OrdersList from '../OrdersList';
 import { generateTestOrders } from '../../../utils/mocks';
 
-const testData = times(generateTestOrders, 50);
+const testData = generateTestOrders();
 
 const columns = [
   {
