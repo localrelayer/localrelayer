@@ -44,3 +44,7 @@ export const testTokens = [
     tradable: false,
   },
 ];
+export const testUser = {
+  address: '0x1FD6AF802d71fD25658b068762ce2AE0F30C4Bde',
+  notifications: [{}, {}],
+};
