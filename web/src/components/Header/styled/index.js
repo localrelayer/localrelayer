@@ -27,8 +27,8 @@ export const AlignRight = styled.div`
 
 export const HeaderButton = styled(Button)`
   margin-left: 8px;
-  // background-color: #203d58;
-  // border: none;
+  background-color: #203d58;
+  border: none;
 `;
 
 export const Truncate = styled.div`
@@ -41,4 +41,12 @@ export const Truncate = styled.div`
 export const UserButton = styled(HeaderButton)`
   display: flex;
   align-items: center;
+`;
+
+export const TokenContainer = styled.div`
+  background-color: white;
+  border: 1px solid #e8e8e8;
+  .ant-table-small {
+    border: none;
+  }
 `;
