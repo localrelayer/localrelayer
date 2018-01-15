@@ -3,7 +3,8 @@ import React from 'react';
 import type { Node, StatelessFunctionalComponent } from 'react';
 import type { Token } from 'instex-core/types';
 
-import { TokenListContainer, Colored } from './styled';
+import { TokenListContainer } from './styled';
+import { Colored } from '../SharedStyles';
 import OrdersList from '../OrdersList';
 
 type Props = {

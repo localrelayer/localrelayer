@@ -6,6 +6,7 @@ export const getTestOrder = () => ({
   price: finance.amount(0, 2, 4),
   amount: finance.amount(0, 1000, 4),
   total: finance.amount(0, 1000, 4),
+  token: hacker.abbreviation(),
   action: Math.random() > 0.5 ? 'sell' : 'buy',
 });
 

@@ -22,11 +22,11 @@ const App: StatelessFunctionalComponent<*> = (): Node => (
           <BuySell />
           <UserBalance />
         </Col>
-        <Col span={10}>
+        <Col span={12}>
           <TradingChart />
           <OrderBook />
         </Col>
-        <Col span={7}>
+        <Col span={5}>
           <TradingHistory />
         </Col>
       </Row>

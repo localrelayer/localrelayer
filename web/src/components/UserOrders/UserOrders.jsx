@@ -5,7 +5,8 @@ import { Tooltip, Button } from 'antd';
 import type { Order } from 'instex-core/types';
 import moment from 'moment';
 
-import { UserOrdersContainer, Colored } from './styled';
+import { UserOrdersContainer } from './styled';
+import { Colored } from '../SharedStyles';
 import OrdersList from '../OrdersList';
 
 type Props = {
@@ -29,6 +30,11 @@ export const getColumns = (onCancel: Function) => [
     render: (text: string, record: Order) => (
       <Colored color={record.action === 'sell' ? 'red' : 'green'}>{text}</Colored>
     ),
+  },
+  {
+    title: 'Token',
+    dataIndex: 'token',
+    key: 'token',
   },
   {
     title: 'Price',

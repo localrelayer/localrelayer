@@ -1,8 +1,5 @@
 import styled from 'styled-components';
-import {
-  Card,
-  Button,
-} from 'antd';
+import { Card, Button } from 'antd';
 
 export const CardContainer = styled(Card)`
   width: 400px;
@@ -10,6 +7,9 @@ export const CardContainer = styled(Card)`
     text-align: center;
     font-size: 1.1rem;
     margin-bottom: 10px;
+  }
+  & .ant-card-body {
+    padding: 20px;
   }
 `;
 

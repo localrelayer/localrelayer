@@ -1,10 +1,6 @@
 import styled from 'styled-components';
 import { Card, Table } from 'antd';
 
-export const Colored = styled.span`
-  color: ${props => props.color || 'black'};
-`;
-
 export const Title = styled.div`
   font-size: 1.3em;
   display: flex;
@@ -16,7 +12,6 @@ export const CardContainer = styled(Card)`
   padding: 0;
   & > .ant-card-head {
     border: 1px solid #e8e8e8;
-    margin-bottom: 15px;
     text-align: center;
     background-color: #fafafa;
   }
@@ -34,6 +29,9 @@ export const TableContainer = styled(Table)`
   border-left: 1px solid #e8e8e8;
   border-right: 1px solid #e8e8e8;
   border-top: 1px solid #e8e8e8;
+  .ant-table-thead > tr > th {
+    background: white;
+  }
 `;
 
 export const SmallText = styled.span`
