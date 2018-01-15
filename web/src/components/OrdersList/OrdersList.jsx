@@ -9,9 +9,7 @@ import { OrdersListContainer, TableTitle } from './styled';
 type Props = {
   /** Orders info */
   data: Array<Order>,
-  /**
-   * Title above table
-   * */
+  /** Title above table */
   title?: string,
   /**
    * List of columns
@@ -21,6 +19,8 @@ type Props = {
    * Function that is called whenever row clicked
    * */
   onClick: (Object, number) => null,
+  /** Does table has borders */
+  bordered?: boolean,
 };
 
 /**
@@ -30,12 +30,13 @@ type Props = {
  */
 
 const OrdersList = ({
-  data, title, columns, onClick,
+  data, title, columns, onClick, bordered,
 }: Props): Node => (
   <OrdersListContainer>
     <TableTitle>{title}</TableTitle>
     <Table
       size="small"
+      bordered={bordered}
       columns={columns}
       dataSource={data}
       onRow={(record, index) => ({
@@ -48,6 +49,7 @@ const OrdersList = ({
 OrdersList.defaultProps = {
   title: '',
   onClick: () => {},
+  bordered: true,
 };
 
 export default OrdersList;
