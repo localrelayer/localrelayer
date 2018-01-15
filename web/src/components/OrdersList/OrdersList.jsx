@@ -21,6 +21,8 @@ type Props = {
   onClick: (Object, number) => null,
   /** Does table has borders */
   bordered?: boolean,
+  /** Antd pagination config object */
+  pagination?: Object,
 };
 
 /**
@@ -30,7 +32,7 @@ type Props = {
  */
 
 const OrdersList = ({
-  data, title, columns, onClick, bordered,
+  data, title, columns, onClick, bordered, pagination,
 }: Props): Node => (
   <OrdersListContainer>
     <TableTitle>{title}</TableTitle>
@@ -39,6 +41,7 @@ const OrdersList = ({
       bordered={bordered}
       columns={columns}
       dataSource={data}
+      pagination={pagination}
       onRow={(record, index) => ({
         onClick: () => onClick(record, index),
       })}
@@ -49,7 +52,8 @@ const OrdersList = ({
 OrdersList.defaultProps = {
   title: '',
   onClick: () => {},
-  bordered: true,
+  bordered: false,
+  pagination: {},
 };
 
 export default OrdersList;
