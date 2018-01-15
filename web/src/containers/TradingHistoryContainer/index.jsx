@@ -6,6 +6,6 @@ export default () => (
   <TradingHistory
     orders={generateTestOrders()}
     onClick={record => console.log(record)}
-    pagination={{ pageSize: '15' }}
+    pagination={{ pageSize: 15 }}
   />
 );

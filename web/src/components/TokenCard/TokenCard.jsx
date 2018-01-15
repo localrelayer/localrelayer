@@ -3,7 +3,8 @@ import React from 'react';
 import type { Node, StatelessFunctionalComponent } from 'react';
 import type { Token } from 'instex-core/types';
 import { Card, Avatar } from 'antd';
-import { Colored, Title, CardContainer } from './styled';
+import { Title, CardContainer } from './styled';
+import { Colored } from '../SharedStyles';
 
 const { Meta } = Card;
 
