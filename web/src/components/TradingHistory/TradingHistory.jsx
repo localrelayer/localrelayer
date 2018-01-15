@@ -3,7 +3,8 @@ import React from 'react';
 import type { Node, StatelessFunctionalComponent } from 'react';
 import type { Order } from 'instex-core/types';
 
-import { TradingHistoryContainer, Colored } from './styled';
+import { TradingHistoryContainer } from './styled';
+import { Colored } from '../SharedStyles';
 import OrdersList from '../OrdersList';
 
 type Props = {
@@ -42,10 +43,20 @@ const columns = [
  * @author [Tim Reznich](https://github.com/imbaniac)
  */
 
-const TradingHistory: StatelessFunctionalComponent<Props> = ({ orders, onClick }: Props): Node => (
-  <TradingHistoryContainer>
-    <OrdersList title="Trading History" columns={columns} data={orders} onClick={onClick} />
-  </TradingHistoryContainer>
-);
+const TradingHistory: StatelessFunctionalComponent<Props> = (props: Props): Node => {
+  const { orders, onClick } = props;
+
+  return (
+    <TradingHistoryContainer>
+      <OrdersList
+        {...props}
+        title="Trading History"
+        columns={columns}
+        data={orders}
+        onClick={onClick}
+      />
+    </TradingHistoryContainer>
+  );
+};
 
 export default TradingHistory;

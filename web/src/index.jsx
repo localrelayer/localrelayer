@@ -6,13 +6,12 @@ import { AppContainer } from 'react-hot-loader';
 import { LocaleProvider } from 'antd';
 import enUS from 'antd/lib/locale-provider/en_US';
 
-import type {
-  ComponentType,
-} from 'react';
+import type { ComponentType } from 'react';
+
+import './assets/main.less';
 
 import store from './store';
 import App from './App';
-
 
 const rootEl: HTMLElement = window.document.getElementById('body');
 
