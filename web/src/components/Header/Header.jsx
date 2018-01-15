@@ -11,7 +11,10 @@ import {
   HeaderButton,
   Truncate,
   UserButton,
+  TokenContainer,
 } from './styled';
+import TokensList from '../TokensList';
+import { generateTestTokens } from '../../utils/mocks';
 
 type Props = {
   /** User object */
@@ -19,14 +22,6 @@ type Props = {
   /** Function called on address click */
   onUserClick: Function,
 };
-
-const testMenu = (
-  <Menu onClick={() => {}}>
-    <Menu.Item key="1">1st menu item</Menu.Item>
-    <Menu.Item key="2">2nd menu item</Menu.Item>
-    <Menu.Item key="3">3rd item</Menu.Item>
-  </Menu>
-);
 
 /**
  * Header
@@ -37,7 +32,18 @@ const testMenu = (
 const Header = ({ user, onUserClick }: Props): Node => (
   <HeaderContainer>
     <LogoContainer />
-    <Dropdown trigger={['click']} overlay={testMenu}>
+    <Dropdown
+      trigger={['click']}
+      overlay={
+        <TokenContainer>
+          <TokensList
+            bordered={false}
+            tokens={generateTestTokens()}
+            onClick={record => console.log(record)}
+          />
+        </TokenContainer>
+      }
+    >
       <HeaderButton type="primary">
         Markets <Icon type="down" />
       </HeaderButton>
