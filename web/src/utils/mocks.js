@@ -1,25 +1,38 @@
-const randomDate = (start, end) =>
-  new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+import { finance, random, hacker } from 'faker';
+import { times, repeat } from 'ramda';
 
-export const generateTestOrders = key => ({
-  key,
-  price: Math.random().toFixed(4),
-  amount: Math.random().toFixed(4),
-  total: (Math.random() * 5).toFixed(4),
+export const getTestOrder = () => ({
+  key: random.uuid(),
+  price: finance.amount(0, 2, 4),
+  amount: finance.amount(0, 1000, 4),
+  total: finance.amount(0, 1000, 4),
   action: Math.random() > 0.5 ? 'sell' : 'buy',
-  expires: randomDate(new Date(2012, 0, 1), new Date()),
 });
 
-export const testToken = {
-  symbol: 'TEST',
+export const generateTestOrders = num => times(getTestOrder, num || random.number(100));
+
+export const getTestToken = () => ({
+  key: random.uuid(),
+  symbol: hacker.abbreviation(),
   tradingPair: 'WETH',
-  highPrice: '0.022',
-  lowPrice: '0.015',
-  tradingVolume: 211,
-  change24Hour: 11,
-  lastPrice: '0.021',
-  id: 1,
+  highPrice: finance.amount(0, 2, 4),
+  lowPrice: finance.amount(0, 2, 4),
+  tradingVolume: finance.amount(0, 500, 4),
+  change24Hour: finance.amount(-100, 100),
+  lastPrice: finance.amount(0, 2, 4),
+});
+
+export const generateTestTokens = num => times(getTestToken, num || random.number(100));
+
+export const testNotification = {};
+
+export const testUser = {
+  address: finance.ethereumAddress(),
+  notifications: repeat(testNotification, random.number(100)),
 };
+
+export const randomDate = (start, end) =>
+  new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
 
 export const testTokens = [
   {

@@ -1,7 +1,6 @@
 Examples:
 
 ```js { "props": { "className": "example-wrapper" } }
-const times = require('ramda').times;
 const { generateTestOrders } = require('../../utils/mocks');
 
 const columns = [
@@ -25,11 +24,11 @@ const columns = [
   <div>
     <OrdersList
       title="Test Title"
-      data={times(generateTestOrders, 50)}
+      data={generateTestOrders(50)}
       columns={columns}
       onClick={() => console.log('test')}
     />
-    <OrdersList data={times(generateTestOrders, 3)} columns={columns} />
+    <OrdersList data={generateTestOrders(3)} columns={columns} />
     <OrdersList title="Table with no data" />
   </div>
 ```
