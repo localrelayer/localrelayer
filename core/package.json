@@ -4,16 +4,20 @@
   "private": true,
   "main": "./src",
   "scripts": {
-    "lint": "eslint ./src --ext .js,.jsx --ignore-pattern '/dist/' --ignore-pattern '*.prod.js' --ignore-pattern '*.test.js' --ignore-pattern '**/node_modules/*'",
+    "lint":
+      "eslint ./src --ext .js,.jsx --ignore-pattern '/dist/' --ignore-pattern '*.prod.js' --ignore-pattern '*.test.js' --ignore-pattern '**/node_modules/*'",
     "flow": "flow",
     "start": "webpack --config webpack.config.prod.js --watch",
     "postinstall": "flow-typed install && yarn link"
   },
   "dependencies": {
+    "es6-promisify": "^5.0.0",
+    "human-standard-token-abi": "^1.0.2",
     "ramda": "0.25.0",
     "redux": "3.7.2",
     "redux-saga": "0.16.0",
-    "reselect": "3.0.1"
+    "reselect": "3.0.1",
+    "web3": "^1.0.0-beta.18"
   },
   "devDependencies": {
     "babel-core": "6.26.0",
@@ -26,10 +30,10 @@
     "eslint-config-airbnb": "16.1.0",
     "eslint-plugin-flowtype": "2.41.0",
     "eslint-plugin-flowtype-errors": "3.3.7",
-    "eslint-plugin-react": "7.5.1",
     "eslint-plugin-import": "2.8.0",
     "eslint-plugin-jest": "21.6.0",
     "eslint-plugin-jsx-a11y": "6.0.3",
+    "eslint-plugin-react": "7.5.1",
     "flow-bin": "0.63.1",
     "flow-typed": "2.2.3"
   }

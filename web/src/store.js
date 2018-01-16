@@ -1,5 +1,5 @@
 // @flow
-import rootSaga from './sagas';
+import rootSaga from 'instex-core/src/sagas';
 import configureStore from './store/configureStore';
 
 const store = configureStore();

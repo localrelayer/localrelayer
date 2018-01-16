@@ -1,9 +1,6 @@
 // @flow
 
-import type {
-  ID,
-} from '../types';
-
+import type { ID } from '../types';
 
 export type Token = {
   id: ID,
@@ -14,7 +11,8 @@ export type Token = {
   tradingVolume: number,
   change24Hour: number,
   lastPrice: string,
-  name: string
+  name: string,
+  address: string,
 };
 
 export type Tokens = Array<Token>;
