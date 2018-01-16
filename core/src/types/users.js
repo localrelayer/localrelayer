@@ -1,7 +1,12 @@
-//@flow
+// @flow
+
+import type {
+  ID,
+} from '../types';
+
 
 export type User = {
-  id: number,
+  id: ID,
   address: string,
-  notifications: Array
+  notifications: Array<*>
 };

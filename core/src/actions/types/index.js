@@ -1,0 +1,2 @@
+// @flow
+export const CLEAR_ALL_REDUCERS: 'CLEAR_ALL_REDUCERS' = 'CLEAR_ALL_REDUCERS';

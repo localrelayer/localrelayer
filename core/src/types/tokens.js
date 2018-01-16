@@ -1,7 +1,12 @@
-//@flow
+// @flow
+
+import type {
+  ID,
+} from '../types';
+
 
 export type Token = {
-  id: number,
+  id: ID,
   symbol: string,
   tradingPair: string,
   highPrice: string,

@@ -19,8 +19,13 @@
     "jsx-a11y/anchor-is-valid": "off",
     "no-console": "off",
     "no-use-before-define": "off",
+    "flowtype/define-flow-type": 1,
     "flowtype-errors/show-errors": 2,
     "react/default-props-match-prop-types": "off"
   },
-  "plugins": ["flowtype-errors", "jest"]
+  "plugins": [
+    "flowtype",
+    "flowtype-errors",
+    "jest",
+  ]
 }
