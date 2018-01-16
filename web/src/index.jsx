@@ -1,4 +1,6 @@
 // @flow
+import 'regenerator-runtime/runtime';
+
 import React from 'react';
 import { render as reactRender } from 'react-dom';
 import { Provider } from 'react-redux';

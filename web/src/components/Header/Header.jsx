@@ -2,7 +2,7 @@
 import React from 'react';
 import type { Node } from 'react';
 import type { User } from 'instex-core/types';
-import { Menu, Dropdown, Icon, Badge } from 'antd';
+import { Menu, Popover, Icon, Badge } from 'antd';
 import {
   LogoContainer,
   MenuContainer,
@@ -32,9 +32,9 @@ type Props = {
 const Header = ({ user, onUserClick }: Props): Node => (
   <HeaderContainer>
     <LogoContainer />
-    <Dropdown
+    <Popover
       trigger={['click']}
-      overlay={
+      content={
         <TokenContainer>
           <TokensList
             bordered={false}
@@ -47,7 +47,7 @@ const Header = ({ user, onUserClick }: Props): Node => (
       <HeaderButton type="primary">
         Markets <Icon type="down" />
       </HeaderButton>
-    </Dropdown>
+    </Popover>
     <MenuContainer theme="dark" mode="horizontal">
       <Menu.Item key="dashboard">Dashboard</Menu.Item>
       <Menu.Item key="help">Help</Menu.Item>

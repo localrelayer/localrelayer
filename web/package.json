@@ -5,10 +5,8 @@
   "scripts": {
     "test": "NODE_ENV=testing jest --env=jsdom -u",
     "test:watch": "yarn test --watchAll",
-    "lint":
-      "eslint ./src --ext .js,.jsx --ignore-pattern '/dist/' --ignore-pattern '*.prod.js' --ignore-pattern '*.test.js' --ignore-pattern '**/node_modules/*'",
-    "start":
-      "NODE_ENV=development node --trace-warnings ./node_modules/.bin/webpack-dev-server --config webpack.config.development.js",
+    "lint": "eslint ./src --ext .js,.jsx --ignore-pattern '/dist/' --ignore-pattern '*.prod.js' --ignore-pattern '*.test.js' --ignore-pattern '**/node_modules/*'",
+    "start": "NODE_ENV=development node --trace-warnings ./node_modules/.bin/webpack-dev-server --config webpack.config.development.js",
     "flow": "flow",
     "postinstall": "flow-typed install && yarn link \"instex-core\"",
     "styleguide": "styleguidist server",
@@ -19,24 +17,27 @@
       "^.+\\.jsx?$": "babel-jest",
       "^.+\\.less$": "<rootDir>/config/jest/cssTransform.js"
     },
-    "transformIgnorePatterns": ["[/\\\\]node_modules(?!/instex-core)[/\\\\].+\\.(js|jsx|mjs)$"],
+    "transformIgnorePatterns": [
+      "[/\\\\]node_modules(?!/instex-core)[/\\\\].+\\.(js|jsx|mjs)$"
+    ],
     "setupTestFrameworkScriptFile": "<rootDir>/src/setupTests.js"
   },
   "dependencies": {
     "antd": "3.1.1",
     "bignumber.js": "5.0.0",
+    "faker": "git://github.com/Marak/faker.js.git",
     "history": "4.7.2",
     "moment": "2.20.1",
-    "faker": "git://github.com/Marak/faker.js.git",
     "ramda": "0.25.0",
     "react": "16.2.0",
     "react-dom": "16.2.0",
     "react-redux": "5.0.6",
     "recompose": "0.26.0",
     "redux": "3.7.2",
+    "redux-form": "7.2.0",
     "redux-logger": "3.0.6",
     "redux-saga": "0.16.0",
-    "redux-form": "7.2.0",
+    "regenerator-runtime": "^0.11.1",
     "reselect": "3.0.1",
     "styled-components": "2.4.0"
   },
@@ -46,6 +47,7 @@
     "babel-jest": "22.0.4",
     "babel-loader": "7.1.2",
     "babel-plugin-import": "1.6.2",
+    "babel-polyfill": "^6.26.0",
     "babel-preset-env": "1.6.1",
     "babel-preset-react": "6.24.1",
     "babel-preset-stage-0": "6.24.1",
@@ -70,6 +72,7 @@
     "react-hot-loader": "3.1.3",
     "react-styleguidist": "6.1.0",
     "redux-devtools": "3.4.0",
+    "redux-devtools-extension": "^2.13.2",
     "webpack": "3.10.0",
     "webpack-dev-server": "2.9.5",
     "webpack-merge": "4.1.1"

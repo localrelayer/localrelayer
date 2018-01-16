@@ -18,8 +18,8 @@
     "flowtype/define-flow-type": 1,
     "flowtype-errors/show-errors": 2
   },
-  "plugins": [
-    "flowtype",
-    "flowtype-errors"
-  ]
+  "plugins": ["flowtype", "flowtype-errors"],
+  "globals": {
+    "Web3": true
+  }
 }
