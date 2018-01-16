@@ -1,17 +1,25 @@
 {
-  "presets": [
-    [
-      "env",
-      {
-        "loose": true
-      }
-    ],
-    "flow",
-    "stage-0"
-  ],
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "allowImportExportEverywhere": true
+  },
+  "extends": "airbnb",
   "env": {
-    "development": {
-      "plugins": ["transform-class-properties", "transform-es2015-classes"]
-    }
-  }
+    "browser": true,
+    "node": true
+  },
+  "rules": {
+    "import/no-extraneous-dependencies": "off",
+    "import/prefer-default-export": "off",
+    "react/jsx-wrap-multilines": "off",
+    "function-paren-newline": ["error", "consistent"],
+    "no-console": "off",
+    "no-use-before-define": "off",
+    "flowtype/define-flow-type": 1,
+    "flowtype-errors/show-errors": 2
+  },
+  "plugins": [
+    "flowtype",
+    "flowtype-errors"
+  ]
 }
