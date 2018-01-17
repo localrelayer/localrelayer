@@ -1,5 +1,8 @@
 import config from '../config';
 import {
+  apiFetch,
+} from './apiFetch';
+import {
   defaultResourcesInclude,
 } from '../constants';
 
@@ -66,7 +69,7 @@ export function fetchResources({
       `${sortDirection}${sortBy}`,
     ],
   };
-  return fetch({
+  return apiFetch({
     url: `${config.apiUrl}/${resourceName}/filter`,
     meta: {
       method: 'POST',

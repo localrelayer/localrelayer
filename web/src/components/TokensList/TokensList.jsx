@@ -24,19 +24,19 @@ const columns = [
   },
   {
     title: 'Price',
-    dataIndex: 'lastPrice',
-    key: 'lastPrice',
+    dataIndex: 'price_eth',
+    key: 'price_eth',
   },
   {
     title: 'Volume',
-    dataIndex: 'tradingVolume',
-    key: 'tradingVolume',
+    dataIndex: 'volume_eth',
+    key: 'volume_eth',
     sorter: (a, b) => a.tradingVolume - b.tradingVolume,
   },
   {
     title: 'Change',
-    dataIndex: 'change24Hour',
-    key: 'change24Hour',
+    dataIndex: 'percent_change_24h',
+    key: 'percent_change_24h',
     render: text =>
       (text > 0 ? (
         <Colored color="green">{`+${text}%`}</Colored>

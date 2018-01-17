@@ -6,13 +6,12 @@ import type {
 
 export const resources: Array<ResourceName> = [
   'orders',
-  'currencies',
+  'tokens',
 ];
 
 export const defaultResourcesInclude = {
   orders: [
-    'currency',
+    'token',
   ],
-  currencies: [
-  ],
+  tokens: [],
 };

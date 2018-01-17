@@ -1,4 +1,10 @@
-import { all, fork } from 'redux-saga/effects';
+import {
+  fork,
+} from 'redux-saga/effects';
+
+import {
+  initialize,
+} from './initialize';
 
 import {
   listenFetchResourceRequest,
@@ -6,13 +12,12 @@ import {
   listenDeleteResourceRequest,
 } from './resources';
 
-import { initialize } from './initialize';
 
-export default function* rootSaga() {
-  yield all([
-    fork(initialize),
-    fork(listenFetchResourceRequest),
-    fork(listenDeleteResourceRequest),
-    fork(listenSaveResourceRequest),
-  ]);
-}
+const coreSagas = [
+  fork(listenFetchResourceRequest),
+  fork(listenDeleteResourceRequest),
+  fork(listenSaveResourceRequest),
+  fork(initialize),
+];
+
+export default coreSagas;
