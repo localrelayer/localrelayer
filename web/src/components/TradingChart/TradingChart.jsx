@@ -23,6 +23,6 @@ import { TradingChartContainer } from './styled';
  * @author [Tim Reznich](https://github.com/imbaniac)
  */
 
-const UserOrders = (): Node => <TradingChartContainer />;
+const TradingChart = (): Node => <TradingChartContainer />;
 
-export default UserOrders;
+export default TradingChart;

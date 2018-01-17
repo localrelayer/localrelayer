@@ -11,7 +11,25 @@ export const loadWeb3 = () =>
         console.warn('Injected web3 detected.');
         resolve(web3);
       } else {
+        resolve(null);
         console.warn('No web3 instance injected, please use Metamask');
       }
     });
   });
+
+export const getNetworkById = (id: number) => {
+  const networks = {
+    '1': 'Mainnet',
+    '2': 'Morden (deprecated)',
+    '3': 'Ropsten Test',
+    '4': 'Rinkbery Test',
+    '42': 'Kovan Test',
+  };
+  return networks[id] || 'Unknown network.';
+};
+
+export const connectionStatuses = {
+  NOT_CONNECTED: 'Not connected to Ethereum',
+  CONNECTED: 'Connected',
+  LOCKED: 'Locked',
+};

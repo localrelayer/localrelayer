@@ -29,6 +29,8 @@ export const testNotification = {};
 
 export const testUser = {
   address: finance.ethereumAddress(),
+  balance: finance.amount(0, 2, 4),
+  connectionStatus: 'Connected',
   notifications: repeat(testNotification, random.number(100)),
 };
 
