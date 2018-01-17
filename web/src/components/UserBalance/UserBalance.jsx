@@ -51,7 +51,7 @@ const getColumns = onToggle => [
  */
 
 const UserBalance = ({ tokens, onToggle, onTokenClick }: Props): Node => (
-  <CardContainer bordered={false} title="My Balances">
+  <CardContainer id="user-balance" bordered={false} title="My Balances">
     <Card.Grid>
       <TableContainer
         onRow={record => ({

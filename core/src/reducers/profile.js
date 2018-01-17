@@ -1,10 +1,12 @@
 import * as types from '../actions/types';
 
 const initialState = {
-  isLoading: true,
+  isLoading: false,
   address: '',
   balance: '',
   tokens: [],
+  connectionStatus: '',
+  network: '',
 };
 
 export default function profileReducer(state = initialState, action) {
@@ -23,6 +25,16 @@ export default function profileReducer(state = initialState, action) {
       return {
         ...state,
         balance: action.payload,
+      };
+    case types.SET_CONNECTION_STATUS:
+      return {
+        ...state,
+        connectionStatus: action.payload,
+      };
+    case types.SET_CURRENT_NETWORK:
+      return {
+        ...state,
+        network: action.payload,
       };
     case types.CLEAR_ALL_REDUCERS:
       return initialState;

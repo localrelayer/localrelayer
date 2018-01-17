@@ -1,12 +1,11 @@
 // @flow
 import React from 'react';
-import type {
-  Node,
-} from 'react';
-import type {
-  User,
-  Tokens,
-} from 'instex-core/types';
+
+import type { Node } from 'react';
+import type { User, Tokens } from 'instex-core/types';
+
+import { connectionStatuses } from 'instex-core/src/utils/web3';
+
 import { Menu, Popover, Icon, Badge } from 'antd';
 import {
   LogoContainer,
@@ -19,6 +18,7 @@ import {
   TokenContainer,
 } from './styled';
 import TokensList from '../TokensList';
+import UserProfile from '../UserProfile';
 
 type Props = {
   /** User object */
@@ -35,22 +35,15 @@ type Props = {
  * @author [Tim Reznich](https://github.com/imbaniac)
  */
 
-const Header = ({
-  user,
-  onUserClick,
-  tokens,
-}: Props): Node => (
+const Header = ({ user, onUserClick, tokens }: Props): Node => (
   <HeaderContainer>
     <LogoContainer />
     <Popover
       trigger={['click']}
+      placement="bottom"
       content={
         <TokenContainer>
-          <TokensList
-            bordered={false}
-            tokens={tokens}
-            onClick={record => console.log(record)}
-          />
+          <TokensList bordered={false} tokens={tokens} onClick={record => console.log(record)} />
         </TokenContainer>
       }
     >
@@ -63,12 +56,28 @@ const Header = ({
       <Menu.Item key="help">Help</Menu.Item>
     </MenuContainer>
     <AlignRight>
-      <Badge>
-        <UserButton onClick={() => onUserClick(user)} type="primary">
-          <Icon type="user" />
-          {user.address ? <Truncate>{user.address}</Truncate> : 'Not connected'}
-        </UserButton>
-      </Badge>
+      {console.log(user)}
+      <Popover
+        placement="bottom"
+        trigger={['click']}
+        content={
+          <div>
+            <UserProfile {...user} />
+          </div>
+        }
+      >
+        <Badge>
+          <UserButton onClick={() => onUserClick(user)} type="primary">
+            <Icon type="user" />{' '}
+            {user.connectionStatus === connectionStatuses.CONNECTED ? (
+              <Truncate>{user.address}</Truncate>
+            ) : (
+              user.connectionStatus
+            )}
+            <Icon type="down" />
+          </UserButton>
+        </Badge>
+      </Popover>
       <Badge count={user.notifications ? user.notifications.length : 0}>
         <HeaderButton shape="circle" type="primary">
           <Icon type="bell" />
@@ -80,6 +89,7 @@ const Header = ({
 
 Header.defaultProps = {
   user: {},
+  onUserClick: () => {},
 };
 
 export default Header;
