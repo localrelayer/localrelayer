@@ -8,7 +8,7 @@
       "eslint ./src --ext .js,.jsx --ignore-pattern '/dist/' --ignore-pattern '*.prod.js' --ignore-pattern '*.test.js' --ignore-pattern '**/node_modules/*'",
     "flow": "flow",
     "start": "webpack --config webpack.config.prod.js --watch",
-    "postinstall": "flow-typed install && yarn link"
+    "postinstall": "flow-typed install --overwrite && yarn link"
   },
   "dependencies": {
     "es6-promisify": "^5.0.0",

@@ -8,7 +8,7 @@
     "lint": "eslint ./src --ext .js,.jsx --ignore-pattern '/dist/' --ignore-pattern '*.prod.js' --ignore-pattern '*.test.js' --ignore-pattern '**/node_modules/*'",
     "start": "NODE_ENV=development node --trace-warnings ./node_modules/.bin/webpack-dev-server --config webpack.config.development.js",
     "flow": "flow",
-    "postinstall": "flow-typed install && yarn link \"instex-core\"",
+    "postinstall": "flow-typed install --overwrite && yarn link \"instex-core\"",
     "styleguide": "styleguidist server",
     "styleguide:build": "styleguidist build"
   },

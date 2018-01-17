@@ -1,7 +1,12 @@
 // @flow
 import React from 'react';
-import type { Node } from 'react';
-import type { User } from 'instex-core/types';
+import type {
+  Node,
+} from 'react';
+import type {
+  User,
+  Tokens,
+} from 'instex-core/types';
 import { Menu, Popover, Icon, Badge } from 'antd';
 import {
   LogoContainer,
@@ -14,13 +19,14 @@ import {
   TokenContainer,
 } from './styled';
 import TokensList from '../TokensList';
-import { generateTestTokens } from '../../utils/mocks';
 
 type Props = {
   /** User object */
   user: User,
   /** Function called on address click */
   onUserClick: Function,
+  /** Array of tokens */
+  tokens: Tokens,
 };
 
 /**
@@ -29,7 +35,11 @@ type Props = {
  * @author [Tim Reznich](https://github.com/imbaniac)
  */
 
-const Header = ({ user, onUserClick }: Props): Node => (
+const Header = ({
+  user,
+  onUserClick,
+  tokens,
+}: Props): Node => (
   <HeaderContainer>
     <LogoContainer />
     <Popover
@@ -38,7 +48,7 @@ const Header = ({ user, onUserClick }: Props): Node => (
         <TokenContainer>
           <TokensList
             bordered={false}
-            tokens={generateTestTokens()}
+            tokens={tokens}
             onClick={record => console.log(record)}
           />
         </TokenContainer>
