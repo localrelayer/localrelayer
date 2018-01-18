@@ -1,9 +1,23 @@
-import { select, call, put } from 'redux-saga/effects';
-import { delay } from 'redux-saga';
+import {
+  select,
+  call,
+  put,
+} from 'redux-saga/effects';
+import {
+  delay,
+} from 'redux-saga';
 import promisify from 'es6-promisify';
-import { getWeb3, getAddress } from '../selectors';
+
+import {
+  getWeb3,
+  getAddress,
+} from '../selectors';
+import {
+  getNetworkById,
+  connectionStatuses,
+} from '../utils/web3';
 import * as ProfileActions from '../actions/profile';
-import { getNetworkById, connectionStatuses } from '../utils/web3';
+
 
 export function* loadUser() {
   const web3 = yield select(getWeb3);

@@ -1,13 +1,23 @@
 // @flow
 import React from 'react';
-import { connect } from 'react-redux';
+import {
+  connect,
+} from 'react-redux';
 
-import type { Node, StatelessFunctionalComponent } from 'react';
-import type { User, Tokens } from 'instex-core/types';
+import type {
+  Node,
+  StatelessFunctionalComponent,
+} from 'react';
+import type {
+  User,
+  Tokens,
+} from 'instex-core/types';
 
-import { getTokens } from 'instex-core/selectors';
-
+import {
+  getTokens,
+} from 'instex-core/selectors';
 import Header from '../../components/Header';
+
 
 type Props = {
   user: User,

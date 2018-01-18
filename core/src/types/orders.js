@@ -28,3 +28,8 @@ export type OrdersResourcesReducer = {
   allIds: Array<string>,
 };
 
+export type Order = {
+  id: ID,
+} & OrderAttributes;
+
+export type Orders = Array<Order>;
