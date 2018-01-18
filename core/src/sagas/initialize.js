@@ -13,6 +13,7 @@ import {
 } from '../utils/web3';
 import * as EthereumActions from '../actions/ethereum';
 import * as ProfileActions from '../actions/profile';
+import { runLoadUser } from './profile';
 import * as uiActions from '../actions/ui';
 import * as resourcesActions from '../actions/resources';
 
@@ -41,6 +42,6 @@ export function* initialize() {
     yield put(ProfileActions.setConnectionStatus(connectionStatuses.NOT_CONNECTED));
   } else {
     yield put(EthereumActions.setWeb3(web3));
-    yield fork(ProfileActions.runLoadUser);
+    yield fork(runLoadUser);
   }
 }
