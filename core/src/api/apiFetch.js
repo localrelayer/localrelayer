@@ -25,11 +25,11 @@ const generateTestOrders = num => times(getTestOrder, num || 100);
 
 const fakeTokens = () =>
   Promise.resolve({
-    data: tokensSeeds.map(({ id, ...attributes }) => ({
+    data: tokensSeeds.map(({ address, ...attributes }) => ({
       type: 'tokens',
-      id,
+      id: address,
       links: {
-        self: `${config.apiUrl}/tokens/${id}`,
+        self: `${config.apiUrl}/tokens/${address}`,
       },
       attributes,
     })),
