@@ -1,15 +1,36 @@
-import { call, put, fork } from 'redux-saga/effects';
+import {
+  call,
+  put,
+  fork,
+} from 'redux-saga/effects';
 
-import { fetchResourcesRequest } from '../actions';
-import { loadWeb3, connectionStatuses } from '../utils/web3';
+import {
+  fetchResourcesRequest,
+} from './resources';
+import {
+  loadWeb3,
+  connectionStatuses,
+} from '../utils/web3';
 import * as EthereumActions from '../actions/ethereum';
 import * as ProfileActions from '../actions/profile';
-import { runLoadUser } from './profile';
+import * as uiActions from '../actions/ui';
+import * as resourcesActions from '../actions/resources';
+
 
 export function* initialize() {
+  const responseTokens = yield call(
+    fetchResourcesRequest,
+    {
+      payload: {
+        resourceName: 'tokens',
+        withDeleted: false,
+      },
+    },
+  );
+  yield put(uiActions.setCurrentToken(responseTokens.data[0].id));
   yield put(
-    fetchResourcesRequest({
-      resourceName: 'tokens',
+    resourcesActions.fetchResourcesRequest({
+      resourceName: 'orders',
       withDeleted: false,
     }),
   );
@@ -20,6 +41,6 @@ export function* initialize() {
     yield put(ProfileActions.setConnectionStatus(connectionStatuses.NOT_CONNECTED));
   } else {
     yield put(EthereumActions.setWeb3(web3));
-    yield fork(runLoadUser);
+    yield fork(ProfileActions.runLoadUser);
   }
 }

@@ -1,3 +1,4 @@
 // @flow
-export * from './resource';
+export * from './resources';
 export * from './ethereum';
+export * from './ui';

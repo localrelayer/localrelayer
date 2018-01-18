@@ -1,4 +1,4 @@
-// flow-typed signature: f9a69d98f685658c8478219f113aeb75
+// flow-typed signature: 32a39ea38c8af351fbc1d6a28091bca7
 // flow-typed version: <<STUB>>/web3_v^1.0.0-beta.18/flow_v0.63.1
 
 /**
@@ -22,11 +22,312 @@ declare module 'web3' {
  * require those files directly. Feel free to delete any files that aren't
  * needed.
  */
+declare module 'web3/gulpfile' {
+  declare module.exports: any;
+}
+
+declare module 'web3/package' {
+  declare module.exports: any;
+}
+
+declare module 'web3/packages/web3-bzz/src/index' {
+  declare module.exports: any;
+}
+
+declare module 'web3/packages/web3-core-helpers/src/config' {
+  declare module.exports: any;
+}
+
+declare module 'web3/packages/web3-core-helpers/src/errors' {
+  declare module.exports: any;
+}
+
+declare module 'web3/packages/web3-core-helpers/src/formatters' {
+  declare module.exports: any;
+}
+
+declare module 'web3/packages/web3-core-helpers/src/index' {
+  declare module.exports: any;
+}
+
+declare module 'web3/packages/web3-core-method/src/index' {
+  declare module.exports: any;
+}
+
+declare module 'web3/packages/web3-core-promiEvent/src/index' {
+  declare module.exports: any;
+}
+
+declare module 'web3/packages/web3-core-requestManager/src/batch' {
+  declare module.exports: any;
+}
+
+declare module 'web3/packages/web3-core-requestManager/src/givenProvider' {
+  declare module.exports: any;
+}
+
+declare module 'web3/packages/web3-core-requestManager/src/index' {
+  declare module.exports: any;
+}
+
+declare module 'web3/packages/web3-core-requestManager/src/jsonrpc' {
+  declare module.exports: any;
+}
+
+declare module 'web3/packages/web3-core-subscriptions/src/index' {
+  declare module.exports: any;
+}
+
+declare module 'web3/packages/web3-core-subscriptions/src/subscription' {
+  declare module.exports: any;
+}
+
+declare module 'web3/packages/web3-core/src/extend' {
+  declare module.exports: any;
+}
+
+declare module 'web3/packages/web3-core/src/index' {
+  declare module.exports: any;
+}
+
+declare module 'web3/packages/web3-eth-abi/src/index' {
+  declare module.exports: any;
+}
+
+declare module 'web3/packages/web3-eth-abi/src/types/address' {
+  declare module.exports: any;
+}
+
+declare module 'web3/packages/web3-eth-abi/src/types/bool' {
+  declare module.exports: any;
+}
+
+declare module 'web3/packages/web3-eth-abi/src/types/bytes' {
+  declare module.exports: any;
+}
+
+declare module 'web3/packages/web3-eth-abi/src/types/dynamicbytes' {
+  declare module.exports: any;
+}
+
+declare module 'web3/packages/web3-eth-abi/src/types/formatters' {
+  declare module.exports: any;
+}
+
+declare module 'web3/packages/web3-eth-abi/src/types/int' {
+  declare module.exports: any;
+}
+
+declare module 'web3/packages/web3-eth-abi/src/types/param' {
+  declare module.exports: any;
+}
+
+declare module 'web3/packages/web3-eth-abi/src/types/string' {
+  declare module.exports: any;
+}
+
+declare module 'web3/packages/web3-eth-abi/src/types/type' {
+  declare module.exports: any;
+}
+
+declare module 'web3/packages/web3-eth-abi/src/types/uint' {
+  declare module.exports: any;
+}
+
+declare module 'web3/packages/web3-eth-accounts/src/index' {
+  declare module.exports: any;
+}
+
+declare module 'web3/packages/web3-eth-contract/src/index' {
+  declare module.exports: any;
+}
+
+declare module 'web3/packages/web3-eth-iban/src/index' {
+  declare module.exports: any;
+}
+
+declare module 'web3/packages/web3-eth-personal/src/index' {
+  declare module.exports: any;
+}
+
+declare module 'web3/packages/web3-eth/src/getNetworkType' {
+  declare module.exports: any;
+}
+
+declare module 'web3/packages/web3-eth/src/index' {
+  declare module.exports: any;
+}
+
+declare module 'web3/packages/web3-net/src/index' {
+  declare module.exports: any;
+}
+
+declare module 'web3/packages/web3-providers-http/src/index' {
+  declare module.exports: any;
+}
+
+declare module 'web3/packages/web3-providers-ipc/src/index' {
+  declare module.exports: any;
+}
+
+declare module 'web3/packages/web3-providers-ws/src/index' {
+  declare module.exports: any;
+}
+
+declare module 'web3/packages/web3-shh/src/index' {
+  declare module.exports: any;
+}
+
+declare module 'web3/packages/web3-utils/src/bloomFilter' {
+  declare module.exports: any;
+}
+
+declare module 'web3/packages/web3-utils/src/index' {
+  declare module.exports: any;
+}
+
+declare module 'web3/packages/web3-utils/src/soliditySha3' {
+  declare module.exports: any;
+}
+
+declare module 'web3/packages/web3-utils/src/utils' {
+  declare module.exports: any;
+}
+
 declare module 'web3/src/index' {
   declare module.exports: any;
 }
 
 // Filename aliases
+declare module 'web3/gulpfile.js' {
+  declare module.exports: $Exports<'web3/gulpfile'>;
+}
+declare module 'web3/package.js' {
+  declare module.exports: $Exports<'web3/package'>;
+}
+declare module 'web3/packages/web3-bzz/src/index.js' {
+  declare module.exports: $Exports<'web3/packages/web3-bzz/src/index'>;
+}
+declare module 'web3/packages/web3-core-helpers/src/config.js' {
+  declare module.exports: $Exports<'web3/packages/web3-core-helpers/src/config'>;
+}
+declare module 'web3/packages/web3-core-helpers/src/errors.js' {
+  declare module.exports: $Exports<'web3/packages/web3-core-helpers/src/errors'>;
+}
+declare module 'web3/packages/web3-core-helpers/src/formatters.js' {
+  declare module.exports: $Exports<'web3/packages/web3-core-helpers/src/formatters'>;
+}
+declare module 'web3/packages/web3-core-helpers/src/index.js' {
+  declare module.exports: $Exports<'web3/packages/web3-core-helpers/src/index'>;
+}
+declare module 'web3/packages/web3-core-method/src/index.js' {
+  declare module.exports: $Exports<'web3/packages/web3-core-method/src/index'>;
+}
+declare module 'web3/packages/web3-core-promiEvent/src/index.js' {
+  declare module.exports: $Exports<'web3/packages/web3-core-promiEvent/src/index'>;
+}
+declare module 'web3/packages/web3-core-requestManager/src/batch.js' {
+  declare module.exports: $Exports<'web3/packages/web3-core-requestManager/src/batch'>;
+}
+declare module 'web3/packages/web3-core-requestManager/src/givenProvider.js' {
+  declare module.exports: $Exports<'web3/packages/web3-core-requestManager/src/givenProvider'>;
+}
+declare module 'web3/packages/web3-core-requestManager/src/index.js' {
+  declare module.exports: $Exports<'web3/packages/web3-core-requestManager/src/index'>;
+}
+declare module 'web3/packages/web3-core-requestManager/src/jsonrpc.js' {
+  declare module.exports: $Exports<'web3/packages/web3-core-requestManager/src/jsonrpc'>;
+}
+declare module 'web3/packages/web3-core-subscriptions/src/index.js' {
+  declare module.exports: $Exports<'web3/packages/web3-core-subscriptions/src/index'>;
+}
+declare module 'web3/packages/web3-core-subscriptions/src/subscription.js' {
+  declare module.exports: $Exports<'web3/packages/web3-core-subscriptions/src/subscription'>;
+}
+declare module 'web3/packages/web3-core/src/extend.js' {
+  declare module.exports: $Exports<'web3/packages/web3-core/src/extend'>;
+}
+declare module 'web3/packages/web3-core/src/index.js' {
+  declare module.exports: $Exports<'web3/packages/web3-core/src/index'>;
+}
+declare module 'web3/packages/web3-eth-abi/src/index.js' {
+  declare module.exports: $Exports<'web3/packages/web3-eth-abi/src/index'>;
+}
+declare module 'web3/packages/web3-eth-abi/src/types/address.js' {
+  declare module.exports: $Exports<'web3/packages/web3-eth-abi/src/types/address'>;
+}
+declare module 'web3/packages/web3-eth-abi/src/types/bool.js' {
+  declare module.exports: $Exports<'web3/packages/web3-eth-abi/src/types/bool'>;
+}
+declare module 'web3/packages/web3-eth-abi/src/types/bytes.js' {
+  declare module.exports: $Exports<'web3/packages/web3-eth-abi/src/types/bytes'>;
+}
+declare module 'web3/packages/web3-eth-abi/src/types/dynamicbytes.js' {
+  declare module.exports: $Exports<'web3/packages/web3-eth-abi/src/types/dynamicbytes'>;
+}
+declare module 'web3/packages/web3-eth-abi/src/types/formatters.js' {
+  declare module.exports: $Exports<'web3/packages/web3-eth-abi/src/types/formatters'>;
+}
+declare module 'web3/packages/web3-eth-abi/src/types/int.js' {
+  declare module.exports: $Exports<'web3/packages/web3-eth-abi/src/types/int'>;
+}
+declare module 'web3/packages/web3-eth-abi/src/types/param.js' {
+  declare module.exports: $Exports<'web3/packages/web3-eth-abi/src/types/param'>;
+}
+declare module 'web3/packages/web3-eth-abi/src/types/string.js' {
+  declare module.exports: $Exports<'web3/packages/web3-eth-abi/src/types/string'>;
+}
+declare module 'web3/packages/web3-eth-abi/src/types/type.js' {
+  declare module.exports: $Exports<'web3/packages/web3-eth-abi/src/types/type'>;
+}
+declare module 'web3/packages/web3-eth-abi/src/types/uint.js' {
+  declare module.exports: $Exports<'web3/packages/web3-eth-abi/src/types/uint'>;
+}
+declare module 'web3/packages/web3-eth-accounts/src/index.js' {
+  declare module.exports: $Exports<'web3/packages/web3-eth-accounts/src/index'>;
+}
+declare module 'web3/packages/web3-eth-contract/src/index.js' {
+  declare module.exports: $Exports<'web3/packages/web3-eth-contract/src/index'>;
+}
+declare module 'web3/packages/web3-eth-iban/src/index.js' {
+  declare module.exports: $Exports<'web3/packages/web3-eth-iban/src/index'>;
+}
+declare module 'web3/packages/web3-eth-personal/src/index.js' {
+  declare module.exports: $Exports<'web3/packages/web3-eth-personal/src/index'>;
+}
+declare module 'web3/packages/web3-eth/src/getNetworkType.js' {
+  declare module.exports: $Exports<'web3/packages/web3-eth/src/getNetworkType'>;
+}
+declare module 'web3/packages/web3-eth/src/index.js' {
+  declare module.exports: $Exports<'web3/packages/web3-eth/src/index'>;
+}
+declare module 'web3/packages/web3-net/src/index.js' {
+  declare module.exports: $Exports<'web3/packages/web3-net/src/index'>;
+}
+declare module 'web3/packages/web3-providers-http/src/index.js' {
+  declare module.exports: $Exports<'web3/packages/web3-providers-http/src/index'>;
+}
+declare module 'web3/packages/web3-providers-ipc/src/index.js' {
+  declare module.exports: $Exports<'web3/packages/web3-providers-ipc/src/index'>;
+}
+declare module 'web3/packages/web3-providers-ws/src/index.js' {
+  declare module.exports: $Exports<'web3/packages/web3-providers-ws/src/index'>;
+}
+declare module 'web3/packages/web3-shh/src/index.js' {
+  declare module.exports: $Exports<'web3/packages/web3-shh/src/index'>;
+}
+declare module 'web3/packages/web3-utils/src/bloomFilter.js' {
+  declare module.exports: $Exports<'web3/packages/web3-utils/src/bloomFilter'>;
+}
+declare module 'web3/packages/web3-utils/src/index.js' {
+  declare module.exports: $Exports<'web3/packages/web3-utils/src/index'>;
+}
+declare module 'web3/packages/web3-utils/src/soliditySha3.js' {
+  declare module.exports: $Exports<'web3/packages/web3-utils/src/soliditySha3'>;
+}
+declare module 'web3/packages/web3-utils/src/utils.js' {
+  declare module.exports: $Exports<'web3/packages/web3-utils/src/utils'>;
+}
 declare module 'web3/src/index.js' {
   declare module.exports: $Exports<'web3/src/index'>;
 }

@@ -10,7 +10,7 @@ import {
 import {
   apiCall,
 } from '../api';
-import * as resourceActions from '../actions/resource';
+import * as resourcesActions from '../actions/resources';
 
 
 export function* fetchResourcesRequest({
@@ -67,7 +67,7 @@ export function* deleteResourceRequest({
   } = payload;
   try {
     yield call(apiCall, 'DELETE', { id, resourceName });
-    yield put(resourceActions.deleteResourceItem({ resourceName, id }));
+    yield put(resourcesActions.deleteResourceItem({ resourceName, id }));
   } catch (err) {
     console.log(err);
   }

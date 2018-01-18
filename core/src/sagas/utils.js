@@ -7,7 +7,7 @@ import {
 } from '../utils';
 import {
   fillResourceItems,
-} from '../actions/resource';
+} from '../actions/resources';
 
 
 export function* putData(
