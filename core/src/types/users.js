@@ -8,4 +8,6 @@ export type User = {
   balance: string,
   tokens: Array<*>,
   notifications: Array<*>,
+  connectionStatus: string,
+  network: string,
 };

@@ -11,13 +11,15 @@ import rootReducer from '../reducers';
 const sagaMiddleware = createSagaMiddleware();
 const middleware = [sagaMiddleware, logger].filter(Boolean);
 
-const composeEnhancers = composeWithDevTools({});
+const composeEnhancers = composeWithDevTools({
+
+});
 
 function configureStore(initialState) {
   const store = createStore(
     rootReducer,
     initialState,
-    compose(
+    composeEnhancers(
       applyMiddleware(...middleware),
       persistState(window.location.href.match(/[?&]debug_session=([^&]+)\b/)),
     ),

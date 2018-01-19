@@ -7,7 +7,6 @@ import { Provider } from 'react-redux';
 import { AppContainer } from 'react-hot-loader';
 import { LocaleProvider } from 'antd';
 import enUS from 'antd/lib/locale-provider/en_US';
-
 import type { ComponentType } from 'react';
 
 import './assets/main.less';
