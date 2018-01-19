@@ -7,9 +7,7 @@ import {
   delay,
 } from 'redux-saga';
 import promisify from 'es6-promisify';
-
 import {
-  getWeb3,
   getAddress,
 } from '../selectors';
 import {
@@ -20,7 +18,7 @@ import * as ProfileActions from '../actions/profile';
 
 
 export function* loadUser() {
-  const web3 = yield select(getWeb3);
+  const { web3 } = window;
   const account = yield select(getAddress);
   const accounts = yield call(promisify(web3.eth.getAccounts));
   if (account !== accounts[0]) {

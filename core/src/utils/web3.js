@@ -33,3 +33,4 @@ export const connectionStatuses = {
   CONNECTED: 'Connected',
   LOCKED: 'Locked',
 };
+
