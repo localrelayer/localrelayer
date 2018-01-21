@@ -35,4 +35,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(HeaderContainer);
+export default connect(mapStateToProps, {})(HeaderContainer);

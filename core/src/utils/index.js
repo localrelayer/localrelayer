@@ -34,3 +34,18 @@ export const jsonApiNormalize = entry =>
   (entry.data.length ? entry.data : [entry.data])
     .concat(entry.included || [])
     .reduce(reduceJsonApiDataList, {});
+
+export const promote = (targetField, targetValue, arr) => {
+  const clonedArr = [...arr];
+  for (let i = 0; i < clonedArr.length; i++) { // eslint-disable-line
+    if (clonedArr[i][targetField] === targetValue) {
+      const a = clonedArr.splice(i, 1); // removes the item
+      clonedArr.unshift(a[0]); // adds it back to the beginning
+      break;
+    }
+  }
+  return clonedArr;
+  // Matching item wasn't found. Array is unchanged, but you could do something
+  // else here if you wish (like an error message).
+};
+

@@ -56,7 +56,6 @@ const Header = ({ user, onUserClick, tokens }: Props): Node => (
       <Menu.Item key="help">Help</Menu.Item>
     </MenuContainer>
     <AlignRight>
-      {console.log(user)}
       <Popover
         placement="bottom"
         trigger={['click']}
