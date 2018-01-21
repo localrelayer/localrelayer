@@ -2,7 +2,8 @@
 import React from 'react';
 import type { Node } from 'react';
 import type { Tokens } from 'instex-core/types';
-import { Card, Switch, Icon, Tooltip } from 'antd';
+import { Card, Switch, Icon, Tooltip, Popover } from 'antd';
+import WrapForm from './WrapForm';
 import { CardContainer, TableContainer } from './styled';
 
 type Props = {
@@ -14,9 +15,15 @@ type Props = {
    * */
   onToggle: Function,
   /**
-   * Function that is called whenever balance unlocks
+   * Function that is called whenever token is clicked on
    * */
   onTokenClick: Function,
+  /** Eth balance */
+  balance: string,
+  /** Function that is called by wrap button */
+  wrap: () => void,
+  /** Function that is called by unwrap button */
+  unwrap: () => void,
 };
 
 const getColumns = onToggle => [
@@ -24,12 +31,22 @@ const getColumns = onToggle => [
     title: 'Token',
     dataIndex: 'symbol',
     key: 'symbol',
-    render: (text, record) => <Tooltip title={record.name}>{text}</Tooltip>,
+    render: (text, record, i) =>
+      <div>
+        <Tooltip title={record.name}>{text}</Tooltip> {' '}
+        {i === 0 &&
+          <Popover placement="right" title={<div>Wrapping ETH allows you to trade directly with alt tokens</div>}>
+            <Icon type="question-circle-o" />
+          </Popover>
+        }
+      </div>,
   },
   {
     title: 'Balance',
     dataIndex: 'balance',
     key: 'balance',
+    render: (text, record, i) =>
+      <div>{text}</div>,
   },
   {
     title: 'Tradable',
@@ -50,8 +67,20 @@ const getColumns = onToggle => [
  * @author [Tim Reznich](https://github.com/imbaniac)
  */
 
-const UserBalance = ({ tokens, onToggle, onTokenClick }: Props): Node => (
-  <CardContainer id="user-balance" bordered={false} title="My Balances">
+const UserBalance = ({
+  tokens,
+  onToggle,
+  onTokenClick,
+  balance,
+  wrap,
+  unwrap,
+}: Props): Node => (
+  <CardContainer
+    id="user-balance"
+    bordered={false}
+    title={<div>My Balance ({balance} ETH)</div>}
+  >
+    <WrapForm wrap={wrap} unwrap={unwrap} />
     <Card.Grid>
       <TableContainer
         onRow={record => ({

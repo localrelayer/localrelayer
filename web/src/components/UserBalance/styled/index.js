@@ -1,5 +1,10 @@
 import styled from 'styled-components';
-import { Card, Table } from 'antd';
+import { Card, Table, Input } from 'antd';
+import {
+  Field,
+} from 'redux-form';
+
+const InputGroup = Input.Group;
 
 export const Title = styled.div`
   font-size: 1.3em;
@@ -34,6 +39,16 @@ export const TableContainer = styled(Table)`
   }
 `;
 
-export const SmallText = styled.span`
-  font-size: 0.7rem;
+export const InputGroupContainer = styled(InputGroup)`
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  & .ant-form-item {
+    margin: 0;
+    margin-right: 13px;
+    display: flex;
+    align-items: center;
+  }
 `;
+

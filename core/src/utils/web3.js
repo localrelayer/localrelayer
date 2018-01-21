@@ -7,7 +7,6 @@ export const loadWeb3 = () =>
       if (typeof web3 !== 'undefined') {
         // Use Mist/MetaMask's provider.
         web3 = new Web3(web3.currentProvider);
-
         console.warn('Injected web3 detected.');
         resolve(web3);
       } else {
@@ -34,3 +33,7 @@ export const connectionStatuses = {
   LOCKED: 'Locked',
 };
 
+export const contracts = {
+  'WETH': '0x48bacb9266a570d521063ef5dd96e61686dbe788',
+  'ZRX': '0x25b8fe1de9daf8ba351890744ff28cf7dfa8f5e3',
+};

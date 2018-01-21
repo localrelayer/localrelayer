@@ -31,7 +31,7 @@ const fakeTokens = () =>
       links: {
         self: `${config.apiUrl}/tokens/${address}`,
       },
-      attributes,
+      attributes: { ...attributes, address },
     })),
   });
 
