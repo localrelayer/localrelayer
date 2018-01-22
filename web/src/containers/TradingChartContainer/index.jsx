@@ -1,9 +1,4 @@
-import React from 'react';
-import TradingChart from '../../components/TradingChart';
-import { StyleContainer } from './styled';
+// @flow
+import TradingChartContainer from './TradingChartContainer';
 
-export default () => (
-  <StyleContainer>
-    <TradingChart />
-  </StyleContainer>
-);
+export default TradingChartContainer;

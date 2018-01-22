@@ -1,28 +1,38 @@
 // @flow
 import React from 'react';
-import { Table } from 'antd';
-import type { Node } from 'react';
-import type { Order } from 'instex-core/types';
 
-import { OrdersListContainer, TableTitle } from './styled';
+import {
+  Table,
+} from 'antd';
+
+import type {
+  Node,
+} from 'react';
+import type {
+  Orders,
+} from 'instex-core/types';
+
+import {
+  OrdersListContainer,
+  TableTitle,
+} from './styled';
+
 
 type Props = {
   /** Orders info */
-  data: Array<Order>,
+  data: Orders,
   /** Title above table */
   title?: string,
   /**
    * List of columns
    * */
   columns: Array<Object>,
-  /**
-   * Function that is called whenever row clicked
-   * */
-  onClick: (Object, number) => null,
   /** Does table has borders */
   bordered?: boolean,
   /** Antd pagination config object */
-  pagination?: Object,
+  pagination: {
+    pageSize: number,
+  } | null,
 };
 
 /**
@@ -32,28 +42,28 @@ type Props = {
  */
 
 const OrdersList = ({
-  data, title, columns, onClick, bordered, pagination,
-}: Props): Node => (
+  data,
+  title,
+  columns,
+  bordered,
+  pagination,
+}: Props): Node =>
   <OrdersListContainer>
     <TableTitle>{title}</TableTitle>
     <Table
       size="small"
+      rowKey="id"
       bordered={bordered}
       columns={columns}
       dataSource={data}
       pagination={pagination}
-      onRow={(record, index) => ({
-        onClick: () => onClick(record, index),
-      })}
     />
-  </OrdersListContainer>
-);
+  </OrdersListContainer>;
 
 OrdersList.defaultProps = {
   title: '',
-  onClick: () => {},
   bordered: false,
-  pagination: {},
+  pagination: null,
 };
 
 export default OrdersList;

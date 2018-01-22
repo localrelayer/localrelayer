@@ -1,21 +1,27 @@
 // @flow
 import React from 'react';
-import type { Node, StatelessFunctionalComponent } from 'react';
-import type { Order } from 'instex-core/types';
+import type {
+  Node,
+  StatelessFunctionalComponent,
+} from 'react';
+import type {
+  Orders,
+} from 'instex-core/types';
 
-import { OrderBookContainer } from './styled';
-import { Colored } from '../SharedStyles';
+import {
+  OrderBookContainer,
+} from './styled';
+import {
+  Colored,
+} from '../SharedStyles';
 import OrdersList from '../OrdersList';
+
 
 type Props = {
   /** Buy orders */
-  buyOrders: Array<Order>,
+  buyOrders: Orders,
   /** Sell orders */
-  sellOrders: Array<Order>,
-  /**
-   * Function that is called whenever order clicked
-   * */
-  onClick: Function,
+  sellOrders: Orders,
 };
 
 const columns = {
@@ -34,7 +40,10 @@ const columns = {
       title: 'Total',
       dataIndex: 'total',
       key: 'total',
-      render: (text: string) => <Colored color="red">{text}</Colored>,
+      render: (text: string) =>
+        <Colored color="red">
+          {text}
+        </Colored>,
     },
   ],
   buy: [
@@ -52,7 +61,8 @@ const columns = {
       title: 'Total',
       dataIndex: 'total',
       key: 'total',
-      render: (text: string) => <Colored color="green">{text}</Colored>,
+      render: (text: string) =>
+        <Colored color="green">{text}</Colored>,
     },
   ],
 };
@@ -66,11 +76,18 @@ const columns = {
 const OrderBook: StatelessFunctionalComponent<Props> = ({
   buyOrders,
   sellOrders,
-  onClick,
 }: Props): Node => (
   <OrderBookContainer>
-    <OrdersList title="Sell orders" columns={columns.sell} data={sellOrders} onClick={onClick} />
-    <OrdersList title="Buy orders" columns={columns.buy} data={buyOrders} onClick={onClick} />
+    <OrdersList
+      data={sellOrders}
+      title="Sell orders"
+      columns={columns.sell}
+    />
+    <OrdersList
+      data={buyOrders}
+      title="Buy orders"
+      columns={columns.buy}
+    />
   </OrderBookContainer>
 );
 
