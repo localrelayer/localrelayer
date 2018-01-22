@@ -1,11 +1,4 @@
-import React from 'react';
-import UserOrders from '../../components/UserOrders';
-import { generateTestOrders } from '../../utils/mocks';
+// @flow
+import UserOrdersContainer from './UserOrdersContainer';
 
-export default () => (
-  <UserOrders
-    orders={generateTestOrders()}
-    onClick={record => console.log(record)}
-    onCancel={record => console.warn('Canceling', record)}
-  />
-);
+export default UserOrdersContainer;

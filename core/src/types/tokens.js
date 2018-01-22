@@ -4,13 +4,39 @@ import type {
   ID,
 } from '../types';
 
+
+export type TokenAttributes = {
+  address: string,
+  symbol: string,
+  decimals: number,
+  name: string,
+  rate: {
+    [string]: number
+  },
+  volume: string,
+  highPrice: string,
+  lowPrice: string,
+  change24Hour: string,
+};
+
+export type TokenRelationships = {
+};
+
+export type TokensById = {
+  id: ID,
+  attributes: TokenAttributes,
+  relationships: TokenRelationships,
+};
+
+export type TokensResourcesReducer = {
+  byId: {
+    [ID]: TokensById,
+  },
+  allIds: Array<string>,
+};
+
 export type Token = {
   id: ID,
-  name: string,
-  symbol: string,
-  percent_change_24h: string,
-  price_eth: string,
-  volume_eth: string,
-};
+} & TokenAttributes;
 
 export type Tokens = Array<Token>;

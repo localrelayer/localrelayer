@@ -13,10 +13,6 @@ type Props = {
   /** List of all orders */
   orders: Array<Order>,
   /**
-   * Function that is called whenever order clicked
-   * */
-  onClick: Function,
-  /**
    * Function that is called whenever order canceled
    * */
   onCancel: Function,
@@ -33,8 +29,8 @@ export const getColumns = (onCancel: Function) => [
   },
   {
     title: 'Token',
-    dataIndex: 'token',
-    key: 'token',
+    dataIndex: 'tokenSymbol',
+    key: 'tokenSymbol',
   },
   {
     title: 'Price',
@@ -85,11 +81,14 @@ export const getColumns = (onCancel: Function) => [
 
 const UserOrders: StatelessFunctionalComponent<Props> = ({
   orders,
-  onClick,
   onCancel,
 }: Props): Node => (
   <UserOrdersContainer>
-    <OrdersList title="My orders" columns={getColumns(onCancel)} data={orders} onClick={onClick} />
+    <OrdersList
+      title="My orders"
+      columns={getColumns(onCancel)}
+      data={orders}
+    />
   </UserOrdersContainer>
 );
 

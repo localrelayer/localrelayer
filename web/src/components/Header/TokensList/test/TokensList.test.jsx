@@ -1,8 +1,8 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import TokensList from '../TokensList';
-import OrdersList from '../../OrdersList';
-import { generateTestOrders } from '../../../utils/mocks';
+import OrdersList from '../../../OrdersList';
+import { generateTestOrders } from '../../../../utils/mocks';
 
 test('TokensList renders', () => {
   const component = shallow(<TokensList data={generateTestOrders()} />);

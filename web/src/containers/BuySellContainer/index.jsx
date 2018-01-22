@@ -1,9 +1,4 @@
-import React from 'react';
-import BuySell from '../../components/BuySell';
-import { StyleContainer } from './styled';
+// @flow
+import BuySellContainer from './BuySellContainer';
 
-export default () => (
-  <StyleContainer>
-    <BuySell />
-  </StyleContainer>
-);
+export default BuySellContainer;

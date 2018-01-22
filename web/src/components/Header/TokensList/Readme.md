@@ -2,19 +2,15 @@ Examples:
 
 ```js { "props": { "className": "example-wrapper" } }
   const {
-   testUser,
-  } = require('../../utils/mocks');
-  const {
    tokensMock,
   } = require('instex-core');
 
+
   <div>
-    <Header
-      onUserClick={(user) => console.log(user)}
-      user={testUser}
+    <TokensList
       tokens={tokensMock}
       selectedTokenId={state.selectedTokenId}
-      onTokenSelect={record => setState({ selectedTokenId: record.id })}
+      onSelect={record => setState({ selectedTokenId: record.id })}
     />
   </div>
 ```
