@@ -5,7 +5,6 @@ import type {
 } from 'instex-core/types';
 import {
   callContract as callContractAction,
-  setAllowance as setAllowanceAction,
 } from 'instex-core/actions';
 import UserBalance from '../../components/UserBalance';
 import { StyleContainer } from './styled';
@@ -21,13 +20,12 @@ const UserBalanceContainer: Props = ({
   tokens,
   balance,
   callContract,
-  setAllowance,
 }: Tokens) => (
   <StyleContainer>
     <UserBalance
       tokens={tokens}
       onTokenClick={(...props) => console.log(...props)}
-      onToggle={token => setAllowance(token)}
+      onToggle={token => callContract({ method: 'setAllowance', token })}
       balance={balance}
       wrap={() => callContract({ method: 'deposit', contract: 'WETH' })}
       unwrap={() => callContract({ method: 'withdraw', contract: 'WETH' })}
@@ -44,7 +42,6 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
   callContract: callContractAction,
-  setAllowance: setAllowanceAction,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserBalanceContainer);

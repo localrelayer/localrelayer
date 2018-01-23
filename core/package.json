@@ -10,8 +10,9 @@
     "postinstall": "flow-typed install --overwrite && yarn link"
   },
   "dependencies": {
+    "0x.js": "^0.30.0",
+    "@0xproject/subproviders": "^0.3.1",
     "bignumber.js": "5.0.0",
-    "es6-promisify": "5.0.0",
     "faker": "git://github.com/Marak/faker.js.git",
     "human-standard-token-abi": "1.0.2",
     "ramda": "0.25.0",
@@ -23,7 +24,7 @@
     "redux-saga": "0.16.0",
     "reselect": "3.0.1",
     "web3": "^1.0.0-beta.18",
-    "web3-utils": "^1.0.0-beta.28"
+    "web3-provider-engine": "^13.5.6"
   },
   "devDependencies": {
     "babel-core": "6.26.0",
