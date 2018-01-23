@@ -5,9 +5,9 @@ export const setWeb3 = web3 => ({
   payload: web3,
 });
 
-export const callContract = ({ method, contract }) => ({
+export const callContract = payload => ({
   type: types.CALL_CONTRACT,
-  payload: { method, contract },
+  payload,
 });
 
 export const setAllowance = ({ token }) => ({

@@ -11,6 +11,7 @@ import {
   connectionStatuses,
 } from '../utils/web3';
 import * as ProfileActions from '../actions/profile';
+
 import { runLoadUser } from './profile';
 import * as uiActions from '../actions/ui';
 import * as resourcesActions from '../actions/resources';
@@ -34,11 +35,9 @@ export function* initialize() {
     }),
   );
 
-  const web3 = yield call(loadWeb3);
-  console.warn(web3);
-  window.web3 = web3;
+  yield call(loadWeb3);
 
-  if (!web3) {
+  if (!window.web3) {
     yield put(ProfileActions.setConnectionStatus(connectionStatuses.NOT_CONNECTED));
   } else {
     yield fork(runLoadUser);

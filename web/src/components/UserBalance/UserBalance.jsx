@@ -53,9 +53,9 @@ const getColumns = onToggle => [
     key: 'tradable',
     render: (text, record) => (
       <Switch
-        checked={record.tradable}
+        checked={record.isTradable}
         checkedChildren={<Icon type="check" />}
-        onChange={() => onToggle(record)}
+        onChange={checked => checked && onToggle(record)}
       />
     ),
   },

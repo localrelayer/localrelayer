@@ -1,15 +1,14 @@
 import {
   take,
   select,
-  call,
   fork,
   put,
+  call,
 } from 'redux-saga/effects';
-import promisify from 'es6-promisify';
 import { getFormValues, reset } from 'redux-form';
+import { ZeroEx } from '0x.js';
 import BigNumber from 'bignumber.js';
 import * as ProfileActions from '../actions/profile';
-import abi from '../contracts/EtherToken.json';
 import * as actionTypes from '../actions/types';
 import { contracts } from '../utils/web3';
 import {
@@ -18,26 +17,30 @@ import {
   getUserToken,
 } from '../selectors';
 
-export function* WETH({ payload }) {
-  const { web3 } = window;
-  const contractAddress = contracts[payload.contract];
+const sagas = {
+  deposit,
+  withdraw,
+  setAllowance,
+};
 
+// Deposit WETH (wrap)
+function* deposit({ payload }) {
+  const { zeroEx } = window;
+  const contractAddress = contracts[payload.contract];
   const { amount } = yield select(getFormValues('WrapForm'));
   const account = yield select(getAddress);
   const balance = yield select(getBalance);
   const token = yield select(getUserToken(contractAddress));
 
-  const contractInst = web3.eth.contract(abi).at(contractAddress);
-  // eslint-disable-next-line
-  const { newBalance, newTokenBalance } = yield call(eval(payload.method), {
-    amount,
-    contractInst,
+  const ethToConvert = ZeroEx.toBaseUnitAmount(new BigNumber(amount), token.decimals);
+  yield call(() => zeroEx.etherToken.depositAsync(
+    contractAddress,
+    ethToConvert,
     account,
-    web3,
-    balance,
-    token,
-  });
-  console.log(newBalance, newTokenBalance);
+    { gasLimit: 100000 },
+  ));
+  const newTokenBalance = BigNumber(token.balance).plus(amount);
+  const newBalance = BigNumber(balance).minus(amount);
   yield put(reset('WrapForm'));
   yield put(ProfileActions.setBalance({ balance: newBalance.toString() }));
   yield put(ProfileActions.updateToken({
@@ -47,49 +50,53 @@ export function* WETH({ payload }) {
   }));
 }
 
-// Deposit WETH (wrap)
-export function* deposit({
-  amount,
-  contractInst,
-  account,
-  web3,
-  balance,
-  token,
-}) {
-  yield call(promisify(contractInst.deposit), {
-    value: web3.toWei(amount),
-    from: account,
-    gas: 100000,
-  });
-  const newTokenBalance = BigNumber(token.balance).plus(amount);
-  const newBalance = BigNumber(balance).minus(amount);
-  return { newTokenBalance, newBalance };
-}
-
 // Withdraw WETH (unwrap)
-export function* withdraw({
-  amount,
-  contractInst,
-  account,
-  web3,
-  balance,
-  token,
-}) {
-  yield call(
-    promisify(contractInst.withdraw),
-    web3.toWei(amount), {
-      from: account,
-      gas: 100000,
-    },
-  );
+function* withdraw({ payload }) {
+  const { zeroEx } = window;
+  const contractAddress = contracts[payload.contract];
+  const { amount } = yield select(getFormValues('WrapForm'));
+  const account = yield select(getAddress);
+  const balance = yield select(getBalance);
+  const token = yield select(getUserToken(contractAddress));
+
+  const ethToConvert = ZeroEx.toBaseUnitAmount(new BigNumber(amount), token.decimals);
+  yield call(() => zeroEx.etherToken.withdrawAsync(
+    contractAddress,
+    ethToConvert,
+    account,
+    { gasLimit: 100000 },
+  ));
   const newTokenBalance = BigNumber(token.balance).minus(amount);
   const newBalance = BigNumber(balance).plus(amount);
-  return { newTokenBalance, newBalance };
+  yield put(reset('WrapForm'));
+  yield put(ProfileActions.setBalance({ balance: newBalance.toString() }));
+  yield put(ProfileActions.updateToken({
+    tokenAddress: contractAddress,
+    field: 'balance',
+    value: newTokenBalance.toString(),
+  }));
+}
+
+function* setAllowance({ payload }) {
+  const { zeroEx } = window;
+  const contractAddress = payload.token.address;
+  const account = yield select(getAddress);
+  yield call(() =>
+    zeroEx.token.setUnlimitedProxyAllowanceAsync(
+      contractAddress,
+      account,
+      { gasLimit: 100000 },
+    ));
+  yield put(ProfileActions.updateToken({
+    tokenAddress: contractAddress,
+    field: 'isTradable',
+    value: true,
+  }));
 }
 
 export function* watchCallContract() {
   while (true) {
     const action = yield take(actionTypes.CALL_CONTRACT);
-    yield fork(eval(action.payload.contract), action); // eslint-disable-line
+    yield fork(sagas[action.payload.method], action); // eslint-disable-line
   }
 }
