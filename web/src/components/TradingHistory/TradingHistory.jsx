@@ -1,19 +1,30 @@
 // @flow
 import React from 'react';
-import type { Node, StatelessFunctionalComponent } from 'react';
-import type { Order } from 'instex-core/types';
 
-import { TradingHistoryContainer } from './styled';
-import { Colored } from '../SharedStyles';
+import type {
+  Node,
+  StatelessFunctionalComponent,
+} from 'react';
+import type {
+  Order,
+} from 'instex-core/types';
+
+import {
+  TradingHistoryContainer,
+} from './styled';
+import {
+  Colored,
+} from '../SharedStyles';
 import OrdersList from '../OrdersList';
+
 
 type Props = {
   /** List of all orders */
   orders: Array<Order>,
-  /**
-   * Function that is called whenever order clicked
-   * */
-  onClick: Function,
+  /** Pagination config */
+  pagination: {
+    pageSize: number,
+  }
 };
 
 const columns = [
@@ -22,7 +33,11 @@ const columns = [
     dataIndex: 'total',
     key: 'total',
     render: (text: string, record) => (
-      <Colored color={record.action === 'sell' ? 'red' : 'green'}>{text}</Colored>
+      <Colored
+        color={record.action === 'sell' ? 'red' : 'green'}
+      >
+        {text}
+      </Colored>
     ),
   },
   {
@@ -43,20 +58,18 @@ const columns = [
  * @author [Tim Reznich](https://github.com/imbaniac)
  */
 
-const TradingHistory: StatelessFunctionalComponent<Props> = (props: Props): Node => {
-  const { orders, onClick } = props;
-
-  return (
+const TradingHistory: StatelessFunctionalComponent<Props> =
+  ({
+    orders,
+    pagination,
+  }: Props): Node =>
     <TradingHistoryContainer>
       <OrdersList
-        {...props}
         title="Trading History"
         columns={columns}
         data={orders}
-        onClick={onClick}
+        pagination={pagination}
       />
-    </TradingHistoryContainer>
-  );
-};
+    </TradingHistoryContainer>;
 
 export default TradingHistory;

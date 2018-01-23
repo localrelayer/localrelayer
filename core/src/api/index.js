@@ -73,6 +73,7 @@ export function fetchResources({
     url: `${config.apiUrl}/${resourceName}/filter`,
     meta: {
       method: 'POST',
+      requestData,
       body: JSON.stringify(requestData),
     },
   });
@@ -82,11 +83,11 @@ export function apiCall(action, data) {
   switch (action) {
     case 'ADD':
     case 'UPDATE':
-      return saveResource(data, fetch, config.apiUrl);
+      return saveResource(data, config.apiUrl);
     case 'DELETE':
-      return removeResource(data, fetch);
+      return removeResource(data);
     case 'FILTER':
-      return fetchResources(data, fetch);
+      return fetchResources(data);
     default:
       return null;
   }

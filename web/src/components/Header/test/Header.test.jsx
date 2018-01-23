@@ -1,7 +1,7 @@
 import React from 'react';
 import { shallow, mount } from 'enzyme';
 import Header from '../Header';
-import TokensList from '../../TokensList';
+import TokensList from '../TokensList';
 
 test('Header renders', () => {
   const component = shallow(<Header />);

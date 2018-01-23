@@ -8,15 +8,24 @@ import type {
   OrderAttributes,
   OrderRelationships,
 } from './orders';
+import type {
+  TokensResourcesReducer,
+  TokenAttributes,
+  TokenRelationships,
+} from './tokens';
+
 
 export type ResourceAttributes =
-  OrderAttributes
+  TokenAttributes
+  | OrderAttributes
 
 export type ResourceRelationships =
-  OrderRelationships
+  TokenRelationships
+  | OrderRelationships
 
 export type ResourcesReducers = {
   orders: OrdersResourcesReducer,
+  tokens: TokensResourcesReducer,
 };
 
 export type ResourceName = $Keys<ResourcesReducers>;

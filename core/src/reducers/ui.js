@@ -1,7 +1,7 @@
 import * as types from '../actions/types';
 
 const initialState = {
-  currentToken: null,
+  currentTokenId: null,
 };
 
 export default function ui(state = initialState, action) {
@@ -9,7 +9,7 @@ export default function ui(state = initialState, action) {
     case types.SET_CURRENT_TOKEN:
       return {
         ...state,
-        currentToken: action.payload,
+        currentTokenId: action.payload,
       };
     case types.CLEAR_ALL_REDUCERS:
       return initialState;

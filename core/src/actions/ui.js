@@ -1,8 +1,10 @@
+// @flow
 import * as types from './types';
 
-export function setCurrentToken({ address }) {
+
+export function setCurrentToken(tokenId: string) {
   return {
     type: types.SET_CURRENT_TOKEN,
-    payload: address,
+    payload: tokenId,
   };
 }
