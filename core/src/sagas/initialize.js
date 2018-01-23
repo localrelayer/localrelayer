@@ -27,11 +27,21 @@ export function* initialize() {
       },
     },
   );
-  yield put(uiActions.setCurrentToken(responseTokens.data[0].id));
+  const currentToken = responseTokens.data[0];
+  yield put(uiActions.setCurrentToken(currentToken.id));
   yield put(
     resourcesActions.fetchResourcesRequest({
       resourceName: 'orders',
       withDeleted: false,
+      fetchQuery: {
+        filterCondition: {
+          filter: {
+            'token.id': {
+              eq: currentToken.id,
+            },
+          },
+        },
+      },
     }),
   );
 

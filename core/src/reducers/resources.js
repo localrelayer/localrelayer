@@ -1,4 +1,4 @@
-// @flow
+// I can't desribe types for this file
 import {
   combineReducers,
 } from 'redux';
@@ -8,15 +8,10 @@ import {
   resources,
 } from '../constants';
 
-import type {
-  ResourcesReducers,
-  ResourceName,
-} from '../types';
 
-
-const resourcesReducers: ResourcesReducers =
+const resourcesReducers =
   resources.reduce(
-    (p: ResourcesReducers, c: ResourceName) =>
+    (p, c) =>
       ({
         ...p,
         [c]: combineReducers({

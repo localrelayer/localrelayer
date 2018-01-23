@@ -1,10 +1,17 @@
 Examples:
 
 ```js { "props": { "className": "example-wrapper" } }
-const times = require('ramda').times;
-const { generateTestOrders } = require('../../utils/mocks');
+const {
+ generateTestOrders,
+ tokensMock,
+} = require('instex-core');
 
-  <div>
-    <UserOrders orders={generateTestOrders()} onClick={(record) => console.log(record)} onCancel={(record) => console.warn('Canceling', record)} />
-  </div>
+<div>
+  <UserOrders
+    orders={
+      generateTestOrders(tokensMock[0].id)
+        .map(order => ({ ...order, tokenSymbol: tokensMock[0].symbol }))
+    }
+    onCancel={(record) => console.warn('Canceling', record)} />
+</div>
 ```

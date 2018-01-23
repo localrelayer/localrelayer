@@ -1,10 +1,4 @@
-import React from 'react';
-import TokenCard from '../../components/TokenCard';
-import { getTestToken } from '../../utils/mocks';
-import { StyleContainer } from './styled';
+// @flow
+import TokenCardContainer from './TokenCardContainer';
 
-export default () => (
-  <StyleContainer>
-    <TokenCard token={getTestToken()} onClick={() => console.log('test')} />
-  </StyleContainer>
-);
+export default TokenCardContainer;

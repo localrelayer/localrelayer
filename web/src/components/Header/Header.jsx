@@ -1,12 +1,24 @@
 // @flow
 import React from 'react';
 
-import type { Node } from 'react';
-import type { User, Tokens } from 'instex-core/types';
+import type {
+  Node,
+} from 'react';
+import type {
+  User,
+  Tokens,
+} from 'instex-core/types';
 
-import { connectionStatuses } from 'instex-core/src/utils/web3';
+import {
+  connectionStatuses,
+} from 'instex-core/src/utils/web3';
 
-import { Menu, Popover, Icon, Badge } from 'antd';
+import {
+  Menu,
+  Popover,
+  Icon,
+  Badge,
+} from 'antd';
 import {
   LogoContainer,
   MenuContainer,
@@ -17,8 +29,9 @@ import {
   UserButton,
   TokenContainer,
 } from './styled';
-import TokensList from '../TokensList';
+import TokensList from './TokensList';
 import UserProfile from '../UserProfile';
+
 
 type Props = {
   /** User object */
@@ -27,6 +40,13 @@ type Props = {
   onUserClick: Function,
   /** Array of tokens */
   tokens: Tokens,
+  /** Selected token */
+  selectedTokenId: ?string,
+  /**
+   * Function that is called whenever token select
+   * */
+  onTokenSelect: Function,
+
 };
 
 /**
@@ -35,7 +55,13 @@ type Props = {
  * @author [Tim Reznich](https://github.com/imbaniac)
  */
 
-const Header = ({ user, onUserClick, tokens }: Props): Node => (
+const Header = ({
+  user,
+  onUserClick,
+  onTokenSelect,
+  tokens,
+  selectedTokenId,
+}: Props): Node => (
   <HeaderContainer>
     <LogoContainer />
     <Popover
@@ -43,7 +69,11 @@ const Header = ({ user, onUserClick, tokens }: Props): Node => (
       placement="bottom"
       content={
         <TokenContainer>
-          <TokensList bordered={false} tokens={tokens} onClick={record => console.log(record)} />
+          <TokensList
+            tokens={tokens}
+            selectedTokenId={selectedTokenId}
+            onSelect={onTokenSelect}
+          />
         </TokenContainer>
       }
     >

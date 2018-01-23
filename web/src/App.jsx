@@ -1,7 +1,15 @@
 // @flow
 import React from 'react';
-import type { Node, StatelessFunctionalComponent } from 'react';
-import { Layout, Row, Col } from 'antd';
+import {
+  Layout,
+  Row,
+  Col,
+} from 'antd';
+
+import type {
+  Node,
+  StatelessFunctionalComponent,
+} from 'react';
 
 import BuySell from './containers/BuySellContainer';
 import OrderBook from './containers/OrderBookContainer';
@@ -11,6 +19,7 @@ import UserOrders from './containers/UserOrdersContainer';
 import TradingChart from './containers/TradingChartContainer';
 import TokenCard from './containers/TokenCardContainer';
 import Header from './containers/HeaderContainer';
+
 
 const App: StatelessFunctionalComponent<*> = (): Node => (
   <Layout>

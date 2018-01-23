@@ -9,22 +9,24 @@ export type OrderAttributes = {
   price: string,
   amount: string,
   total: string,
-  id: ID,
   action: string,
-  expires: Date
+  expires: Date,
+  completed_at?: Date,
 };
 
 export type OrderRelationships = {
 };
 
 export type OrdersById = {
-  id: string,
+  id: ID,
   attributes: OrderAttributes,
   relationships: OrderRelationships,
 };
 
 export type OrdersResourcesReducer = {
-  byId: OrdersById,
+  byId: {
+    [ID]: OrdersById,
+  },
   allIds: Array<string>,
 };
 

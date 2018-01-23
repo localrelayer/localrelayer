@@ -17,6 +17,7 @@ export const fetchResourcesRequest = (
   payload: {
     resourceName: ResourceName,
     withDeleted: boolean,
+    fetchQuery: any,
   },
 ): FetchResourceRequestAction =>
   ({

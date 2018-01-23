@@ -1,34 +1,36 @@
 Examples:
 
 ```js { "props": { "className": "example-wrapper" } }
-const { generateTestOrders } = require('../../utils/mocks');
+const {
+ generateTestOrders,
+ tokensMock,
+} = require('instex-core');
+
 
 const columns = [
-    {
-      title: 'Price',
-      dataIndex: 'price',
-      key: 'price',
-    },
-    {
-      title: 'Amount',
-      dataIndex: 'amount',
-      key: 'amount',
-    },
-    {
-      title: 'Total',
-      dataIndex: 'total',
-      key: 'total',
-    },
-  ];
+  {
+    title: 'Price',
+    dataIndex: 'price',
+    key: 'price',
+  },
+  {
+    title: 'Amount',
+    dataIndex: 'amount',
+    key: 'amount',
+  },
+  {
+    title: 'Total',
+    dataIndex: 'total',
+    key: 'total',
+  },
+];
 
-  <div>
-    <OrdersList
-      title="Test Title"
-      data={generateTestOrders(50)}
-      columns={columns}
-      onClick={() => console.log('test')}
-    />
-    <OrdersList data={generateTestOrders(3)} columns={columns} />
-    <OrdersList title="Table with no data" />
-  </div>
+<div>
+  <OrdersList
+    title="Test Title"
+    data={generateTestOrders(tokensMock[0].id)}
+    columns={columns}
+  />
+  <OrdersList title="Table with no data" />
+</div>
 ```
