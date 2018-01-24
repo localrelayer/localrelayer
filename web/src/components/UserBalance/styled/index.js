@@ -1,8 +1,9 @@
 import styled from 'styled-components';
-import { Card, Table, Input } from 'antd';
 import {
-  Field,
-} from 'redux-form';
+  Card,
+  Table,
+  Input,
+} from 'antd';
 
 const InputGroup = Input.Group;
 
@@ -43,7 +44,7 @@ export const InputGroupContainer = styled(InputGroup)`
   display: flex !important;
   justify-content: center;
   align-items: center;
-  padding: 20px;
+  padding: 20px 0;
   & .ant-form-item {
     margin: 0;
     margin-right: 13px;

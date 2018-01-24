@@ -16,7 +16,6 @@ import { runLoadUser } from './profile';
 import * as uiActions from '../actions/ui';
 import * as resourcesActions from '../actions/resources';
 
-
 export function* initialize() {
   const responseTokens = yield call(
     fetchResourcesRequest,
@@ -27,8 +26,10 @@ export function* initialize() {
       },
     },
   );
-  const currentToken = responseTokens.data[0];
-  yield put(uiActions.setCurrentToken(currentToken.id));
+  const wethToken = responseTokens.data.find(token => token.attributes.symbol === 'WETH');
+  const zrxToken = responseTokens.data.find(token => token.attributes.symbol === 'ZRX');
+  yield put(uiActions.setCurrentToken(zrxToken.id));
+  yield put(uiActions.setCurrentPair(wethToken.id));
   yield put(
     resourcesActions.fetchResourcesRequest({
       resourceName: 'orders',
@@ -37,7 +38,7 @@ export function* initialize() {
         filterCondition: {
           filter: {
             'token.id': {
-              eq: currentToken.id,
+              eq: zrxToken.id,
             },
           },
         },

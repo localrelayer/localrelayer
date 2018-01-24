@@ -23,9 +23,10 @@ export const getNetworkById = (id: number) => {
   const networks = {
     '1': 'Mainnet',
     '2': 'Morden (deprecated)',
-    '3': 'Ropsten Test',
-    '4': 'Rinkbery Test',
-    '42': 'Kovan Test',
+    '3': 'Ropsten Testnet',
+    '4': 'Rinkbery Testnet',
+    '42': 'Kovan Testnet',
+    '50': 'Local Testnet',
   };
   return networks[id] || 'Unknown network.';
 };
@@ -39,6 +40,6 @@ export const connectionStatuses = {
 export const contracts = {
   'WETH': '0x48bacb9266a570d521063ef5dd96e61686dbe788',
   'ZRX': '0x25b8fe1de9daf8ba351890744ff28cf7dfa8f5e3',
-  'exchange': '0xb69e673309512a9d726f87304c6984054f87a93b',
+  'exchange': '0x48bacb9266a570d521063ef5dd96e61686dbe788',
   'proxy': '0x1dc4c1cefef38a777b15aa20260a54e584b16c48',
 };

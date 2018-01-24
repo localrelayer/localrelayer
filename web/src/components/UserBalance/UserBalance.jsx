@@ -45,8 +45,7 @@ const getColumns = onToggle => [
     title: 'Balance',
     dataIndex: 'balance',
     key: 'balance',
-    render: (text, record, i) =>
-      <div>{text}</div>,
+    render: text => <div>{text}</div>,
   },
   {
     title: 'Tradable',
@@ -80,7 +79,11 @@ const UserBalance = ({
     bordered={false}
     title={<div>My Balance ({balance} ETH)</div>}
   >
-    <WrapForm wrap={wrap} unwrap={unwrap} />
+    <WrapForm
+      wrap={wrap}
+      unwrap={unwrap}
+      onSubmit={() => {}}
+    />
     <Card.Grid>
       <TableContainer
         onRow={record => ({
@@ -97,6 +100,8 @@ const UserBalance = ({
 UserBalance.defaultProps = {
   onToggle: () => {},
   onTokenClick: () => {},
+  wrap: () => {},
+  unwrap: () => {},
 };
 
 export default UserBalance;

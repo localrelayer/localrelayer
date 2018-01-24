@@ -1,3 +1,5 @@
 // @flow
 
 export const SET_CURRENT_TOKEN: 'ui/SET_CURRENT_TOKEN' = 'ui/SET_CURRENT_TOKEN';
+export const SET_CURRENT_PAIR: 'ui/SET_CURRENT_PAIR' = 'ui/SET_CURRENT_PAIR';
+export const SET_SEARCH_QUERY: 'ui/SET_SEARCH_QUERY' = 'ui/SET_SEARCH_QUERY';

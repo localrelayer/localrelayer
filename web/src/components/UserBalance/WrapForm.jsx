@@ -39,7 +39,7 @@ type Props = {
 /**
  * Ether Wrap/Unwrap form
  * @version 1.0.0
- * @author [Tim Rezniche](https://github.com/imbaniac)
+ * @author [Tim Reznich](https://github.com/imbaniac)
  */
 
 const WrapForm: StatelessFunctionalComponent<Props> = ({
@@ -51,12 +51,11 @@ const WrapForm: StatelessFunctionalComponent<Props> = ({
     <InputGroupContainer compact>
       <Field
         name="amount"
-        placeholder="Amount to wrap"
         component={NumberInput}
       />
       <Button.Group>
-        <Button onClick={handleSubmit(unwrap)}>Unwrap</Button>
-        <Button onClick={handleSubmit(wrap)}>Wrap</Button>
+        <Button onClick={handleSubmit(unwrap)}>Withdraw</Button>
+        <Button onClick={handleSubmit(wrap)}>Deposit</Button>
       </Button.Group>
     </InputGroupContainer>
   </Form>
