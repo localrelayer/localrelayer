@@ -3,7 +3,11 @@ import React from 'react';
 import type { Node, StatelessFunctionalComponent } from 'react';
 import type { Token } from 'instex-core/types';
 import { Card, Avatar } from 'antd';
-import { Title, CardContainer } from './styled';
+import {
+  Title,
+  CardContainer,
+  PriceContainer,
+} from './styled';
 import { Colored } from '../SharedStyles';
 
 const { Meta } = Card;
@@ -11,6 +15,8 @@ const { Meta } = Card;
 type Props = {
   /** Token object */
   token: Token,
+  /** Token trading pair */
+  tokenPair: Token,
   /**
    * Function that is called whenever button clicked
    * */
@@ -25,50 +31,56 @@ type Props = {
 
 const TokenCard: StatelessFunctionalComponent<Props> = ({
   token: {
-    change24Hour, lastPrice, tradingVolume, symbol, tradingPair, lowPrice, highPrice,
+    trading = {},
+    symbol,
   },
+  tokenPair,
   onClick,
-}: Props): Node => (
-  <CardContainer
-    actions={[
-      <div>
-        Volume: {tradingVolume} {tradingPair}
-      </div>,
-      <div id="watch-btn" onClick={onClick}>
-        Add to watch list
-      </div>,
+}: Props): Node => {
+  const {
+    volume,
+    change24Hour,
+    lastPrice,
+    highPrice,
+    lowPrice,
+  } = trading[tokenPair.symbol] || {};
+  const isPositive = +change24Hour >= 0;
+
+  return (
+    <CardContainer
+      actions={[
+        <div>Volume: {volume || 0} {tokenPair.symbol}</div>,
+        <div id="watch-btn" onClick={onClick}>
+          {isPositive ?
+            <Colored color="green">{`+${change24Hour || 0.00}%`}</Colored>
+           :
+            <Colored color="red">{`${change24Hour || 0.00}%`}</Colored>
+          }
+        </div>,
     ]}
-  >
-    <Meta
-      avatar={
-        <Avatar src="https://davidgerard.co.uk/blockchain/wp-content/uploads/2017/10/ebtc-300x300.jpg" />
+    >
+      <Meta
+        avatar={
+          <Avatar src="https://davidgerard.co.uk/blockchain/wp-content/uploads/2017/10/ebtc-300x300.jpg" />
       }
-      title={getTitle(symbol, tradingPair, change24Hour, lastPrice)}
-      description={
-        <div>
-          <div>High: {highPrice}</div>
-          <div>Low: {lowPrice}</div>
-        </div>
+        title={getTitle(symbol, tokenPair.symbol, change24Hour, lastPrice)}
+        description={
+          <PriceContainer>
+            <div>High: {highPrice || '--'}</div>
+            <div>Low: {lowPrice || '--'}</div>
+          </PriceContainer>
       }
-    />
-  </CardContainer>
-);
+      />
+    </CardContainer>);
+};
 
 export default TokenCard;
 
-const getTitle = (symbol, tradingPair, change24Hour, lastPrice) => {
-  const isPositive = change24Hour >= 0;
-  return (
-    <Title>
-      <div>
-        {symbol} / {tradingPair}{' '}
-        {isPositive ? (
-          <Colored color="green">{`(+${change24Hour}%)`}</Colored>
-        ) : (
-          <Colored color="red">{`(${change24Hour}%)`}</Colored>
-        )}
-      </div>
-      <div>{lastPrice}</div>
-    </Title>
-  );
-};
+const getTitle = (symbol, tokenPairSymbol, change24Hour, lastPrice) => (
+  <Title>
+    <div>
+      {symbol} / {tokenPairSymbol}{' '}
+    </div>
+    <div id="last-price">{lastPrice || 'No trades'}</div>
+  </Title>
+);

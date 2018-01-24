@@ -10,6 +10,7 @@ import { ZeroEx } from '0x.js';
 import BigNumber from 'bignumber.js';
 import * as ProfileActions from '../actions/profile';
 import * as actionTypes from '../actions/types';
+import { sendNotification } from '../actions/ui';
 import { contracts } from '../utils/web3';
 import {
   getAddress,
@@ -26,19 +27,25 @@ const sagas = {
 // Deposit WETH (wrap)
 function* deposit({ payload }) {
   const { zeroEx } = window;
+
   const contractAddress = contracts[payload.contract];
   const { amount } = yield select(getFormValues('WrapForm'));
   const account = yield select(getAddress);
   const balance = yield select(getBalance);
   const token = yield select(getUserToken(contractAddress));
-
   const ethToConvert = ZeroEx.toBaseUnitAmount(new BigNumber(amount), token.decimals);
-  yield call(() => zeroEx.etherToken.depositAsync(
-    contractAddress,
-    ethToConvert,
-    account,
-    { gasLimit: 100000 },
-  ));
+  try {
+    yield call(() => zeroEx.etherToken.depositAsync(
+      contractAddress,
+      ethToConvert,
+      account,
+      { gasLimit: 100000 },
+    ));
+  } catch (e) {
+    yield put(sendNotification({ message: e, type: 'error' }));
+    console.error(e);
+    return;
+  }
   const newTokenBalance = BigNumber(token.balance).plus(amount);
   const newBalance = BigNumber(balance).minus(amount);
   yield put(reset('WrapForm'));
@@ -53,6 +60,7 @@ function* deposit({ payload }) {
 // Withdraw WETH (unwrap)
 function* withdraw({ payload }) {
   const { zeroEx } = window;
+
   const contractAddress = contracts[payload.contract];
   const { amount } = yield select(getFormValues('WrapForm'));
   const account = yield select(getAddress);
@@ -60,12 +68,18 @@ function* withdraw({ payload }) {
   const token = yield select(getUserToken(contractAddress));
 
   const ethToConvert = ZeroEx.toBaseUnitAmount(new BigNumber(amount), token.decimals);
-  yield call(() => zeroEx.etherToken.withdrawAsync(
-    contractAddress,
-    ethToConvert,
-    account,
-    { gasLimit: 100000 },
-  ));
+  try {
+    yield call(() => zeroEx.etherToken.withdrawAsync(
+      contractAddress,
+      ethToConvert,
+      account,
+      { gasLimit: 100000 },
+    ));
+  } catch (e) {
+    yield put(sendNotification({ message: e, type: 'error' }));
+    console.error(e);
+    return;
+  }
   const newTokenBalance = BigNumber(token.balance).minus(amount);
   const newBalance = BigNumber(balance).plus(amount);
   yield put(reset('WrapForm'));
@@ -81,12 +95,17 @@ function* setAllowance({ payload }) {
   const { zeroEx } = window;
   const contractAddress = payload.token.address;
   const account = yield select(getAddress);
-  yield call(() =>
-    zeroEx.token.setUnlimitedProxyAllowanceAsync(
-      contractAddress,
-      account,
-      { gasLimit: 100000 },
-    ));
+  try {
+    yield call(() =>
+      zeroEx.token.setUnlimitedProxyAllowanceAsync(
+        contractAddress,
+        account,
+        { gasLimit: 100000 },
+      ));
+  } catch (e) {
+    console.error(e);
+    return;
+  }
   yield put(ProfileActions.updateToken({
     tokenAddress: contractAddress,
     field: 'isTradable',

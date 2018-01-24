@@ -11,6 +11,7 @@ Examples:
       tokens={tokensMock}
       selectedTokenId={state.selectedTokenId}
       onSelect={record => setState({ selectedTokenId: record.id })}
+      onSearch={value => console.log(value)}
     />
   </div>
 ```
