@@ -3,8 +3,6 @@ import { shallow, mount } from 'enzyme';
 import OrdersList from '../OrdersList';
 import { generateTestOrders } from '../../../utils/mocks';
 
-const testData = generateTestOrders();
-
 const columns = [
   {
     title: 'Price',
@@ -24,16 +22,22 @@ const columns = [
 ];
 
 test('OrderList renders', () => {
+  const testData = generateTestOrders();
+
   const component = shallow(<OrdersList data={testData} columns={columns} />);
   expect(component).toMatchSnapshot();
 });
 
 test('OrdersList with title', () => {
+  const testData = generateTestOrders();
+
   const component = shallow(<OrdersList data={testData} title="Test" columns={columns} />);
   expect(component).toMatchSnapshot('titel', 'Test');
 });
 
 test('OrdersList onClick', () => {
+  const testData = generateTestOrders();
+
   const onClick = jest.fn();
 
   const component = mount(
