@@ -7,7 +7,8 @@
     "lint": "eslint ./src --ext .js,.jsx --ignore-pattern '/dist/' --ignore-pattern '*.prod.js' --ignore-pattern '*.test.js' --ignore-pattern '**/node_modules/*'",
     "flow": "flow",
     "start": "webpack --config webpack.config.prod.js --watch",
-    "postinstall": "flow-typed install --overwrite && yarn link"
+    "postinstall": "flow-typed install --overwrite && yarn link",
+    "testnet:deploy": "node scripts/deployTokens.js"
   },
   "dependencies": {
     "0x.js": "^0.30.0",
@@ -23,8 +24,7 @@
     "redux-form": "^7.2.1",
     "redux-saga": "0.16.0",
     "reselect": "3.0.1",
-    "web3": "^1.0.0-beta.18",
-    "web3-provider-engine": "^13.5.6"
+    "web3": "^0.20.4"
   },
   "devDependencies": {
     "babel-core": "6.26.0",
@@ -42,6 +42,8 @@
     "eslint-plugin-jsx-a11y": "6.0.3",
     "eslint-plugin-react": "7.5.1",
     "flow-bin": "0.63.1",
-    "flow-typed": "2.2.3"
+    "flow-typed": "2.2.3",
+    "truffle": "^4.0.5",
+    "truffle-contract": "^3.0.2"
   }
 }
