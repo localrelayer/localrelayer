@@ -41,8 +41,9 @@ function* deposit({ payload }) {
       account,
       { gasLimit: 100000 },
     ));
+    yield put(sendNotification({ message: 'Successfully deposited', type: 'success' }));
   } catch (e) {
-    yield put(sendNotification({ message: e, type: 'error' }));
+    yield put(sendNotification({ message: e.message, type: 'error' }));
     console.error(e);
     return;
   }
@@ -75,8 +76,9 @@ function* withdraw({ payload }) {
       account,
       { gasLimit: 100000 },
     ));
+    yield put(sendNotification({ message: 'Successfully withdrawn', type: 'success' }));
   } catch (e) {
-    yield put(sendNotification({ message: e, type: 'error' }));
+    yield put(sendNotification({ message: e.message, type: 'error' }));
     console.error(e);
     return;
   }
@@ -103,6 +105,7 @@ function* setAllowance({ payload }) {
         { gasLimit: 100000 },
       ));
   } catch (e) {
+    yield put(sendNotification({ message: e.message, type: 'error' }));
     console.error(e);
     return;
   }
