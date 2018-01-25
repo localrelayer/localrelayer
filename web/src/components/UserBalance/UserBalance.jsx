@@ -3,6 +3,7 @@ import React from 'react';
 import type { Node } from 'react';
 import type { Tokens } from 'instex-core/types';
 import { Card, Switch, Icon, Tooltip, Popover } from 'antd';
+import { Element } from 'react-scroll';
 import WrapForm from './WrapForm';
 import { CardContainer, TableContainer } from './styled';
 
@@ -74,27 +75,29 @@ const UserBalance = ({
   wrap,
   unwrap,
 }: Props): Node => (
-  <CardContainer
-    id="user-balance"
-    bordered={false}
-    title={<div>My Balance ({balance} ETH)</div>}
-  >
-    <WrapForm
-      wrap={wrap}
-      unwrap={unwrap}
-      onSubmit={() => {}}
-    />
-    <Card.Grid>
-      <TableContainer
-        onRow={record => ({
+  <Element name="userBalance">
+    <CardContainer
+      id="user-balance"
+      bordered={false}
+      title={<div>My Balance ({balance} ETH)</div>}
+    >
+      <WrapForm
+        wrap={wrap}
+        unwrap={unwrap}
+        onSubmit={() => {}}
+      />
+      <Card.Grid>
+        <TableContainer
+          onRow={record => ({
           onClick: () => onTokenClick(record),
         })}
-        pagination={false}
-        dataSource={tokens}
-        columns={getColumns(onToggle)}
-      />
-    </Card.Grid>
-  </CardContainer>
+          pagination={false}
+          dataSource={tokens}
+          columns={getColumns(onToggle)}
+        />
+      </Card.Grid>
+    </CardContainer>
+  </Element>
 );
 
 UserBalance.defaultProps = {
