@@ -113,7 +113,7 @@ function* setAllowance({ payload }) {
   }));
 }
 
-export function* watchCallContract() {
+export function* listenCallContract() {
   while (true) {
     const action = yield take(actionTypes.CALL_CONTRACT);
     yield fork(sagas[action.payload.method], action); // eslint-disable-line

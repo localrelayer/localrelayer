@@ -27,6 +27,6 @@ export function* createOrder() {
   };
 }
 
-export function* watchNewOrder() {
+export function* listenNewOrder() {
   yield takeEvery(types.CREATE_ORDER, createOrder);
 }

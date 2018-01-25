@@ -13,7 +13,11 @@ import {
 } from './resources';
 
 import {
-  watchCallContract,
+  listenCurrentTokenChange,
+} from './profile';
+
+import {
+  listenCallContract,
 } from './ethereum';
 
 
@@ -21,8 +25,9 @@ const coreSagas = [
   fork(listenFetchResourceRequest),
   fork(listenDeleteResourceRequest),
   fork(listenSaveResourceRequest),
+  fork(listenCallContract),
+  fork(listenCurrentTokenChange),
   fork(initialize),
-  fork(watchCallContract),
 ];
 
 export default coreSagas;
