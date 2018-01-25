@@ -6,5 +6,5 @@ export * from './ui';
 export * from './orders';
 
 export const CLEAR_ALL_REDUCERS: 'CLEAR_ALL_REDUCERS' = 'CLEAR_ALL_REDUCERS';
-export const SENT_NOTIFICATION: 'SENT_NOTIFICATION' = 'SENT_NOTIFICATION';
+export const SEND_NOTIFICATION: 'SEND_NOTIFICATION' = 'SEND_NOTIFICATION';
 

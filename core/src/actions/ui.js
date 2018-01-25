@@ -29,7 +29,7 @@ export function setSearchQuery(searchQuery: string) {
 
 export function sendNotification({ type, message }: Notifiction) {
   return {
-    type: types.SENT_NOTIFICATION,
+    type: types.SEND_NOTIFICATION,
     payload: {
       type,
       message,
