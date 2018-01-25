@@ -8,7 +8,7 @@ export const Title = styled.div`
 `;
 
 export const CardContainer = styled(Card)`
-  width: 400px;
+  max-width: 400px;
 
   & .ant-card-actions {
     & li:first-child {

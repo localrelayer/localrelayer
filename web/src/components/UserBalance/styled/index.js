@@ -14,7 +14,7 @@ export const Title = styled.div`
 `;
 
 export const CardContainer = styled(Card)`
-  width: 400px;
+  max-width: 400px;
   padding: 0;
   & > .ant-card-head {
     border: 1px solid #e8e8e8;
@@ -46,8 +46,9 @@ export const InputGroupContainer = styled(InputGroup)`
   align-items: center;
   padding: 20px 0;
   & .ant-form-item {
+    flex: 0.8;
     margin: 0;
-    margin-right: 13px;
+    margin-right: 15px;
     display: flex;
     align-items: center;
   }

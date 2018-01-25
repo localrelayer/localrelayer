@@ -3,6 +3,7 @@ import React from 'react';
 import type { Node, StatelessFunctionalComponent } from 'react';
 import { Tooltip, Button } from 'antd';
 import type { Order } from 'instex-core/types';
+import { Element } from 'react-scroll';
 import moment from 'moment';
 
 import { UserOrdersContainer } from './styled';
@@ -83,13 +84,15 @@ const UserOrders: StatelessFunctionalComponent<Props> = ({
   orders,
   onCancel,
 }: Props): Node => (
-  <UserOrdersContainer>
-    <OrdersList
-      title="My orders"
-      columns={getColumns(onCancel)}
-      data={orders}
-    />
-  </UserOrdersContainer>
+  <Element name="userOrders">
+    <UserOrdersContainer>
+      <OrdersList
+        title="My orders"
+        columns={getColumns(onCancel)}
+        data={orders}
+      />
+    </UserOrdersContainer>
+  </Element>
 );
 
 export default UserOrders;

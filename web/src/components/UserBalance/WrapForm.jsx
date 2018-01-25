@@ -55,7 +55,7 @@ const WrapForm: StatelessFunctionalComponent<Props> = ({
       />
       <Button.Group>
         <Button onClick={handleSubmit(unwrap)}>Withdraw</Button>
-        <Button onClick={handleSubmit(wrap)}>Deposit</Button>
+        <Button type="primary" onClick={handleSubmit(wrap)}>Deposit</Button>
       </Button.Group>
     </InputGroupContainer>
   </Form>
