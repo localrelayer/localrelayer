@@ -21,6 +21,7 @@
   },
   "plugins": ["flowtype", "flowtype-errors"],
   "globals": {
-    "Web3": true
+    "Web3": true,
+    "BigNumber": true
   }
 }

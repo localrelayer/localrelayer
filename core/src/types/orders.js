@@ -1,4 +1,5 @@
 // @flow
+import type BigNumber from 'bignumber.js';
 
 import type {
   ID,
@@ -35,3 +36,18 @@ export type Order = {
 } & OrderAttributes;
 
 export type Orders = Array<Order>;
+
+export type ZrxOrder = {
+  maker: string,
+  taker: string,
+  feeRecipient: string,
+  exchangeContractAddress: string,
+  salt: string,
+  makerFee: BigNumber,
+  takerFee: BigNumber,
+  makerTokenAddress: string,
+  takerTokenAddress: string,
+  makerTokenAmount: string,
+  takerTokenAmount: string,
+  expirationUnixTimestampSec: string,
+}

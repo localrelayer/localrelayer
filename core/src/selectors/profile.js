@@ -7,10 +7,10 @@ export const getBalance = ({ profile }) => profile.balance;
 export const getUserTokens = ({ profile }) => profile.tokens;
 export const getConnectionStatus = ({ profile }) => profile.connectionStatus;
 
-export const getUserToken = tokenAddress =>
+export const getUserTokenBy = (field, value) =>
   createSelector(
     getUserTokens,
     userTokens => userTokens.find(
-      t => t.address === tokenAddress,
+      t => t[field] === value,
     ) || {},
   );

@@ -11,8 +11,7 @@
     "testnet:deploy": "node scripts/deployTokens.js"
   },
   "dependencies": {
-    "0x.js": "^0.30.0",
-    "@0xproject/subproviders": "^0.3.1",
+    "0x.js": "^0.30.1",
     "bignumber.js": "5.0.0",
     "faker": "git://github.com/Marak/faker.js.git",
     "human-standard-token-abi": "1.0.2",
@@ -24,7 +23,7 @@
     "redux-form": "^7.2.1",
     "redux-saga": "0.16.0",
     "reselect": "3.0.1",
-    "web3": "^0.20.4"
+    "web3": "1.0.0-beta.29"
   },
   "devDependencies": {
     "babel-core": "6.26.0",

@@ -46,7 +46,9 @@ export default class DateInput extends Component<Props> {
           showTime={showTime}
           format={dateFormat}
           placeholder={placeholder}
-          onChange={data => input.onChange(data)}
+          onChange={(data) => {
+            input.onChange(data);
+          }}
           ref={(el) => {
             this.input = el;
           }}
