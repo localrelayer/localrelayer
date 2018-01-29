@@ -26,6 +26,10 @@
   "plugins": [
     "flowtype",
     "flowtype-errors",
-    "jest",
-  ]
+    "jest"
+  ],
+  "globals": {
+    "Web3": true,
+    "BigNumber": true
+  }
 }

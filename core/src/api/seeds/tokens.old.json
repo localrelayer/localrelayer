@@ -1,5 +1,27 @@
 [
   {
+    "address": "0x25b8fe1de9daf8ba351890744ff28cf7dfa8f5e3",
+    "symbol": "ZRX",
+    "decimals": 18,
+    "name": "0x Protocol",
+    "trading": {
+      "WETH": {
+        "volume": "457.27679076",
+        "highPrice": "0.41511175",
+        "lowPrice": "1.02818864",
+        "change24Hour": "23.97",
+        "lastPrice": "0.57561175"
+      },
+      "DAI": {
+        "volume": "15.27679076",
+        "highPrice": "7.41511175",
+        "lowPrice": "3.02818864",
+        "change24Hour": "23.97",
+        "lastPrice": "0.57561175"
+      }
+    }
+  },
+  {
     "address": "0x0371a82e4a9d0a4312f3ee2ac9c6958512891372",
     "symbol": "STU",
     "decimals": 18,

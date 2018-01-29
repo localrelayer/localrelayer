@@ -6,11 +6,9 @@ import {
   cps,
   takeEvery,
 } from 'redux-saga/effects';
-import abi from 'human-standard-token-abi';
 import {
   delay,
 } from 'redux-saga';
-import BN from 'bignumber.js';
 import * as types from '../actions/types';
 import {
   getAddress,
@@ -21,7 +19,6 @@ import { promote } from '../utils';
 import {
   getNetworkById,
   connectionStatuses,
-  contracts,
 } from '../utils/web3';
 import * as ProfileActions from '../actions/profile';
 
@@ -51,6 +48,8 @@ export function* loadUser() {
 }
 
 export function* loadTokenBalance() {
+  const account = yield select(getAddress);
+  if (!account) return;
   const tokens = yield select(getTokens);
   const currentToken = yield select(getCurrentToken);
   const tokensToLoad = tokens.filter(token =>
@@ -62,7 +61,7 @@ export function* loadTokenBalance() {
     name: tokensToLoad[i].name,
     symbol: tokensToLoad[i].symbol,
     address: tokensToLoad[i].address,
-    balance: (tokenBalance.dividedBy(BN(10).toPower(tokensToLoad[i].decimals))).toString(),
+    balance: (tokenBalance.dividedBy(BigNumber(10).toPower(tokensToLoad[i].decimals))).toString(),
     decimals: tokensToLoad[i].decimals,
     isTradable: allowance.gt(0),
   }));
@@ -90,10 +89,11 @@ export function* listenCurrentTokenChange() {
 
 
 function* getTokenBalances(token) {
-  const { web3 } = window;
+  const { zeroEx } = window;
   const account = yield select(getAddress);
-  const tokenInst = web3.eth.contract(abi).at(token.address);
-  const tokenBalance = yield cps(tokenInst.balanceOf.call, account);
-  const allowance = yield cps(tokenInst.allowance.call, account, contracts.proxy);
+  // const tokenInst = web3.eth.contract(abi).at(token.address);
+  const tokenBalance = yield zeroEx.token.getBalanceAsync(token.address, account);
+  const allowance = yield zeroEx.token.getProxyAllowanceAsync(token.address, account);
+  // const allowance = yield cps(tokenInst.allowance.call, account, zeroEx.proxy.getContractAddress());
   return { tokenBalance, allowance };
 }

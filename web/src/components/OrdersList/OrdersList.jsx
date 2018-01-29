@@ -33,6 +33,8 @@ type Props = {
   pagination: {
     pageSize: number,
   } | null,
+  /** Called on row click */
+  onClick: Function,
 };
 
 /**
@@ -47,6 +49,7 @@ const OrdersList = ({
   columns,
   bordered,
   pagination,
+  onClick,
 }: Props): Node =>
   <OrdersListContainer>
     <TableTitle>{title}</TableTitle>
@@ -57,6 +60,9 @@ const OrdersList = ({
       columns={columns}
       dataSource={data}
       pagination={pagination}
+      onRow={record => ({
+        onClick: () => onClick(record),
+      })}
     />
   </OrdersListContainer>;
 

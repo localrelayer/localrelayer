@@ -20,14 +20,20 @@ import {
   listenCallContract,
 } from './ethereum';
 
+import {
+  listenNewOrder,
+  listFillOrder,
+} from './orders';
 
 const coreSagas = [
+  fork(initialize),
   fork(listenFetchResourceRequest),
   fork(listenDeleteResourceRequest),
   fork(listenSaveResourceRequest),
   fork(listenCallContract),
   fork(listenCurrentTokenChange),
-  fork(initialize),
+  fork(listenNewOrder),
+  fork(listFillOrder),
 ];
 
 export default coreSagas;

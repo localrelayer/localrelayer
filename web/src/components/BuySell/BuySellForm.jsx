@@ -24,6 +24,8 @@ import {
 
 type Props = {
   handleSubmit: () => void,
+  /** Buy or sell */
+  type: string,
 };
 
 /**
@@ -65,6 +67,7 @@ const BuySellForm: StatelessFunctionalComponent<Props> = ({
     <PlaceOrderButton
       size="large"
       type="primary"
+      htmlType="submit"
     >
       Place order
     </PlaceOrderButton>

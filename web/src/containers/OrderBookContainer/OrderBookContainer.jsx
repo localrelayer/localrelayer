@@ -11,7 +11,9 @@ import type {
 import type {
   Orders,
 } from 'instex-core/types';
-
+import {
+  fillOrder as fillOrderAction,
+} from 'instex-core/actions';
 import {
   getBuyOrders,
   getSellOrders,
@@ -22,14 +24,17 @@ import OrderBook from '../../components/OrderBook';
 type Props = {
   buyOrders: Orders,
   sellOrders: Orders,
+  fillOrder: Function
 };
 
 const OrderBookContainer: StatelessFunctionalComponent<Props> =
   ({
     buyOrders,
     sellOrders,
+    fillOrder,
   }: Props): Node =>
     <OrderBook
+      fillOrder={({ zrxOrder }) => fillOrder(zrxOrder)}
       buyOrders={buyOrders}
       sellOrders={sellOrders}
     />;
@@ -39,4 +44,8 @@ const mapStateToProps = state => ({
   sellOrders: getSellOrders(state),
 });
 
-export default connect(mapStateToProps)(OrderBookContainer);
+const mapDispatchToProps = {
+  fillOrder: fillOrderAction,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(OrderBookContainer);

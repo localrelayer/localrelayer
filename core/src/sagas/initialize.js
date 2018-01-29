@@ -17,6 +17,12 @@ import * as uiActions from '../actions/ui';
 import * as resourcesActions from '../actions/resources';
 
 export function* initialize() {
+  yield call(loadWeb3);
+  if (!window.web3) {
+    yield put(ProfileActions.setConnectionStatus(connectionStatuses.NOT_CONNECTED));
+  } else {
+    yield fork(runLoadUser);
+  }
   const responseTokens = yield call(
     fetchResourcesRequest,
     {
@@ -45,12 +51,4 @@ export function* initialize() {
       },
     }),
   );
-
-  yield call(loadWeb3);
-
-  if (!window.web3) {
-    yield put(ProfileActions.setConnectionStatus(connectionStatuses.NOT_CONNECTED));
-  } else {
-    yield fork(runLoadUser);
-  }
 }
