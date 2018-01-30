@@ -1,7 +1,6 @@
 // @flow
 import React from 'react';
 import {
-  Table,
   Input,
   Radio,
 } from 'antd';
@@ -18,6 +17,7 @@ import type {
 import {
   TokenListContainer,
   InputContainer,
+  TableContainer,
 } from './styled';
 import {
   Colored,
@@ -49,6 +49,7 @@ const getColumns = (onSelect, selectedToken, selectedPair) => [{
   title: 'Coin',
   dataIndex: 'symbol',
   key: 'symbol',
+  render: text => <a>{text}</a>,
 },
 {
   title: 'Price',
@@ -114,7 +115,7 @@ const TokensList: StatelessFunctionalComponent<Props> = ({
         { /* <RadioButton value="USDT">USDT</RadioButton> */ }
       </RadioGroup>
     </InputContainer>
-    <Table
+    <TableContainer
       size="small"
       rowKey="id"
       bordered={false}

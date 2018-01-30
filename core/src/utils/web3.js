@@ -1,5 +1,4 @@
 import { ZeroEx } from '0x.js';
-// import protocol from './protocol.json';
 
 export const loadWeb3 = () =>
   new Promise((resolve) => {
@@ -10,9 +9,6 @@ export const loadWeb3 = () =>
         // Use Mist/MetaMask's provider.
         const zeroEx = new ZeroEx(window.web3.currentProvider, {
           networkId: 50,
-          // exchangeContractAddress: protocol.exchange,
-          // zrxContractAddress: protocol.zrx,
-          // tokenTransferProxyContractAddress: protocol.proxy,
         });
         // const web3 = new Web3(window.web3.currentProvider);
         // window.web3 = web3;

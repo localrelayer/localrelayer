@@ -7,6 +7,7 @@ import {
 import {
   Form,
 } from 'antd';
+import moment from 'moment';
 
 import type {
   Node,
@@ -24,9 +25,13 @@ import {
 
 type Props = {
   handleSubmit: () => void,
-  /** Buy or sell */
-  type: string,
 };
+
+function disabledDate(current) {
+  // Can not select days before today and today
+  return current && current < moment().endOf('day');
+}
+
 
 /**
  * Buy/Sell form
@@ -39,19 +44,19 @@ const BuySellForm: StatelessFunctionalComponent<Props> = ({
 }: Props): Node => (
   <Form onSubmit={handleSubmit}>
     <Field
-      id="price"
-      type="text"
-      name="price"
-      label="Price"
-      placeholder="Price"
-      component={NumberInput}
-    />
-    <Field
       id="amount"
       type="text"
       name="amount"
       label="Amount"
       placeholder="Amount"
+      component={NumberInput}
+    />
+    <Field
+      id="price"
+      type="text"
+      name="price"
+      label="Price"
+      placeholder="Price"
       component={NumberInput}
     />
     <Field
@@ -61,7 +66,7 @@ const BuySellForm: StatelessFunctionalComponent<Props> = ({
       label="Order expiration"
       placeholder="Select time"
       dateFormat="YYYY-MM-DD HH:mm:ss"
-      showTime
+      disabledDate={disabledDate}
       component={DateInput}
     />
     <PlaceOrderButton

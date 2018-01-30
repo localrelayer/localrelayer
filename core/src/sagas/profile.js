@@ -2,20 +2,22 @@ import {
   select,
   call,
   put,
-  all,
   cps,
   takeEvery,
 } from 'redux-saga/effects';
 import {
   delay,
 } from 'redux-saga';
+import {
+  uniqBy,
+} from 'ramda';
 import * as types from '../actions/types';
 import {
   getAddress,
   getTokens,
   getCurrentToken,
+  getCurrentPair,
 } from '../selectors';
-import { promote } from '../utils';
 import {
   getNetworkById,
   connectionStatuses,
@@ -33,7 +35,7 @@ export function* loadUser() {
     } else {
       yield put(ProfileActions.setConnectionStatus(connectionStatuses.CONNECTED));
 
-      const balance = accounts[0] ? yield cps(web3.eth.getBalance, accounts[0]) : '0';
+      const balance = yield cps(web3.eth.getBalance, accounts[0]);
       const formattedBalance = web3.fromWei(balance, 'ether').toFixed(8).toString();
       yield put(ProfileActions.setAddress({ address: accounts[0] }));
       yield put(
@@ -42,31 +44,22 @@ export function* loadUser() {
         }),
       );
       yield call(loadNetwork);
-      yield call(loadTokenBalance);
+      yield call(loadTokensBalance);
     }
   }
 }
 
-export function* loadTokenBalance() {
+export function* loadTokensBalance() {
   const account = yield select(getAddress);
   if (!account) return;
-  const tokens = yield select(getTokens);
   const currentToken = yield select(getCurrentToken);
-  const tokensToLoad = tokens.filter(token =>
-    token.symbol === 'WETH' ||
-    token.symbol === 'ZRX' ||
-    token.symbol === currentToken.symbol);
-  const resp = yield all(tokensToLoad.map(getTokenBalances));
-  const userTokens = resp.map(({ tokenBalance, allowance }, i) => ({
-    name: tokensToLoad[i].name,
-    symbol: tokensToLoad[i].symbol,
-    address: tokensToLoad[i].address,
-    balance: (tokenBalance.dividedBy(BigNumber(10).toPower(tokensToLoad[i].decimals))).toString(),
-    decimals: tokensToLoad[i].decimals,
-    isTradable: allowance.gt(0),
-  }));
-  const promotedTokens = promote('symbol', 'WETH', promote('symbol', 'WETH', userTokens));
-  yield put(ProfileActions.setTokens(promotedTokens));
+  const currentPair = yield select(getCurrentPair);
+  const pair = yield getTokenBalanceAndAllowance(currentPair.symbol);
+  const zrx = yield getTokenBalanceAndAllowance('ZRX');
+
+  const current = yield getTokenBalanceAndAllowance(currentToken.symbol);
+  const uniqTokens = uniqBy(a => a.symbol, [pair, zrx, current]);
+  yield put(ProfileActions.setTokens(uniqTokens));
 }
 
 export function* loadNetwork() {
@@ -84,16 +77,30 @@ export function* runLoadUser() {
 }
 
 export function* listenCurrentTokenChange() {
-  yield takeEvery(types.SET_CURRENT_TOKEN, loadTokenBalance);
+  yield takeEvery(types.SET_CURRENT_TOKEN, loadTokensBalance);
 }
 
 
-function* getTokenBalances(token) {
+function* getTokenBalanceAndAllowance(tokenSymbol) {
   const { zeroEx } = window;
+
+  const tokens = yield select(getTokens);
+  const token = tokens.find(t => t.symbol === tokenSymbol);
   const account = yield select(getAddress);
-  // const tokenInst = web3.eth.contract(abi).at(token.address);
-  const tokenBalance = yield zeroEx.token.getBalanceAsync(token.address, account);
-  const allowance = yield zeroEx.token.getProxyAllowanceAsync(token.address, account);
-  // const allowance = yield cps(tokenInst.allowance.call, account, zeroEx.proxy.getContractAddress());
-  return { tokenBalance, allowance };
+
+  const tokenBalance = yield call(
+    [zeroEx.token, zeroEx.token.getBalanceAsync],
+    token.address,
+    account,
+  );
+  const allowance = yield call(
+    [zeroEx.token, zeroEx.token.getProxyAllowanceAsync],
+    token.address,
+    account,
+  );
+  return {
+    ...token,
+    isTradable: allowance.gt(0),
+    balance: (tokenBalance.dividedBy(BigNumber(10).toPower(token.decimals))).toString(),
+  };
 }
