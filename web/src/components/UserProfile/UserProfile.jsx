@@ -2,6 +2,7 @@
 import React from 'react';
 import type { Node, StatelessFunctionalComponent } from 'react';
 import { Card, Avatar } from 'antd';
+import { Link as ScrollLink } from 'react-scroll';
 
 const { Meta } = Card;
 
@@ -22,7 +23,13 @@ const UserProfile: StatelessFunctionalComponent<Props> = ({
   balance,
   network,
 }: Props): Node => (
-  <Card style={{ width: 300 }} actions={[<div>My balance</div>, <div>My orders</div>]}>
+  <Card
+    style={{ width: 300 }}
+    actions={[
+      <ScrollLink smooth to="userBalance">My balance</ScrollLink>,
+      <ScrollLink smooth to="userOrders">My orders</ScrollLink>,
+  ]}
+  >
     <Meta
       avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
       title={address}

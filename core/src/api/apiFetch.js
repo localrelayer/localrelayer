@@ -16,6 +16,7 @@ export const tokens = tokensSeeds.map(({
 }) => ({
   id: address,
   ...attributes,
+  address,
 }));
 
 const fakeTokens = () =>
@@ -26,7 +27,7 @@ const fakeTokens = () =>
       links: {
         self: `${config.apiUrl}/tokens/${id}`,
       },
-      attributes,
+      attributes: { ...attributes },
     })),
   });
 

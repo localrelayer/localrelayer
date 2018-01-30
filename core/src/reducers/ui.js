@@ -1,7 +1,9 @@
 import * as types from '../actions/types';
 
 const initialState = {
+  currentPairId: null,
   currentTokenId: null,
+  searchQuery: '',
 };
 
 export default function ui(state = initialState, action) {
@@ -10,6 +12,16 @@ export default function ui(state = initialState, action) {
       return {
         ...state,
         currentTokenId: action.payload,
+      };
+    case types.SET_CURRENT_PAIR:
+      return {
+        ...state,
+        currentPairId: action.payload,
+      };
+    case types.SET_SEARCH_QUERY:
+      return {
+        ...state,
+        searchQuery: action.payload,
       };
     case types.CLEAR_ALL_REDUCERS:
       return initialState;

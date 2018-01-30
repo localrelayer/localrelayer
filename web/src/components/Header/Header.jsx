@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import { withState } from 'recompose';
 
 import type {
   Node,
@@ -7,6 +8,7 @@ import type {
 import type {
   User,
   Tokens,
+  Token,
 } from 'instex-core/types';
 
 import {
@@ -41,12 +43,23 @@ type Props = {
   /** Array of tokens */
   tokens: Tokens,
   /** Selected token */
-  selectedTokenId: ?string,
+  selectedToken: Token,
   /**
    * Function that is called whenever token select
    * */
   onTokenSelect: Function,
-
+  /** Function that is called whenever pair select */
+  onPairSelect: Function,
+  /**
+   * Function that is called whenever token is searched in table
+   * */
+  onTokenSearch: Function,
+  /** Selected trading pair */
+  tokenPair: Token,
+    /** Is popover visible */
+    popoverVisible: boolean,
+    /** Toggle popover visibility */
+    togglePopover: Function,
 };
 
 /**
@@ -55,30 +68,45 @@ type Props = {
  * @author [Tim Reznich](https://github.com/imbaniac)
  */
 
+const enhance = withState('popoverVisible', 'togglePopover', false);
+
 const Header = ({
   user,
   onUserClick,
   onTokenSelect,
   tokens,
-  selectedTokenId,
+  selectedToken,
+  tokenPair,
+  onTokenSearch,
+  onPairSelect,
+  popoverVisible,
+  togglePopover,
 }: Props): Node => (
   <HeaderContainer>
     <LogoContainer />
     <Popover
       trigger={['click']}
       placement="bottom"
+      visible={popoverVisible}
+      onVisibleChange={togglePopover}
       content={
         <TokenContainer>
           <TokensList
+            onSearch={onTokenSearch}
             tokens={tokens}
-            selectedTokenId={selectedTokenId}
-            onSelect={onTokenSelect}
+            selectedToken={selectedToken}
+            onSelect={(token) => {
+              togglePopover(false);
+              onTokenSelect(token);
+            }}
+            tokenPair={tokenPair}
+            onPairSelect={onPairSelect}
           />
         </TokenContainer>
       }
     >
       <HeaderButton type="primary">
-        Markets <Icon type="down" />
+        Tokens ({`${selectedToken.symbol}/${tokenPair.symbol}`}) <Icon type="down" />
       </HeaderButton>
     </Popover>
     <MenuContainer theme="dark" mode="horizontal">
@@ -119,6 +147,7 @@ const Header = ({
 Header.defaultProps = {
   user: {},
   onUserClick: () => {},
+  onTokenSearch: () => {},
 };
 
-export default Header;
+export default enhance(Header);

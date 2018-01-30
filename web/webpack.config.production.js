@@ -28,6 +28,7 @@ module.exports = merge(config, {
     }),
     new webpack.ProvidePlugin({
       React: 'react',
+      BigNumber: 'bignumber.js',
     }),
     new webpack.NamedModulesPlugin(),
     new ExtractTextPlugin({

@@ -29,13 +29,14 @@ export default class NumberInput extends Component<Props> {
       meta: {
         touched,
         error,
+        active,
       },
     } = this.props;
     return (
       <Form.Item
         label={label}
-        validateStatus={`${(error && touched) ? 'error' : ''}`}
-        help={`${(error && touched) ? error : ''}`}
+        validateStatus={`${(error && touched && active) ? 'error' : ''}`}
+        help={`${(error && touched && active) ? error : ''}`}
       >
         <InputNumber
           {...input}

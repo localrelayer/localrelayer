@@ -32,3 +32,17 @@ export function setCurrentNetwork(network) {
     payload: network,
   };
 }
+
+export function setTokens(tokens) {
+  return {
+    type: types.SET_TOKENS,
+    payload: tokens,
+  };
+}
+
+export function updateToken({ tokenAddress, field, value }) {
+  return {
+    type: types.UPDATE_TOKEN,
+    payload: { tokenAddress, field, value },
+  };
+}

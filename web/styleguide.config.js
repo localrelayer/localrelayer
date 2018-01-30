@@ -2,6 +2,8 @@
 const ignoredComponents = [
   'index',
   'BuySellForm',
+  'WrapForm',
+  'TradingChart'
 ];
 
 module.exports = {
