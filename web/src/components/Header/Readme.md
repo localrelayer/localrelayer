@@ -13,8 +13,10 @@ Examples:
       onUserClick={(user) => console.log(user)}
       user={testUser}
       tokens={tokensMock}
-      selectedTokenId={state.selectedTokenId}
-      onTokenSelect={record => setState({ selectedTokenId: record.id })}
+      selectedToken={state.selectedToken || {}}
+      tokenPair={state.tokenPair || {}}
+      onTokenSelect={record => setState({ selectedToken: record })}
+      onPairSelect={record => setState({ tokenPair: record })}
     />
   </div>
 ```

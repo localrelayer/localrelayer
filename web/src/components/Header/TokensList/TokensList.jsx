@@ -1,7 +1,8 @@
 // @flow
 import React from 'react';
 import {
-  Table,
+  Input,
+  Radio,
 } from 'antd';
 
 import type {
@@ -10,74 +11,76 @@ import type {
 } from 'react';
 import type {
   Tokens,
+  Token,
 } from 'instex-core/types';
 
 import {
   TokenListContainer,
+  InputContainer,
+  TableContainer,
 } from './styled';
 import {
   Colored,
 } from '../../SharedStyles';
 
+const RadioButton = Radio.Button;
+const RadioGroup = Radio.Group;
 
 type Props = {
   /** List of all orders */
   tokens: Tokens,
   /** Selected token */
-  selectedTokenId: ?string,
+  selectedToken: Token,
+  /** Selected token pair */
+  tokenPair: Token,
   /**
    * Function that is called whenever token select
    * */
   onSelect: Function,
+  /**
+   * Function that is called when searching token
+   * */
+  onSearch: Function,
+  /** Function that is called whenever pair select */
+  onPairSelect: Function,
 };
 
-const getColumns = (onSelect, selectedTokenId) => [
-  {
-    title: 'Coin',
-    dataIndex: 'symbol',
-    key: 'symbol',
+const getColumns = (onSelect, selectedToken, selectedPair) => [{
+  title: 'Coin',
+  dataIndex: 'symbol',
+  key: 'symbol',
+  render: text => <a>{text}</a>,
+},
+{
+  title: 'Price',
+  dataIndex: `trading[${selectedPair.symbol}].lastPrice`,
+  key: 'lastPrice',
+  render: text => text || '--',
+},
+{
+  title: 'Volume',
+  dataIndex: `trading[${selectedPair.symbol}].volume`,
+  key: 'volume',
+  render: text => text || '--',
+  sorter: (a, b) => {
+    const volumeA = a.trading[selectedPair.symbol] ? a.trading[selectedPair.symbol].volume : 0;
+    const volumeB = b.trading[selectedPair.symbol] ? b.trading[selectedPair.symbol].volume : 0;
+    return volumeA - volumeB;
   },
-  {
-    title: 'Price',
-    dataIndex: 'highPrice',
-    key: 'highPrice',
+},
+{
+  title: 'Change',
+  dataIndex: `trading[${selectedPair.symbol}].change24Hour`,
+  key: 'change24Hour',
+  render: (text) => {
+    if (!text) return '--';
+    return text > 0 ? (
+      <Colored color="green">{`+${text}%`}</Colored>
+    ) : (
+      <Colored color="red">{`${text}%`}</Colored>
+    );
   },
-  {
-    title: 'Volume',
-    dataIndex: 'volume',
-    key: 'volume',
-    sorter: (a, b) => a.volume - b.volume,
-  },
-  {
-    title: 'Change',
-    dataIndex: 'change24Hour',
-    key: 'change24Hour',
-    render: text =>
-      (text > 0 ? (
-        <Colored color="green">{`+${text}%`}</Colored>
-      ) : (
-        <Colored color="red">{`${text}%`}</Colored>
-      )),
-  },
-  {
-    title: '',
-    dataIndex: '',
-    key: 'x',
-    render: (text, record) =>
-      (!selectedTokenId || selectedTokenId !== record.id) &&
-        (
-          <a
-            href="#"
-            onClick={(ev) => {
-              ev.preventDefault();
-              onSelect(record);
-            }}
-          >
-            Select
-          </a>
-        ),
-  },
-];
+}];
 
 /**
  * Tokens list
@@ -87,16 +90,40 @@ const getColumns = (onSelect, selectedTokenId) => [
 
 const TokensList: StatelessFunctionalComponent<Props> = ({
   tokens,
-  selectedTokenId,
+  selectedToken,
   onSelect,
+  onSearch,
+  onPairSelect,
+  tokenPair,
 }: Props): Node =>
   <TokenListContainer>
-    <Table
+    <InputContainer>
+      <Input
+        autoFocus
+        placeholder="Search token"
+        onChange={e => onSearch(e.target.value)}
+      />
+      <RadioGroup
+        onChange={(e) => {
+          const pair = tokens.find(token => token.symbol === e.target.value) || {};
+          onPairSelect(pair);
+        }}
+        value={tokenPair.symbol}
+      >
+        <RadioButton value="WETH">WETH</RadioButton>
+        <RadioButton value="DAI">DAI</RadioButton>
+        { /* <RadioButton value="USDT">USDT</RadioButton> */ }
+      </RadioGroup>
+    </InputContainer>
+    <TableContainer
       size="small"
       rowKey="id"
       bordered={false}
-      columns={getColumns(onSelect, selectedTokenId)}
+      columns={getColumns(onSelect, selectedToken, tokenPair)}
       dataSource={tokens}
+      onRow={record => ({
+        onClick: () => onSelect(record),
+      })}
     />
   </TokenListContainer>;
 

@@ -1,5 +1,11 @@
 import styled from 'styled-components';
-import { Card, Table } from 'antd';
+import {
+  Card,
+  Table,
+  Input,
+} from 'antd';
+
+const InputGroup = Input.Group;
 
 export const Title = styled.div`
   font-size: 1.3em;
@@ -8,7 +14,7 @@ export const Title = styled.div`
 `;
 
 export const CardContainer = styled(Card)`
-  width: 400px;
+  max-width: 400px;
   padding: 0;
   & > .ant-card-head {
     border: 1px solid #e8e8e8;
@@ -34,6 +40,17 @@ export const TableContainer = styled(Table)`
   }
 `;
 
-export const SmallText = styled.span`
-  font-size: 0.7rem;
+export const InputGroupContainer = styled(InputGroup)`
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 0;
+  & .ant-form-item {
+    flex: 0.8;
+    margin: 0;
+    margin-right: 15px;
+    display: flex;
+    align-items: center;
+  }
 `;
+

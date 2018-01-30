@@ -22,6 +22,8 @@ type Props = {
   buyOrders: Orders,
   /** Sell orders */
   sellOrders: Orders,
+  /** Fills order (zrx) */
+  fillOrder: Function,
 };
 
 const columns = {
@@ -76,17 +78,20 @@ const columns = {
 const OrderBook: StatelessFunctionalComponent<Props> = ({
   buyOrders,
   sellOrders,
+  fillOrder,
 }: Props): Node => (
   <OrderBookContainer>
     <OrdersList
       data={sellOrders}
       title="Sell orders"
       columns={columns.sell}
+      onClick={fillOrder}
     />
     <OrdersList
       data={buyOrders}
       title="Buy orders"
       columns={columns.buy}
+      onClick={fillOrder}
     />
   </OrderBookContainer>
 );

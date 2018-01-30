@@ -2,14 +2,13 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import { persistState } from 'redux-devtools';
 import createSagaMiddleware, { END } from 'redux-saga';
 import { composeWithDevTools } from 'redux-devtools-extension';
-import logger from 'redux-logger';
 
 import rootReducer from '../reducers';
 
 /* eslint-disable no-underscore-dangle */
 /* eslint-enable no-underscore-dangle */
 const sagaMiddleware = createSagaMiddleware();
-const middleware = [sagaMiddleware, logger].filter(Boolean);
+const middleware = [sagaMiddleware].filter(Boolean);
 
 const composeEnhancers = composeWithDevTools({
 

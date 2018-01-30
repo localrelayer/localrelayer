@@ -5,11 +5,21 @@ import type {
   Node,
   StatelessFunctionalComponent,
 } from 'react';
+import {
+  withState,
+} from 'recompose';
 
 import BuySellForm from './BuySellForm';
 import { CardContainer } from './styled';
 
-type Props = {};
+type Props = {
+  /** Called on form submit */
+  onSubmit: Function,
+  /** Called on tab change */
+  changeActiveTab: Function,
+  /** Active tab */
+  activeTab: string
+};
 
 const tabList = [
   {
@@ -28,12 +38,21 @@ const tabList = [
  * @author [Vladimir Pal](https://github.com/VladimirPal)
  */
 
-const BuySell: StatelessFunctionalComponent<Props> = (): Node =>
+const enhance = withState('activeTab', 'changeActiveTab', 'buy');
+
+const BuySell: StatelessFunctionalComponent<Props> = ({
+  onSubmit,
+  changeActiveTab,
+  activeTab,
+}: Props): Node =>
   <CardContainer
     title="Create Order"
     tabList={tabList}
+    onTabChange={changeActiveTab}
   >
-    <BuySellForm />
+    <BuySellForm
+      onSubmit={values => onSubmit({ ...values, type: activeTab })}
+    />
   </CardContainer>;
 
-export default BuySell;
+export default enhance(BuySell);

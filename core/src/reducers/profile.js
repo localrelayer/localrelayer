@@ -36,6 +36,22 @@ export default function profileReducer(state = initialState, action) {
         ...state,
         network: action.payload,
       };
+    case types.SET_TOKENS:
+      return {
+        ...state,
+        tokens: action.payload,
+      };
+    case types.UPDATE_TOKEN: {
+      const { tokenAddress, field, value } = action.payload;
+      return {
+        ...state,
+        tokens: state.tokens.map((token) => {
+          if (token.address === tokenAddress) {
+            return { ...token, [field]: value };
+          } return token;
+        }),
+      };
+    }
     case types.CLEAR_ALL_REDUCERS:
       return initialState;
     default:
