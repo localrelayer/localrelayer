@@ -18,6 +18,7 @@
     "ramda": "0.25.0",
     "react": "^16.2.0",
     "react-redux": "^5.0.6",
+    "react-router-redux": "^5.0.0-alpha.9",
     "recompose": "^0.26.0",
     "redux": "3.7.2",
     "redux-form": "^7.2.1",

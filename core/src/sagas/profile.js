@@ -3,11 +3,14 @@ import {
   call,
   put,
   cps,
-  takeEvery,
+  takeLatest,
 } from 'redux-saga/effects';
 import {
   delay,
 } from 'redux-saga';
+import {
+  push,
+} from 'react-router-redux';
 import {
   uniqBy,
 } from 'ramda';
@@ -76,8 +79,15 @@ export function* runLoadUser() {
   }
 }
 
+export function* changeToken() {
+  const currentToken = yield select(getCurrentToken);
+  const currentPair = yield select(getCurrentPair);
+  yield put(push(`${currentToken.symbol}-${currentPair.symbol}`));
+  yield call(loadTokensBalance);
+}
+
 export function* listenCurrentTokenChange() {
-  yield takeEvery(types.SET_CURRENT_TOKEN, loadTokensBalance);
+  yield takeLatest([types.SET_CURRENT_TOKEN, types.SET_CURRENT_PAIR], changeToken);
 }
 
 

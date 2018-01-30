@@ -2,13 +2,17 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import { persistState } from 'redux-devtools';
 import createSagaMiddleware, { END } from 'redux-saga';
 import { composeWithDevTools } from 'redux-devtools-extension';
+import { routerMiddleware } from 'react-router-redux';
 
+import history from '../history';
 import rootReducer from '../reducers';
 
-/* eslint-disable no-underscore-dangle */
-/* eslint-enable no-underscore-dangle */
+const reduxRouterMiddleware = routerMiddleware(history);
 const sagaMiddleware = createSagaMiddleware();
-const middleware = [sagaMiddleware].filter(Boolean);
+const middleware = [
+  sagaMiddleware,
+  reduxRouterMiddleware,
+].filter(Boolean);
 
 const composeEnhancers = composeWithDevTools({
 
