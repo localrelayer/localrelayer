@@ -13,10 +13,6 @@ import {
 } from './resources';
 
 import {
-  listenCurrentTokenChange,
-} from './profile';
-
-import {
   listenCallContract,
 } from './ethereum';
 
@@ -31,7 +27,6 @@ const coreSagas = [
   fork(listenDeleteResourceRequest),
   fork(listenSaveResourceRequest),
   fork(listenCallContract),
-  fork(listenCurrentTokenChange),
   fork(listenNewOrder),
   fork(listFillOrder),
 ];

@@ -1,12 +1,16 @@
 import createSagaMiddleware, { END } from 'redux-saga';
 import { createStore, applyMiddleware, compose } from 'redux';
+import { routerMiddleware } from 'react-router-redux';
 
+import history from '../history';
 import rootReducer from '../reducers';
 
 
+const reduxRouterMiddleware = routerMiddleware(history);
 const sagaMiddleware = createSagaMiddleware();
 const middleware = [
   sagaMiddleware,
+  reduxRouterMiddleware,
 ].filter(Boolean);
 
 
