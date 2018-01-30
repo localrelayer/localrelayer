@@ -18,6 +18,9 @@ import {
   addResourceItem,
   sendNotification,
 } from '../actions';
+import {
+  loadTokensBalance,
+} from './profile';
 
 BigNumber.config({ EXPONENTIAL_AT: 50 });
 
@@ -43,13 +46,17 @@ export function* createOrder({
   if (type === 'sell') {
     makerTokenAddress = currentToken.address;
     takerTokenAddress = currentPair.address;
-    makerTokenAmount = ZeroEx.toBaseUnitAmount(new BigNumber(amount), 18);
-    takerTokenAmount = ZeroEx.toBaseUnitAmount(new BigNumber(price).times(amount), 18);
+    makerTokenAmount =
+      ZeroEx.toBaseUnitAmount(new BigNumber(amount), currentToken.decimals);
+    takerTokenAmount =
+      ZeroEx.toBaseUnitAmount(new BigNumber(price).times(amount), currentPair.decimals);
   } else if (type === 'buy') {
     makerTokenAddress = currentPair.address;
     takerTokenAddress = currentToken.address;
-    makerTokenAmount = ZeroEx.toBaseUnitAmount(new BigNumber(price).times(amount), 18);
-    takerTokenAmount = ZeroEx.toBaseUnitAmount(new BigNumber(amount), 18);
+    makerTokenAmount =
+      ZeroEx.toBaseUnitAmount(new BigNumber(price).times(amount), currentPair.decimals);
+    takerTokenAmount =
+      ZeroEx.toBaseUnitAmount(new BigNumber(amount), currentToken.decimals);
   }
   const zrxOrder = {
     maker: address,
@@ -90,6 +97,7 @@ export function* createOrder({
       attributes: order,
       relationships: {},
     }));
+    yield put(sendNotification({ message: 'Order created', type: 'success' }));
     yield put(reset('BuySellForm'));
   } catch (e) {
     yield put(sendNotification({ message: e.message, type: 'error' }));
@@ -99,18 +107,20 @@ export function* createOrder({
 
 export function* fillOrder({ payload }) {
   const { zeroEx } = window;
-  const currentToken = yield select(getCurrentToken);
-  const currentPair = yield select(getCurrentPair);
   const address = yield select(getAddress);
   try {
-    const txHash = yield zeroEx.exchange.fillOrderAsync(
+    const txHash = yield call(
+      [zeroEx.exchange, zeroEx.exchange.fillOrderAsync],
       payload,
       payload.takerTokenAmount,
       true, // shouldThrowOnInsufficientBalanceOrAllowance
       address, // takerAddress
     );
-    const txReceipt = yield zeroEx.awaitTransactionMinedAsync(txHash);
+    const txReceipt = yield call([zeroEx, zeroEx.awaitTransactionMinedAsync], txHash);
+    yield call(loadTokensBalance);
     console.log(txReceipt);
+
+    yield put(sendNotification({ message: 'Order filled', type: 'success' }));
   } catch (e) {
     yield put(sendNotification({ message: e.message, type: 'error' }));
     console.error(e);

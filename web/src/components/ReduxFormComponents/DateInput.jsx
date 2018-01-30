@@ -15,6 +15,7 @@ type Props = {
   placeholder: string,
   showTime: boolean,
   dateFormat: string,
+  disabledDate: string,
 };
 
 export default class DateInput extends Component<Props> {
@@ -30,6 +31,7 @@ export default class DateInput extends Component<Props> {
       placeholder,
       showTime,
       dateFormat,
+      disabledDate,
       meta: {
         touched,
         error,
@@ -42,6 +44,7 @@ export default class DateInput extends Component<Props> {
         help={`${(error && touched) ? error : ''}`}
       >
         <DatePicker
+          disabledDate={disabledDate}
           value={input.value}
           showTime={showTime}
           format={dateFormat}

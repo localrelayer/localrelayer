@@ -32,12 +32,11 @@ function* deposit() {
   const balance = yield select(getBalance);
   const ethToConvert = ZeroEx.toBaseUnitAmount(new BigNumber(amount), weth.decimals);
   try {
-    yield call(() => zeroEx.etherToken.depositAsync(
+    yield call([zeroEx.etherToken, zeroEx.etherToken.depositAsync],
       weth.address,
       ethToConvert,
       account,
-      { gasLimit: 100000 },
-    ));
+      { gasLimit: 100000 });
     yield put(sendNotification({ message: 'Deposit successful', type: 'success' }));
   } catch (e) {
     yield put(sendNotification({ message: e.message, type: 'error' }));
@@ -66,12 +65,11 @@ function* withdraw() {
 
   const ethToConvert = ZeroEx.toBaseUnitAmount(new BigNumber(amount), weth.decimals);
   try {
-    yield call(() => zeroEx.etherToken.withdrawAsync(
+    yield call([zeroEx.etherToken, zeroEx.etherToken.withdrawAsync],
       weth.address,
       ethToConvert,
       account,
-      { gasLimit: 100000 },
-    ));
+      { gasLimit: 100000 });
     yield put(sendNotification({ message: 'Withdraw successful', type: 'success' }));
   } catch (e) {
     yield put(sendNotification({ message: e.message, type: 'error' }));
@@ -94,12 +92,12 @@ function* setAllowance({ payload }) {
   const contractAddress = payload.token.address;
   const account = yield select(getAddress);
   try {
-    yield call(() =>
-      zeroEx.token.setUnlimitedProxyAllowanceAsync(
-        contractAddress,
-        account,
-        { gasLimit: 100000 },
-      ));
+    yield call(
+      [zeroEx.token, zeroEx.token.setUnlimitedProxyAllowanceAsync],
+      contractAddress,
+      account,
+      { gasLimit: 100000 },
+    );
   } catch (e) {
     yield put(sendNotification({ message: e.message, type: 'error' }));
     console.error(e);
