@@ -3,6 +3,7 @@ import {
   Card,
   Table,
   Input,
+  Form,
 } from 'antd';
 
 const InputGroup = Input.Group;
@@ -52,5 +53,9 @@ export const InputGroupContainer = styled(InputGroup)`
     display: flex;
     align-items: center;
   }
+`;
+
+export const FormContainer = styled(Form)`
+  padding: 20px 0 !important;
 `;
 

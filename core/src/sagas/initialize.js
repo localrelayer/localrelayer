@@ -1,9 +1,11 @@
+// @flow
 import {
   call,
   put,
   fork,
   select,
 } from 'redux-saga/effects';
+import type { Saga } from 'redux-saga';
 import {
   getLocation,
 } from 'react-router-redux';
@@ -24,7 +26,7 @@ import {
 import * as uiActions from '../actions/ui';
 import * as resourcesActions from '../actions/resources';
 
-export function* initialize() {
+export function* initialize(): Saga<void> {
   const responseTokens = yield call(
     fetchResourcesRequest,
     {

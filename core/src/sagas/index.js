@@ -1,3 +1,4 @@
+// @flow
 import {
   fork,
 } from 'redux-saga/effects';
@@ -18,7 +19,7 @@ import {
 
 import {
   listenNewOrder,
-  listFillOrder,
+  listenFillOrder,
 } from './orders';
 
 const coreSagas = [
@@ -28,7 +29,7 @@ const coreSagas = [
   fork(listenSaveResourceRequest),
   fork(listenCallContract),
   fork(listenNewOrder),
-  fork(listFillOrder),
+  fork(listenFillOrder),
 ];
 
 export default coreSagas;

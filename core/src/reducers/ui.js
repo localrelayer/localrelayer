@@ -4,6 +4,7 @@ const initialState = {
   currentPairId: null,
   currentTokenId: null,
   searchQuery: '',
+  isBalanceLoading: false,
 };
 
 export default function ui(state = initialState, action) {
@@ -22,6 +23,11 @@ export default function ui(state = initialState, action) {
       return {
         ...state,
         searchQuery: action.payload,
+      };
+    case types.SET_BALANCE_LOADING:
+      return {
+        ...state,
+        isBalanceLoading: action.payload,
       };
     case types.CLEAR_ALL_REDUCERS:
       return initialState;
