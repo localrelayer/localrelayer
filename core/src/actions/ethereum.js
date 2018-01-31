@@ -1,17 +1,13 @@
+// @flow
+
 import * as types from './types';
+import type { Token } from '../types';
 
-export const setWeb3 = web3 => ({
-  type: types.SET_WEB3,
-  payload: web3,
-});
-
-export const callContract = payload => ({
+export const callContract = (method: string, token: ?Token) => ({
   type: types.CALL_CONTRACT,
-  payload,
-});
-
-export const setAllowance = ({ token }) => ({
-  type: types.SET_ALLOWANCE,
   payload: token,
+  meta: {
+    method,
+  },
 });
 

@@ -4,10 +4,16 @@ import {
   put,
   call,
 } from 'redux-saga/effects';
+import {
+  delay,
+} from 'redux-saga';
+import type { Saga } from 'redux-saga';
 import { ZeroEx } from '0x.js';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
-import { reset } from 'redux-form';
+import {
+  reset,
+} from 'redux-form';
 import * as types from '../actions/types';
 import {
   getAddress,
@@ -21,17 +27,19 @@ import {
 import {
   loadTokensBalance,
 } from './profile';
+import type {
+  OrderData,
+  ZrxOrder,
+} from '../types';
 
 BigNumber.config({ EXPONENTIAL_AT: 50 });
 
 export function* createOrder({
-  payload: {
-    amount,
-    price,
-    exp,
-    type,
-  },
-}) {
+  amount,
+  price,
+  exp,
+  type,
+}: OrderData): Saga<*> {
   const { zeroEx } = window;
   const { NULL_ADDRESS } = ZeroEx;
   const EXCHANGE_ADDRESS = yield zeroEx.exchange.getContractAddress();
@@ -92,7 +100,7 @@ export function* createOrder({
     };
 
     yield put(addResourceItem({
-      resourceName: 'orders',
+      resourceName: "orders",
       id: orderHash,
       attributes: order,
       relationships: {},
@@ -105,7 +113,7 @@ export function* createOrder({
   }
 }
 
-export function* fillOrder({ payload }) {
+export function* fillOrder(payload: ZrxOrder): Saga<*> {
   const { zeroEx } = window;
   const address = yield select(getAddress);
   try {
@@ -116,9 +124,9 @@ export function* fillOrder({ payload }) {
       true, // shouldThrowOnInsufficientBalanceOrAllowance
       address, // takerAddress
     );
-    const txReceipt = yield call([zeroEx, zeroEx.awaitTransactionMinedAsync], txHash);
+    yield call([zeroEx, zeroEx.awaitTransactionMinedAsync], txHash);
+    yield call(delay, 12000);
     yield call(loadTokensBalance);
-    console.log(txReceipt);
 
     yield put(sendNotification({ message: 'Order filled', type: 'success' }));
   } catch (e) {
@@ -127,10 +135,11 @@ export function* fillOrder({ payload }) {
   }
 }
 
-export function* listenNewOrder() {
-  yield takeEvery(types.CREATE_ORDER, createOrder);
+export function* listenNewOrder(): Saga<*> {
+  yield takeEvery(types.CREATE_ORDER, action => createOrder(action.payload));
 }
 
-export function* listFillOrder() {
-  yield takeEvery(types.FILL_ORDER, fillOrder);
+export function* listenFillOrder(): Saga<*> {
+  yield takeEvery(types.FILL_ORDER, action => fillOrder(action.payload));
 }
+

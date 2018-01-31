@@ -15,6 +15,8 @@
     "bignumber.js": "5.0.0",
     "faker": "git://github.com/Marak/faker.js.git",
     "human-standard-token-abi": "1.0.2",
+    "moment": "^2.20.1",
+    "path-to-regexp": "^2.1.0",
     "ramda": "0.25.0",
     "react": "^16.2.0",
     "react-redux": "^5.0.6",
