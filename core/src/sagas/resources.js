@@ -3,6 +3,7 @@ import {
   call,
   put,
 } from 'redux-saga/effects';
+import createActionCreators from 'redux-resource-action-creators';
 
 import {
   putData,
@@ -16,18 +17,29 @@ import * as resourcesActions from '../actions/resources';
 export function* fetchResourcesRequest({
   payload: {
     resourceName,
+    list,
+    request,
     withDeleted,
     fetchQuery,
     additionalInclude,
   },
 }) {
+  const actions = createActionCreators('read', {
+    resourceName,
+    request,
+    list,
+  });
+  yield put(actions.pending());
+
   const response = yield call(apiCall, 'FILTER', {
     ...fetchQuery,
     additionalInclude,
     resourceName,
     withDeleted,
   });
-  yield putData(response);
+  yield put(actions.succeeded({
+    resources: response.data,
+  }));
   return response;
 }
 

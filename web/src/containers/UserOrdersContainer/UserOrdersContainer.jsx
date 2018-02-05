@@ -7,7 +7,6 @@ import {
   bindActionCreators,
 } from 'redux';
 
-
 import type {
   Node,
   StatelessFunctionalComponent,

@@ -39,6 +39,9 @@
     "redux-form": "7.2.0",
     "redux-logger": "3.0.6",
     "redux-saga": "0.16.0",
+    "redux-resource": "2.4.0",
+    "redux-resource-plugins": "2.1.0",
+    "redux-resource-action-creators": "1.0.0",
     "regenerator-runtime": "^0.11.1",
     "reselect": "3.0.1",
     "styled-components": "2.4.0"

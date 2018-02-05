@@ -1,8 +1,18 @@
 // @flow
 import React from 'react';
-import type { Node, StatelessFunctionalComponent } from 'react';
-import type { Token } from 'instex-core/types';
-import { Card, Avatar } from 'antd';
+
+import type {
+  Node,
+  StatelessFunctionalComponent,
+} from 'react';
+import type {
+  Token,
+} from 'instex-core/types';
+
+import {
+  Card,
+  Avatar,
+} from 'antd';
 import {
   Title,
   CardContainer,
@@ -10,7 +20,18 @@ import {
 } from './styled';
 import { Colored } from '../SharedStyles';
 
-const { Meta } = Card;
+const {
+  Meta,
+} = Card;
+
+const getTitle = (symbol, tokenPairSymbol, change24Hour, lastPrice) => (
+  <Title>
+    <div>
+      {symbol} / {tokenPairSymbol}{' '}
+    </div>
+    <div id="last-price">{lastPrice || 'No trades'}</div>
+  </Title>
+);
 
 type Props = {
   /** Token object */
@@ -75,12 +96,3 @@ const TokenCard: StatelessFunctionalComponent<Props> = ({
 };
 
 export default TokenCard;
-
-const getTitle = (symbol, tokenPairSymbol, change24Hour, lastPrice) => (
-  <Title>
-    <div>
-      {symbol} / {tokenPairSymbol}{' '}
-    </div>
-    <div id="last-price">{lastPrice || 'No trades'}</div>
-  </Title>
-);
