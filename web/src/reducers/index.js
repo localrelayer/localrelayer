@@ -8,9 +8,12 @@ import {
 import {
   reducers as coreReducers,
 } from 'instex-core';
-
+import {
+  routerReducer,
+} from 'react-router-redux';
 
 const rootReducer = combineReducers({
+  router: routerReducer,
   form: formReducer,
   orders: coreReducers.orders,
   tokens: coreReducers.tokens,

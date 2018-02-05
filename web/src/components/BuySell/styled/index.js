@@ -18,3 +18,17 @@ export const InputLabel = styled.label``;
 export const PlaceOrderButton = styled(Button)`
   width: 100%;
 `;
+
+export const LabelContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+export const LabelListContainer = styled.div`
+  & a {
+    text-decoration: underline;
+    margin: 2.5px;
+    opacity: 0.75;
+  }
+`;
+

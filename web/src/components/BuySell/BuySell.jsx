@@ -18,7 +18,11 @@ type Props = {
   /** Called on tab change */
   changeActiveTab: Function,
   /** Active tab */
-  activeTab: string
+  activeTab: string,
+  /** Token name for placeholder */
+  currentTokenName: string,
+  /** Pair name for placeholder */
+  currentPairName: string,
 };
 
 const tabList = [
@@ -44,6 +48,9 @@ const BuySell: StatelessFunctionalComponent<Props> = ({
   onSubmit,
   changeActiveTab,
   activeTab,
+  currentTokenName,
+  currentPairName,
+  fillField,
 }: Props): Node =>
   <CardContainer
     title="Create Order"
@@ -51,6 +58,10 @@ const BuySell: StatelessFunctionalComponent<Props> = ({
     onTabChange={changeActiveTab}
   >
     <BuySellForm
+      fillField={fillField}
+      type={activeTab}
+      currentTokenName={currentTokenName}
+      currentPairName={currentPairName}
       onSubmit={values => onSubmit({ ...values, type: activeTab })}
     />
   </CardContainer>;

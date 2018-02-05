@@ -1,3 +1,4 @@
+// @flow
 import {
   fork,
 } from 'redux-saga/effects';
@@ -13,16 +14,12 @@ import {
 } from './resources';
 
 import {
-  listenCurrentTokenChange,
-} from './profile';
-
-import {
   listenCallContract,
 } from './ethereum';
 
 import {
   listenNewOrder,
-  listFillOrder,
+  listenFillOrder,
 } from './orders';
 
 const coreSagas = [
@@ -31,9 +28,8 @@ const coreSagas = [
   fork(listenDeleteResourceRequest),
   fork(listenSaveResourceRequest),
   fork(listenCallContract),
-  fork(listenCurrentTokenChange),
   fork(listenNewOrder),
-  fork(listFillOrder),
+  fork(listenFillOrder),
 ];
 
 export default coreSagas;

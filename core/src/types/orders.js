@@ -51,3 +51,10 @@ export type ZrxOrder = {
   takerTokenAmount: string,
   expirationUnixTimestampSec: string,
 }
+
+export type OrderData = {
+  amount: number,
+  exp: Date,
+  price: number,
+  type: string,
+}

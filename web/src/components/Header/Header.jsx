@@ -110,7 +110,6 @@ const Header = ({
       </HeaderButton>
     </Popover>
     <MenuContainer theme="dark" mode="horizontal">
-      <Menu.Item key="dashboard">Dashboard</Menu.Item>
       <Menu.Item key="help">Help</Menu.Item>
     </MenuContainer>
     <AlignRight>

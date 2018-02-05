@@ -25,6 +25,8 @@ type Props = {
   wrap: () => void,
   /** Function that is called by unwrap button */
   unwrap: () => void,
+  /** Is something loading */
+  isBalanceLoading: boolean
 };
 
 const getColumns = onToggle => [
@@ -74,6 +76,7 @@ const UserBalance = ({
   balance,
   wrap,
   unwrap,
+  isBalanceLoading,
 }: Props): Node => (
   <Element name="userBalance">
     <CardContainer
@@ -85,9 +88,11 @@ const UserBalance = ({
         wrap={wrap}
         unwrap={unwrap}
         onSubmit={() => {}}
+        isLoading={isBalanceLoading}
       />
       <Card.Grid>
         <TableContainer
+          loading={isBalanceLoading}
           onRow={record => ({
           onClick: () => onTokenClick(record),
         })}

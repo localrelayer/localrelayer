@@ -36,3 +36,16 @@ export function sendNotification({ type, message }: Notifiction) {
     },
   };
 }
+
+export const setBalanceLoading = (state: boolean) => ({
+  type: types.SET_BALANCE_LOADING,
+  payload: state,
+});
+
+export const fillField = (field: string, values: Object) => ({
+  type: types.FILL_FIELD,
+  payload: values,
+  meta: {
+    field,
+  },
+});

@@ -44,6 +44,7 @@ export default class DateInput extends Component<Props> {
         help={`${(error && touched) ? error : ''}`}
       >
         <DatePicker
+          style={{ width: '100%' }}
           disabledDate={disabledDate}
           value={input.value}
           showTime={showTime}
