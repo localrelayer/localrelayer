@@ -22,6 +22,9 @@
     "redux": "3.7.2",
     "redux-form": "^7.2.1",
     "redux-saga": "0.16.0",
+    "redux-resource": "2.4.0",
+    "redux-resource-plugins": "2.1.0",
+    "redux-resource-action-creators": "1.0.0",
     "reselect": "3.0.1",
     "web3": "1.0.0-beta.29"
   },

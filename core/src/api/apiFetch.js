@@ -61,12 +61,30 @@ export function apiFetch({
   url,
   meta,
 }) {
-  switch (url) {
-    case `${config.apiUrl}/tokens/filter`:
-      return fakeTokens();
-    case `${config.apiUrl}/orders/filter`:
-      return fakeOrders(meta.requestData.filter['token.id'].eq);
-    default:
-      return null;
+  if (config.useMock) {
+    switch (url) {
+      case `${config.apiUrl}/tokens/filter`:
+        return fakeTokens();
+      case `${config.apiUrl}/orders/filter`:
+        return fakeOrders(meta.requestData.filter['token.id'].eq);
+      default:
+        return null;
+    }
+  } else {
+    return fetch(
+      url,
+      {
+        ...meta,
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      },
+    ).then((response) => {
+      if (response.headers.get('Content-Type') === 'application/json; charset=utf-8') {
+        return response.json();
+      }
+      return response;
+    });
   }
 }

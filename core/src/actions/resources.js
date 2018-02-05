@@ -16,6 +16,8 @@ import type {
 export const fetchResourcesRequest = (
   payload: {
     resourceName: ResourceName,
+    list: string,
+    request: string,
     withDeleted: boolean,
     fetchQuery: any,
   },

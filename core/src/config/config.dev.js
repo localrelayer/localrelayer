@@ -1,3 +1,4 @@
 module.exports = {
-  apiUrl: "http://instex.io/api"
+  apiUrl: 'http://localhost:3001/api',
+  useMock: false,
 };

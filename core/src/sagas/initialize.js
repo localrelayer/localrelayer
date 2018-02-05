@@ -16,10 +16,13 @@ import { runLoadUser } from './profile';
 import * as uiActions from '../actions/ui';
 import * as resourcesActions from '../actions/resources';
 
+
 export function* initialize() {
   yield call(loadWeb3);
   if (!window.web3) {
-    yield put(ProfileActions.setConnectionStatus(connectionStatuses.NOT_CONNECTED));
+    yield put(ProfileActions.setConnectionStatus(
+      connectionStatuses.NOT_CONNECTED,
+    ));
   } else {
     yield fork(runLoadUser);
   }
@@ -28,22 +31,33 @@ export function* initialize() {
     {
       payload: {
         resourceName: 'tokens',
+        list: 'allTokens',
+        request: 'fetchTokens',
         withDeleted: false,
+        fetchQuery: {
+          sortBy: 'symbol',
+        },
       },
     },
   );
-  const wethToken = responseTokens.data.find(token => token.attributes.symbol === 'WETH');
-  const zrxToken = responseTokens.data.find(token => token.attributes.symbol === 'ZRX');
+  const wethToken = responseTokens.data.find(
+    token => token.attributes.symbol === 'WETH',
+  );
+  const zrxToken = responseTokens.data.find(
+    token => token.attributes.symbol === 'ZRX',
+  );
   yield put(uiActions.setCurrentToken(zrxToken.id));
   yield put(uiActions.setCurrentPair(wethToken.id));
   yield put(
     resourcesActions.fetchResourcesRequest({
       resourceName: 'orders',
+      list: 'currentOrders',
+      request: 'fetchOrders',
       withDeleted: false,
       fetchQuery: {
         filterCondition: {
           filter: {
-            'token.id': {
+            'token.address': {
               eq: zrxToken.id,
             },
           },

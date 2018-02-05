@@ -12,8 +12,8 @@ import {
 
 const rootReducer = combineReducers({
   form: formReducer,
-  ...coreReducers.resourcesReducers,
-  ethereum: coreReducers.ethereum,
+  orders: coreReducers.orders,
+  tokens: coreReducers.tokens,
   profile: coreReducers.profile,
   ui: coreReducers.ui,
 });

@@ -2,40 +2,53 @@
 import {
   createSelector,
 } from 'reselect';
-import * as R from 'ramda';
-
-import {
-  resources,
-} from '../constants';
-import {
-  capitalizeFirstLetter as cfl,
-} from '../utils';
 
 
-const getResourceMapSelectorCreator = resourceName => state => state[resourceName].byId;
-const getResourceIdsSelectorCreator = resourceName => state => state[resourceName].allIds;
+export const getResourceIds = (
+  resourceName: string,
+  listName: string,
+) =>
+  (state: any) =>
+    state[resourceName].lists[listName];
 
-const commonSelectors = resources.reduce(
-  (acc, resourceName) =>
-    ({
-      ...acc,
-      [`get${cfl(resourceName)}Map`]: getResourceMapSelectorCreator(resourceName),
-      [`get${cfl(resourceName)}Ids`]: getResourceIdsSelectorCreator(resourceName),
-    }),
-  {},
-);
+export const getResourceMap = (resourceName: string) =>
+  (state: any) =>
+    state[resourceName].resources;
 
-module.exports = resources.reduce(
-  (acc, resourceName) =>
-    ({
-      ...acc,
-      [`get${cfl(resourceName)}`]: createSelector(
-        [acc[`get${cfl(resourceName)}Map`], acc[`get${cfl(resourceName)}Ids`]],
-        (map, ids) => ids.map(id => ({
-          ...R.path([id, 'attributes'], map),
-          id,
-        })),
-      ),
-    }),
-  commonSelectors,
-);
+export const getResourceMeta = (
+  resourceName: string,
+  metaKey: string,
+) =>
+  (state: any) =>
+    state[resourceName].meta[metaKey];
+
+const resourceSelectors = {};
+
+export const getResourceMappedList = (
+  resourceName: string,
+  listName: string,
+) => {
+  if (resourceSelectors[resourceName]) {
+    return resourceSelectors[`${resourceName}${listName}`];
+  }
+  resourceSelectors[`${resourceName}${listName}`] =
+    createSelector(
+      [
+        getResourceIds(resourceName, listName),
+        getResourceMap(resourceName),
+      ],
+      (ids = [], map) => ids.map(id => ({
+        ...map[id].attributes,
+        relationships: map[id].relationships,
+        id,
+      })),
+    );
+  return resourceSelectors[`${resourceName}${listName}`];
+};
+
+export const getResourceItemBydId = (
+  resourceName: string,
+  id: string,
+) =>
+  (state: any) =>
+    state[resourceName].resources[id] || null;

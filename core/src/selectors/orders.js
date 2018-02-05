@@ -4,13 +4,13 @@ import {
 } from 'reselect';
 
 import {
-  getOrders,
-  getTokensMap,
+  getResourceMap,
+  getResourceMappedList,
 } from './resources';
 
 
 export const getBuyOrders = createSelector(
-  getOrders,
+  getResourceMappedList('orders', 'currentOrders'),
   orders =>
     orders.filter(
       order =>
@@ -19,7 +19,7 @@ export const getBuyOrders = createSelector(
 );
 
 export const getSellOrders = createSelector(
-  getOrders,
+  getResourceMappedList('orders', 'currentOrders'),
   orders =>
     orders.filter(
       order =>
@@ -28,28 +28,28 @@ export const getSellOrders = createSelector(
 );
 
 export const getCompletedOrders = createSelector(
-  getOrders,
+  getResourceMappedList('orders', 'currentOrders'),
   orders =>
     orders.filter(order => order.completed_at),
 );
 
 export const geUserOrders = createSelector(
   [
-    getOrders,
-    getTokensMap,
+    getResourceMappedList('orders', 'currentOrders'),
+    getResourceMap('tokens'),
   ],
   (orders, tokensMap) =>
     orders.map(order =>
       ({
         ...order,
-        tokenSymbol: tokensMap[order.token_id].attributes.symbol,
+        tokenSymbol: tokensMap[order.relationships.token.data.id].attributes.symbol,
       })),
 );
 
 export const getUserOrders = createSelector(
   [
-    getOrders,
-    getTokensMap,
+    getResourceMappedList('orders', 'currentOrders'),
+    getResourceMap('tokens'),
   ],
   (
     orders,
@@ -58,7 +58,7 @@ export const getUserOrders = createSelector(
     orders.map(order =>
       ({
         ...order,
-        tokenSymbol: tokensMap[order.token_id].attributes.symbol,
+        tokenSymbol: tokensMap[order.relationships.token.data.id].attributes.symbol,
       })),
 );
 
