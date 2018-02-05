@@ -5,7 +5,6 @@ import {
   Field,
 } from 'redux-form';
 import {
-  Form,
   Button,
 } from 'antd';
 
@@ -18,7 +17,10 @@ import {
   NumberInput,
 } from '../ReduxFormComponents';
 
-import { InputGroupContainer } from './styled';
+import {
+  InputGroupContainer,
+  FormContainer,
+} from './styled';
 
 const validate = (values) => {
   const errors = {};
@@ -34,6 +36,7 @@ type Props = {
   wrap: () => void,
   unwrap: () => void,
   handleSubmit: (Function) => void,
+  isLoading: boolean,
 };
 
 /**
@@ -46,19 +49,20 @@ const WrapForm: StatelessFunctionalComponent<Props> = ({
   wrap,
   unwrap,
   handleSubmit,
+  isLoading,
 }: Props): Node => (
-  <Form onSubmit={handleSubmit}>
+  <FormContainer onSubmit={handleSubmit}>
     <InputGroupContainer compact>
       <Field
         name="amount"
         component={NumberInput}
       />
       <Button.Group>
-        <Button onClick={handleSubmit(unwrap)}>Withdraw</Button>
-        <Button type="primary" onClick={handleSubmit(wrap)}>Deposit</Button>
+        <Button disabled={isLoading} onClick={handleSubmit(unwrap)}>Withdraw</Button>
+        <Button disabled={isLoading} onClick={handleSubmit(wrap)}>Deposit</Button>
       </Button.Group>
     </InputGroupContainer>
-  </Form>
+  </FormContainer>
 );
 
 export default reduxForm({

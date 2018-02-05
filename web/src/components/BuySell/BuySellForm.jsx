@@ -20,11 +20,17 @@ import {
 } from '../ReduxFormComponents';
 import {
   PlaceOrderButton,
+  LabelContainer,
+  LabelListContainer,
 } from './styled';
 
 
 type Props = {
   handleSubmit: () => void,
+  currentTokenName: string,
+  currentPairName: string,
+  type: string,
+  fillField: Function,
 };
 
 function disabledDate(current) {
@@ -41,31 +47,65 @@ function disabledDate(current) {
 
 const BuySellForm: StatelessFunctionalComponent<Props> = ({
   handleSubmit,
+  currentTokenName,
+  currentPairName,
+  type,
+  fillField,
 }: Props): Node => (
-  <Form onSubmit={handleSubmit}>
-    <Field
-      id="amount"
-      type="text"
-      name="amount"
-      label="Amount"
-      placeholder="Amount"
-      component={NumberInput}
-    />
+  <Form
+    layout="vertical"
+    onSubmit={handleSubmit}
+  >
     <Field
       id="price"
       type="text"
       name="price"
-      label="Price"
-      placeholder="Price"
+      label={
+        <LabelContainer>
+          <div>Price</div>
+          <LabelListContainer>
+            <a onClick={() => fillField('price', { orderType: 'buy' })}>Buy</a>
+            <a onClick={() => fillField('price', { orderType: 'sell' })}>Sell</a>
+          </LabelListContainer>
+        </LabelContainer>
+  }
+      placeholder={currentPairName}
+      component={NumberInput}
+    />
+    <Field
+      id="amount"
+      type="text"
+      name="amount"
+      label={
+        <LabelContainer>
+          <div>Amount</div>
+          <LabelListContainer>
+            <a onClick={() => fillField('amount', { orderType: type, coef: '0.25' })}>25%</a>
+            <a onClick={() => fillField('amount', { orderType: type, coef: '0.50' })}>50%</a>
+            <a onClick={() => fillField('amount', { orderType: type, coef: '0.75' })}>75%</a>
+            <a onClick={() => fillField('amount', { orderType: type, coef: '1' })}>100%</a>
+          </LabelListContainer>
+        </LabelContainer>
+      }
+      placeholder={currentTokenName}
       component={NumberInput}
     />
     <Field
       id="exp"
       type="text"
       name="exp"
-      label="Order expiration"
+      label={
+        <LabelContainer>
+          <div>Order expiration</div>
+          <LabelListContainer>
+            <a onClick={() => fillField('exp', { period: ['1', 'day'] })}>Day</a>
+            <a onClick={() => fillField('exp', { period: ['7', 'days'] })}>Week</a>
+            <a onClick={() => fillField('exp', { period: ['1', 'month'] })}>Month</a>
+          </LabelListContainer>
+        </LabelContainer>
+      }
       placeholder="Select time"
-      dateFormat="YYYY-MM-DD HH:mm:ss"
+      dateFormat="DD/MM/YYYY HH:mm"
       disabledDate={disabledDate}
       component={DateInput}
     />

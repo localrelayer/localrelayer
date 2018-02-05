@@ -1,13 +1,6 @@
 // @flow
 import * as types from './types';
-import type { ZrxOrder } from '../types';
-
-type OrderData = {
-  amount: number,
-  exp: Date,
-  price: number,
-  type: string,
-}
+import type { ZrxOrder, OrderData } from '../types';
 
 export function cancelOrder(orderId: string) {
   return {
