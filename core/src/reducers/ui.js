@@ -9,25 +9,10 @@ const initialState = {
 
 export default function ui(state = initialState, action) {
   switch (action.type) {
-    case types.SET_CURRENT_TOKEN:
+    case types.SET_UI_STATE:
       return {
         ...state,
-        currentTokenId: action.payload,
-      };
-    case types.SET_CURRENT_PAIR:
-      return {
-        ...state,
-        currentPairId: action.payload,
-      };
-    case types.SET_SEARCH_QUERY:
-      return {
-        ...state,
-        searchQuery: action.payload,
-      };
-    case types.SET_BALANCE_LOADING:
-      return {
-        ...state,
-        isBalanceLoading: action.payload,
+        [action.payload.key]: action.payload.value,
       };
     case types.CLEAR_ALL_REDUCERS:
       return initialState;

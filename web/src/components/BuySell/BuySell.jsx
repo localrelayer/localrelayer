@@ -23,6 +23,8 @@ type Props = {
   currentTokenName: string,
   /** Pair name for placeholder */
   currentPairName: string,
+  /** Fill field with presetted value */
+  fillField: () => void,
 };
 
 const tabList = [

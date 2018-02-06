@@ -25,7 +25,7 @@ export const getColumns = (onCancel: Function) => [
     dataIndex: 'action',
     key: 'action',
     render: (text: string, record: Order) => (
-      <Colored color={record.action === 'sell' ? 'red' : 'green'}>{text}</Colored>
+      <Colored color={record.type === 'sell' ? 'red' : 'green'}>{text}</Colored>
     ),
   },
   {

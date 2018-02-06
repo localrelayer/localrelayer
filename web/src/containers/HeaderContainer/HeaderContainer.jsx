@@ -3,9 +3,8 @@ import React from 'react';
 import {
   connect,
 } from 'react-redux';
-import {
-  bindActionCreators,
-} from 'redux';
+import type { MapStateToProps } from 'react-redux';
+
 
 import type {
   Node,
@@ -18,9 +17,7 @@ import type {
 } from 'instex-core/types';
 
 import {
-  setCurrentToken,
-  setCurrentPair,
-  setSearchQuery,
+  setUiState,
 } from 'instex-core/actions';
 import {
   getFilteredTokens,
@@ -35,10 +32,8 @@ type Props = {
   user: User,
   tokens: Tokens,
   selectedToken: Token,
-  setCurrentTokenAction: (tokenId: string) => void,
-  setCurrentPairAction: (tokenId: string) => void,
-  setSearchQueryAction: (searchQuery: string) => void,
-  tokenPair: Token
+  tokenPair: Token,
+  dispatch: Dispatch,
 };
 
 const HeaderContainer: StatelessFunctionalComponent<Props> =
@@ -46,33 +41,24 @@ const HeaderContainer: StatelessFunctionalComponent<Props> =
     user,
     tokens,
     selectedToken,
-    setCurrentTokenAction,
-    setCurrentPairAction,
-    setSearchQueryAction,
     tokenPair,
+    dispatch,
   }: Props): Node =>
     <Header
       user={user}
       tokens={tokens}
       tokenPair={tokenPair}
       selectedToken={selectedToken}
-      onTokenSelect={token => setCurrentTokenAction(token.id)}
-      onPairSelect={token => setCurrentPairAction(token.id)}
-      onTokenSearch={setSearchQueryAction}
+      onTokenSelect={token => dispatch(setUiState('currentTokenId', token.id))}
+      onPairSelect={token => dispatch(setUiState('currentPairId', token.id))}
+      onTokenSearch={query => dispatch(setUiState('searchQuery', query))}
     />;
 
-const mapStateToProps = state => ({
+const mapStateToProps: MapStateToProps<*, *, *> = state => ({
   tokens: getFilteredTokens(state),
   user: state.profile,
   selectedToken: getCurrentToken(state),
   tokenPair: getCurrentPair(state),
 });
 
-const mapDispatchToProps = dispatch =>
-  bindActionCreators({
-    setCurrentTokenAction: setCurrentToken,
-    setCurrentPairAction: setCurrentPair,
-    setSearchQueryAction: setSearchQuery,
-  }, dispatch);
-
-export default connect(mapStateToProps, mapDispatchToProps)(HeaderContainer);
+export default connect(mapStateToProps)(HeaderContainer);

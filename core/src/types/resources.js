@@ -45,15 +45,14 @@ export type FetchResourceRequestAction =
     },
   |};
 
-export type SaveResourceRequestAction = {|
-  type: string,
-  payload: {
-    resourceName: ResourceName,
-    data: *, // TODO
-    closeModal: boolean,
-    destroyForm: string,
-  },
-|};
+export type SaveResourceRequestAction =
+  {|
+    type: string,
+    payload: {
+      resourceName: ResourceName,
+      data: *,
+    },
+  |};
 
 export type DeleteResourceRequestAction = {|
   type: string,

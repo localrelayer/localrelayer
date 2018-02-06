@@ -10,7 +10,7 @@ export type OrderAttributes = {
   price: string,
   amount: string,
   total: string,
-  action: string,
+  type: string,
   expires: Date,
   completed_at?: Date,
 };

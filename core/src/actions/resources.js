@@ -18,6 +18,7 @@ export const fetchResourcesRequest = (
     resourceName: ResourceName,
     list: string,
     request: string,
+    mergeResources: ?boolean,
     withDeleted: boolean,
     fetchQuery: any,
   },
@@ -43,8 +44,8 @@ export const saveResourceRequest = (
   payload: {
     resourceName: ResourceName,
     data: any,
-    closeModal: boolean,
-    destroyForm: string,
+    list: string,
+    request: string,
   },
 ): SaveResourceRequestAction =>
   ({

@@ -23,7 +23,7 @@ export function saveResource({
       relationships,
     },
   };
-  return fetch({
+  return apiFetch({
     url: `${config.apiUrl}/${resourceName}${isCreation ? '' : `/${id}`}`,
     meta: {
       method: isCreation ? 'POST' : 'PATCH',

@@ -2,8 +2,8 @@ import {
   createSelector,
 } from 'reselect';
 import {
-  getResourceMap,
   getResourceMappedList,
+  getResourceMap,
 } from './resources';
 import {
   getCurrentTokenId,
@@ -14,30 +14,26 @@ import {
 
 export const getCurrentToken = createSelector(
   [
-    getResourceMap('tokens'),
     getCurrentTokenId,
+    getResourceMap('tokens'),
   ],
-  (
-    tokensMap,
-    currentTokenId,
-  ) => {
-    const currentToken = currentTokenId && tokensMap[currentTokenId];
-    return currentToken ? currentToken.attributes : {};
-  },
+  (id, tokens) => (id ? ({
+    ...tokens[id].attributes,
+    ...tokens[id].relations,
+    id,
+  }) : {}),
 );
 
 export const getCurrentPair = createSelector(
   [
-    getResourceMap('tokens'),
     getCurrentPairId,
+    getResourceMap('tokens'),
   ],
-  (
-    tokensMap,
-    currentPairId,
-  ) => {
-    const currentToken = currentPairId && tokensMap[currentPairId];
-    return currentToken ? currentToken.attributes : {};
-  },
+  (id, tokens) => (id ? ({
+    ...tokens[id].attributes,
+    ...tokens[id].relations,
+    id,
+  }) : {}),
 );
 
 export const getTokensWithoutCurrentPair = createSelector(
@@ -55,17 +51,19 @@ export const getFilteredTokens = createSelector(
   ],
   (
     tokens,
-    searchQuery,
+    searchQuery = '',
   ) =>
     tokens.filter((token) => {
       const {
-        symbol,
-        name,
+        symbol = '',
+        name = '',
       } = token;
       const address = token.id;
-      const searchQueryLower = searchQuery;
-      return symbol.includes(searchQueryLower) ||
-      name.includes(searchQueryLower) ||
+      const searchQueryLower = searchQuery.toLowerCase();
+      const nameLower = name.toLowerCase();
+      const symbolLower = symbol.toLowerCase();
+      return symbolLower.includes(searchQueryLower) ||
+      nameLower.includes(searchQueryLower) ||
       address.includes(searchQueryLower);
     }),
 );

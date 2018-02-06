@@ -21,8 +21,8 @@ import {
   getCurrentPair,
 } from '../selectors';
 import {
-  addResourceItem,
   sendNotification,
+  saveResourceRequest,
 } from '../actions';
 import {
   loadTokensBalance,
@@ -31,8 +31,11 @@ import type {
   OrderData,
   ZrxOrder,
 } from '../types';
+import * as resourcesActions from '../actions/resources';
 
-BigNumber.config({ EXPONENTIAL_AT: 50 });
+window.ZeroEx = ZeroEx;
+
+BigNumber.config({ EXPONENTIAL_AT: 5000 });
 
 export function* createOrder({
   amount,
@@ -52,15 +55,15 @@ export function* createOrder({
   let makerTokenAmount;
   let takerTokenAmount;
   if (type === 'sell') {
-    makerTokenAddress = currentToken.address;
-    takerTokenAddress = currentPair.address;
+    makerTokenAddress = currentToken.id;
+    takerTokenAddress = currentPair.id;
     makerTokenAmount =
       ZeroEx.toBaseUnitAmount(new BigNumber(amount), currentToken.decimals);
     takerTokenAmount =
       ZeroEx.toBaseUnitAmount(new BigNumber(price).times(amount), currentPair.decimals);
   } else if (type === 'buy') {
-    makerTokenAddress = currentPair.address;
-    takerTokenAddress = currentToken.address;
+    makerTokenAddress = currentPair.id;
+    takerTokenAddress = currentToken.id;
     makerTokenAmount =
       ZeroEx.toBaseUnitAmount(new BigNumber(price).times(amount), currentPair.decimals);
     takerTokenAmount =
@@ -90,20 +93,20 @@ export function* createOrder({
     yield zeroEx.exchange.validateOrderFillableOrThrowAsync(signedZRXOrder);
 
     const order = {
-      price,
-      amount,
-      total: new BigNumber(price).times(amount).toString(),
-      token_id: currentToken.address,
-      action: type,
-      completed_at: null,
+      price: +price,
+      amount: +amount,
+      token_address: currentToken.id,
+      type,
       zrxOrder: signedZRXOrder,
+      expires_at: exp.toDate(),
     };
-
-    yield put(addResourceItem({
-      resourceName: "orders",
-      id: orderHash,
-      attributes: order,
-      relationships: {},
+    yield put(saveResourceRequest({
+      resourceName: 'orders',
+      list: type,
+      data: {
+        attributes: order,
+        resourceName: 'orders',
+      },
     }));
     yield put(sendNotification({ message: 'Order created', type: 'success' }));
     yield put(reset('BuySellForm'));
@@ -116,6 +119,9 @@ export function* createOrder({
 export function* fillOrder(payload: ZrxOrder): Saga<*> {
   const { zeroEx } = window;
   const address = yield select(getAddress);
+  payload.makerTokenAmount = BigNumber(payload.makerTokenAddress);
+  payload.takerTokenAmount = BigNumber(payload.takerTokenAddress);
+  console.log(payload);
   try {
     const txHash = yield call(
       [zeroEx.exchange, zeroEx.exchange.fillOrderAsync],
@@ -133,6 +139,76 @@ export function* fillOrder(payload: ZrxOrder): Saga<*> {
     yield put(sendNotification({ message: e.message, type: 'error' }));
     console.error(e);
   }
+}
+
+export function* loadOrders(): Saga<*> {
+  const currentToken = yield select(getCurrentToken);
+  yield put(
+    resourcesActions.fetchResourcesRequest({
+      resourceName: 'orders',
+      list: 'buy',
+      request: 'fetchOrders',
+      withDeleted: false,
+      mergeListIds: false,
+      fetchQuery: {
+        filterCondition: {
+          filter: {
+            'token.address': {
+              eq: currentToken.id,
+            },
+            'completed_at': null,
+            'type': 'buy',
+          },
+        },
+        sortBy: '-created_at',
+      },
+    }),
+  );
+
+  yield put(
+    resourcesActions.fetchResourcesRequest({
+      resourceName: 'orders',
+      list: 'sell',
+      request: 'fetchOrders',
+      withDeleted: false,
+      mergeListIds: false,
+      fetchQuery: {
+        filterCondition: {
+          filter: {
+            'token.address': {
+              eq: currentToken.id,
+            },
+            'completed_at': null,
+            'type': 'sell',
+          },
+        },
+        sortBy: '-created_at',
+      },
+    }),
+  );
+
+  yield put(
+    resourcesActions.fetchResourcesRequest({
+      resourceName: 'orders',
+      list: 'completedOrders',
+      request: 'fetchOrders',
+      withDeleted: false,
+      mergeListIds: false,
+      fetchQuery: {
+        filterCondition: {
+          filter: {
+            'token.address': {
+              eq: currentToken.id,
+            },
+            'completed_at': {
+              'ne': null,
+            },
+          },
+        },
+        sortBy: '-created_at',
+      },
+    }),
+  );
 }
 
 export function* listenNewOrder(): Saga<*> {

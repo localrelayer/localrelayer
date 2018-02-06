@@ -12,13 +12,9 @@ import type { Saga } from 'redux-saga';
 import {
   push,
 } from 'react-router-redux';
-import {
-  uniqBy,
-} from 'ramda';
 import * as types from '../actions/types';
 import {
   getAddress,
-  getTokens,
   getCurrentToken,
   getCurrentPair,
 } from '../selectors';
@@ -26,7 +22,10 @@ import {
   getNetworkById,
   connectionStatuses,
 } from '../utils/web3';
-import * as ProfileActions from '../actions/profile';
+import {
+  loadOrders,
+} from './orders';
+import * as profileActions from '../actions/profile';
 
 
 export function* loadUser(): Saga<*> {
@@ -35,11 +34,11 @@ export function* loadUser(): Saga<*> {
   const accounts = yield cps(web3.eth.getAccounts);
   const newAccount = accounts[0];
   if (prevAccount !== newAccount) {
-    yield put(ProfileActions.setAddress(newAccount));
+    yield put(profileActions.setAddress(newAccount));
     if (!accounts.length) {
-      yield put(ProfileActions.setConnectionStatus(connectionStatuses.LOCKED));
+      yield put(profileActions.setConnectionStatus(connectionStatuses.LOCKED));
     } else {
-      yield put(ProfileActions.setConnectionStatus(connectionStatuses.CONNECTED));
+      yield put(profileActions.setConnectionStatus(connectionStatuses.CONNECTED));
 
       yield call(loadBalance);
       yield call(loadNetwork);
@@ -54,26 +53,23 @@ export function* loadBalance(): Saga<*> {
   const balance = yield cps(web3.eth.getBalance, account);
   const formattedBalance = web3.fromWei(balance, 'ether').toFixed(8).toString();
   yield put(
-    ProfileActions.setBalance(formattedBalance),
+    profileActions.setBalance(formattedBalance),
   );
 }
 
 export function* loadTokensBalance() {
   const currentToken = yield select(getCurrentToken);
   const currentPair = yield select(getCurrentPair);
-  const pair = yield getTokenBalanceAndAllowance(currentPair.symbol);
-  const zrx = yield getTokenBalanceAndAllowance('ZRX');
-  const current = yield getTokenBalanceAndAllowance(currentToken.symbol);
-
-  const uniqTokens = uniqBy(a => a.symbol, [pair, zrx, current]);
-  yield put(ProfileActions.setTokens(uniqTokens));
+  const pair = yield getTokenBalanceAndAllowance(currentPair);
+  const current = yield getTokenBalanceAndAllowance(currentToken);
+  yield put(profileActions.setTokens([pair, current]));
 }
 
 export function* loadNetwork() {
   const { web3 } = window;
   const networkId = yield cps(web3.version.getNetwork);
   const network = getNetworkById(networkId);
-  yield put(ProfileActions.setCurrentNetwork(network));
+  yield put(profileActions.setCurrentNetwork(network));
 }
 
 export function* changeToken() {
@@ -81,28 +77,30 @@ export function* changeToken() {
   const currentPair = yield select(getCurrentPair);
   yield put(push(`${currentToken.symbol}-${currentPair.symbol}`));
   yield call(loadTokensBalance);
+  yield call(loadOrders);
 }
 
 export function* listenCurrentTokenChange() {
-  yield takeLatest([types.SET_CURRENT_TOKEN, types.SET_CURRENT_PAIR], changeToken);
+  yield takeLatest(action =>
+    action.payload && (
+      action.payload.key === 'currentTokenId' ||
+      action.payload.key === 'currentPairId'
+    ),
+  changeToken);
 }
 
 
-function* getTokenBalanceAndAllowance(tokenSymbol) {
+function* getTokenBalanceAndAllowance(token) {
   const { zeroEx } = window;
-
-  const tokens = yield select(getTokens);
-  const token = tokens.find(t => t.symbol === tokenSymbol);
   const account = yield select(getAddress);
-
   const tokenBalance = yield call(
     [zeroEx.token, zeroEx.token.getBalanceAsync],
-    token.address,
+    token.id,
     account,
   );
   const allowance = yield call(
     [zeroEx.token, zeroEx.token.getProxyAllowanceAsync],
-    token.address,
+    token.id,
     account,
   );
   return {

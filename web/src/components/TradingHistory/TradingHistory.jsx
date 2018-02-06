@@ -29,18 +29,6 @@ type Props = {
 
 const columns = [
   {
-    title: 'Total',
-    dataIndex: 'total',
-    key: 'total',
-    render: (text: string, record) => (
-      <Colored
-        color={record.action === 'sell' ? 'red' : 'green'}
-      >
-        {text}
-      </Colored>
-    ),
-  },
-  {
     title: 'Price',
     dataIndex: 'price',
     key: 'price',
@@ -49,6 +37,18 @@ const columns = [
     title: 'Amount',
     dataIndex: 'amount',
     key: 'amount',
+  },
+  {
+    title: 'Total',
+    dataIndex: 'total',
+    key: 'total',
+    render: (text: string, record) => (
+      <Colored
+        color={record.type === 'sell' ? 'red' : 'green'}
+      >
+        {text}
+      </Colored>
+    ),
   },
 ];
 

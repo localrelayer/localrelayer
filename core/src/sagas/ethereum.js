@@ -16,7 +16,7 @@ import * as ProfileActions from '../actions/profile';
 import * as actionTypes from '../actions/types';
 import {
   sendNotification,
-  setBalanceLoading,
+  setUiState,
 } from '../actions/ui';
 import {
   loadTokensBalance,
@@ -43,18 +43,18 @@ function* deposit() {
   const ethToConvert = ZeroEx.toBaseUnitAmount(new BigNumber(amount), weth.decimals);
   try {
     const txHash = yield call([zeroEx.etherToken, zeroEx.etherToken.depositAsync],
-      weth.address,
+      weth.id,
       ethToConvert,
       account,
       { gasLimit: 80000 });
-    yield put(setBalanceLoading(true));
+    yield put(setUiState('isBalanceLoading', true));
     yield put(reset('WrapForm'));
     yield call([zeroEx, zeroEx.awaitTransactionMinedAsync], txHash);
     yield call(delay, 12000);
     yield put(sendNotification({ message: 'Deposit successful', type: 'success' }));
     yield call(loadTokensBalance);
     yield call(loadBalance);
-    yield put(setBalanceLoading(false));
+    yield put(setUiState('isBalanceLoading', false));
   } catch (e) {
     yield put(sendNotification({ message: e.message, type: 'error' }));
     console.error(e);
@@ -72,18 +72,18 @@ function* withdraw() {
   const ethToConvert = ZeroEx.toBaseUnitAmount(new BigNumber(amount), weth.decimals);
   try {
     const txHash = yield call([zeroEx.etherToken, zeroEx.etherToken.withdrawAsync],
-      weth.address,
+      weth.id,
       ethToConvert,
       account,
       { gasLimit: 80000 });
-    yield put(setBalanceLoading(true));
+    yield put(setUiState('isBalanceLoading', true));
     yield put(reset('WrapForm'));
     yield call([zeroEx, zeroEx.awaitTransactionMinedAsync], txHash);
     yield call(delay, 12000);
     yield put(sendNotification({ message: 'Withdrawal successful', type: 'success' }));
     yield call(loadTokensBalance);
     yield call(loadBalance);
-    yield put(setBalanceLoading(false));
+    yield put(setUiState('isBalanceLoading', false));
   } catch (e) {
     yield put(sendNotification({ message: e.message, type: 'error' }));
     console.error(e);
@@ -92,7 +92,7 @@ function* withdraw() {
 
 function* setAllowance(token) {
   const { zeroEx } = window;
-  const contractAddress = token.address;
+  const contractAddress = token.id;
   const account = yield select(getAddress);
   try {
     const txHash = yield call(
@@ -101,9 +101,9 @@ function* setAllowance(token) {
       account,
       { gasLimit: 80000 },
     );
-    yield put(setBalanceLoading(true));
+    yield put(setUiState('isBalanceLoading', true));
     yield call([zeroEx, zeroEx.awaitTransactionMinedAsync], txHash);
-    yield put(setBalanceLoading(false));
+    yield put(setUiState('isBalanceLoading', false));
 
     yield put(ProfileActions.updateToken({
       tokenAddress: contractAddress,

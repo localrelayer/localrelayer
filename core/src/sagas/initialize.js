@@ -23,8 +23,10 @@ import {
   runLoadUser,
   listenCurrentTokenChange,
 } from './profile';
+import {
+  loadOrders,
+} from './orders';
 import * as uiActions from '../actions/ui';
-import * as resourcesActions from '../actions/resources';
 
 export function* initialize(): Saga<void> {
   const responseTokens = yield call(
@@ -50,27 +52,9 @@ export function* initialize(): Saga<void> {
   const pairToken =
     responseTokens.data.find(t => t.attributes.symbol === pair) ||
     responseTokens.data.find(t => t.attributes.symbol === 'WETH');
-
-  yield put(uiActions.setCurrentToken(selectedToken.id));
-  yield put(uiActions.setCurrentPair(pairToken.id));
-
-  yield put(
-    resourcesActions.fetchResourcesRequest({
-      resourceName: 'orders',
-      list: 'currentOrders',
-      request: 'fetchOrders',
-      withDeleted: false,
-      fetchQuery: {
-        filterCondition: {
-          filter: {
-            'token.id': {
-              eq: selectedToken.id,
-            },
-          },
-        },
-      },
-    }),
-  );
+  yield put(uiActions.setUiState('currentTokenId', selectedToken.id));
+  yield put(uiActions.setUiState('currentPairId', pairToken.id));
+  yield call(loadOrders);
   yield call(loadWeb3);
   if (!window.web3) {
     yield put(ProfileActions.setConnectionStatus(connectionStatuses.NOT_CONNECTED));
