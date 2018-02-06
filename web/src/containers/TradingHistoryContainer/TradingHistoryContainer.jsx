@@ -4,6 +4,7 @@ import {
   connect,
 } from 'react-redux';
 
+import type { MapStateToProps } from 'react-redux';
 
 import type {
   Node,
@@ -31,7 +32,7 @@ const TradingChartContainer: StatelessFunctionalComponent<Props> = ({
     pagination={{ pageSize: 15 }}
   />;
 
-const mapStateToProps = state => ({
+const mapStateToProps: MapStateToProps<*, *, *> = state => ({
   orders: getCompletedOrders(state),
 });
 

@@ -3,6 +3,7 @@ import {
   Form,
   DatePicker,
 } from 'antd';
+import moment from 'moment';
 
 import type {
   FieldProps,
@@ -46,7 +47,7 @@ export default class DateInput extends Component<Props> {
         <DatePicker
           style={{ width: '100%' }}
           disabledDate={disabledDate}
-          value={input.value}
+          value={input.value || moment().add(7, 'days')}
           showTime={showTime}
           format={dateFormat}
           placeholder={placeholder}

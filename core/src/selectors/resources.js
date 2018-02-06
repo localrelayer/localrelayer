@@ -50,5 +50,10 @@ export const getResourceItemBydId = (
   resourceName: string,
   id: string,
 ) =>
-  (state: any) =>
-    state[resourceName].resources[id] || null;
+  (state: any) => (id && state[resourceName].resources[id] ?
+    ({
+      ...state[resourceName].resources[id].attributes,
+      id,
+    })
+    :
+    {});

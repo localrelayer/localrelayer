@@ -2,35 +2,43 @@
 import {
   createSelector,
 } from 'reselect';
-
+import BigNumber from 'bignumber.js';
 import {
   getResourceMap,
   getResourceMappedList,
 } from './resources';
 
+export const calculateTotal = (amount: string, price: string): string =>
+  BigNumber(price).times(BigNumber(amount)).toFixed(4).toString();
 
 export const getBuyOrders = createSelector(
-  getResourceMappedList('orders', 'currentOrders'),
-  orders =>
-    orders.filter(
-      order =>
-        !order.completed_at && order.action === 'buy',
-    ),
+  getResourceMappedList('orders', 'buy'),
+  orders => orders.map(order => ({
+    ...order,
+    price: BigNumber(order.price).toFixed(4),
+    amount: BigNumber(order.amount).toFixed(4),
+    total: calculateTotal(order.amount, order.price),
+  })),
 );
 
 export const getSellOrders = createSelector(
-  getResourceMappedList('orders', 'currentOrders'),
-  orders =>
-    orders.filter(
-      order =>
-        !order.completed_at && order.action === 'sell',
-    ),
+  getResourceMappedList('orders', 'sell'),
+  orders => orders.map(order => ({
+    ...order,
+    price: BigNumber(order.price).toFixed(4),
+    amount: BigNumber(order.amount).toFixed(4),
+    total: calculateTotal(order.amount, order.price),
+  })),
 );
 
 export const getCompletedOrders = createSelector(
-  getResourceMappedList('orders', 'currentOrders'),
-  orders =>
-    orders.filter(order => order.completed_at),
+  getResourceMappedList('orders', 'completedOrders'),
+  orders => orders.map(order => ({
+    ...order,
+    price: BigNumber(order.price).toFixed(4),
+    amount: BigNumber(order.amount).toFixed(4),
+    total: calculateTotal(order.amount, order.price),
+  })),
 );
 
 export const geUserOrders = createSelector(
