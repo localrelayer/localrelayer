@@ -57,7 +57,7 @@ export function* initialize(): Saga<void> {
   yield call(loadOrders);
   yield call(loadWeb3);
   if (!window.web3) {
-    yield put(ProfileActions.setConnectionStatus(connectionStatuses.NOT_CONNECTED));
+    yield put(ProfileActions.setProfileState('connectionStatus', connectionStatuses.NOT_CONNECTED));
   } else {
     yield fork(runLoadUser);
     yield fork(listenCurrentTokenChange);

@@ -3,10 +3,8 @@ import React from 'react';
 import {
   connect,
 } from 'react-redux';
-import {
-  bindActionCreators,
-} from 'redux';
-
+import type { Dispatch } from 'redux';
+import type { MapStateToProps } from 'react-redux';
 import type {
   Node,
   StatelessFunctionalComponent,
@@ -27,25 +25,20 @@ import UserOrders from '../../components/UserOrders';
 
 type Props = {
   orders: Orders,
-  cancelOrderAction: (orderId: string) => void,
+  dispatch: Dispatch<*>,
 };
 
 const UserOrdersContainer: StatelessFunctionalComponent<Props> = ({
   orders,
-  cancelOrderAction,
+  dispatch,
 }: Props): Node =>
   <UserOrders
     orders={orders}
-    onCancel={cancelOrderAction}
+    onCancel={(orderId: string) => dispatch(cancelOrder(orderId))}
   />;
 
-const mapStateToProps = state => ({
+const mapStateToProps: MapStateToProps<*, *, *> = state => ({
   orders: getUserOrders(state),
 });
 
-const mapDispatchToProps = dispatch =>
-  bindActionCreators({
-    cancelOrderAction: cancelOrder,
-  }, dispatch);
-
-export default connect(mapStateToProps, mapDispatchToProps)(UserOrdersContainer);
+export default connect(mapStateToProps)(UserOrdersContainer);

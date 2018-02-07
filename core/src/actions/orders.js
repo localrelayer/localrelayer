@@ -1,8 +1,12 @@
 // @flow
 import * as types from './types';
-import type { ZrxOrder, OrderData } from '../types';
+import type {
+  ZrxOrder,
+  OrderData,
+  OrdersAction,
+} from '../types';
 
-export function cancelOrder(orderId: string) {
+export function cancelOrder(orderId: string): OrdersAction {
   return {
     type: types.CANCEL_ORDER,
     payload: orderId,
@@ -10,8 +14,11 @@ export function cancelOrder(orderId: string) {
 }
 
 export function createOrder({
-  amount, exp, price, type,
-}: OrderData) {
+  amount,
+  exp,
+  price,
+  type,
+}: OrderData): OrdersAction {
   return {
     type: types.CREATE_ORDER,
     payload: {
@@ -23,7 +30,7 @@ export function createOrder({
   };
 }
 
-export function fillOrder(zrxOrder: ZrxOrder) {
+export function fillOrder(zrxOrder: ZrxOrder): OrdersAction {
   return {
     type: types.FILL_ORDER,
     payload: zrxOrder,

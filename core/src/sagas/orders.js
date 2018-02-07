@@ -119,8 +119,8 @@ export function* createOrder({
 export function* fillOrder(payload: ZrxOrder): Saga<*> {
   const { zeroEx } = window;
   const address = yield select(getAddress);
-  payload.makerTokenAmount = BigNumber(payload.makerTokenAddress);
-  payload.takerTokenAmount = BigNumber(payload.takerTokenAddress);
+  payload.makerTokenAmount = BigNumber(payload.makerTokenAddress); // eslint-disable-line
+  payload.takerTokenAmount = BigNumber(payload.takerTokenAddress); // eslint-disable-line
   console.log(payload);
   try {
     const txHash = yield call(
