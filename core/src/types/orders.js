@@ -1,10 +1,10 @@
 // @flow
 import type BigNumber from 'bignumber.js';
+import * as actionTypes from '../actions/types';
 
 import type {
   ID,
 } from '../types';
-
 
 export type OrderAttributes = {
   price: string,
@@ -58,3 +58,17 @@ export type OrderData = {
   price: number,
   type: string,
 }
+
+export type OrdersAction =
+{|
+  type: typeof actionTypes.CANCEL_ORDER,
+  payload: string,
+|} |
+{|
+  type: typeof actionTypes.CREATE_ORDER,
+  payload: OrderData,
+|} |
+{|
+  type: typeof actionTypes.FILL_ORDER,
+  payload: ZrxOrder,
+|}

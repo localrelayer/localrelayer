@@ -3,9 +3,7 @@ import React from 'react';
 import {
   connect,
 } from 'react-redux';
-
 import type { MapStateToProps } from 'react-redux';
-
 import type {
   Node,
   StatelessFunctionalComponent,

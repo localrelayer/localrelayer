@@ -1,6 +1,10 @@
 import * as types from '../actions/types';
+import type {
+  Action,
+  ProfileState,
+} from '../types';
 
-const initialState = {
+const initialState: ProfileState = {
   isLoading: false,
   address: '',
   balance: '',
@@ -9,47 +13,25 @@ const initialState = {
   network: '',
 };
 
-export default function profileReducer(state = initialState, action) {
+export default function profileReducer(
+  state: ProfileState = initialState,
+  action: Action,
+) {
   switch (action.type) {
-    case types.CHANGE_PROFILE_LOADING_STATE:
+    case types.SET_PROFILE_STATE:
       return {
         ...state,
-        isLoading: action.payload,
-      };
-    case types.SET_ADDRESS:
-      return {
-        ...state,
-        address: action.payload,
-      };
-    case types.SET_BALANCE:
-      return {
-        ...state,
-        balance: action.payload,
-      };
-    case types.SET_CONNECTION_STATUS:
-      return {
-        ...state,
-        connectionStatus: action.payload,
-      };
-    case types.SET_CURRENT_NETWORK:
-      return {
-        ...state,
-        network: action.payload,
-      };
-    case types.SET_TOKENS:
-      return {
-        ...state,
-        tokens: action.payload,
+        [action.payload.key]: action.payload.value,
       };
     case types.UPDATE_TOKEN: {
       const { tokenAddress, field, value } = action.payload;
       return {
         ...state,
-        tokens: state.tokens.map((token) => {
-          if (token.address === tokenAddress) {
-            return { ...token, [field]: value };
-          } return token;
-        }),
+        tokens: state.tokens.map(token => (
+          token.address === tokenAddress ?
+            ({ ...token, [field]: value })
+            :
+            token)),
       };
     }
     case types.CLEAR_ALL_REDUCERS:

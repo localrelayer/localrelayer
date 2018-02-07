@@ -3,7 +3,8 @@ import React from 'react';
 import {
   connect,
 } from 'react-redux';
-
+import type { MapStateToProps } from 'react-redux';
+import type { Dispatch } from 'redux';
 import type {
   Node,
   StatelessFunctionalComponent,
@@ -12,7 +13,7 @@ import type {
   Orders,
 } from 'instex-core/types';
 import {
-  fillOrder as fillOrderAction,
+  fillOrder,
 } from 'instex-core/actions';
 import {
   getBuyOrders,
@@ -24,28 +25,24 @@ import OrderBook from '../../components/OrderBook';
 type Props = {
   buyOrders: Orders,
   sellOrders: Orders,
-  fillOrder: Function
+  dispatch: Dispatch<*>,
 };
 
 const OrderBookContainer: StatelessFunctionalComponent<Props> =
   ({
     buyOrders,
     sellOrders,
-    fillOrder,
+    dispatch,
   }: Props): Node =>
     <OrderBook
-      fillOrder={({ zrxOrder }) => fillOrder(zrxOrder)}
+      fillOrder={({ zrxOrder }) => dispatch(fillOrder(zrxOrder))}
       buyOrders={buyOrders}
       sellOrders={sellOrders}
     />;
 
-const mapStateToProps = state => ({
+const mapStateToProps: MapStateToProps<*, *, *> = state => ({
   buyOrders: getBuyOrders(state),
   sellOrders: getSellOrders(state),
 });
 
-const mapDispatchToProps = {
-  fillOrder: fillOrderAction,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(OrderBookContainer);
+export default connect(mapStateToProps)(OrderBookContainer);

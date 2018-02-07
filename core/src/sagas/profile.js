@@ -12,7 +12,6 @@ import type { Saga } from 'redux-saga';
 import {
   push,
 } from 'react-router-redux';
-import * as types from '../actions/types';
 import {
   getAddress,
   getCurrentToken,
@@ -25,7 +24,9 @@ import {
 import {
   loadOrders,
 } from './orders';
-import * as profileActions from '../actions/profile';
+import {
+  setProfileState,
+} from '../actions/profile';
 
 
 export function* loadUser(): Saga<*> {
@@ -34,11 +35,11 @@ export function* loadUser(): Saga<*> {
   const accounts = yield cps(web3.eth.getAccounts);
   const newAccount = accounts[0];
   if (prevAccount !== newAccount) {
-    yield put(profileActions.setAddress(newAccount));
+    yield put(setProfileState('address', newAccount));
     if (!accounts.length) {
-      yield put(profileActions.setConnectionStatus(connectionStatuses.LOCKED));
+      yield put(setProfileState('connectionStatus', connectionStatuses.LOCKED));
     } else {
-      yield put(profileActions.setConnectionStatus(connectionStatuses.CONNECTED));
+      yield put(setProfileState('connectionStatus', connectionStatuses.CONNECTED));
 
       yield call(loadBalance);
       yield call(loadNetwork);
@@ -53,7 +54,7 @@ export function* loadBalance(): Saga<*> {
   const balance = yield cps(web3.eth.getBalance, account);
   const formattedBalance = web3.fromWei(balance, 'ether').toFixed(8).toString();
   yield put(
-    profileActions.setBalance(formattedBalance),
+    setProfileState('balance', formattedBalance),
   );
 }
 
@@ -62,14 +63,14 @@ export function* loadTokensBalance() {
   const currentPair = yield select(getCurrentPair);
   const pair = yield getTokenBalanceAndAllowance(currentPair);
   const current = yield getTokenBalanceAndAllowance(currentToken);
-  yield put(profileActions.setTokens([pair, current]));
+  yield put(setProfileState('tokens', [pair, current]));
 }
 
 export function* loadNetwork() {
   const { web3 } = window;
   const networkId = yield cps(web3.version.getNetwork);
   const network = getNetworkById(networkId);
-  yield put(profileActions.setCurrentNetwork(network));
+  yield put(setProfileState('network', network));
 }
 
 export function* changeToken() {

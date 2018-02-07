@@ -1,5 +1,8 @@
+// @flow
+
 import React from 'react';
 import { connect } from 'react-redux';
+import type { MapStateToProps } from 'react-redux';
 import {
   getCurrentToken,
   getCurrentPair,
@@ -13,19 +16,18 @@ type Props = {
   tokenPair: Token
 }
 
-const mapStateToProps = state => ({
-  token: getCurrentToken(state),
-  tokenPair: getCurrentPair(state),
-});
-
 const TokenCardContainer = ({ token, tokenPair }: Props) => (
   <StyleContainer>
     <TokenCard
       token={token}
       tokenPair={tokenPair}
-      onClick={() => console.log('test')}
     />
   </StyleContainer>
 );
 
-export default connect(mapStateToProps, {})(TokenCardContainer);
+const mapStateToProps: MapStateToProps<*, *, *> = state => ({
+  token: getCurrentToken(state),
+  tokenPair: getCurrentPair(state),
+});
+
+export default connect(mapStateToProps)(TokenCardContainer);

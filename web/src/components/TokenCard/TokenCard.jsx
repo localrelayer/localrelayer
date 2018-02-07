@@ -41,7 +41,7 @@ type Props = {
   /**
    * Function that is called whenever button clicked
    * */
-  onClick: Function,
+  onClick: ?Function,
 };
 
 /**
@@ -50,7 +50,7 @@ type Props = {
  * @author [Tim Reznich](https://github.com/imbaniac)
  */
 
-const TokenCard: StatelessFunctionalComponent<Props> = ({
+const TokenCard = ({
   token: {
     trading = {},
     symbol,
@@ -93,6 +93,10 @@ const TokenCard: StatelessFunctionalComponent<Props> = ({
       }
       />
     </CardContainer>);
+};
+
+TokenCard.defaultProps = {
+  onClick: () => {},
 };
 
 export default TokenCard;

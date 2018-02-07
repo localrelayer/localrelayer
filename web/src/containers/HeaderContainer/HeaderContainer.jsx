@@ -3,9 +3,8 @@ import React from 'react';
 import {
   connect,
 } from 'react-redux';
+import type { Dispatch } from 'redux';
 import type { MapStateToProps } from 'react-redux';
-
-
 import type {
   Node,
   StatelessFunctionalComponent,
@@ -33,7 +32,7 @@ type Props = {
   tokens: Tokens,
   selectedToken: Token,
   tokenPair: Token,
-  dispatch: Dispatch,
+  dispatch: Dispatch<*>,
 };
 
 const HeaderContainer: StatelessFunctionalComponent<Props> =
