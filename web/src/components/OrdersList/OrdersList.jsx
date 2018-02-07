@@ -70,6 +70,7 @@ OrdersList.defaultProps = {
   title: '',
   bordered: false,
   pagination: null,
+  onClick: () => {},
 };
 
 export default OrdersList;

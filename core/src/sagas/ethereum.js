@@ -10,6 +10,7 @@ import {
   delay,
 } from 'redux-saga';
 import type { Saga } from 'redux-saga';
+import BigNumber from 'bignumber.js';
 import { getFormValues, reset } from 'redux-form';
 import { ZeroEx } from '0x.js';
 import * as ProfileActions from '../actions/profile';

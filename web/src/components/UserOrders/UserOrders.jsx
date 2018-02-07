@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import type { Node, StatelessFunctionalComponent } from 'react';
+import type { Node } from 'react';
 import { Tooltip, Button } from 'antd';
 import type { Order } from 'instex-core/types';
 import { Element } from 'react-scroll';
@@ -80,7 +80,7 @@ export const getColumns = (onCancel: Function) => [
  * @author [Tim Reznich](https://github.com/imbaniac)
  */
 
-const UserOrders: StatelessFunctionalComponent<Props> = ({
+const UserOrders = ({
   orders,
   onCancel,
 }: Props): Node => (
@@ -94,5 +94,9 @@ const UserOrders: StatelessFunctionalComponent<Props> = ({
     </UserOrdersContainer>
   </Element>
 );
+
+UserOrders.defaultProps = {
+  onCancel: () => {},
+};
 
 export default UserOrders;
