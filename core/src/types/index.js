@@ -18,6 +18,7 @@ export type {
 
 export type {
   ProfileAction,
+  ProfileState,
 } from './profile';
 
 export type * from './resources';

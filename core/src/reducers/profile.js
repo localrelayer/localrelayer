@@ -1,3 +1,5 @@
+// @flow
+
 import * as types from '../actions/types';
 import type {
   Action,

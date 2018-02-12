@@ -50,6 +50,8 @@ export function* createOrder({
   const address = yield select(getAddress);
   const currentToken = yield select(getCurrentToken);
   const currentPair = yield select(getCurrentPair);
+  const total = BigNumber(price).times(amount).toString();
+
   let makerTokenAddress;
   let takerTokenAddress;
   let makerTokenAmount;
@@ -58,30 +60,30 @@ export function* createOrder({
     makerTokenAddress = currentToken.id;
     takerTokenAddress = currentPair.id;
     makerTokenAmount =
-      ZeroEx.toBaseUnitAmount(new BigNumber(amount), currentToken.decimals);
+      ZeroEx.toBaseUnitAmount(BigNumber(amount), currentToken.decimals);
     takerTokenAmount =
-      ZeroEx.toBaseUnitAmount(new BigNumber(price).times(amount), currentPair.decimals);
+      ZeroEx.toBaseUnitAmount(BigNumber(total), currentPair.decimals);
   } else if (type === 'buy') {
     makerTokenAddress = currentPair.id;
     takerTokenAddress = currentToken.id;
     makerTokenAmount =
-      ZeroEx.toBaseUnitAmount(new BigNumber(price).times(amount), currentPair.decimals);
+      ZeroEx.toBaseUnitAmount(BigNumber(total), currentPair.decimals);
     takerTokenAmount =
-      ZeroEx.toBaseUnitAmount(new BigNumber(amount), currentToken.decimals);
+      ZeroEx.toBaseUnitAmount(BigNumber(amount), currentToken.decimals);
   }
   const zrxOrder = {
     maker: address,
-    taker: NULL_ADDRESS,
+    taker: '0x5409ed021d9299bf6814279a6a1411a7e866a631',
     feeRecipient: NULL_ADDRESS,
     exchangeContractAddress: EXCHANGE_ADDRESS,
     salt: ZeroEx.generatePseudoRandomSalt(),
-    makerFee: new BigNumber(0),
-    takerFee: new BigNumber(0),
+    makerFee: BigNumber(0),
+    takerFee: BigNumber(0),
     makerTokenAddress,
     takerTokenAddress,
     makerTokenAmount,
     takerTokenAmount,
-    expirationUnixTimestampSec: new BigNumber(moment(exp).unix()),
+    expirationUnixTimestampSec: BigNumber(moment(exp).unix()),
   };
   const orderHash = ZeroEx.getOrderHashHex(zrxOrder);
   try {
@@ -95,11 +97,14 @@ export function* createOrder({
     const order = {
       price: +price,
       amount: +amount,
+      total: +total,
       token_address: currentToken.id,
+      pair_address: currentPair.id,
       type,
       zrxOrder: signedZRXOrder,
       expires_at: exp.toDate(),
     };
+
     yield put(saveResourceRequest({
       resourceName: 'orders',
       list: type,
@@ -157,6 +162,7 @@ export function* loadOrders(): Saga<*> {
               eq: currentToken.id,
             },
             'completed_at': null,
+            'child_id': null,
             'type': 'buy',
           },
         },
@@ -179,6 +185,7 @@ export function* loadOrders(): Saga<*> {
               eq: currentToken.id,
             },
             'completed_at': null,
+            'child_id': null,
             'type': 'sell',
           },
         },
@@ -200,6 +207,7 @@ export function* loadOrders(): Saga<*> {
             'token.address': {
               eq: currentToken.id,
             },
+            'child_id': null,
             'completed_at': {
               'ne': null,
             },
