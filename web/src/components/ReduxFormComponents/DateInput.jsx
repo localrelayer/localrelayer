@@ -47,7 +47,7 @@ export default class DateInput extends Component<Props> {
         <DatePicker
           style={{ width: '100%' }}
           disabledDate={disabledDate}
-          value={input.value || moment().add(7, 'days')}
+          value={input.value || null}
           showTime={showTime}
           format={dateFormat}
           placeholder={placeholder}
