@@ -30,7 +30,7 @@ export default function profileReducer(
       return {
         ...state,
         tokens: state.tokens.map(token => (
-          token.address === tokenAddress ?
+          token.id === tokenAddress ?
             ({ ...token, [field]: value })
             :
             token)),

@@ -33,17 +33,21 @@ export function* fillAmount({ orderType, coef }): Saga<*> {
   const pair = yield select(getUserTokenBy('address', currentPair.address));
   const values = yield select(getFormValues('BuySellForm'));
   const formPrice = values ? values.price : null;
-  const [{ price: orderPrice }] = yield select(getSellOrders);
+  const [lastOrder] = yield select(getSellOrders);
+  // to not divide by 0
+  if (!lastOrder && !formPrice) return;
+  const orderPrice = lastOrder ? lastOrder.price : 0;
   const fillValue = orderType === 'buy' ?
     BigNumber(pair.balance).div(formPrice || orderPrice).times(coef)
     :
     BigNumber(token.balance).times(coef);
-  yield put(change('BuySellForm', 'amount', fillValue.toFixed(6).toString()));
+  yield put(change('BuySellForm', 'amount', fillValue.toFixed(4).toString()));
 }
 
 export function* fillPrice({ orderType }) {
-  const [{ price }] = yield select(orderType === 'buy' ? getBuyOrders : getSellOrders);
-  yield put(change('BuySellForm', 'price', BigNumber(price).toFixed(6).toString()));
+  const [lastOrder] = yield select(orderType === 'buy' ? getBuyOrders : getSellOrders);
+  const orderPrice = lastOrder ? lastOrder.price : 0;
+  yield put(change('BuySellForm', 'price', BigNumber(orderPrice).toFixed(4).toString()));
 }
 
 export function* fillDate({ period }) {
