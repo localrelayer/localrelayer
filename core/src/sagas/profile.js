@@ -27,6 +27,7 @@ import {
 import {
   setProfileState,
 } from '../actions/profile';
+import * as resourcesActions from '../actions/resources';
 
 
 export function* loadUser(): Saga<*> {
@@ -44,6 +45,7 @@ export function* loadUser(): Saga<*> {
       yield call(loadBalance);
       yield call(loadNetwork);
       yield call(loadTokensBalance);
+      yield call(loadUserOrders);
     }
   }
 }
@@ -109,6 +111,31 @@ function* getTokenBalanceAndAllowance(token) {
     isTradable: allowance.gt(0),
     balance: (tokenBalance.dividedBy(BigNumber(10).toPower(token.decimals))).toString(),
   };
+}
+
+export function* loadUserOrders() {
+  const account = yield select(getAddress);
+  yield put(
+    resourcesActions.fetchResourcesRequest({
+      resourceName: 'orders',
+      list: 'userOrders',
+      request: 'fetchOrders',
+      withDeleted: false,
+      mergeListIds: false,
+      fetchQuery: {
+        filterCondition: {
+          filter: {
+            'completed_at': null,
+            'child_id': null,
+            'canceled_at': null,
+            'deleted_at': null,
+            'maker_address': account,
+          },
+        },
+        sortBy: '-created_at',
+      },
+    }),
+  );
 }
 
 export function* runLoadUser(): Saga<*> {

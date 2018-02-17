@@ -22,8 +22,8 @@ type Props = {
 export const getColumns = (onCancel: Function) => [
   {
     title: 'Type',
-    dataIndex: 'action',
-    key: 'action',
+    dataIndex: 'type',
+    key: 'type',
     render: (text: string, record: Order) => (
       <Colored color={record.type === 'sell' ? 'red' : 'green'}>{text}</Colored>
     ),

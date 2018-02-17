@@ -32,7 +32,6 @@ export const deleteResourceRequest = (
   payload: {
     resourceName: ResourceName,
     id: ID,
-    closeModal: boolean,
   },
 ): DeleteResourceRequestAction =>
   ({

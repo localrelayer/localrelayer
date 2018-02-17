@@ -8,65 +8,47 @@ import {
   getResourceMappedList,
 } from './resources';
 
-export const calculateTotal = (amount: string, price: string): string =>
-  BigNumber(price).times(BigNumber(amount)).toFixed(4).toString();
-
 export const getBuyOrders = createSelector(
   getResourceMappedList('orders', 'buy'),
-  orders => orders.map(order => ({
+  orders => orders.filter(order => !order.canceled_at).map(order => ({
     ...order,
     price: BigNumber(order.price).toFixed(4),
     amount: BigNumber(order.amount).toFixed(4),
-    total: calculateTotal(order.amount, order.price),
+    total: BigNumber(order.total).toFixed(4),
   })),
 );
 
 export const getSellOrders = createSelector(
   getResourceMappedList('orders', 'sell'),
-  orders => orders.map(order => ({
+  orders => orders.filter(order => !order.canceled_at).map(order => ({
     ...order,
     price: BigNumber(order.price).toFixed(4),
     amount: BigNumber(order.amount).toFixed(4),
-    total: calculateTotal(order.amount, order.price),
+    total: BigNumber(order.total).toFixed(4),
   })),
 );
 
 export const getCompletedOrders = createSelector(
   getResourceMappedList('orders', 'completedOrders'),
-  orders => orders.map(order => ({
+  orders => orders.filter(order => !order.canceled_at).map(order => ({
     ...order,
     price: BigNumber(order.price).toFixed(4),
     amount: BigNumber(order.amount).toFixed(4),
-    total: calculateTotal(order.amount, order.price),
+    total: BigNumber(order.total).toFixed(4),
   })),
-);
-
-export const geUserOrders = createSelector(
-  [
-    getResourceMappedList('orders', 'currentOrders'),
-    getResourceMap('tokens'),
-  ],
-  (orders, tokensMap) =>
-    orders.map(order =>
-      ({
-        ...order,
-        tokenSymbol: tokensMap[order.relationships.token.data.id].attributes.symbol,
-      })),
 );
 
 export const getUserOrders = createSelector(
   [
-    getResourceMappedList('orders', 'currentOrders'),
+    getResourceMappedList('orders', 'userOrders'),
     getResourceMap('tokens'),
   ],
-  (
-    orders,
-    tokensMap,
-  ) =>
-    orders.map(order =>
-      ({
-        ...order,
-        tokenSymbol: tokensMap[order.relationships.token.data.id].attributes.symbol,
-      })),
+  (orders, tokens) => orders.filter(order => !order.canceled_at).map(order => ({
+    ...order,
+    price: BigNumber(order.price).toFixed(4),
+    amount: BigNumber(order.amount).toFixed(4),
+    total: BigNumber(order.total).toFixed(4),
+    tokenSymbol: tokens[order.token_address] ? tokens[order.token_address].attributes.symbol : '',
+  })),
 );
 

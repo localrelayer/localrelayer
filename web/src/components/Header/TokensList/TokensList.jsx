@@ -111,7 +111,7 @@ const TokensList: StatelessFunctionalComponent<Props> = ({
         value={tokenPair.symbol}
       >
         <RadioButton value="WETH">WETH</RadioButton>
-        <RadioButton value="DAI">DAI</RadioButton>
+        { /* <RadioButton value="DAI">DAI</RadioButton> */ }
         { /* <RadioButton value="USDT">USDT</RadioButton> */ }
       </RadioGroup>
     </InputContainer>

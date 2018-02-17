@@ -26,6 +26,7 @@ import {
 } from '../actions';
 import {
   loadTokensBalance,
+  loadUserOrders,
 } from './profile';
 import type {
   OrderData,
@@ -33,9 +34,9 @@ import type {
 } from '../types';
 import * as resourcesActions from '../actions/resources';
 
-window.ZeroEx = ZeroEx;
-
 BigNumber.config({ EXPONENTIAL_AT: 5000 });
+
+const ourNodeAddress = '0x5409ed021d9299bf6814279a6a1411a7e866a631';
 
 export function* createOrder({
   amount,
@@ -73,7 +74,7 @@ export function* createOrder({
   }
   const zrxOrder = {
     maker: address,
-    taker: '0x5409ed021d9299bf6814279a6a1411a7e866a631',
+    taker: ourNodeAddress,
     feeRecipient: NULL_ADDRESS,
     exchangeContractAddress: EXCHANGE_ADDRESS,
     salt: ZeroEx.generatePseudoRandomSalt(),
@@ -103,10 +104,12 @@ export function* createOrder({
       type,
       zrxOrder: signedZRXOrder,
       expires_at: exp.toDate(),
+      maker_address: address,
     };
 
     yield put(saveResourceRequest({
       resourceName: 'orders',
+      request: 'createOrder',
       list: type,
       data: {
         attributes: order,
@@ -115,31 +118,6 @@ export function* createOrder({
     }));
     yield put(sendNotification({ message: 'Order created', type: 'success' }));
     yield put(reset('BuySellForm'));
-  } catch (e) {
-    yield put(sendNotification({ message: e.message, type: 'error' }));
-    console.error(e);
-  }
-}
-
-export function* fillOrder(payload: ZrxOrder): Saga<*> {
-  const { zeroEx } = window;
-  const address = yield select(getAddress);
-  payload.makerTokenAmount = BigNumber(payload.makerTokenAddress); // eslint-disable-line
-  payload.takerTokenAmount = BigNumber(payload.takerTokenAddress); // eslint-disable-line
-  console.log(payload);
-  try {
-    const txHash = yield call(
-      [zeroEx.exchange, zeroEx.exchange.fillOrderAsync],
-      payload,
-      payload.takerTokenAmount,
-      true, // shouldThrowOnInsufficientBalanceOrAllowance
-      address, // takerAddress
-    );
-    yield call([zeroEx, zeroEx.awaitTransactionMinedAsync], txHash);
-    yield call(delay, 12000);
-    yield call(loadTokensBalance);
-
-    yield put(sendNotification({ message: 'Order filled', type: 'success' }));
   } catch (e) {
     yield put(sendNotification({ message: e.message, type: 'error' }));
     console.error(e);
@@ -163,6 +141,8 @@ export function* loadOrders(): Saga<*> {
             },
             'completed_at': null,
             'child_id': null,
+            'canceled_at': null,
+            'deleted_at': null,
             'type': 'buy',
           },
         },
@@ -186,6 +166,8 @@ export function* loadOrders(): Saga<*> {
             },
             'completed_at': null,
             'child_id': null,
+            'canceled_at': null,
+            'deleted_at': null,
             'type': 'sell',
           },
         },
@@ -198,7 +180,7 @@ export function* loadOrders(): Saga<*> {
     resourcesActions.fetchResourcesRequest({
       resourceName: 'orders',
       list: 'completedOrders',
-      request: 'fetchOrders',
+      request: 'fetchCompletedOrders',
       withDeleted: false,
       mergeListIds: false,
       fetchQuery: {
@@ -208,6 +190,8 @@ export function* loadOrders(): Saga<*> {
               eq: currentToken.id,
             },
             'child_id': null,
+            'canceled_at': null,
+            'deleted_at': null,
             'completed_at': {
               'ne': null,
             },
@@ -219,11 +203,26 @@ export function* loadOrders(): Saga<*> {
   );
 }
 
+export function* cancelOrder(action) {
+  const order = {
+    ...action.payload,
+    canceled_at: new Date(),
+  };
+  yield put(saveResourceRequest({
+    resourceName: 'updateOrder',
+    list: order.type,
+    data: {
+      id: order.id,
+      attributes: order,
+      resourceName: 'orders',
+    },
+  }));
+}
+
 export function* listenNewOrder(): Saga<*> {
   yield takeEvery(types.CREATE_ORDER, action => createOrder(action.payload));
 }
 
-export function* listenFillOrder(): Saga<*> {
-  yield takeEvery(types.FILL_ORDER, action => fillOrder(action.payload));
+export function* listenCancelOrder(): Saga<*> {
+  yield takeEvery(types.CANCEL_ORDER, cancelOrder);
 }
-
