@@ -50,7 +50,9 @@ export type SaveResourceRequestAction =
     type: string,
     payload: {
       resourceName: ResourceName,
-      data: *,
+      data: any,
+      list: string,
+      request: string,
     },
   |};
 
@@ -59,7 +61,6 @@ export type DeleteResourceRequestAction = {|
   payload: {
     resourceName: ResourceName,
     id: ID,
-    closeModal: boolean,
   },
 |};
 

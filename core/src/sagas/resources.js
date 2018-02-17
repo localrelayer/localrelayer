@@ -59,12 +59,14 @@ export function* saveResourceRequest({
   },
 }) {
   try {
-    const actions = createActionCreators('update', {
+    const actions = createActionCreators(data.id ? 'update' : 'create', {
       resourceName,
       request,
       list,
-      resources: [data.id],
     });
+    if (data.id) {
+      actions.resources = [data.id];
+    }
     yield put(actions.pending());
     const response = yield call(apiCall, data.id ? 'UPDATE' : 'ADD', data);
     yield putData(response);
