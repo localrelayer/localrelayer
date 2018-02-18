@@ -110,7 +110,7 @@ export function* createOrder({
     yield put(saveResourceRequest({
       resourceName: 'orders',
       request: 'createOrder',
-      list: type,
+      lists: [type, 'userOrders'],
       data: {
         attributes: order,
         resourceName: 'orders',
@@ -209,8 +209,10 @@ export function* cancelOrder(action) {
     canceled_at: new Date(),
   };
   yield put(saveResourceRequest({
-    resourceName: 'updateOrder',
-    list: order.type,
+    resourceName: 'orders',
+    request: 'cancelOrder',
+    mergeResources: false,
+    lists: [order.type, 'userOrders'],
     data: {
       id: order.id,
       attributes: order,

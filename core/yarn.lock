@@ -3648,6 +3648,10 @@ redux-resource-action-creators@1.0.0:
   dependencies:
     redux-resource "^2.0.0"
 
+redux-resource-lists@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/redux-resource-lists/-/redux-resource-lists-0.0.1.tgz#f3747f1818930c2133047449b2ea31f22efdb0fb"
+
 redux-resource-plugins@2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/redux-resource-plugins/-/redux-resource-plugins-2.1.0.tgz#e5ccc778d9db6d8fc2deef523da7090f8d4c9e8a"

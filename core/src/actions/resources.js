@@ -45,6 +45,8 @@ export const saveResourceRequest = (
     data: any,
     list: string,
     request: string,
+    lists: ?Array<string>,
+    mergeResources: ?boolean,
   },
 ): SaveResourceRequestAction =>
   ({
