@@ -56,6 +56,8 @@ export function* saveResourceRequest({
     resourceName,
     list,
     request,
+    lists,
+    mergeResources,
   },
 }) {
   try {
@@ -63,6 +65,8 @@ export function* saveResourceRequest({
       resourceName,
       request,
       list,
+      lists,
+      mergeResources,
     });
     if (data.id) {
       actions.resources = [data.id];
