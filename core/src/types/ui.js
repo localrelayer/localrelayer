@@ -21,6 +21,14 @@ export type UiAction =
 {|
   type: typeof actionTypes.SEND_NOTIFICATION,
   payload: any,
+|} |
+{|
+  type: typeof actionTypes.SHOW_MODAL,
+  payload: {
+    title: string,
+    type: string,
+    text?: *,
+  },
 |}
 
 export type UiState = {|

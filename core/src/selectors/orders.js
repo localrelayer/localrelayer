@@ -7,34 +7,47 @@ import {
   getResourceMap,
   getResourceMappedList,
 } from './resources';
+import { getAddress } from './';
 
 export const getBuyOrders = createSelector(
-  getResourceMappedList('orders', 'buy'),
-  orders => orders.filter(order => !order.canceled_at).map(order => ({
+  [
+    getResourceMappedList('orders', 'buy'),
+    getAddress,
+  ],
+  (orders, address) => orders.filter(order => !order.canceled_at).map(order => ({
     ...order,
     price: BigNumber(order.price).toFixed(4),
     amount: BigNumber(order.amount).toFixed(4),
     total: BigNumber(order.total).toFixed(4),
+    isUser: address === order.maker_address,
   })),
 );
 
 export const getSellOrders = createSelector(
-  getResourceMappedList('orders', 'sell'),
-  orders => orders.filter(order => !order.canceled_at).map(order => ({
+  [
+    getResourceMappedList('orders', 'sell'),
+    getAddress,
+  ],
+  (orders, address) => orders.filter(order => !order.canceled_at).map(order => ({
     ...order,
     price: BigNumber(order.price).toFixed(4),
     amount: BigNumber(order.amount).toFixed(4),
     total: BigNumber(order.total).toFixed(4),
+    isUser: address === order.maker_address,
   })),
 );
 
 export const getCompletedOrders = createSelector(
-  getResourceMappedList('orders', 'completedOrders'),
-  orders => orders.filter(order => !order.canceled_at).map(order => ({
+  [
+    getResourceMappedList('orders', 'completedOrders'),
+    getAddress,
+  ],
+  (orders, address) => orders.filter(order => !order.canceled_at).map(order => ({
     ...order,
     price: BigNumber(order.price).toFixed(4),
     amount: BigNumber(order.amount).toFixed(4),
     total: BigNumber(order.total).toFixed(4),
+    isUser: address === order.maker_address,
   })),
 );
 

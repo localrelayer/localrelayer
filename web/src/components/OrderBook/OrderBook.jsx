@@ -7,6 +7,7 @@ import type {
 import type {
   Orders,
 } from 'instex-core/types';
+import { Icon } from 'antd';
 
 import {
   OrderBookContainer,
@@ -65,6 +66,9 @@ const columns = {
       key: 'total',
       render: (text: string) =>
         <Colored color="green">{text}</Colored>,
+    },
+    {
+      render: (text, order) => (order.isUser ? <Icon type="user" /> : null),
     },
   ],
 };

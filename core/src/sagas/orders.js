@@ -2,11 +2,7 @@ import {
   takeEvery,
   select,
   put,
-  call,
 } from 'redux-saga/effects';
-import {
-  delay,
-} from 'redux-saga';
 import type { Saga } from 'redux-saga';
 import { ZeroEx } from '0x.js';
 import BigNumber from 'bignumber.js';
@@ -24,13 +20,8 @@ import {
   sendNotification,
   saveResourceRequest,
 } from '../actions';
-import {
-  loadTokensBalance,
-  loadUserOrders,
-} from './profile';
 import type {
   OrderData,
-  ZrxOrder,
 } from '../types';
 import * as resourcesActions from '../actions/resources';
 
@@ -111,6 +102,7 @@ export function* createOrder({
       resourceName: 'orders',
       request: 'createOrder',
       lists: [type, 'userOrders'],
+      mesage: 'Order created',
       data: {
         attributes: order,
         resourceName: 'orders',
@@ -212,6 +204,7 @@ export function* cancelOrder(action) {
     resourceName: 'orders',
     request: 'cancelOrder',
     mergeResources: false,
+    message: 'Order Canceled',
     lists: [order.type, 'userOrders'],
     data: {
       id: order.id,
