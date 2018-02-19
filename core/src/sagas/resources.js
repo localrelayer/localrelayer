@@ -12,6 +12,9 @@ import {
   apiCall,
 } from '../api';
 import * as resourcesActions from '../actions/resources';
+import {
+  sendNotification,
+} from '../actions/ui';
 
 
 export function* fetchResourcesRequest({
@@ -58,6 +61,7 @@ export function* saveResourceRequest({
     request,
     lists,
     mergeResources,
+    message,
   },
 }) {
   try {
@@ -77,7 +81,11 @@ export function* saveResourceRequest({
     yield put(actions.succeeded({
       resources: [response.data],
     }));
+    if (message) {
+      yield put(sendNotification({ message, type: 'success' }));
+    }
   } catch (err) {
+    yield put(sendNotification({ message: `Couldn't ${data.id ? 'update' : 'create'}, try later`, type: 'error' }));
     console.log(err);
   }
 }

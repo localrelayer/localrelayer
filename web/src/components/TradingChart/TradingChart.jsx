@@ -21,7 +21,6 @@ export default class extends Component<Props> {
       locale: getParameterByName('lang') || 'en',
       drawings_access: { type: 'black', tools: [{ name: 'Regression Trend' }] },
       disabled_features: ['use_localstorage_for_settings', 'left_toolbar'],
-      enabled_features: ['study_templates'],
       charts_storage_url: 'http://saveload.tradingview.com',
       charts_storage_api_version: '1.1',
       client_id: 'tradingview.com',

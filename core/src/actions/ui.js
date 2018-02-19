@@ -23,6 +23,17 @@ export const sendNotification = (
   payload,
 });
 
+export const showModal = (
+  payload: {
+    title: string,
+    type: string,
+    text?: *,
+  },
+): UiAction => ({
+  type: actionTypes.SHOW_MODAL,
+  payload,
+});
+
 export const fillField = (
   field: string,
   values: any,

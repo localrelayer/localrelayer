@@ -5,7 +5,7 @@ import {
 } from 'redux-saga/effects';
 import type { Saga } from 'redux-saga';
 import * as types from 'instex-core/actionTypes';
-import { notification } from 'antd';
+import { notification, Modal } from 'antd';
 import { titleCase } from 'change-case';
 import moment from 'moment';
 import {
@@ -63,10 +63,22 @@ export function* sendNotification({ payload: { type, message } }) {
   });
 }
 
+export function* showModal({ payload: { title, type, text } }) {
+  yield Modal[type]({
+    title,
+    content: text,
+  });
+}
+
 export function* listenNotifications() {
   yield takeEvery(types.SEND_NOTIFICATION, sendNotification);
+}
+
+export function* listenShowModal() {
+  yield takeEvery(types.SHOW_MODAL, showModal);
 }
 
 export function* listenFillField() {
   yield takeEvery(types.FILL_FIELD, ({ meta, payload }) => sagas[meta.field](payload));
 }
+

@@ -18,6 +18,7 @@ import * as actionTypes from '../actions/types';
 import {
   sendNotification,
   setUiState,
+  showModal,
 } from '../actions/ui';
 import {
   loadTokensBalance,
@@ -26,6 +27,7 @@ import {
 import {
   getAddress,
   getUserTokenBy,
+  getBalance,
 } from '../selectors';
 
 const sagas = {
@@ -41,24 +43,34 @@ function* deposit() {
   const weth = yield select(getUserTokenBy('symbol', 'WETH'));
   const { amount } = yield select(getFormValues('WrapForm'));
   const account = yield select(getAddress);
-  const ethToConvert = ZeroEx.toBaseUnitAmount(new BigNumber(amount), weth.decimals);
-  try {
-    const txHash = yield call([zeroEx.etherToken, zeroEx.etherToken.depositAsync],
-      weth.id,
-      ethToConvert,
-      account,
-      { gasLimit: 80000 });
-    yield put(setUiState('isBalanceLoading', true));
-    yield put(reset('WrapForm'));
-    yield call([zeroEx, zeroEx.awaitTransactionMinedAsync], txHash);
-    yield call(delay, 12000);
-    yield put(sendNotification({ message: 'Deposit successful', type: 'success' }));
-    yield call(loadTokensBalance);
-    yield call(loadBalance);
-    yield put(setUiState('isBalanceLoading', false));
-  } catch (e) {
-    yield put(sendNotification({ message: e.message, type: 'error' }));
-    console.error(e);
+  const balance = yield select(getBalance);
+
+  if (balance === amount) {
+    yield put(showModal({
+      title: 'Do not deposit all of your ETH!',
+      type: 'info',
+      text: 'Otherwise you cannot pay for transactions.',
+    }));
+  } else {
+    const ethToConvert = ZeroEx.toBaseUnitAmount(new BigNumber(amount), weth.decimals);
+    try {
+      const txHash = yield call([zeroEx.etherToken, zeroEx.etherToken.depositAsync],
+        weth.id,
+        ethToConvert,
+        account,
+        { gasLimit: 80000 });
+      yield put(setUiState('isBalanceLoading', true));
+      yield put(reset('WrapForm'));
+      yield call([zeroEx, zeroEx.awaitTransactionMinedAsync], txHash);
+      yield call(delay, 10000);
+      yield put(sendNotification({ message: 'Deposit successful', type: 'success' }));
+      yield call(loadTokensBalance);
+      yield call(loadBalance);
+      yield put(setUiState('isBalanceLoading', false));
+    } catch (e) {
+      yield put(sendNotification({ message: e.message, type: 'error' }));
+      console.error(e);
+    }
   }
 }
 
@@ -80,7 +92,7 @@ function* withdraw() {
     yield put(setUiState('isBalanceLoading', true));
     yield put(reset('WrapForm'));
     yield call([zeroEx, zeroEx.awaitTransactionMinedAsync], txHash);
-    yield call(delay, 12000);
+    yield call(delay, 10000);
     yield put(sendNotification({ message: 'Withdrawal successful', type: 'success' }));
     yield call(loadTokensBalance);
     yield call(loadBalance);
