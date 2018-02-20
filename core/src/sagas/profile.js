@@ -4,18 +4,29 @@ import {
   put,
   cps,
   takeLatest,
+  fork,
 } from 'redux-saga/effects';
 import {
   delay,
 } from 'redux-saga';
-import type { Saga } from 'redux-saga';
 import {
   push,
 } from 'react-router-redux';
+
+import type {
+  Saga,
+} from 'redux-saga';
+
+
+import {
+  socketConnect,
+  handleSocketIO,
+} from './socket';
 import {
   getAddress,
   getCurrentToken,
   getCurrentPair,
+  getProfileState,
 } from '../selectors';
 import {
   getNetworkById,
@@ -27,14 +38,20 @@ import {
 import {
   setProfileState,
 } from '../actions/profile';
+import {
+  sendSocketMessage,
+} from '../actions/socket';
 import * as resourcesActions from '../actions/resources';
 
 
 export function* loadUser(): Saga<*> {
-  const { web3 } = window;
+  const {
+    web3,
+  } = window;
   const prevAccount = yield select(getAddress);
   const accounts = yield cps(web3.eth.getAccounts);
   const newAccount = accounts[0];
+  const socketConnected = yield select(getProfileState('socketConnected'));
   if (prevAccount !== newAccount) {
     yield put(setProfileState('address', newAccount));
     if (!accounts.length) {
@@ -46,6 +63,14 @@ export function* loadUser(): Saga<*> {
       yield call(loadNetwork);
       yield call(loadTokensBalance);
       yield call(loadUserOrders);
+      if (!socketConnected) {
+        const socket = yield call(socketConnect);
+        yield fork(handleSocketIO, socket);
+        yield put(setProfileState('socketConnected', true));
+      }
+      yield put(sendSocketMessage('login', {
+        address: newAccount,
+      }));
     }
   }
 }

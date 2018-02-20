@@ -1,4 +1,4 @@
-// flow-typed signature: fb09fb6f255aa9238b2e2f757d820511
+// flow-typed signature: da074200f2923ab3c102314813028458
 // flow-typed version: <<STUB>>/truffle-contract_v^3.0.2/flow_v0.63.1
 
 /**
@@ -34,6 +34,10 @@ declare module 'truffle-contract/dist/truffle-contract.min' {
   declare module.exports: any;
 }
 
+declare module 'truffle-contract/statuserror' {
+  declare module.exports: any;
+}
+
 declare module 'truffle-contract/test/abstractions' {
   declare module.exports: any;
 }
@@ -66,6 +70,10 @@ declare module 'truffle-contract/test/upgrade' {
   declare module.exports: any;
 }
 
+declare module 'truffle-contract/test/util' {
+  declare module.exports: any;
+}
+
 // Filename aliases
 declare module 'truffle-contract/contract.js' {
   declare module.exports: $Exports<'truffle-contract/contract'>;
@@ -81,6 +89,9 @@ declare module 'truffle-contract/index' {
 }
 declare module 'truffle-contract/index.js' {
   declare module.exports: $Exports<'truffle-contract'>;
+}
+declare module 'truffle-contract/statuserror.js' {
+  declare module.exports: $Exports<'truffle-contract/statuserror'>;
 }
 declare module 'truffle-contract/test/abstractions.js' {
   declare module.exports: $Exports<'truffle-contract/test/abstractions'>;
@@ -105,4 +116,7 @@ declare module 'truffle-contract/test/networks.js' {
 }
 declare module 'truffle-contract/test/upgrade.js' {
   declare module.exports: $Exports<'truffle-contract/test/upgrade'>;
+}
+declare module 'truffle-contract/test/util.js' {
+  declare module.exports: $Exports<'truffle-contract/test/util'>;
 }

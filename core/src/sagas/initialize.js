@@ -5,7 +5,9 @@ import {
   fork,
   select,
 } from 'redux-saga/effects';
-import type { Saga } from 'redux-saga';
+import type {
+  Saga,
+} from 'redux-saga';
 import {
   getLocation,
 } from 'react-router-redux';
@@ -43,7 +45,9 @@ export function* initialize(): Saga<void> {
       },
     },
   );
-  const { pathname } = yield select(getLocation);
+  const {
+    pathname,
+  } = yield select(getLocation);
   const reg = pathToRegexp('/:token-:pair');
   const [a, token, pair] = reg.exec(pathname); // eslint-disable-line
   const selectedToken =

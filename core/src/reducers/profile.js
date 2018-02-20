@@ -8,6 +8,7 @@ import type {
 
 const initialState: ProfileState = {
   isLoading: false,
+  socketConnected: false,
   address: '',
   balance: '',
   tokens: [],
