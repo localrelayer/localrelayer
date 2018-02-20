@@ -2,6 +2,9 @@ import {
   createSelector,
 } from 'reselect';
 
+export const getProfileState = key =>
+  ({ profile }) => profile[key];
+
 export const getAddress = ({ profile }) => profile.address;
 export const getBalance = ({ profile }) => profile.balance;
 export const getUserTokens = ({ profile }) => profile.tokens;
