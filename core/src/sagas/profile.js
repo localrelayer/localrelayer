@@ -165,7 +165,7 @@ export function* loadUserOrders() {
 
 export function* runLoadUser(): Saga<*> {
   while (true) {
-    yield call(loadUser);
-    yield call(delay, 2000);
+    yield fork(loadUser);
+    yield call(delay, 3000);
   }
 }

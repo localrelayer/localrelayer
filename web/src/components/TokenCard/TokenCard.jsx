@@ -3,7 +3,6 @@ import React from 'react';
 
 import type {
   Node,
-  StatelessFunctionalComponent,
 } from 'react';
 import type {
   Token,
@@ -52,7 +51,7 @@ type Props = {
 
 const TokenCard = ({
   token: {
-    trading = {},
+    tradingInfo,
     symbol,
   },
   tokenPair,
@@ -64,13 +63,13 @@ const TokenCard = ({
     lastPrice,
     highPrice,
     lowPrice,
-  } = trading[tokenPair.symbol] || {};
+  } = tradingInfo || {};
   const isPositive = +change24Hour >= 0;
 
   return (
     <CardContainer
       actions={[
-        <div>Volume: {volume || 0} {tokenPair.symbol}</div>,
+        <div>Volume: {volume || 0} {symbol}</div>,
         <div id="watch-btn" onClick={onClick}>
           {isPositive ?
             <Colored color="green">{`+${change24Hour || 0.00}%`}</Colored>

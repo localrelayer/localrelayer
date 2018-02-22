@@ -1,5 +1,5 @@
 export const multipleLists = resourceName => (state, action) => {
-  const { resources, lists = [] } = action;
+  const { resources, lists = [], prepend } = action;
   if (action.resourceName !== resourceName) {
     return state;
   }
@@ -24,11 +24,14 @@ export const multipleLists = resourceName => (state, action) => {
       resources.forEach((resource) => {
         const id = typeof resource === 'object' ? resource.id : resource;
         if (!newList.includes(id)) {
-          newList.push(id);
+          if (prepend) {
+            newList.unshift(id);
+          } else {
+            newList.push(id);
+          }
         }
       });
     }
-
     newLists = {
       ...newLists,
       [list]: newList || currentList,

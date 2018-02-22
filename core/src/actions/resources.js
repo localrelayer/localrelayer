@@ -16,11 +16,13 @@ import type {
 export const fetchResourcesRequest = (
   payload: {
     resourceName: ResourceName,
-    list: string,
     request: string,
-    mergeResources: ?boolean,
     withDeleted: boolean,
     fetchQuery: any,
+    list?: string,
+    lists?: Array<string>,
+    mergeResources?: boolean,
+    prepend?: boolean,
   },
 ): FetchResourceRequestAction =>
   ({
@@ -48,6 +50,7 @@ export const saveResourceRequest = (
     lists?: Array<string>,
     mergeResources?: boolean,
     message?: string,
+    prepend?: boolean,
   },
 ): SaveResourceRequestAction =>
   ({

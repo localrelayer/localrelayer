@@ -21,18 +21,22 @@ export function* fetchResourcesRequest({
   payload: {
     resourceName,
     list,
+    lists,
     request,
     withDeleted,
     fetchQuery,
     additionalInclude,
     mergeListIds = true,
+    prepend,
   },
 }) {
   const actions = createActionCreators('read', {
     resourceName,
     request,
     list,
+    lists,
     mergeListIds,
+    prepend,
   });
   yield put(actions.pending());
 
@@ -62,6 +66,7 @@ export function* saveResourceRequest({
     lists,
     mergeResources,
     message,
+    prepend,
   },
 }) {
   try {
@@ -71,6 +76,7 @@ export function* saveResourceRequest({
       list,
       lists,
       mergeResources,
+      prepend,
     });
     if (data.id) {
       actions.resources = [data.id];
@@ -78,6 +84,7 @@ export function* saveResourceRequest({
     yield put(actions.pending());
     const response = yield call(apiCall, data.id ? 'UPDATE' : 'ADD', data);
     yield putData(response);
+    console.log(response.data);
     yield put(actions.succeeded({
       resources: [response.data],
     }));
