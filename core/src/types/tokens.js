@@ -10,14 +10,12 @@ export type TokenAttributes = {
   symbol: string,
   decimals: number,
   name: string,
-  trading: {
-    [string]: {
-      volume: string,
-      highPrice: string,
-      lowPrice: string,
-      change24Hour: string,
-      lastPrice: string
-    }
+  tradingInfo: {
+    volume: string,
+    highPrice: string,
+    lowPrice: string,
+    change24Hour: string,
+    lastPrice: string,
   },
 };
 
