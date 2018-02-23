@@ -39,3 +39,6 @@ export const connectionStatuses = {
   CONNECTED: 'Connected',
   LOCKED: 'Locked',
 };
+
+export const NODE_ADDRESS = '0x5409ed021d9299bf6814279a6a1411a7e866a631';
+export const SMALLEST_AMOUNT = 0.005;

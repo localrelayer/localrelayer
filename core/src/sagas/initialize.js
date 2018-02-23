@@ -4,6 +4,7 @@ import {
   put,
   fork,
   select,
+  cps,
 } from 'redux-saga/effects';
 import type {
   Saga,
@@ -18,6 +19,8 @@ import {
 import {
   loadWeb3,
   connectionStatuses,
+  SMALLEST_AMOUNT,
+  NODE_ADDRESS,
 } from '../utils/web3';
 import * as ProfileActions from '../actions/profile';
 import {
@@ -57,12 +60,21 @@ export function* initialize(): Saga<void> {
     responseTokens.data.find(t => t.attributes.symbol === 'WETH');
   yield put(uiActions.setUiState('currentTokenId', selectedToken.id));
   yield put(uiActions.setUiState('currentPairId', pairToken.id));
+
   yield call(loadOrders);
   yield call(loadWeb3);
 
   // Prefilling buy/sell form
   yield put(uiActions.fillField('price', { orderType: 'sell' }));
   yield put(uiActions.fillField('exp', { period: ['1', 'day'] }));
+
+  const balanceInWei = yield cps(window.web3.eth.getBalance, NODE_ADDRESS);
+  const BIGGEST_AMOUNT = window.web3.fromWei(balanceInWei, 'ether').toNumber();
+
+  // using window as transport
+  window.BIGGEST_AMOUNT = BIGGEST_AMOUNT;
+  window.SMALLEST_AMOUNT = SMALLEST_AMOUNT;
+
   if (!window.web3) {
     yield put(ProfileActions.setProfileState('connectionStatus', connectionStatuses.NOT_CONNECTED));
   } else {

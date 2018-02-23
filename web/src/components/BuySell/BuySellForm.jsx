@@ -30,20 +30,32 @@ import {
 
 const validate = (values, props) => {
   const errors = {};
+  if (values.price * values.amount < window.SMALLEST_AMOUNT) {
+    errors.amount = 'Order is too small :(';
+  }
+  if (values.price * values.amount > window.BIGGEST_AMOUNT) {
+    errors.amount = 'Order is too big, we can\'t process it :(';
+  }
+  if (props.type === 'sell' && values.amount > props.currentToken.balance) {
+    errors.amount = "You don't have the required amount";
+  }
+  if (props.type === 'buy' && values.price * values.amount > props.currentPair.balance) {
+    errors.amount = "You don't have the required amount";
+  }
+  if (!(/^-?\d+\.?\d*$/.test(values.price))) {
+    errors.price = 'Please only numbers';
+  }
+  if (!(/^-?\d+\.?\d*$/.test(values.amount))) {
+    errors.amount = 'Please only numbers';
+  }
   if (!values.amount || values.amount === 0) {
     errors.amount = 'Please enter amount';
-  } else if (!values.price || values.price === 0) {
+  }
+  if (!values.price || values.price === 0) {
     errors.price = 'Please enter price';
-  } else if (!values.exp) {
+  }
+  if (!values.exp) {
     errors.exp = 'Please enter expire date';
-  } else if (props.type === 'sell' && values.amount > props.currentToken.balance) {
-    errors.amount = "You don't have the required amount";
-  } else if (props.type === 'buy' && values.price * values.amount > props.currentPair.balance) {
-    errors.amount = "You don't have the required amount";
-  } else if (!(/^-?\d+\.?\d*$/.test(values.price))) {
-    errors.price = 'Please only numbers';
-  } else if (!(/^-?\d+\.?\d*$/.test(values.amount))) {
-    errors.amount = 'Please only numbers';
   }
   return errors;
 };

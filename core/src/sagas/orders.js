@@ -23,11 +23,12 @@ import {
 import type {
   OrderData,
 } from '../types';
+import {
+  NODE_ADDRESS,
+} from '../utils/web3';
 import * as resourcesActions from '../actions/resources';
 
 BigNumber.config({ EXPONENTIAL_AT: 5000 });
-
-const ourNodeAddress = '0x5409ed021d9299bf6814279a6a1411a7e866a631';
 
 export function* createOrder({
   amount,
@@ -65,7 +66,7 @@ export function* createOrder({
   }
   const zrxOrder = {
     maker: address,
-    taker: ourNodeAddress,
+    taker: NODE_ADDRESS,
     feeRecipient: NULL_ADDRESS,
     exchangeContractAddress: EXCHANGE_ADDRESS,
     salt: ZeroEx.generatePseudoRandomSalt(),
@@ -94,7 +95,7 @@ export function* createOrder({
       pair_address: currentPair.id,
       type,
       zrxOrder: signedZRXOrder,
-      expires_at: exp.toDate(),
+      expires_at: exp.toISOString(),
       maker_address: address,
     };
 
@@ -198,7 +199,7 @@ export function* loadOrders(): Saga<*> {
 export function* cancelOrder(action) {
   const order = {
     ...action.payload,
-    canceled_at: new Date(),
+    canceled_at: moment().toISOString(),
   };
   yield put(saveResourceRequest({
     resourceName: 'orders',
