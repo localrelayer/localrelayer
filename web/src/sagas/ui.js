@@ -9,7 +9,6 @@ import { notification, Modal } from 'antd';
 import { titleCase } from 'change-case';
 import moment from 'moment';
 import {
-  getCurrentToken,
   getCurrentPair,
   getBuyOrders,
   getSellOrders,
@@ -27,27 +26,25 @@ const sagas = {
 };
 
 export function* fillAmount({ orderType, coef }): Saga<*> {
-  const currentToken = yield select(getCurrentToken);
   const currentPair = yield select(getCurrentPair);
-  const token = yield select(getUserTokenBy('address', currentToken.address));
-  const pair = yield select(getUserTokenBy('address', currentPair.address));
+  const pair = yield select(getUserTokenBy('id', currentPair.id));
   const values = yield select(getFormValues('BuySellForm'));
+
   const formPrice = values ? values.price : null;
   const [lastOrder] = yield select(getSellOrders);
-  // to not divide by 0
+  // to stop division by 0
   if (!lastOrder && !formPrice) return;
+
   const orderPrice = lastOrder ? lastOrder.price : 0;
-  const fillValue = orderType === 'buy' ?
-    BigNumber(pair.balance).div(formPrice || orderPrice).times(coef)
-    :
-    BigNumber(token.balance).times(coef);
-  yield put(change('BuySellForm', 'amount', fillValue.toFixed(4).toString()));
+
+  const fillValue = BigNumber(pair.balance).div(formPrice || orderPrice).times(coef);
+  yield put(change('BuySellForm', 'amount', fillValue.toNumber().toFixed(6)));
 }
 
 export function* fillPrice({ orderType }) {
   const [lastOrder] = yield select(orderType === 'buy' ? getBuyOrders : getSellOrders);
-  const orderPrice = lastOrder ? lastOrder.price : 0;
-  yield put(change('BuySellForm', 'price', BigNumber(orderPrice).toFixed(4).toString()));
+  if (!lastOrder) return;
+  yield put(change('BuySellForm', 'price', BigNumber(lastOrder.price).toNumber().toFixed(6)));
 }
 
 export function* fillDate({ period }) {

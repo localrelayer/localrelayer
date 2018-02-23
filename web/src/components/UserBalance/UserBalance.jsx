@@ -26,7 +26,7 @@ type Props = {
   /** Function that is called by unwrap button */
   unwrap: () => void,
   /** Is something loading */
-  isBalanceLoading: boolean
+  isBalanceLoading: boolean,
 };
 
 const getColumns = onToggle => [
@@ -34,21 +34,39 @@ const getColumns = onToggle => [
     title: 'Token',
     dataIndex: 'symbol',
     key: 'symbol',
-    render: (text, record, i) =>
+    render: (text, record, i) => (
       <div>
-        <Tooltip title={record.name}>{text}</Tooltip> {' '}
-        {i === 0 &&
-          <Popover placement="right" title={<div>Wrapping ETH allows you to trade directly with alt tokens</div>}>
+        <Tooltip title={record.name}>{text}</Tooltip>{' '}
+        {record.symbol === 'WETH' && (
+          <Popover
+            placement="right"
+            title={<div>Wrapping ETH allows you to trade directly with alt tokens</div>}
+          >
             <Icon type="question-circle-o" />
           </Popover>
-        }
-      </div>,
+        )}
+      </div>
+    ),
   },
   {
     title: 'Balance',
     dataIndex: 'balance',
     key: 'balance',
-    render: text => <div>{text}</div>,
+    render: (text, record) => (
+      <div>
+        {text}
+        <Popover
+          placement="bottom"
+          title={
+            <div>
+              <div>Wallet balance: {record.fullBalance}</div>
+              <div>In orders: {(record.fullBalance - record.balance).toFixed(8)}</div>
+            </div>}
+        >
+          {' '}<Icon type="info-circle-o" />
+        </Popover>
+      </div>
+    ),
   },
   {
     title: 'Tradable',
@@ -79,23 +97,14 @@ const UserBalance = ({
   isBalanceLoading,
 }: Props): Node => (
   <Element name="userBalance">
-    <CardContainer
-      id="user-balance"
-      bordered={false}
-      title={<div>My Balance ({balance} ETH)</div>}
-    >
-      <WrapForm
-        wrap={wrap}
-        unwrap={unwrap}
-        onSubmit={() => {}}
-        isLoading={isBalanceLoading}
-      />
+    <CardContainer id="user-balance" bordered={false} title={<div>My Balance ({balance} ETH)</div>}>
+      <WrapForm wrap={wrap} unwrap={unwrap} onSubmit={() => {}} isLoading={isBalanceLoading} />
       <Card.Grid>
         <TableContainer
           loading={isBalanceLoading}
           onRow={record => ({
-          onClick: () => onTokenClick(record),
-        })}
+            onClick: () => onTokenClick(record),
+          })}
           pagination={false}
           dataSource={tokens}
           columns={getColumns(onToggle)}

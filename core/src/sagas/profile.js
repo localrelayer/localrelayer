@@ -5,6 +5,7 @@ import {
   cps,
   takeLatest,
   fork,
+  all,
 } from 'redux-saga/effects';
 import {
   delay,
@@ -12,6 +13,7 @@ import {
 import {
   push,
 } from 'react-router-redux';
+import { ZeroEx } from '0x.js';
 
 import type {
   Saga,
@@ -27,6 +29,7 @@ import {
   getCurrentToken,
   getCurrentPair,
   getProfileState,
+  getLockedBalances,
 } from '../selectors';
 import {
   getNetworkById,
@@ -59,10 +62,13 @@ export function* loadUser(): Saga<*> {
     } else {
       yield put(setProfileState('connectionStatus', connectionStatuses.CONNECTED));
 
-      yield call(loadBalance);
-      yield call(loadNetwork);
+      yield all([
+        call(loadBalance),
+        call(loadNetwork),
+        call(loadUserOrders),
+      ]);
+      // We need to access user orders, so we wait for it
       yield call(loadTokensBalance);
-      yield call(loadUserOrders);
       if (!socketConnected) {
         const socket = yield call(socketConnect);
         yield fork(handleSocketIO, socket);
@@ -88,8 +94,11 @@ export function* loadBalance(): Saga<*> {
 export function* loadTokensBalance() {
   const currentToken = yield select(getCurrentToken);
   const currentPair = yield select(getCurrentPair);
-  const pair = yield getTokenBalanceAndAllowance(currentPair);
-  const current = yield getTokenBalanceAndAllowance(currentToken);
+
+  const { lockedToken, lockedPair } = yield select(getLockedBalances);
+  // We need to substract order in orders amount
+  const pair = yield getTokenBalanceAndAllowance(currentPair, lockedPair);
+  const current = yield getTokenBalanceAndAllowance(currentToken, lockedToken);
   yield put(setProfileState('tokens', [pair, current]));
 }
 
@@ -118,7 +127,7 @@ export function* listenCurrentTokenChange() {
 }
 
 
-function* getTokenBalanceAndAllowance(token) {
+function* getTokenBalanceAndAllowance(token, locked) {
   const { zeroEx } = window;
   const account = yield select(getAddress);
   const tokenBalance = yield call(
@@ -134,7 +143,8 @@ function* getTokenBalanceAndAllowance(token) {
   return {
     ...token,
     isTradable: allowance.gt(0),
-    balance: (tokenBalance.dividedBy(BigNumber(10).toPower(token.decimals))).toString(),
+    fullBalance: ZeroEx.toUnitAmount(tokenBalance, token.decimals).toFixed(8),
+    balance: ZeroEx.toUnitAmount(tokenBalance, token.decimals).minus(locked).toFixed(8),
   };
 }
 
