@@ -45,7 +45,7 @@ type Props = {
   onPairSelect: Function,
 };
 
-const getColumns = (onSelect, selectedToken, selectedPair) => [{
+const getColumns = () => [{
   title: 'Coin',
   dataIndex: 'symbol',
   key: 'symbol',
@@ -53,24 +53,24 @@ const getColumns = (onSelect, selectedToken, selectedPair) => [{
 },
 {
   title: 'Price',
-  dataIndex: `trading[${selectedPair.symbol}].lastPrice`,
+  dataIndex: 'tradingInfo.lastPrice',
   key: 'lastPrice',
   render: text => text || '--',
 },
 {
   title: 'Volume',
-  dataIndex: `trading[${selectedPair.symbol}].volume`,
+  dataIndex: 'tradingInfo.volume',
   key: 'volume',
   render: text => text || '--',
   sorter: (a, b) => {
-    const volumeA = a.trading[selectedPair.symbol] ? a.trading[selectedPair.symbol].volume : 0;
-    const volumeB = b.trading[selectedPair.symbol] ? b.trading[selectedPair.symbol].volume : 0;
+    const volumeA = a.tradingInfo.volume || 0;
+    const volumeB = b.tradingInfo.volume || 0;
     return volumeA - volumeB;
   },
 },
 {
   title: 'Change',
-  dataIndex: `trading[${selectedPair.symbol}].change24Hour`,
+  dataIndex: 'tradingInfo.change24Hour',
   key: 'change24Hour',
   render: (text) => {
     if (!text) return '--';
@@ -119,7 +119,7 @@ const TokensList: StatelessFunctionalComponent<Props> = ({
       size="small"
       rowKey="id"
       bordered={false}
-      columns={getColumns(onSelect, selectedToken, tokenPair)}
+      columns={getColumns()}
       dataSource={tokens}
       onRow={record => ({
         onClick: () => onSelect(record),

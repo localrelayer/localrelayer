@@ -7,7 +7,7 @@ import {
   getResourceMap,
   getResourceMappedList,
 } from './resources';
-import { getAddress } from './';
+import { getAddress } from './profile';
 
 export const getBuyOrders = createSelector(
   [

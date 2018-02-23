@@ -14,6 +14,10 @@ import type {
   StatelessFunctionalComponent,
 } from 'react';
 
+import type {
+  Token,
+} from 'instex-core/types';
+
 import {
   NumberInput,
   DateInput,
@@ -24,20 +28,38 @@ import {
   LabelListContainer,
 } from './styled';
 
+const validate = (values, props) => {
+  const errors = {};
+  if (!values.amount || values.amount === 0) {
+    errors.amount = 'Please enter amount';
+  } else if (!values.price || values.price === 0) {
+    errors.price = 'Please enter price';
+  } else if (!values.exp) {
+    errors.exp = 'Please enter expire date';
+  } else if (props.type === 'sell' && values.amount > props.currentToken.balance) {
+    errors.amount = "You don't have the required amount";
+  } else if (props.type === 'buy' && values.price * values.amount > props.currentPair.balance) {
+    errors.amount = "You don't have the required amount";
+  } else if (!(/^-?\d+\.?\d*$/.test(values.price))) {
+    errors.price = 'Please only numbers';
+  } else if (!(/^-?\d+\.?\d*$/.test(values.amount))) {
+    errors.amount = 'Please only numbers';
+  }
+  return errors;
+};
 
 type Props = {
   handleSubmit: () => void,
-  currentTokenName: string,
-  currentPairName: string,
+  currentToken: Token,
+  currentPair: Token,
   type: string,
-  fillField: Function,
+  fillField: (field: string, data: Object) => void,
 };
 
 function disabledDate(current) {
   // Can not select days before today and today
   return current && current < moment().endOf('day');
 }
-
 
 /**
  * Buy/Sell form
@@ -47,15 +69,12 @@ function disabledDate(current) {
 
 const BuySellForm: StatelessFunctionalComponent<Props> = ({
   handleSubmit,
-  currentTokenName,
-  currentPairName,
+  currentToken,
+  currentPair,
   type,
   fillField,
 }: Props): Node => (
-  <Form
-    layout="vertical"
-    onSubmit={handleSubmit}
-  >
+  <Form layout="vertical" onSubmit={handleSubmit}>
     <Field
       id="price"
       type="text"
@@ -68,8 +87,8 @@ const BuySellForm: StatelessFunctionalComponent<Props> = ({
             <a onClick={() => fillField('price', { orderType: 'sell' })}>Sell</a>
           </LabelListContainer>
         </LabelContainer>
-  }
-      placeholder={currentPairName}
+      }
+      placeholder={currentPair.symbol}
       component={NumberInput}
     />
     <Field
@@ -87,7 +106,7 @@ const BuySellForm: StatelessFunctionalComponent<Props> = ({
           </LabelListContainer>
         </LabelContainer>
       }
-      placeholder={currentTokenName}
+      placeholder={currentToken.symbol}
       component={NumberInput}
     />
     <Field
@@ -104,16 +123,13 @@ const BuySellForm: StatelessFunctionalComponent<Props> = ({
           </LabelListContainer>
         </LabelContainer>
       }
+      showTime
       placeholder="Select time"
       dateFormat="DD/MM/YYYY HH:mm"
       disabledDate={disabledDate}
       component={DateInput}
     />
-    <PlaceOrderButton
-      size="large"
-      type="primary"
-      htmlType="submit"
-    >
+    <PlaceOrderButton size="large" type="primary" htmlType="submit">
       Place order
     </PlaceOrderButton>
   </Form>
@@ -123,4 +139,5 @@ export default reduxForm({
   form: 'BuySellForm',
   touchOnBlur: true,
   touchOnChange: true,
+  validate,
 })(BuySellForm);

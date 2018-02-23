@@ -20,7 +20,6 @@ import {
   connectionStatuses,
 } from '../utils/web3';
 import * as ProfileActions from '../actions/profile';
-
 import {
   runLoadUser,
   listenCurrentTokenChange,
@@ -60,6 +59,10 @@ export function* initialize(): Saga<void> {
   yield put(uiActions.setUiState('currentPairId', pairToken.id));
   yield call(loadOrders);
   yield call(loadWeb3);
+
+  // Prefilling buy/sell form
+  yield put(uiActions.fillField('price', { orderType: 'sell' }));
+  yield put(uiActions.fillField('exp', { period: ['1', 'day'] }));
   if (!window.web3) {
     yield put(ProfileActions.setProfileState('connectionStatus', connectionStatuses.NOT_CONNECTED));
   } else {

@@ -21,6 +21,7 @@ type Props = {
   balance: string,
   dispatch: Dispatch,
   isBalanceLoading: boolean,
+  lockedBalance: string,
 };
 
 const UserBalanceContainer: StatelessFunctionalComponent<Props> = ({
@@ -28,6 +29,7 @@ const UserBalanceContainer: StatelessFunctionalComponent<Props> = ({
   balance,
   dispatch,
   isBalanceLoading,
+  lockedBalance,
 }: Props): Node => (
   <StyleContainer>
     <UserBalance
@@ -37,6 +39,7 @@ const UserBalanceContainer: StatelessFunctionalComponent<Props> = ({
       balance={balance}
       wrap={() => dispatch(callContract('deposit'))}
       unwrap={() => dispatch(callContract('withdraw'))}
+      lockedBalance={lockedBalance}
     />
   </StyleContainer>
 );

@@ -8,6 +8,9 @@ import type {
 import {
   withState,
 } from 'recompose';
+import type {
+  Token,
+} from 'instex-core/types';
 
 import BuySellForm from './BuySellForm';
 import { CardContainer } from './styled';
@@ -20,9 +23,9 @@ type Props = {
   /** Active tab */
   activeTab: string,
   /** Token name for placeholder */
-  currentTokenName: string,
+  currentToken: Token,
   /** Pair name for placeholder */
-  currentPairName: string,
+  currentPair: Token,
   /** Fill field with presetted value */
   fillField: () => void,
 };
@@ -50,8 +53,8 @@ const BuySell: StatelessFunctionalComponent<Props> = ({
   onSubmit,
   changeActiveTab,
   activeTab,
-  currentTokenName,
-  currentPairName,
+  currentToken,
+  currentPair,
   fillField,
 }: Props): Node =>
   <CardContainer
@@ -62,8 +65,8 @@ const BuySell: StatelessFunctionalComponent<Props> = ({
     <BuySellForm
       fillField={fillField}
       type={activeTab}
-      currentTokenName={currentTokenName}
-      currentPairName={currentPairName}
+      currentToken={currentToken}
+      currentPair={currentPair}
       onSubmit={values => onSubmit({ ...values, type: activeTab })}
     />
   </CardContainer>;
