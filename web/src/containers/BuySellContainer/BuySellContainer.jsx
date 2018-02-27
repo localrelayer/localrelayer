@@ -11,10 +11,14 @@ import {
 import {
   createOrder,
   fillField,
+  setUiState,
 } from 'instex-core/actions';
 import type {
   Token,
 } from 'instex-core/types';
+import {
+  reset,
+} from 'redux-form';
 
 import type { Dispatch } from 'redux';
 
@@ -25,30 +29,39 @@ type Props = {
   currentToken: Token,
   currentPair: Token,
   dispatch: Dispatch<*>,
+  activeTab: string,
 }
 
 const BuySellContainer = ({
   currentToken,
   currentPair,
   dispatch,
+  activeTab,
 }: Props) => (
   <StyleContainer>
     <BuySell
       currentToken={currentToken}
       currentPair={currentPair}
-      onSubmit={(...data) => dispatch(createOrder(...data))}
-      fillField={(...data) => dispatch(fillField(...data))}
+      activeTab={activeTab}
+      onSubmit={values => dispatch(createOrder(values))}
+      fillField={(field, values) => dispatch(fillField(field, values))}
+      changeActiveTab={(tab) => {
+        dispatch(setUiState('activeTab', tab));
+        dispatch(reset('BuySellForm'));
+      }}
     />
   </StyleContainer>
 );
 
 const mapStateToProps: MapStateToProps<*, *, *> = (state) => {
+  const { activeTab } = state.ui;
   const currentToken = getCurrentToken(state);
   const currentPair = getCurrentPair(state);
-  // We need to get current token and pair from profile to get a balance
   return {
+    // We need to get current token and pair from profile to get a balance
     currentToken: getUserTokenBy('id', currentToken.id)(state),
     currentPair: getUserTokenBy('id', currentPair.id)(state),
+    activeTab,
   };
 };
 

@@ -22,9 +22,9 @@ export const getBuyOrders = createSelector(
       order.type === 'buy')
     .map(order => ({
       ...order,
-      price: BigNumber(order.price).toFixed(4),
-      amount: BigNumber(order.amount).toFixed(4),
-      total: BigNumber(order.total).toFixed(4),
+      price: BigNumber(order.price).toFixed(6),
+      amount: BigNumber(order.amount).toFixed(6),
+      total: BigNumber(order.total).toFixed(6),
       isUser: address === order.maker_address,
     })),
 );
@@ -42,9 +42,9 @@ export const getSellOrders = createSelector(
       order.type === 'sell')
     .map(order => ({
       ...order,
-      price: BigNumber(order.price).toFixed(4),
-      amount: BigNumber(order.amount).toFixed(4),
-      total: BigNumber(order.total).toFixed(4),
+      price: BigNumber(order.price).toFixed(6),
+      amount: BigNumber(order.amount).toFixed(6),
+      total: BigNumber(order.total).toFixed(6),
       isUser: address === order.maker_address,
     })),
 );
@@ -58,9 +58,9 @@ export const getCompletedOrders = createSelector(
     .filter(order => !order.canceled_at && order.completed_at)
     .map(order => ({
       ...order,
-      price: BigNumber(order.price).toFixed(4),
-      amount: BigNumber(order.amount).toFixed(4),
-      total: BigNumber(order.total).toFixed(4),
+      price: BigNumber(order.price).toFixed(6),
+      amount: BigNumber(order.amount).toFixed(6),
+      total: BigNumber(order.total).toFixed(6),
       isUser: address === order.maker_address,
     })),
 );
@@ -77,9 +77,9 @@ export const getUserOrders = createSelector(
       !order.child_id)
     .map(order => ({
       ...order,
-      price: BigNumber(order.price).toFixed(4),
-      amount: BigNumber(order.amount).toFixed(4),
-      total: BigNumber(order.total).toFixed(4),
+      price: BigNumber(order.price).toFixed(6),
+      amount: BigNumber(order.amount).toFixed(6),
+      total: BigNumber(order.total).toFixed(6),
       tokenSymbol: tokens[order.token_address] ? tokens[order.token_address].attributes.symbol : '',
     })),
 );

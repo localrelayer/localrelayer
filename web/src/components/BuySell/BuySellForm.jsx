@@ -8,6 +8,7 @@ import {
   Form,
 } from 'antd';
 import moment from 'moment';
+import BigNumber from 'bignumber.js';
 
 import type {
   Node,
@@ -30,24 +31,6 @@ import {
 
 const validate = (values, props) => {
   const errors = {};
-  if (values.price * values.amount < window.SMALLEST_AMOUNT) {
-    errors.amount = 'Order is too small :(';
-  }
-  if (values.price * values.amount > window.BIGGEST_AMOUNT) {
-    errors.amount = 'Order is too big, we can\'t process it :(';
-  }
-  if (props.type === 'sell' && values.amount > props.currentToken.balance) {
-    errors.amount = "You don't have the required amount";
-  }
-  if (props.type === 'buy' && values.price * values.amount > props.currentPair.balance) {
-    errors.amount = "You don't have the required amount";
-  }
-  if (!(/^-?\d+\.?\d*$/.test(values.price))) {
-    errors.price = 'Please only numbers';
-  }
-  if (!(/^-?\d+\.?\d*$/.test(values.amount))) {
-    errors.amount = 'Please only numbers';
-  }
   if (!values.amount || values.amount === 0) {
     errors.amount = 'Please enter amount';
   }
@@ -56,6 +39,39 @@ const validate = (values, props) => {
   }
   if (!values.exp) {
     errors.exp = 'Please enter expire date';
+  }
+  if (values.price && values.amount) {
+    if (!/^-?\d+\.?\d*$/.test(values.price)) {
+      errors.price = 'Please only numbers';
+    }
+    if (!/^-?\d+\.?\d*$/.test(values.amount)) {
+      errors.amount = 'Please only numbers';
+    }
+    if (
+      BigNumber(values.price)
+        .times(values.amount)
+        .lt(window.SMALLEST_AMOUNT)
+    ) {
+      errors.amount = 'Order is too small :(';
+    }
+    if (
+      BigNumber(values.price)
+        .times(values.amount)
+        .gt(window.BIGGEST_AMOUNT)
+    ) {
+      errors.amount = "Order is too big, we can't process it :(";
+    }
+    if (props.type === 'sell' && BigNumber(values.amount).gt(props.currentToken.balance)) {
+      errors.amount = "You don't have the required amount";
+    }
+    if (
+      props.type === 'buy' &&
+      BigNumber(values.price)
+        .times(values.amount)
+        .gt(props.currentPair.balance)
+    ) {
+      errors.amount = "You don't have the required amount";
+    }
   }
   return errors;
 };
@@ -149,7 +165,7 @@ const BuySellForm: StatelessFunctionalComponent<Props> = ({
 
 export default reduxForm({
   form: 'BuySellForm',
-  touchOnBlur: true,
   touchOnChange: true,
+  enableReinitialize: true,
   validate,
 })(BuySellForm);

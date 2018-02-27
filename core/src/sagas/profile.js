@@ -13,7 +13,12 @@ import {
 import {
   push,
 } from 'react-router-redux';
-import { ZeroEx } from '0x.js';
+import {
+  ZeroEx,
+} from '0x.js';
+import {
+  reset,
+} from 'redux-form';
 
 import type {
   Saga,
@@ -45,6 +50,9 @@ import {
   sendSocketMessage,
 } from '../actions/socket';
 import * as resourcesActions from '../actions/resources';
+import {
+  showModal,
+} from '../actions';
 
 
 export function* loadUser(): Saga<*> {
@@ -59,6 +67,11 @@ export function* loadUser(): Saga<*> {
     yield put(setProfileState('address', newAccount));
     if (!accounts.length) {
       yield put(setProfileState('connectionStatus', connectionStatuses.LOCKED));
+      yield put(showModal({
+        title: 'Your Metamask account is locked',
+        type: 'warn',
+        text: 'Please unlock it to interact with exchange',
+      }));
     } else {
       yield put(setProfileState('connectionStatus', connectionStatuses.CONNECTED));
 
@@ -115,6 +128,7 @@ export function* changeToken() {
   yield put(push(`${currentToken.symbol}-${currentPair.symbol}`));
   yield call(loadTokensBalance);
   yield call(loadOrders);
+  yield put(reset('BuySellForm'));
 }
 
 export function* listenCurrentTokenChange() {
