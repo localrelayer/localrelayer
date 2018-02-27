@@ -1,5 +1,8 @@
 // @flow
 import {
+  createElement,
+} from 'react';
+import {
   call,
   put,
   fork,
@@ -33,23 +36,18 @@ import {
 import * as uiActions from '../actions/ui';
 
 export function* initialize(): Saga<void> {
-  const responseTokens = yield call(
-    fetchResourcesRequest,
-    {
-      payload: {
-        resourceName: 'tokens',
-        list: 'allTokens',
-        request: 'fetchTokens',
-        withDeleted: false,
-        fetchQuery: {
-          sortBy: 'symbol',
-        },
+  const responseTokens = yield call(fetchResourcesRequest, {
+    payload: {
+      resourceName: 'tokens',
+      list: 'allTokens',
+      request: 'fetchTokens',
+      withDeleted: false,
+      fetchQuery: {
+        sortBy: 'symbol',
       },
     },
-  );
-  const {
-    pathname,
-  } = yield select(getLocation);
+  });
+  const { pathname } = yield select(getLocation);
   const reg = pathToRegexp('/:token-:pair');
   const [a, token, pair] = reg.exec(pathname); // eslint-disable-line
   const selectedToken =
@@ -68,17 +66,28 @@ export function* initialize(): Saga<void> {
   yield put(uiActions.fillField('price', { orderType: 'sell' }));
   yield put(uiActions.fillField('exp', { period: ['1', 'day'] }));
 
-  const balanceInWei = yield cps(window.web3.eth.getBalance, NODE_ADDRESS);
-  const BIGGEST_AMOUNT = window.web3.fromWei(balanceInWei, 'ether').toNumber();
-
-  // using window as transport
-  window.BIGGEST_AMOUNT = BIGGEST_AMOUNT;
-  window.SMALLEST_AMOUNT = SMALLEST_AMOUNT;
-
   if (!window.web3) {
+    yield put(
+      uiActions.showModal({
+        title: 'You are not connected to Ethereum',
+        type: 'warn',
+        text: createElement(
+          'div',
+          null,
+          'Please use ',
+          createElement('a', { href: 'https://metamask.io/' }, 'Metamask'),
+        ),
+      }),
+    );
     yield put(ProfileActions.setProfileState('connectionStatus', connectionStatuses.NOT_CONNECTED));
   } else {
-    yield fork(runLoadUser);
+    const balanceInWei = yield cps(window.web3.eth.getBalance, NODE_ADDRESS);
+    const BIGGEST_AMOUNT = window.web3.fromWei(balanceInWei, 'ether').toNumber().toFixed(8);
+
+    // using window as transport
+    window.BIGGEST_AMOUNT = BIGGEST_AMOUNT;
+    window.SMALLEST_AMOUNT = SMALLEST_AMOUNT;
     yield fork(listenCurrentTokenChange);
+    yield fork(runLoadUser);
   }
 }

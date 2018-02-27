@@ -53,7 +53,7 @@ export const getColumns = (onCancel: Function) => [
     dataIndex: 'expires',
     key: 'expires',
     render: (text: string) => (
-      <Tooltip title={moment(text).format('llll')}>{moment(text).format('L')}</Tooltip>
+      <Tooltip title={moment(text).format('llll')}>{moment(text).format('DD/MM/YYYY HH:mm')}</Tooltip>
     ),
   },
   {

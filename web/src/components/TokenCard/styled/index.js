@@ -1,5 +1,9 @@
 import styled from 'styled-components';
-import { Card } from 'antd';
+import {
+  Avatar,
+  Card,
+  Icon,
+} from 'antd';
 
 export const Title = styled.div`
   font-size: 1.3em;
@@ -22,6 +26,14 @@ export const CardContainer = styled(Card)`
 
 export const PriceContainer = styled.div``;
 
-export const VolumeContainer = styled.div`
+export const AvatarContainer = styled(Avatar)`
+  background: none !important;
 `;
 
+export const LastPriceContainer = styled.div`
+  font-size: 1.2rem;
+`;
+
+export const IconContainer = styled(Icon)`
+  font-size: 16px
+`;

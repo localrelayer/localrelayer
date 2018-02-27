@@ -9,6 +9,7 @@ const initialState: UiState = {
   currentTokenId: null,
   searchQuery: '',
   isBalanceLoading: false,
+  activeTab: 'buy',
 };
 
 export default function ui(

@@ -2,6 +2,7 @@ import {
   takeEvery,
   select,
   put,
+  call,
 } from 'redux-saga/effects';
 import type { Saga } from 'redux-saga';
 import { ZeroEx } from '0x.js';
@@ -27,6 +28,9 @@ import {
   NODE_ADDRESS,
 } from '../utils/web3';
 import * as resourcesActions from '../actions/resources';
+import {
+  loadTokensBalance,
+} from './profile';
 
 BigNumber.config({ EXPONENTIAL_AT: 5000 });
 
@@ -111,6 +115,7 @@ export function* createOrder({
     }));
     yield put(sendNotification({ message: 'Order created', type: 'success' }));
     yield put(reset('BuySellForm'));
+    yield call(loadTokensBalance);
   } catch (e) {
     yield put(sendNotification({ message: e.message, type: 'error' }));
     console.error(e);
@@ -213,6 +218,7 @@ export function* cancelOrder(action) {
       resourceName: 'orders',
     },
   }));
+  yield call(loadTokensBalance);
 }
 
 export function* listenNewOrder(): Saga<*> {

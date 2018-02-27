@@ -21,8 +21,12 @@ import config from '../config';
 import {
   sendNotification,
 } from '../actions';
-import { getResourceItemBydId } from '../selectors';
-
+import {
+  getResourceItemBydId,
+} from '../selectors';
+import {
+  loadUserOrders,
+} from './profile';
 
 export function socketConnect() {
   const socket = io(config.socketUrl);
@@ -49,14 +53,16 @@ function* read(socket) {
   const channel = yield call(subscribe, socket);
   while (true) {
     const data = yield take(channel);
+
     console.warn('Message from socket');
     console.log(data);
+
     if (data.matchedIds) {
       yield put(
         resourcesActions.fetchResourcesRequest({
           resourceName: 'orders',
           request: 'fetchUpdatedMatchedOrders',
-          lists: ['buy', 'sell', 'completedOrders', 'userOrders'],
+          lists: ['buy', 'sell', 'completedOrders'],
           prepend: true,
           withDeleted: false,
           fetchQuery: {
@@ -73,10 +79,9 @@ function* read(socket) {
           },
         }),
       );
-      yield put(sendNotification({ message: 'Found matched order', type: 'success' }));
+      yield call(loadUserOrders);
     } else if (data.tradingInfo) {
       const token = yield select(getResourceItemBydId('tokens', data.token));
-      console.log(token);
       yield put({
         type: reduxResourceActions.UPDATE_RESOURCES_SUCCEEDED,
         resourceName: 'tokens',
@@ -88,6 +93,10 @@ function* read(socket) {
           },
         }],
       });
+    }
+
+    if (data.message) {
+      yield put(sendNotification({ message: data.message, type: 'success' }));
     }
   }
 }

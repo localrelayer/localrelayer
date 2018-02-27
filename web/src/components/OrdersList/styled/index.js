@@ -7,6 +7,10 @@ export const OrdersListContainer = styled.div`
   .ant-table-small {
     background: white;
   }
+
+  .ant-table-tbody > tr > td {
+    padding: 6px !important;
+  }
 `;
 
 export const TableTitle = styled.h3`

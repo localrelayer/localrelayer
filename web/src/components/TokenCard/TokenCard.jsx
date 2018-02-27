@@ -7,17 +7,23 @@ import type {
 import type {
   Token,
 } from 'instex-core/types';
-
+import {
+  lifecycle,
+} from 'recompose';
 import {
   Card,
-  Avatar,
 } from 'antd';
 import {
   Title,
   CardContainer,
   PriceContainer,
+  AvatarContainer,
+  LastPriceContainer,
+  IconContainer,
 } from './styled';
-import { Colored } from '../SharedStyles';
+import {
+  Colored,
+} from '../SharedStyles';
 
 const {
   Meta,
@@ -28,9 +34,16 @@ const getTitle = (symbol, tokenPairSymbol, change24Hour, lastPrice) => (
     <div>
       {symbol} / {tokenPairSymbol}{' '}
     </div>
-    <div id="last-price">{lastPrice || 'No trades'}</div>
+    <LastPriceContainer><span>{lastPrice || 'No trades'}</span>{' '}
+      <Colored color={+change24Hour >= 0 ? 'green' : 'red'}>
+        {change24Hour && <IconContainer type={+change24Hour >= 0 ? 'caret-up' : 'caret-down'} />}
+      </Colored>
+    </LastPriceContainer>
   </Title>
 );
+
+// eslint-disable-next-line
+const getImageSrc = symbol => import(`../../assets/images/${symbol}.png`);
 
 type Props = {
   /** Token object */
@@ -41,6 +54,8 @@ type Props = {
    * Function that is called whenever button clicked
    * */
   onClick: ?Function,
+  /** Link to token image */
+  url: string,
 };
 
 /**
@@ -56,6 +71,7 @@ const TokenCard = ({
   },
   tokenPair,
   onClick,
+  url,
 }: Props): Node => {
   const {
     volume,
@@ -80,9 +96,7 @@ const TokenCard = ({
     ]}
     >
       <Meta
-        avatar={
-          <Avatar src="https://davidgerard.co.uk/blockchain/wp-content/uploads/2017/10/ebtc-300x300.jpg" />
-      }
+        avatar={<AvatarContainer src={url} />}
         title={getTitle(symbol, tokenPair.symbol, change24Hour, lastPrice)}
         description={
           <PriceContainer>
@@ -94,8 +108,22 @@ const TokenCard = ({
     </CardContainer>);
 };
 
+
 TokenCard.defaultProps = {
   onClick: () => {},
 };
 
-export default TokenCard;
+export default lifecycle({
+  componentWillReceiveProps(nextProps) {
+    const prevSymbol = this.props.token.symbol;
+    const nextSymbol = nextProps.token.symbol;
+    if (nextSymbol !== prevSymbol) {
+      getImageSrc(nextSymbol).then((url) => {
+        this.setState({ url });
+      }).catch(async () => {
+        const defaultUrl = await getImageSrc('default');
+        this.setState({ url: defaultUrl });
+      });
+    }
+  },
+})(TokenCard);

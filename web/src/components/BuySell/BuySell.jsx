@@ -5,9 +5,6 @@ import type {
   Node,
   StatelessFunctionalComponent,
 } from 'react';
-import {
-  withState,
-} from 'recompose';
 import type {
   Token,
 } from 'instex-core/types';
@@ -27,7 +24,7 @@ type Props = {
   /** Pair name for placeholder */
   currentPair: Token,
   /** Fill field with presetted value */
-  fillField: () => void,
+  fillField: Function,
 };
 
 const tabList = [
@@ -46,8 +43,6 @@ const tabList = [
  * @version 1.0.0
  * @author [Vladimir Pal](https://github.com/VladimirPal)
  */
-
-const enhance = withState('activeTab', 'changeActiveTab', 'buy');
 
 const BuySell: StatelessFunctionalComponent<Props> = ({
   onSubmit,
@@ -71,4 +66,4 @@ const BuySell: StatelessFunctionalComponent<Props> = ({
     />
   </CardContainer>;
 
-export default enhance(BuySell);
+export default BuySell;
