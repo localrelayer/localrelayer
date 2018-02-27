@@ -187,7 +187,7 @@ export function* loadOrders(): Saga<*> {
             'token.address': {
               eq: currentToken.id,
             },
-            'child_id': null,
+            'is_history': true,
             'canceled_at': null,
             'deleted_at': null,
             'completed_at': {
