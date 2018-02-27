@@ -55,7 +55,10 @@ export const getCompletedOrders = createSelector(
     getAddress,
   ],
   (orders, address) => orders
-    .filter(order => !order.canceled_at && order.completed_at)
+    .filter(order =>
+      !order.canceled_at &&
+      order.completed_at &&
+      order.is_history)
     .map(order => ({
       ...order,
       price: BigNumber(order.price).toFixed(6),
