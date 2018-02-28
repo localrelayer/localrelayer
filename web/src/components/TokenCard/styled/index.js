@@ -24,7 +24,11 @@ export const CardContainer = styled(Card)`
   }
 `;
 
-export const PriceContainer = styled.div``;
+export const PriceContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
 
 export const AvatarContainer = styled(Avatar)`
   background: none !important;
@@ -35,5 +39,8 @@ export const LastPriceContainer = styled.div`
 `;
 
 export const IconContainer = styled(Icon)`
-  font-size: 16px
+  font-size: ${props => props.size || '16px'}
 `;
+
+export const LinkContainer = styled.a``;
+

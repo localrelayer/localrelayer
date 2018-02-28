@@ -27,6 +27,7 @@ import {
   PlaceOrderButton,
   LabelContainer,
   LabelListContainer,
+  AdditionInfoContainer,
 } from './styled';
 
 const validate = (values, props) => {
@@ -82,6 +83,8 @@ type Props = {
   currentPair: Token,
   type: string,
   fillField: (field: string, data: Object) => void,
+  fee?: string,
+  total?: string,
 };
 
 function disabledDate(current) {
@@ -101,6 +104,8 @@ const BuySellForm: StatelessFunctionalComponent<Props> = ({
   currentPair,
   type,
   fillField,
+  fee,
+  total,
 }: Props): Node => (
   <Form layout="vertical" onSubmit={handleSubmit}>
     <Field
@@ -157,11 +162,20 @@ const BuySellForm: StatelessFunctionalComponent<Props> = ({
       disabledDate={disabledDate}
       component={DateInput}
     />
+    <AdditionInfoContainer>
+      <div><div>Total:</div><div>{total} {currentPair.symbol}</div></div>
+      <div><div>Fee:</div><div>{fee} {type === 'sell' ? currentPair.symbol : currentToken.symbol}</div></div>
+    </AdditionInfoContainer>
     <PlaceOrderButton size="large" type="primary" htmlType="submit">
       Place order
     </PlaceOrderButton>
   </Form>
 );
+
+BuySellForm.defaultProps = {
+  fee: '0.000000',
+  total: '0.000000',
+};
 
 export default reduxForm({
   form: 'BuySellForm',

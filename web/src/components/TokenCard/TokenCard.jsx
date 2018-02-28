@@ -20,6 +20,7 @@ import {
   AvatarContainer,
   LastPriceContainer,
   IconContainer,
+  LinkContainer,
 } from './styled';
 import {
   Colored,
@@ -34,10 +35,12 @@ const getTitle = (symbol, tokenPairSymbol, change24Hour, lastPrice) => (
     <div>
       {symbol} / {tokenPairSymbol}{' '}
     </div>
-    <LastPriceContainer><span>{lastPrice || 'No trades'}</span>{' '}
+    <LastPriceContainer>
       <Colored color={+change24Hour >= 0 ? 'green' : 'red'}>
         {change24Hour && <IconContainer type={+change24Hour >= 0 ? 'caret-up' : 'caret-down'} />}
       </Colored>
+      {' '}
+      <span>{lastPrice || 'No trades'}</span>
     </LastPriceContainer>
   </Title>
 );
@@ -68,6 +71,7 @@ const TokenCard = ({
   token: {
     tradingInfo,
     symbol,
+    id,
   },
   tokenPair,
   onClick,
@@ -100,8 +104,15 @@ const TokenCard = ({
         title={getTitle(symbol, tokenPair.symbol, change24Hour, lastPrice)}
         description={
           <PriceContainer>
-            <div>High: {highPrice || '--'}</div>
-            <div>Low: {lowPrice || '--'}</div>
+            <div>
+              <div>High: {highPrice || '--'}</div>
+              <div>Low: {lowPrice || '--'}</div>
+            </div>
+            <div>
+              <LinkContainer target="_blank" rel="noopener" href={`https://etherscan.io/token/${id}`}>
+                <IconContainer size="1.2rem" type="share-alt" />
+              </LinkContainer>
+            </div>
           </PriceContainer>
       }
       />
