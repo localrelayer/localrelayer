@@ -48,6 +48,9 @@ const columns = {
           {text}
         </Colored>,
     },
+    {
+      render: (text, order) => (order.isUser ? <Icon type="user" /> : null),
+    },
   ],
   buy: [
     {

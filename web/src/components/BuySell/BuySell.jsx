@@ -8,9 +8,14 @@ import type {
 import type {
   Token,
 } from 'instex-core/types';
+import {
+  Tabs,
+} from 'antd';
 
 import BuySellForm from './BuySellForm';
 import { CardContainer } from './styled';
+
+const TabPane = Tabs.TabPane;
 
 type Props = {
   /** Called on form submit */
@@ -27,17 +32,6 @@ type Props = {
   fillField: Function,
 };
 
-const tabList = [
-  {
-    key: 'buy',
-    tab: 'Buy',
-  },
-  {
-    key: 'sell',
-    tab: 'Sell',
-  },
-];
-
 /**
  * Buy/Sell
  * @version 1.0.0
@@ -52,18 +46,31 @@ const BuySell: StatelessFunctionalComponent<Props> = ({
   currentPair,
   fillField,
 }: Props): Node =>
-  <CardContainer
-    title="Create Order"
-    tabList={tabList}
-    onTabChange={changeActiveTab}
-  >
-    <BuySellForm
-      fillField={fillField}
-      type={activeTab}
-      currentToken={currentToken}
-      currentPair={currentPair}
-      onSubmit={values => onSubmit({ ...values, type: activeTab })}
-    />
+  <CardContainer title="Create Order">
+    <Tabs
+      onChange={changeActiveTab}
+      activeKey={activeTab}
+    >
+      <TabPane tab="Buy" key="buy">
+        <BuySellForm
+          fillField={fillField}
+          type={activeTab}
+          currentToken={currentToken}
+          currentPair={currentPair}
+          onSubmit={values => onSubmit({ ...values, type: activeTab })}
+        />
+      </TabPane>
+      <TabPane tab="Sell" key="sell">
+        <BuySellForm
+          fillField={fillField}
+          type={activeTab}
+          currentToken={currentToken}
+          currentPair={currentPair}
+          onSubmit={values => onSubmit({ ...values, type: activeTab })}
+        />
+      </TabPane>
+    </Tabs>
+
   </CardContainer>;
 
 export default BuySell;

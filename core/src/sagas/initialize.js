@@ -63,7 +63,7 @@ export function* initialize(): Saga<void> {
   yield call(loadWeb3);
 
   // Prefilling buy/sell form
-  yield put(uiActions.fillField('price', { orderType: 'sell' }));
+  // yield put(uiActions.fillField('price', { orderType: 'sell' }));
   yield put(uiActions.fillField('exp', { period: ['1', 'day'] }));
 
   if (!window.web3) {

@@ -7,7 +7,9 @@ import {
   getResourceMap,
   getResourceMappedList,
 } from './resources';
-import { getAddress } from './profile';
+import {
+  getAddress,
+} from './profile';
 
 export const getBuyOrders = createSelector(
   [
@@ -26,7 +28,8 @@ export const getBuyOrders = createSelector(
       amount: BigNumber(order.amount).toFixed(6),
       total: BigNumber(order.total).toFixed(6),
       isUser: address === order.maker_address,
-    })),
+    }))
+    .sort((a, b) => b.price - a.price),
 );
 
 export const getSellOrders = createSelector(
@@ -46,7 +49,8 @@ export const getSellOrders = createSelector(
       amount: BigNumber(order.amount).toFixed(6),
       total: BigNumber(order.total).toFixed(6),
       isUser: address === order.maker_address,
-    })),
+    }))
+    .sort((a, b) => a.price - b.price),
 );
 
 export const getCompletedOrders = createSelector(

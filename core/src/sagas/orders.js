@@ -144,7 +144,7 @@ export function* loadOrders(): Saga<*> {
             'type': 'buy',
           },
         },
-        sortBy: '-created_at',
+        sortBy: '-price',
       },
     }),
   );
@@ -169,7 +169,7 @@ export function* loadOrders(): Saga<*> {
             'type': 'sell',
           },
         },
-        sortBy: '-created_at',
+        sortBy: 'price',
       },
     }),
   );

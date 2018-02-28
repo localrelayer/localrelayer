@@ -32,3 +32,12 @@ export const LabelListContainer = styled.div`
   }
 `;
 
+export const AdditionInfoContainer = styled.div`
+  margin-bottom: 20px;
+  font-size: 0.75rem;
+  & div {
+    display: flex;
+    justify-content: space-between;
+  }
+`;
+
