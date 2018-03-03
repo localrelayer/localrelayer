@@ -26,6 +26,8 @@ import type {
 } from '../types';
 import {
   NODE_ADDRESS,
+  EXCHANGE_FEE,
+  TRANSACTION_FEE,
 } from '../utils/web3';
 import * as resourcesActions from '../actions/resources';
 import {
@@ -54,19 +56,24 @@ export function* createOrder({
   let makerTokenAmount;
   let takerTokenAmount;
   if (type === 'sell') {
+    const feeAmount = BigNumber(total).times(EXCHANGE_FEE).add(TRANSACTION_FEE.toFixed(6));
+
     makerTokenAddress = currentToken.id;
     takerTokenAddress = currentPair.id;
     makerTokenAmount =
       ZeroEx.toBaseUnitAmount(BigNumber(amount), currentToken.decimals);
     takerTokenAmount =
-      ZeroEx.toBaseUnitAmount(BigNumber(total), currentPair.decimals);
+      ZeroEx.toBaseUnitAmount(BigNumber(total).minus(feeAmount), currentPair.decimals);
   } else if (type === 'buy') {
+    const feeAmount = BigNumber(amount).times(EXCHANGE_FEE)
+      .add(BigNumber(TRANSACTION_FEE).div(price).toFixed(6));
+
     makerTokenAddress = currentPair.id;
     takerTokenAddress = currentToken.id;
     makerTokenAmount =
       ZeroEx.toBaseUnitAmount(BigNumber(total), currentPair.decimals);
     takerTokenAmount =
-      ZeroEx.toBaseUnitAmount(BigNumber(amount), currentToken.decimals);
+      ZeroEx.toBaseUnitAmount(BigNumber(amount).minus(feeAmount), currentToken.decimals);
   }
   const zrxOrder = {
     maker: address,

@@ -13,6 +13,7 @@ import {
   getBuyOrders,
   getSellOrders,
   getUserTokenBy,
+  getCurrentToken,
 } from 'instex-core/selectors';
 import {
   getFormValues,
@@ -25,19 +26,24 @@ const sagas = {
   amount: fillAmount,
 };
 
-export function* fillAmount({ coef }): Saga<*> {
+export function* fillAmount({ coef, orderType }): Saga<*> {
   const currentPair = yield select(getCurrentPair);
+  const currentToken = yield select(getCurrentToken);
   const pair = yield select(getUserTokenBy('id', currentPair.id));
+  const token = yield select(getUserTokenBy('id', currentToken.id));
   const values = yield select(getFormValues('BuySellForm'));
 
   const formPrice = values ? values.price : null;
   const [lastOrder] = yield select(getSellOrders);
   // to stop division by 0
-  if (!lastOrder && !formPrice) return;
+  if (!lastOrder && !formPrice && orderType === 'buy') return;
 
   const orderPrice = lastOrder ? lastOrder.price : 0;
 
-  const fillValue = BigNumber(pair.balance).div(formPrice || orderPrice).times(coef);
+  const fillValue = orderType === 'sell' ?
+    BigNumber(token.balance).times(coef)
+    :
+    BigNumber(pair.balance).div(formPrice || orderPrice).times(coef);
   yield put(change('BuySellForm', 'amount', fillValue.toNumber().toFixed(8)));
 }
 

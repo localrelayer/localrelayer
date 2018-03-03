@@ -3,13 +3,21 @@ import React from 'react';
 import {
   reduxForm,
   Field,
+  getFormValues,
 } from 'redux-form';
 import {
   Form,
+  Popover,
+  Icon,
 } from 'antd';
 import moment from 'moment';
 import BigNumber from 'bignumber.js';
-
+import {
+  connect,
+} from 'react-redux';
+import {
+  compose,
+} from 'redux';
 import type {
   Node,
   StatelessFunctionalComponent,
@@ -18,7 +26,13 @@ import type {
 import type {
   Token,
 } from 'instex-core/types';
-
+import type {
+  MapStateToProps,
+} from 'react-redux';
+import {
+  EXCHANGE_FEE,
+  TRANSACTION_FEE,
+} from 'instex-core/src/utils/web3';
 import {
   NumberInput,
   DateInput,
@@ -83,7 +97,9 @@ type Props = {
   currentPair: Token,
   type: string,
   fillField: (field: string, data: Object) => void,
-  fee?: string,
+  totalFee?: number,
+  transactionFee?: number,
+  exchangeFee?: number,
   total?: string,
 };
 
@@ -104,8 +120,10 @@ const BuySellForm: StatelessFunctionalComponent<Props> = ({
   currentPair,
   type,
   fillField,
-  fee,
+  totalFee,
   total,
+  transactionFee,
+  exchangeFee,
 }: Props): Node => (
   <Form layout="vertical" onSubmit={handleSubmit}>
     <Field
@@ -163,8 +181,35 @@ const BuySellForm: StatelessFunctionalComponent<Props> = ({
       component={DateInput}
     />
     <AdditionInfoContainer>
-      <div><div>Total:</div><div>{total} {currentPair.symbol}</div></div>
-      <div><div>Fee:</div><div>{fee} {type === 'sell' ? currentPair.symbol : currentToken.symbol}</div></div>
+      <div>
+        <div>Total:</div>
+        <div>
+          {total} {currentPair.symbol}
+        </div>
+      </div>
+      <div>
+        <div>Fee:</div>
+        <div>
+          {totalFee} {type === 'sell' ? currentPair.symbol : currentToken.symbol}
+          <Popover
+            placement="bottom"
+            title={
+              <div>
+                <div>
+                  Ethereum tx fee: {transactionFee}{' '}
+                  {type === 'sell' ? currentPair.symbol : currentToken.symbol}
+                </div>
+                <div>
+                  Instex fee: {exchangeFee}{' '}
+                  {type === 'sell' ? currentPair.symbol : currentToken.symbol}
+                </div>
+              </div>
+            }
+          >
+            <Icon style={{ marginLeft: 3, marginTop: 3 }} type="info-circle-o" />
+          </Popover>
+        </div>
+      </div>
     </AdditionInfoContainer>
     <PlaceOrderButton size="large" type="primary" htmlType="submit">
       Place order
@@ -173,13 +218,45 @@ const BuySellForm: StatelessFunctionalComponent<Props> = ({
 );
 
 BuySellForm.defaultProps = {
-  fee: '0.000000',
   total: '0.000000',
+  transactionFee: 0.0,
+  exchangeFee: 0.0,
+  totalFee: 0.0,
 };
 
-export default reduxForm({
-  form: 'BuySellForm',
-  touchOnChange: true,
-  enableReinitialize: true,
-  validate,
-})(BuySellForm);
+const mapStateToProps: MapStateToProps<*, *, *> = (state, props) => {
+  const { type } = props;
+  const { amount = 0, price = 0 } = getFormValues('BuySellForm')(state) || {};
+
+  const total = BigNumber(amount).times(price);
+
+  let exchangeFee;
+  let transactionFee;
+
+  if (type === 'sell') {
+    exchangeFee = BigNumber(total).times(EXCHANGE_FEE);
+    transactionFee = price ? TRANSACTION_FEE : 0;
+  } else {
+    exchangeFee = BigNumber(amount).times(EXCHANGE_FEE);
+    transactionFee = price ? BigNumber(TRANSACTION_FEE).div(price) : 0;
+  }
+
+  const totalFee = exchangeFee.add(transactionFee);
+
+  return {
+    total: total.toFixed(6),
+    totalFee: totalFee.toFixed(6),
+    exchangeFee: exchangeFee.toFixed(6),
+    transactionFee: transactionFee.toFixed(6),
+  };
+};
+
+export default compose(
+  reduxForm({
+    form: 'BuySellForm',
+    touchOnChange: true,
+    enableReinitialize: true,
+    validate,
+  }),
+  connect(mapStateToProps),
+)(BuySellForm);
