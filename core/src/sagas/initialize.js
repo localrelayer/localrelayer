@@ -50,6 +50,7 @@ export function* initialize(): Saga<void> {
   const { pathname } = yield select(getLocation);
   const reg = pathToRegexp('/:token-:pair');
   const [a, token, pair] = reg.exec(pathname); // eslint-disable-line
+
   const selectedToken =
     responseTokens.data.find(t => t.attributes.symbol === token) ||
     responseTokens.data.find(t => t.attributes.symbol === 'ZRX');
@@ -87,6 +88,7 @@ export function* initialize(): Saga<void> {
     // using window as transport
     window.BIGGEST_AMOUNT = BIGGEST_AMOUNT;
     window.SMALLEST_AMOUNT = SMALLEST_AMOUNT;
+
     yield fork(listenCurrentTokenChange);
     yield fork(runLoadUser);
   }
