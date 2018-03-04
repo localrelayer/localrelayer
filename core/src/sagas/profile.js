@@ -40,19 +40,16 @@ import {
   getNetworkById,
   connectionStatuses,
 } from '../utils/web3';
-import {
-  loadOrders,
-} from './orders';
-import {
-  setProfileState,
-} from '../actions/profile';
-import {
-  sendSocketMessage,
-} from '../actions/socket';
 import * as resourcesActions from '../actions/resources';
 import {
   showModal,
+  setUiState,
+  sendSocketMessage,
+  setProfileState,
 } from '../actions';
+import {
+  setTokenAndLoadOrders,
+} from './initialize';
 
 
 export function* loadUser(): Saga<*> {
@@ -121,25 +118,6 @@ export function* loadNetwork() {
   const network = getNetworkById(networkId);
   yield put(setProfileState('network', network));
 }
-
-export function* changeToken() {
-  const currentToken = yield select(getCurrentToken);
-  const currentPair = yield select(getCurrentPair);
-  yield put(push(`${currentToken.symbol}-${currentPair.symbol}`));
-  yield call(loadTokensBalance);
-  yield call(loadOrders);
-  yield put(reset('BuySellForm'));
-}
-
-export function* listenCurrentTokenChange() {
-  yield takeLatest(action =>
-    action.payload && (
-      action.payload.key === 'currentTokenId' ||
-      action.payload.key === 'currentPairId'
-    ),
-  changeToken);
-}
-
 
 function* getTokenBalanceAndAllowance(token, locked) {
   const { zeroEx } = window;

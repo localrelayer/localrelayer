@@ -114,13 +114,12 @@ export function* createOrder({
       resourceName: 'orders',
       request: 'createOrder',
       lists: [type, 'userOrders'],
-      mesage: 'Order created',
+      message: 'Order created',
       data: {
         attributes: order,
         resourceName: 'orders',
       },
     }));
-    yield put(sendNotification({ message: 'Order created', type: 'success' }));
     yield put(reset('BuySellForm'));
     yield call(loadTokensBalance);
   } catch (e) {

@@ -12,6 +12,7 @@ import {
 } from 'recompose';
 import {
   Card,
+  Tag,
 } from 'antd';
 import {
   Title,
@@ -19,11 +20,11 @@ import {
   PriceContainer,
   AvatarContainer,
   LastPriceContainer,
-  IconContainer,
   LinkContainer,
 } from './styled';
 import {
   Colored,
+  Truncate,
 } from '../SharedStyles';
 
 const {
@@ -91,11 +92,9 @@ const TokenCard = ({
       actions={[
         <div>Volume: {volume || 0} {symbol}</div>,
         <div id="watch-btn" onClick={onClick}>
-          {isPositive ?
-            <Colored color="green">{`+${change24Hour || 0.00}%`}</Colored>
-           :
-            <Colored color="red">{`${change24Hour || 0.00}%`}</Colored>
-          }
+          <LinkContainer target="_blank" rel="noopener" href={`https://etherscan.io/token/${id}`}>
+            <Truncate>{id}</Truncate>
+          </LinkContainer>
         </div>,
     ]}
     >
@@ -109,9 +108,12 @@ const TokenCard = ({
               <div>Low: {lowPrice || '--'}</div>
             </div>
             <div>
-              <LinkContainer target="_blank" rel="noopener" href={`https://etherscan.io/token/${id}`}>
-                <IconContainer size="1.2rem" type="share-alt" />
-              </LinkContainer>
+              {isPositive ?
+                <Colored color="green">{`+${change24Hour || '0.00'}%`}</Colored>
+             :
+                <Colored color="red">{`${change24Hour || '0.00'}%`}</Colored>
+            }
+
             </div>
           </PriceContainer>
       }

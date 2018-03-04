@@ -10,6 +10,7 @@ const initialState: UiState = {
   searchQuery: '',
   isBalanceLoading: false,
   activeTab: 'buy',
+  bannerMessage: null,
 };
 
 export default function ui(

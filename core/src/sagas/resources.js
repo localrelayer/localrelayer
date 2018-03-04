@@ -84,13 +84,13 @@ export function* saveResourceRequest({
     yield put(actions.pending());
     const response = yield call(apiCall, data.id ? 'UPDATE' : 'ADD', data);
     yield putData(response);
-    console.log(response.data);
     yield put(actions.succeeded({
       resources: [response.data],
     }));
     if (message) {
       yield put(sendNotification({ message, type: 'success' }));
     }
+    return response;
   } catch (err) {
     yield put(sendNotification({ message: `Couldn't ${data.id ? 'update' : 'create'}, try later`, type: 'error' }));
     console.log(err);
