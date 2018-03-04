@@ -16,10 +16,10 @@ export const CardContainer = styled(Card)`
 
   & .ant-card-actions {
     & li:first-child {
-      width: 70% !important;
+      width: 60% !important;
     }
     & li:last-child {
-      width: 30% !important;
+      width: 40% !important;
     }
   }
 `;

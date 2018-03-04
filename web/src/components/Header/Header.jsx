@@ -27,10 +27,12 @@ import {
   HeaderContainer,
   AlignRight,
   HeaderButton,
-  Truncate,
   UserButton,
   TokenContainer,
 } from './styled';
+import {
+  Truncate,
+} from '../SharedStyles';
 import TokensList from './TokensList';
 import UserProfile from '../UserProfile';
 

@@ -31,13 +31,6 @@ export const HeaderButton = styled(Button)`
   border: none;
 `;
 
-export const Truncate = styled.div`
-  white-space: nowrap;
-  width: 100px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-`;
-
 export const UserButton = styled(HeaderButton)`
   display: flex;
   align-items: center;

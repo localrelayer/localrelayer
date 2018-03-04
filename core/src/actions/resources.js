@@ -45,7 +45,7 @@ export const saveResourceRequest = (
   payload: {
     resourceName: ResourceName,
     data: any,
-    list: string,
+    list?: string,
     request: string,
     lists?: Array<string>,
     mergeResources?: boolean,

@@ -14,7 +14,9 @@ import type {
   Tokens,
   Token,
 } from 'instex-core/types';
-
+import {
+  push,
+} from 'react-router-redux';
 import {
   setUiState,
 } from 'instex-core/actions';
@@ -48,8 +50,8 @@ const HeaderContainer: StatelessFunctionalComponent<Props> =
       tokens={tokens}
       tokenPair={tokenPair}
       selectedToken={selectedToken}
-      onTokenSelect={token => dispatch(setUiState('currentTokenId', token.id))}
-      onPairSelect={token => dispatch(setUiState('currentPairId', token.id))}
+      onTokenSelect={token => dispatch(push(`${token.symbol}-${tokenPair.symbol}`))}
+      onPairSelect={token => dispatch(push(`${selectedToken.symbol}-${token.symbol}`))}
       onTokenSearch={query => dispatch(setUiState('searchQuery', query))}
     />;
 
