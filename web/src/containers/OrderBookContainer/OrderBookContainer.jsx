@@ -22,6 +22,7 @@ import {
 } from 'instex-core/selectors';
 import {
   setUiState,
+  showModal,
 } from 'instex-core/actions';
 import OrderBook from '../../components/OrderBook';
 
@@ -40,10 +41,17 @@ const OrderBookContainer: StatelessFunctionalComponent<Props> =
   }: Props): Node =>
     <OrderBook
       fillOrder={(order) => {
+        if (order.status === 'pending') {
+          dispatch(showModal({
+            type: 'info',
+            title: 'Sorry, order is already taken',
+          }));
+        } else {
         dispatch(setUiState('activeTab', order.type === 'buy' ? 'sell' : 'buy'));
         dispatch(change('BuySellForm', 'price', order.price)); // eslint-disable-line
         dispatch(change('BuySellForm', 'amount', order.amount)); // eslint-disable-line
         dispatch(change('BuySellForm', 'exp', moment().add(1, 'day'))); // eslint-disable-line
+        }
       }}
       buyOrders={buyOrders}
       sellOrders={sellOrders}
