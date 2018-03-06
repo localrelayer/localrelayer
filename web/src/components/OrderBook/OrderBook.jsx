@@ -7,7 +7,9 @@ import type {
 import type {
   Orders,
 } from 'instex-core/types';
-import { Icon } from 'antd';
+import {
+  Icon,
+} from 'antd';
 
 import {
   OrderBookContainer,
@@ -51,6 +53,9 @@ const columns = {
     {
       render: (text, order) => (order.isUser ? <Icon type="user" /> : null),
     },
+    {
+      render: (text, order) => (order.status === 'pending' ? <Icon type="loading" /> : null),
+    },
   ],
   buy: [
     {
@@ -72,6 +77,9 @@ const columns = {
     },
     {
       render: (text, order) => (order.isUser ? <Icon type="user" /> : null),
+    },
+    {
+      render: (text, order) => (order.status === 'pending' ? <Icon type="loading" /> : null),
     },
   ],
 };
