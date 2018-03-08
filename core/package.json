@@ -11,8 +11,9 @@
     "testnet:deploy": "node scripts/deployTokens.js"
   },
   "dependencies": {
-    "0x.js": "^0.30.1",
+    "0x.js": "^0.33.0",
     "bignumber.js": "5.0.0",
+    "es6-promisify": "^6.0.0",
     "faker": "git://github.com/Marak/faker.js.git",
     "human-standard-token-abi": "1.0.2",
     "moment": "^2.20.1",
