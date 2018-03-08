@@ -3,7 +3,6 @@ import {
   call,
   put,
   cps,
-  takeLatest,
   fork,
   all,
 } from 'redux-saga/effects';
@@ -11,15 +10,8 @@ import {
   delay,
 } from 'redux-saga';
 import {
-  push,
-} from 'react-router-redux';
-import {
   ZeroEx,
 } from '0x.js';
-import {
-  reset,
-} from 'redux-form';
-
 import type {
   Saga,
 } from 'redux-saga';
@@ -43,13 +35,9 @@ import {
 import * as resourcesActions from '../actions/resources';
 import {
   showModal,
-  setUiState,
   sendSocketMessage,
   setProfileState,
 } from '../actions';
-import {
-  setTokenAndLoadOrders,
-} from './initialize';
 
 
 export function* loadUser(): Saga<*> {

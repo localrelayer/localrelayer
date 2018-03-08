@@ -76,14 +76,14 @@ const validate = (values, props) => {
     ) {
       errors.amount = "Order is too big, we can't process it :(";
     }
-    if (props.type === 'sell' && BigNumber(values.amount).gt(props.currentToken.balance)) {
+    if (props.type === 'sell' && BigNumber(values.amount).gt(props.currentToken.balance || 0)) {
       errors.amount = "You don't have the required amount";
     }
     if (
       props.type === 'buy' &&
       BigNumber(values.price)
         .times(values.amount)
-        .gt(props.currentPair.balance)
+        .gt(props.currentPair.balance || 0)
     ) {
       errors.amount = "You don't have the required amount";
     }

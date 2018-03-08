@@ -25,7 +25,7 @@ import {
   saveResourceRequest,
 } from './resources';
 import {
-  loadWeb3,
+  loadZeroEx,
   connectionStatuses,
   SMALLEST_AMOUNT,
   NODE_ADDRESS,
@@ -47,7 +47,7 @@ import {
 } from '../selectors';
 
 export function* initialize(): Saga<void> {
-  yield call(loadWeb3);
+  yield call(loadZeroEx);
   yield call(fetchResourcesRequest, {
     payload: {
       resourceName: 'tokens',
@@ -99,6 +99,8 @@ export function* initialize(): Saga<void> {
 
 
 export function* setTokenAndLoadOrders(): Saga<void> {
+  const { zeroEx } = window;
+
   yield put(reset('BuySellForm'));
   yield put(uiActions.setUiState('bannerMessage', null));
 
@@ -111,9 +113,11 @@ export function* setTokenAndLoadOrders(): Saga<void> {
   const pairToken =
     tokens.find(t => t.symbol === pair || t.id === pair);
 
+  const networkZrxAddress = yield call([zeroEx.exchange, zeroEx.exchange.getZRXTokenAddress]);
+  const networkWethAddress = yield call([zeroEx.tokenRegistry, zeroEx.tokenRegistry.getTokenAddressBySymbolIfExistsAsync], 'WETH');
 
-  const zrxToken = tokens.find(t => t.symbol === 'ZRX');
-  const wethToken = tokens.find(t => t.symbol === 'WETH');
+  const zrxToken = tokens.find(t => t.symbol === 'ZRX' || t.id === networkZrxAddress) || {};
+  const wethToken = tokens.find(t => t.symbol === 'WETH' || t.id === networkWethAddress) || {};
 
   if (!selectedToken && window.web3.isAddress(token)) {
     try {
