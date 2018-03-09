@@ -1,8 +1,8 @@
-// flow-typed signature: 6877535662f8f2dcaa96120afd5f2cf9
-// flow-typed version: eb9be801d7/socket.io-client_v2.x.x/flow_>=v0.34.x
+// flow-typed signature: 1eed102f1f3f03ab47e98615df15dfd3
+// flow-typed version: 51b71b47ea/socket.io-client_v2.x.x/flow_>=v0.34.x
 
 declare module "socket.io-client" {
-  declare type Callback = (...args: mixed[]) => void;
+  declare type Callback = (...args: any[]) => void;
 
   declare type ManagerOptions = $Shape<{
     path: string,
@@ -12,6 +12,7 @@ declare module "socket.io-client" {
     reconnectionDelayMax: number,
     randomizationFactor: number,
     timeout: number,
+    transports: ("polling" | "websocket")[],
     autoConnect: boolean,
     query: { [string]: string },
     parser: any
@@ -52,8 +53,8 @@ declare module "socket.io-client" {
     constructor(io: Manager, nsp: string, opts?: SocketOptions): Socket;
     open(): Socket;
     connect(): Socket;
-    send(...args: mixed[]): Socket;
-    emit(event: string, ...args: mixed[]): Socket; // overrides Emitter#emit
+    send(...args: any[]): Socket;
+    emit(event: string, ...args: any[]): Socket; // overrides Emitter#emit
     close(): Socket;
     disconnect(): Socket;
     compress(boolean): Socket;
