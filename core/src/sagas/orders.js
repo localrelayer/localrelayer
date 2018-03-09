@@ -89,9 +89,10 @@ export function* createOrder({
     takerTokenAmount,
     expirationUnixTimestampSec: BigNumber(moment(exp).unix()),
   };
+
   const orderHash = ZeroEx.getOrderHashHex(zrxOrder);
   try {
-    const ecSignature = yield zeroEx.signOrderHashAsync(orderHash, address);
+    const ecSignature = yield zeroEx.signOrderHashAsync(orderHash, address, true);
     const signedZRXOrder = {
       ...zrxOrder,
       ecSignature,

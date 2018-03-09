@@ -29,9 +29,8 @@ export const getColumns = (onCancel: Function) => [
     ),
   },
   {
-    title: 'Token',
-    dataIndex: 'tokenSymbol',
-    key: 'tokenSymbol',
+    title: 'Pair',
+    render: (text: string, order: Order) => `${order.tokenSymbol}/${order.pairSymbol}`,
   },
   {
     title: 'Price',

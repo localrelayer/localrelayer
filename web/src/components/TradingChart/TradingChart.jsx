@@ -1,9 +1,15 @@
 // @flow
 import React, { Component } from 'react';
+import type {
+  Token,
+} from 'instex-core/types';
+import {
+  getDatafeed,
+} from './Datafeed';
 
-import datafeed from './Datafeed';
-
-type Props = {};
+type Props = {
+  token: Token,
+};
 
 /**
  * Trading Chart
@@ -11,40 +17,30 @@ type Props = {};
  * @author [Tim Reznich](https://github.com/imbaniac)
  */
 export default class extends Component<Props> {
-  componentDidMount() {
-    // eslint-disable-next-line
-    const widget = new window.TradingView.widget({
-      debug: true,
-      symbol: 'ZRX',
-      interval: '30',
-      allow_symbol_change: false,
-      height: '500px',
-      width: '100%',
-      container_id: 'chart_container',
-      datafeed,
-      library_path: 'charting_library/',
-      locale: getParameterByName('lang') || 'en',
-      drawings_access: { type: 'black', tools: [{ name: 'Regression Trend' }] },
-      disabled_features: [
-        'use_localstorage_for_settings',
-        'left_toolbar',
-        'header_symbol_search',
-      ],
-      client_id: 'tradingview.com',
-      user_id: 'public_user_id',
-      favorites: {
-        intervals: [
-          '1',
-          '10',
-          '30',
-          '60',
-          'D',
-          '7D',
-          '30D',
+  componentWillReceiveProps(nextProps: Props) {
+    if (nextProps.token.id !== this.props.token.id) {
+      // eslint-disable-next-line
+      const widget = new window.TradingView.widget({
+        debug: true,
+        interval: '30',
+        allow_symbol_change: false,
+        height: '500px',
+        width: '100%',
+        container_id: 'chart_container',
+        datafeed: getDatafeed(nextProps.token),
+        library_path: 'charting_library/',
+        locale: getParameterByName('lang') || 'en',
+        disabled_features: [
+          'use_localstorage_for_settings',
+          'left_toolbar',
+          'header_symbol_search',
         ],
-      },
-    });
-    window.tv_widget = widget;
+        client_id: 'tradingview.com',
+        user_id: 'public_user_id',
+
+      });
+      window.tv_widget = widget;
+    }
   }
 
   render() {
