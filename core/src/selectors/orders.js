@@ -88,6 +88,7 @@ export const getUserOrders = createSelector(
       amount: BigNumber(order.amount).toFixed(6),
       total: BigNumber(order.total).toFixed(6),
       tokenSymbol: tokens[order.token_address] ? tokens[order.token_address].attributes.symbol : '',
+      pairSymbol: tokens[order.pair_address] ? tokens[order.pair_address].attributes.symbol : '',
     })),
 );
 

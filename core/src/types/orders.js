@@ -13,7 +13,12 @@ export type OrderAttributes = {
   type: string,
   expires: Date,
   completed_at?: Date,
-};
+} & AddedOrderAttributes;
+
+export type AddedOrderAttributes = {
+  tokenSymbol: string,
+  pairSymbol: string,
+}
 
 export type OrderRelationships = {
 };
