@@ -109,6 +109,7 @@ export function* createOrder({
       zrxOrder: signedZRXOrder,
       expires_at: exp.toISOString(),
       maker_address: address,
+      order_hash: orderHash,
     };
 
     yield put(saveResourceRequest({
