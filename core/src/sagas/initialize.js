@@ -90,7 +90,7 @@ export function* initialize(): Saga<void> {
     const BIGGEST_AMOUNT = window.web3.utils.fromWei(balanceInWei, 'ether');
 
     // using window as transport
-    window.BIGGEST_AMOUNT = BIGGEST_AMOUNT;
+    window.BIGGEST_AMOUNT = BigNumber(BIGGEST_AMOUNT).toFixed(8).toString();
     window.SMALLEST_AMOUNT = SMALLEST_AMOUNT;
 
     yield fork(listenRouteChange);

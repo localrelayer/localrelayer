@@ -39,7 +39,6 @@ export default class NumberInput extends Component<Props> {
       >
         <InputNumber
           {...input}
-          type="number"
           precision={6}
           step={0.1}
           min={0}

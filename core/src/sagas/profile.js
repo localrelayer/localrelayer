@@ -85,7 +85,7 @@ export function* loadBalance(): Saga<*> {
   const balance = yield cps(web3.eth.getBalance, account);
   const formattedBalance = web3.utils.fromWei(balance, 'ether');
   yield put(
-    setProfileState('balance', formattedBalance),
+    setProfileState('balance', BigNumber(formattedBalance).toFixed(8).toString()),
   );
 }
 
