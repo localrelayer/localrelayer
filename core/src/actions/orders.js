@@ -9,7 +9,7 @@ import type {
 export function cancelOrder(orderId: string): OrdersAction {
   return {
     type: types.CANCEL_ORDER,
-    payload: orderId,
+    orderId,
   };
 }
 

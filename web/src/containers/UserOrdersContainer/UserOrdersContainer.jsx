@@ -34,7 +34,9 @@ const UserOrdersContainer: StatelessFunctionalComponent<Props> = ({
 }: Props): Node =>
   <UserOrders
     orders={orders}
-    onCancel={(orderId: string) => dispatch(cancelOrder(orderId))}
+    onCancel={(orderId: string) => {
+      dispatch(cancelOrder(orderId));
+    }}
   />;
 
 const mapStateToProps: MapStateToProps<*, *, *> = state => ({

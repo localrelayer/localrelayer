@@ -1,5 +1,5 @@
-// flow-typed signature: 18018da6c1a1d95b4ab1c64bb5fe86ca
-// flow-typed version: c1ad61e7d4/jest_v22.x.x/flow_>=v0.39.x
+// flow-typed signature: 26a2c2e30d0bf55e906fb73ea0b58a48
+// flow-typed version: b8dd3c3a20/jest_v22.x.x/flow_>=v0.39.x
 
 type JestMockFn<TArguments: $ReadOnlyArray<*>, TReturn> = {
   (...args: TArguments): TReturn,
@@ -559,12 +559,12 @@ declare var expect: {
   assertions(expectedAssertions: number): void,
   hasAssertions(): void,
   any(value: mixed): JestAsymmetricEqualityType,
-  anything(): void,
-  arrayContaining(value: Array<mixed>): void,
-  objectContaining(value: Object): void,
+  anything(): any,
+  arrayContaining(value: Array<mixed>): Array<mixed>,
+  objectContaining(value: Object): Object,
   /** Matches any received string that contains the exact expected string. */
-  stringContaining(value: string): void,
-  stringMatching(value: string | RegExp): void
+  stringContaining(value: string): string,
+  stringMatching(value: string | RegExp): string
 };
 
 // TODO handle return type
@@ -581,14 +581,14 @@ declare var jest: JestObjectType;
 declare var jasmine: {
   DEFAULT_TIMEOUT_INTERVAL: number,
   any(value: mixed): JestAsymmetricEqualityType,
-  anything(): void,
-  arrayContaining(value: Array<mixed>): void,
+  anything(): any,
+  arrayContaining(value: Array<mixed>): Array<mixed>,
   clock(): JestClockType,
   createSpy(name: string): JestSpyType,
   createSpyObj(
     baseName: string,
     methodNames: Array<string>
   ): { [methodName: string]: JestSpyType },
-  objectContaining(value: Object): void,
-  stringMatching(value: string): void
+  objectContaining(value: Object): Object,
+  stringMatching(value: string): string
 };
