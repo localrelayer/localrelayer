@@ -11,6 +11,10 @@ export const CardContainer = styled(Card)`
   & .ant-card-body {
     padding: 20px;
   }
+  & .ant-card-meta-detail {
+    text-align: center;
+    padding-bottom: 10px;
+  }
 `;
 
 export const InputLabel = styled.label``;

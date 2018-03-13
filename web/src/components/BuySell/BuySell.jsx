@@ -10,6 +10,7 @@ import type {
 } from 'instex-core/types';
 import {
   Tabs,
+  Card,
 } from 'antd';
 
 import BuySellForm from './BuySellForm';
@@ -46,7 +47,8 @@ const BuySell: StatelessFunctionalComponent<Props> = ({
   currentPair,
   fillField,
 }: Props): Node =>
-  <CardContainer title="Create Order">
+  <CardContainer>
+    <Card.Meta title="Create Order" />
     <Tabs
       onChange={changeActiveTab}
       activeKey={activeTab}
