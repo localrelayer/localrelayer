@@ -3,6 +3,8 @@ import {
   promisify,
 } from 'es6-promisify';
 
+const Web3 = require('web3');
+
 export const loadZeroEx = () =>
   new Promise((resolve) => {
     // Wait for loading completion to avoid race conditions with web3 injection timing.

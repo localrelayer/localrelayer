@@ -65,14 +65,14 @@ const validate = (values, props) => {
     if (
       BigNumber(values.price)
         .times(values.amount)
-        .lt(window.SMALLEST_AMOUNT)
+        .lt(window.SMALLEST_AMOUNT || 0)
     ) {
       errors.amount = 'Order is too small :(';
     }
     if (
       BigNumber(values.price)
         .times(values.amount)
-        .gt(window.BIGGEST_AMOUNT)
+        .gt(window.BIGGEST_AMOUNT || 0)
     ) {
       errors.amount = "Order is too big, we can't process it :(";
     }

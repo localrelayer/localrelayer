@@ -64,7 +64,8 @@ export function* initialize(): Saga<void> {
       },
     },
   });
-  yield call(setTokenAndLoadOrders);
+  yield call(setTokens);
+  yield call(loadOrders);
 
   // Prefilling buy/sell form
   // yield put(uiActions.fillField('price', { orderType: 'sell' }));
@@ -86,19 +87,19 @@ export function* initialize(): Saga<void> {
     yield put(ProfileActions.setProfileState('connectionStatus', connectionStatuses.NOT_CONNECTED));
   } else {
     const balanceInWei = yield cps(window.web3.eth.getBalance, NODE_ADDRESS);
-    const BIGGEST_AMOUNT = window.web3.fromWei(balanceInWei, 'ether').toNumber().toFixed(8);
+    const BIGGEST_AMOUNT = window.web3.utils.fromWei(balanceInWei, 'ether');
 
     // using window as transport
     window.BIGGEST_AMOUNT = BIGGEST_AMOUNT;
     window.SMALLEST_AMOUNT = SMALLEST_AMOUNT;
-    // yield fork(listenCurrentTokenChange);
+
     yield fork(listenRouteChange);
     yield fork(runLoadUser);
   }
 }
 
 
-export function* setTokenAndLoadOrders(): Saga<void> {
+export function* setTokens(): Saga<void> {
   const { zeroEx } = window;
 
   yield put(reset('BuySellForm'));
@@ -112,9 +113,9 @@ export function* setTokenAndLoadOrders(): Saga<void> {
     tokens.find(t => t.symbol === token || t.id === token);
   const pairToken =
     tokens.find(t => t.symbol === pair || t.id === pair);
-
-  const networkZrxAddress = yield call([zeroEx.exchange, zeroEx.exchange.getZRXTokenAddress]);
-  const networkWethAddress = yield call([zeroEx.tokenRegistry, zeroEx.tokenRegistry.getTokenAddressBySymbolIfExistsAsync], 'WETH');
+  console.log(zeroEx);
+  const networkZrxAddress = zeroEx ? yield call([zeroEx.exchange, zeroEx.exchange.getZRXTokenAddress]) : null;
+  const networkWethAddress = zeroEx ? yield call([zeroEx.tokenRegistry, zeroEx.tokenRegistry.getTokenAddressBySymbolIfExistsAsync], 'WETH') : null;
 
   const zrxToken = tokens.find(t => t.symbol === 'ZRX' || t.id === networkZrxAddress) || {};
   const wethToken = tokens.find(t => t.symbol === 'WETH' || t.id === networkWethAddress) || {};
@@ -171,7 +172,6 @@ export function* setTokenAndLoadOrders(): Saga<void> {
   }
   yield put(uiActions.setUiState('currentTokenId', selectedToken ? selectedToken.id : zrxToken.id));
   yield put(uiActions.setUiState('currentPairId', pairToken ? pairToken.id : wethToken.id));
-  yield call(loadOrders);
 }
 
 function* checkNewToken({ payload: { pathname } }): Saga<void> {
@@ -185,8 +185,9 @@ function* checkNewToken({ payload: { pathname } }): Saga<void> {
   const currentToken = yield select(getCurrentToken);
   const currentPair = yield select(getCurrentPair);
   if (tokenItem.id !== currentToken.id || pairItem.id !== currentPair.id) {
-    yield call(setTokenAndLoadOrders);
+    yield call(setTokens);
     yield call(loadTokensBalance);
+    yield call(loadOrders);
   }
 }
 

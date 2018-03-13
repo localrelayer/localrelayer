@@ -37,6 +37,13 @@ export default class extends Component<Props> {
         ],
         client_id: 'tradingview.com',
         user_id: 'public_user_id',
+        overrides: {
+          'paneProperties.leftAxisProperties.autoScale': false,
+          'paneProperties.rightAxisProperties.autoScale': false,
+          'paneProperties.leftAxisProperties.autoScaleDisabled': true,
+          'paneProperties.rightAxisProperties.autoScaleDisabled': true,
+          'mainSeriesProperties.priceAxisProperties.autoScale': false,
+        },
 
       });
       window.tv_widget = widget;

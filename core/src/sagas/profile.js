@@ -83,7 +83,7 @@ export function* loadBalance(): Saga<*> {
   const { web3 } = window;
   const account = yield select(getAddress);
   const balance = yield cps(web3.eth.getBalance, account);
-  const formattedBalance = web3.fromWei(balance, 'ether').toFixed(8).toString();
+  const formattedBalance = web3.utils.fromWei(balance, 'ether');
   yield put(
     setProfileState('balance', formattedBalance),
   );
@@ -102,7 +102,7 @@ export function* loadTokensBalance() {
 
 export function* loadNetwork() {
   const { web3 } = window;
-  const networkId = yield cps(web3.version.getNetwork);
+  const networkId = yield cps(web3.eth.net.getId);
   const network = getNetworkById(networkId);
   yield put(setProfileState('network', network));
 }
