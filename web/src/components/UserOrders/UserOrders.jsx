@@ -16,10 +16,10 @@ type Props = {
   /**
    * Function that is called whenever order canceled
    * */
-  onCancel: Function,
+  onCancel: (id: string) => void,
 };
 
-export const getColumns = (onCancel: Function) => [
+export const getColumns = (onCancel: (id: string) => void) => [
   {
     title: 'Type',
     dataIndex: 'type',
@@ -62,7 +62,7 @@ export const getColumns = (onCancel: Function) => [
         className="cancel"
         onClick={(e) => {
           e.stopPropagation();
-          onCancel(record);
+          onCancel(record.id);
         }}
         size="small"
         type="primary"

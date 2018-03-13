@@ -67,7 +67,7 @@ export type OrderData = {
 export type OrdersAction =
 {|
   type: typeof actionTypes.CANCEL_ORDER,
-  payload: string,
+  orderId: string,
 |} |
 {|
   type: typeof actionTypes.CREATE_ORDER,

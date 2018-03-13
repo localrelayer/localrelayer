@@ -92,3 +92,17 @@ export function apiCall(action, data) {
       return null;
   }
 }
+
+export function customApiRequest({
+  url,
+  method,
+  body,
+}) {
+  return apiFetch({
+    url,
+    meta: {
+      method,
+      body,
+    },
+  });
+}

@@ -3,6 +3,7 @@ import {
   select,
   put,
   call,
+  cps,
 } from 'redux-saga/effects';
 import type { Saga } from 'redux-saga';
 import { ZeroEx } from '0x.js';
@@ -33,6 +34,10 @@ import * as resourcesActions from '../actions/resources';
 import {
   loadTokensBalance,
 } from './profile';
+import config from '../config';
+import {
+  customApiRequest,
+} from '../api';
 
 BigNumber.config({ EXPONENTIAL_AT: 5000 });
 
@@ -76,7 +81,7 @@ export function* createOrder({
       ZeroEx.toBaseUnitAmount(BigNumber(amount).minus(feeAmount), currentToken.decimals);
   }
   const zrxOrder = {
-    maker: address,
+    maker: address.toLowerCase(),
     taker: NODE_ADDRESS,
     feeRecipient: NULL_ADDRESS,
     exchangeContractAddress: EXCHANGE_ADDRESS,
@@ -209,11 +214,25 @@ export function* loadOrders(): Saga<*> {
   );
 }
 
-export function* cancelOrder(action) {
-  const order = {
-    ...action.payload,
-    canceled_at: moment().toISOString(),
-  };
+export function* cancelOrder({
+  orderId,
+}: {
+  orderId: string,
+}) {
+  const accounts = yield cps(window.web3.eth.getAccounts);
+  const signature = yield cps(
+    window.web3.eth.personal.sign,
+    'Confirmation to cancel order',
+    accounts[0],
+  );
+  yield call(customApiRequest, {
+    url: `${config.apiUrl}/orders/${orderId}/cancel`,
+    method: 'POST',
+    body: JSON.stringify({
+      signature,
+    }),
+  });
+  /*
   yield put(saveResourceRequest({
     resourceName: 'orders',
     request: 'cancelOrder',
@@ -227,6 +246,7 @@ export function* cancelOrder(action) {
     },
   }));
   yield call(loadTokensBalance);
+  */
 }
 
 export function* listenNewOrder(): Saga<*> {
