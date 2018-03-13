@@ -54,6 +54,7 @@ const WrapForm: StatelessFunctionalComponent<Props> = ({
   <FormContainer onSubmit={handleSubmit}>
     <InputGroupContainer compact>
       <Field
+        parse={val => (isNaN(parseFloat(val)) ? null : parseFloat(val))}
         name="amount"
         component={NumberInput}
       />
