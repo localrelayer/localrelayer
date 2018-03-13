@@ -92,7 +92,10 @@ export function* saveResourceRequest({
     }
     return response;
   } catch (err) {
-    yield put(sendNotification({ message: `Couldn't ${data.id ? 'update' : 'create'}, try later`, type: 'error' }));
+    yield put(sendNotification({
+      message: `Couldn't ${data.id ? 'update' : 'create'}, try later`,
+      type: 'error',
+    }));
     console.log(err);
   }
 }

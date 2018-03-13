@@ -5,6 +5,7 @@ import {
   call,
   cps,
 } from 'redux-saga/effects';
+import createActionCreators from 'redux-resource-action-creators';
 import type { Saga } from 'redux-saga';
 import { ZeroEx } from '0x.js';
 import BigNumber from 'bignumber.js';
@@ -219,34 +220,32 @@ export function* cancelOrder({
 }: {
   orderId: string,
 }) {
-  const accounts = yield cps(window.web3.eth.getAccounts);
-  const signature = yield cps(
-    window.web3.eth.personal.sign,
-    'Confirmation to cancel order',
-    accounts[0],
-  );
-  yield call(customApiRequest, {
-    url: `${config.apiUrl}/orders/${orderId}/cancel`,
-    method: 'POST',
-    body: JSON.stringify({
-      signature,
-    }),
-  });
-  /*
-  yield put(saveResourceRequest({
-    resourceName: 'orders',
-    request: 'cancelOrder',
-    mergeResources: false,
-    message: 'Order Canceled',
-    lists: [order.type, 'userOrders'],
-    data: {
-      id: order.id,
-      attributes: order,
+  try {
+    const actions = createActionCreators('delete', {
       resourceName: 'orders',
-    },
-  }));
-  yield call(loadTokensBalance);
-  */
+      request: 'cancelOrder',
+    });
+    yield put(actions.pending());
+    const accounts = yield cps(window.web3.eth.getAccounts);
+    const signature = yield cps(
+      window.web3.eth.personal.sign,
+      'Confirmation to cancel order',
+      accounts[0],
+    );
+    yield call(customApiRequest, {
+      url: `${config.apiUrl}/orders/${orderId}/cancel`,
+      method: 'POST',
+      body: JSON.stringify({
+        signature,
+      }),
+    });
+    yield put(actions.succeeded({
+      resources: [orderId],
+    }));
+    yield call(loadTokensBalance);
+  } catch (err) {
+    console.log(err);
+  }
 }
 
 export function* listenNewOrder(): Saga<*> {

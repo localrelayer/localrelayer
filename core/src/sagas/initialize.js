@@ -113,14 +113,13 @@ export function* setTokens(): Saga<void> {
     tokens.find(t => t.symbol === token || t.id === token);
   const pairToken =
     tokens.find(t => t.symbol === pair || t.id === pair);
-  console.log(zeroEx);
   const networkZrxAddress = zeroEx ? yield call([zeroEx.exchange, zeroEx.exchange.getZRXTokenAddress]) : null;
   const networkWethAddress = zeroEx ? yield call([zeroEx.tokenRegistry, zeroEx.tokenRegistry.getTokenAddressBySymbolIfExistsAsync], 'WETH') : null;
 
   const zrxToken = tokens.find(t => t.symbol === 'ZRX' || t.id === networkZrxAddress) || {};
   const wethToken = tokens.find(t => t.symbol === 'WETH' || t.id === networkWethAddress) || {};
 
-  if (!selectedToken && window.web3.isAddress(token)) {
+  if (!selectedToken && window.web3.utils.isAddress(token)) {
     try {
       const ERC20Token = window.web3.eth.contract(EIP20.abi);
       const deployed = ERC20Token.at(token);
