@@ -10,7 +10,9 @@ import type {
   Tokens,
   Token,
 } from 'instex-core/types';
-
+import {
+  Link,
+} from 'react-router-dom';
 import {
   connectionStatuses,
 } from 'instex-core/src/utils/web3';
@@ -112,8 +114,12 @@ const Header = ({
       </HeaderButton>
     </Popover>
     <MenuContainer theme="dark" mode="horizontal">
-      <Menu.Item key="help">Help</Menu.Item>
+      <Menu.Item key="home"><Link to="/ZRX-WETH">Home</Link></Menu.Item>
+      <Menu.Item key="account"><Link to="/account">Account</Link></Menu.Item>
     </MenuContainer>
+    <HeaderButton shape="circle" type="primary">
+      <Icon type="question-circle" />
+    </HeaderButton>
     <AlignRight>
       <Popover
         placement="bottom"

@@ -14,13 +14,13 @@ import type {
 } from 'instex-core/types';
 
 import {
-  getUserOrders,
+  getCompletedUserOrders,
 } from 'instex-core/selectors';
 import {
   cancelOrder,
 } from 'instex-core/actions';
 
-import UserOrders from '../../components/UserOrders';
+import UserHistory from '../../components/UserHistory';
 
 
 type Props = {
@@ -28,12 +28,12 @@ type Props = {
   dispatch: Dispatch<*>,
 };
 
-const UserOrdersContainer: StatelessFunctionalComponent<Props> = ({
+const UserHistoryContainer: StatelessFunctionalComponent<Props> = ({
   orders,
   dispatch,
 }: Props): Node =>
-  <UserOrders
-    title="Active orders"
+  <UserHistory
+    title="My History"
     orders={orders}
     onCancel={(orderId: string) => {
       dispatch(cancelOrder(orderId));
@@ -41,7 +41,7 @@ const UserOrdersContainer: StatelessFunctionalComponent<Props> = ({
   />;
 
 const mapStateToProps: MapStateToProps<*, *, *> = state => ({
-  orders: getUserOrders(state),
+  orders: getCompletedUserOrders(state),
 });
 
-export default connect(mapStateToProps)(UserOrdersContainer);
+export default connect(mapStateToProps)(UserHistoryContainer);

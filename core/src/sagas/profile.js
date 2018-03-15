@@ -134,7 +134,7 @@ export function* loadUserOrders() {
     resourcesActions.fetchResourcesRequest({
       resourceName: 'orders',
       list: 'userOrders',
-      request: 'fetchOrders',
+      request: 'fetchUserOrders',
       withDeleted: false,
       mergeListIds: false,
       fetchQuery: {
@@ -145,6 +145,28 @@ export function* loadUserOrders() {
             'canceled_at': null,
             'deleted_at': null,
             'maker_address': account,
+          },
+        },
+        sortBy: '-created_at',
+      },
+    }),
+  );
+
+  yield put(
+    resourcesActions.fetchResourcesRequest({
+      resourceName: 'orders',
+      list: 'completedUserOrders',
+      request: 'fetchUserOrders',
+      withDeleted: false,
+      mergeListIds: false,
+      fetchQuery: {
+        filterCondition: {
+          filter: {
+            'deleted_at': null,
+            'maker_address': account,
+            'status': {
+              'ne': 'new',
+            },
           },
         },
         sortBy: '-created_at',

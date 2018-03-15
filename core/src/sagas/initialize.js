@@ -108,7 +108,8 @@ export function* setTokens(): Saga<void> {
   const { pathname } = yield select(getLocation);
   const tokens = yield select(getResourceMappedList('tokens', 'allTokens'));
   const reg = pathToRegexp('/:token-:pair');
-  const [a, token, pair] = reg.exec(pathname); // eslint-disable-line
+  const [a, token, pair] = reg.exec(pathname) || []; // eslint-disable-line
+
   let selectedToken =
     tokens.find(t => t.symbol === token || t.id === token);
   const pairToken =
@@ -176,7 +177,7 @@ export function* setTokens(): Saga<void> {
 function* checkNewToken({ payload: { pathname } }): Saga<void> {
   const tokens = yield select(getResourceMappedList('tokens', 'allTokens'));
   const reg = pathToRegexp('/:token-:pair');
-  const [a, token, pair] = reg.exec(pathname); // eslint-disable-line
+  const [a, token, pair] = reg.exec(pathname) || []; // eslint-disable-line
 
   const tokenItem = tokens.find(t => t.symbol === token || t.id === token) || {};
   const pairItem = tokens.find(t => t.symbol === pair || t.id === pair) || {};

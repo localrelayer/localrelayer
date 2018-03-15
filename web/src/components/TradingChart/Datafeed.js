@@ -126,7 +126,7 @@ export const getDatafeed = (token: Token) => ({
       has_no_volume: false,
       has_empty_bars: true,
       minmov: 1,
-      pricescale: 100000000,
+      pricescale: 1000000,
       has_daily: true,
     }), 0);
   },

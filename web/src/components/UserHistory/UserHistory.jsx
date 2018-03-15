@@ -1,7 +1,10 @@
 // @flow
 import React from 'react';
 import type { Node } from 'react';
-import { Tooltip, Button } from 'antd';
+import {
+  Tooltip,
+  Tag,
+} from 'antd';
 import type { Order } from 'instex-core/types';
 import { Element } from 'react-scroll';
 import moment from 'moment';
@@ -13,15 +16,31 @@ import OrdersList from '../OrdersList';
 type Props = {
   /** List of all orders */
   orders: Array<Order>,
-  /**
-   * Function that is called whenever order canceled
-   * */
-  onCancel: (id: string) => void,
   /** Table title */
   title: string,
 };
 
-export const getColumns = (onCancel: (id: string) => void) => [
+const colorsByStatus = {
+  canceled: 'magenta',
+  completed: 'green',
+  failed: 'red',
+  pending: 'geekblue',
+};
+
+export const getColumns = (
+) => [
+  {
+    title: 'Date',
+    dataIndex: 'date',
+    render: (text: string, order: Order) => {
+      const field = order.status === 'canceled' ? 'canceled_at' : 'completed_at';
+      return (
+        <Tooltip title={moment(order[field]).format('llll')}>
+          {moment(order[field]).format('DD/MM/YYYY HH:mm')}
+        </Tooltip>
+      );
+    },
+  },
   {
     title: 'Type',
     dataIndex: 'type',
@@ -50,55 +69,34 @@ export const getColumns = (onCancel: (id: string) => void) => [
     key: 'total',
   },
   {
-    title: 'Expires',
-    dataIndex: 'expires',
-    key: 'expires',
+    title: 'Status',
+    dataIndex: 'status',
+    key: 'status',
     render: (text: string) => (
-      <Tooltip title={moment(text).format('llll')}>{moment(text).format('DD/MM/YYYY HH:mm')}</Tooltip>
-    ),
-  },
-  {
-    title: 'Action',
-    render: (text: string, record: Order) => (
-      <Button
-        className="cancel"
-        onClick={(e) => {
-          e.stopPropagation();
-          onCancel(record.id);
-        }}
-        size="small"
-        type="primary"
-      >
-        Cancel
-      </Button>
+      <Tag color={colorsByStatus[text]}>{text}</Tag>
     ),
   },
 ];
 
 /**
- * Trading History
+ * User orders history
  * @version 1.0.0
  * @author [Tim Reznich](https://github.com/imbaniac)
  */
 
-const UserOrders = ({
+const UserHistory = ({
   orders,
-  onCancel,
   title,
 }: Props): Node => (
   <Element name="userOrders">
     <UserOrdersContainer>
       <OrdersList
         title={title}
-        columns={getColumns(onCancel)}
+        columns={getColumns()}
         data={orders}
       />
     </UserOrdersContainer>
   </Element>
 );
 
-UserOrders.defaultProps = {
-  onCancel: () => {},
-};
-
-export default UserOrders;
+export default UserHistory;
