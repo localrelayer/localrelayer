@@ -228,7 +228,6 @@ BuySellForm.defaultProps = {
 const mapStateToProps: MapStateToProps<*, *, *> = (state, props) => {
   const { type } = props;
   const { amount = 0, price = 0 } = getFormValues('BuySellForm')(state) || {};
-  console.warn(amount, price);
   const total = BigNumber(amount).times(price);
 
   let exchangeFee;

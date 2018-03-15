@@ -4,28 +4,61 @@ import {
   Route,
   Redirect,
 } from 'react-router-dom';
+import {
+  Layout,
+  Alert,
+} from 'antd';
+import {
+  connect,
+} from 'react-redux';
+import type {
+  MapStateToProps,
+} from 'react-redux';
 import { ConnectedRouter } from 'react-router-redux';
 import history from './history';
-import MainPage from './containers/MainPage';
+import UserPage from './containers/UserPage';
+import Header from './containers/HeaderContainer';
+import TradingPage from './containers/TradingPage';
 
-export default () => (
+type Props = {
+  bannerMessage: string,
+};
+
+const routes = ({ bannerMessage }: Props) => (
   <ConnectedRouter
     history={history}
     onUpdate={() => window.scrollTo(0, 0)}
   >
-    <Switch>
-      <Route
-        exact
-        path="/:token-:pair"
-        component={MainPage}
-      />
-      <Route
-        exact
-        path="*"
-        render={() => (
-          <Redirect to="/ZRX-WETH" />
+    <div>
+      <Layout>
+        <Header />
+        {bannerMessage && <Alert message={bannerMessage} banner />}
+        <Switch>
+          <Route
+            exact
+            path="/:token-:pair"
+            component={TradingPage}
+          />
+          <Route
+            exact
+            path="/account"
+            component={UserPage}
+          />
+          <Route
+            exact
+            path="*"
+            render={() => (
+              <Redirect to="/ZRX-WETH" />
         )}
-      />
-    </Switch>
+          />
+        </Switch>
+      </Layout>
+    </div>
   </ConnectedRouter>
 );
+
+const mapStateToProps: MapStateToProps<*, *, *> = state => ({
+  bannerMessage: state.ui.bannerMessage,
+});
+
+export default connect(mapStateToProps)(routes);

@@ -92,3 +92,19 @@ export const getUserOrders = createSelector(
     })),
 );
 
+export const getCompletedUserOrders = createSelector(
+  [
+    getResourceMappedList('orders', 'completedUserOrders'),
+    getResourceMap('tokens'),
+  ],
+  (orders, tokens) => orders
+    .map(order => ({
+      ...order,
+      price: BigNumber(order.price).toFixed(6),
+      amount: BigNumber(order.amount).toFixed(6),
+      total: BigNumber(order.total).toFixed(6),
+      tokenSymbol: tokens[order.token_address] ? tokens[order.token_address].attributes.symbol : '',
+      pairSymbol: tokens[order.pair_address] ? tokens[order.pair_address].attributes.symbol : '',
+    })),
+);
+

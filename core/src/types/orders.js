@@ -13,6 +13,8 @@ export type OrderAttributes = {
   type: string,
   expires: Date,
   completed_at?: Date,
+  canceled_at?: Date,
+  status: string,
 } & AddedOrderAttributes;
 
 export type AddedOrderAttributes = {
