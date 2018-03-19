@@ -179,6 +179,10 @@ function* checkNewToken({ payload: { pathname } }): Saga<void> {
   const reg = pathToRegexp('/:token-:pair');
   const [a, token, pair] = reg.exec(pathname) || []; // eslint-disable-line
 
+  if (!pair && !token) {
+    return;
+  }
+
   const tokenItem = tokens.find(t => t.symbol === token || t.id === token) || {};
   const pairItem = tokens.find(t => t.symbol === pair || t.id === pair) || {};
 

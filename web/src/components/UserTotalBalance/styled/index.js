@@ -32,9 +32,10 @@ export const CardContainer = styled(Card)`
 `;
 
 export const TableContainer = styled(Table)`
-  border-left: 1px solid #e8e8e8;
-  border-right: 1px solid #e8e8e8;
-  border-top: 1px solid #e8e8e8;
+  // border-left: 1px solid #e8e8e8;
+  // border-right: 1px solid #e8e8e8;
+  // border-top: 1px solid #e8e8e8;
+  padding: 0 10px;
   .ant-table-thead > tr > th {
     background: white;
   }

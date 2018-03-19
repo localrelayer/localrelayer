@@ -16,7 +16,7 @@ import {
 import BuySellForm from './BuySellForm';
 import { CardContainer } from './styled';
 
-const TabPane = Tabs.TabPane;
+const { TabPane } = Tabs;
 
 type Props = {
   /** Called on form submit */
@@ -50,6 +50,7 @@ const BuySell: StatelessFunctionalComponent<Props> = ({
   <CardContainer>
     <Card.Meta title="Create Order" />
     <Tabs
+      type="card"
       onChange={changeActiveTab}
       activeKey={activeTab}
     >

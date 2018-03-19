@@ -127,6 +127,14 @@ TokenCard.defaultProps = {
 };
 
 export default lifecycle({
+  componentWillMount() {
+    getImageSrc(this.props.token.symbol).then((url) => {
+      this.setState({ url });
+    }).catch(async () => {
+      const defaultUrl = await getImageSrc('default');
+      this.setState({ url: defaultUrl });
+    });
+  },
   componentWillReceiveProps(nextProps) {
     const prevSymbol = this.props.token.symbol;
     const nextSymbol = nextProps.token.symbol;

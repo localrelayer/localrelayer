@@ -21,7 +21,19 @@ module.exports = {
         use: [
           'style-loader',
           'css-loader',
-          'less-loader',
+          {
+            loader: 'less-loader',
+            options: {
+              modifyVars: {
+                'primary-color': '#E7324A',
+                'layout-body-background': '#EFEDEC',
+                'layout-header-background': '#23223A',
+                'error-color': '#E7324A',
+                // 'component-background': '#26ADE4',
+                // 'background-color-light': '#E8BF56',
+              },
+            },
+          },
         ],
       },
       // WOFF/WOFF2 Fonts
@@ -50,11 +62,7 @@ module.exports = {
       {
         test: /\.svg(.*)?$/,
         use: {
-          loader: 'url-loader',
-          options: {
-            limit: 10000,
-            mimetype: 'image/svg+xml',
-          },
+          loader: 'svg-inline-loader',
         },
       },
       // Common Image Formats

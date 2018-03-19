@@ -33,7 +33,7 @@ export default class extends Component<Props> {
     // eslint-disable-next-line
     const widget = new window.TradingView.widget({
       debug: true,
-      interval: '30',
+      interval: '60',
       allow_symbol_change: false,
       height: '450px',
       width: '100%',

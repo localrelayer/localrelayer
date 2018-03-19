@@ -65,9 +65,9 @@ export const getCompletedOrders = createSelector(
       order.is_history)
     .map(order => ({
       ...order,
-      price: BigNumber(order.price).toFixed(6),
-      amount: BigNumber(order.amount).toFixed(6),
-      total: BigNumber(order.total).toFixed(6),
+      price: BigNumber(order.price).toFixed(4),
+      amount: BigNumber(order.amount).toFixed(4),
+      total: BigNumber(order.total).toFixed(4),
       isUser: address === order.maker_address,
     })),
 );

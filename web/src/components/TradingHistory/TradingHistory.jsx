@@ -8,6 +8,10 @@ import type {
 import type {
   Order,
 } from 'instex-core/types';
+import {
+  Tooltip,
+} from 'antd';
+import moment from 'moment';
 
 import {
   TradingHistoryContainer,
@@ -28,6 +32,15 @@ type Props = {
 };
 
 const columns = [
+  {
+    title: 'Date',
+    dataIndex: 'completed_at',
+    render: (text: string) => (
+      <Tooltip title={moment(text).format('llll')}>
+        {moment(text).format('DD/MM HH:mm')}
+      </Tooltip>
+    ),
+  },
   {
     title: 'Price',
     dataIndex: 'price',

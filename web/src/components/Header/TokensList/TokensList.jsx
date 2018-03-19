@@ -62,9 +62,21 @@ const getColumns = () => [{
   dataIndex: 'tradingInfo.volume',
   key: 'volume',
   render: text => text || '--',
+  defaultSortOrder: 'descend',
   sorter: (a, b) => {
     const volumeA = a.tradingInfo.volume || 0;
     const volumeB = b.tradingInfo.volume || 0;
+    return volumeA - volumeB;
+  },
+},
+{
+  title: 'Volume (ETH)',
+  dataIndex: 'tradingInfo.ethVolume',
+  key: 'ethVolume',
+  render: text => text || '--',
+  sorter: (a, b) => {
+    const volumeA = a.tradingInfo.ethVolume || 0;
+    const volumeB = b.tradingInfo.ethVolume || 0;
     return volumeA - volumeB;
   },
 },

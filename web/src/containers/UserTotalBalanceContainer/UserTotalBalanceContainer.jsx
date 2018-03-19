@@ -13,7 +13,7 @@ import type {
 import {
   callContract,
 } from 'instex-core/actions';
-import UserBalance from '../../components/UserBalance';
+import UserTotalBalance from '../../components/UserTotalBalance';
 import { StyleContainer } from './styled';
 
 type Props = {
@@ -24,7 +24,7 @@ type Props = {
   lockedBalance: string,
 };
 
-const UserBalanceContainer: StatelessFunctionalComponent<Props> = ({
+const UserTotalBalanceContainer: StatelessFunctionalComponent<Props> = ({
   tokens,
   balance,
   dispatch,
@@ -32,7 +32,7 @@ const UserBalanceContainer: StatelessFunctionalComponent<Props> = ({
   lockedBalance,
 }: Props): Node => (
   <StyleContainer>
-    <UserBalance
+    <UserTotalBalance
       isBalanceLoading={isBalanceLoading}
       tokens={tokens}
       onToggle={token => dispatch(callContract('setAllowance', token))}
@@ -45,9 +45,9 @@ const UserBalanceContainer: StatelessFunctionalComponent<Props> = ({
 );
 
 const mapStateToProps: MapStateToProps<*, *, *> = state => ({
-  tokens: state.profile.currentTokens,
+  tokens: state.profile.tokens,
   balance: state.profile.balance,
   isBalanceLoading: state.ui.isBalanceLoading,
 });
 
-export default connect(mapStateToProps)(UserBalanceContainer);
+export default connect(mapStateToProps)(UserTotalBalanceContainer);
