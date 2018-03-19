@@ -11,10 +11,20 @@ import {
 import {
   connect,
 } from 'react-redux';
+import {
+  Helmet,
+} from 'react-helmet';
 import type {
   MapStateToProps,
 } from 'react-redux';
 import { ConnectedRouter } from 'react-router-redux';
+import {
+  getCurrentToken,
+  getCurrentPair,
+} from 'instex-core/selectors';
+import type {
+  Token,
+} from 'instex-core/types';
 import history from './history';
 import UserPage from './containers/UserPage';
 import Header from './containers/HeaderContainer';
@@ -22,14 +32,24 @@ import TradingPage from './containers/TradingPage';
 
 type Props = {
   bannerMessage: string,
+  currentToken: Token,
+  currentPair: Token,
 };
 
-const routes = ({ bannerMessage }: Props) => (
+const routes = ({
+  bannerMessage,
+  currentToken,
+  currentPair,
+}: Props) => (
   <ConnectedRouter
     history={history}
     onUpdate={() => window.scrollTo(0, 0)}
   >
     <div>
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>{getTitle(currentToken, currentPair)}</title>
+      </Helmet>
       <Layout>
         <Header />
         {bannerMessage && <Alert message={bannerMessage} banner />}
@@ -59,6 +79,15 @@ const routes = ({ bannerMessage }: Props) => (
 
 const mapStateToProps: MapStateToProps<*, *, *> = state => ({
   bannerMessage: state.ui.bannerMessage,
+  currentToken: getCurrentToken(state),
+  currentPair: getCurrentPair(state),
 });
+
+const getTitle = (token, pair) => {
+  if (token.symbol && pair.symbol) {
+    return `${token.symbol}/${pair.symbol}`;
+  }
+  return 'Instex';
+};
 
 export default connect(mapStateToProps)(routes);

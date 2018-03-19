@@ -26,7 +26,9 @@ import {
   getCurrentToken,
   getCurrentPair,
   getProfileState,
-  getLockedBalances,
+  getLockedTokenBalance,
+  getLockedPairBalance,
+  getResourceMappedList,
 } from '../selectors';
 import {
   getNetworkById,
@@ -90,14 +92,26 @@ export function* loadBalance(): Saga<*> {
 }
 
 export function* loadTokensBalance() {
+  const tokens = yield select(getResourceMappedList('tokens', 'allTokens'));
+
   const currentToken = yield select(getCurrentToken);
   const currentPair = yield select(getCurrentPair);
 
-  const { lockedToken, lockedPair } = yield select(getLockedBalances);
+  const lockedToken = yield select(getLockedTokenBalance(currentToken));
+  const lockedPair = yield select(getLockedPairBalance);
   // We need to substract order in orders amount
-  const pair = yield getTokenBalanceAndAllowance(currentPair, lockedPair);
   const current = yield getTokenBalanceAndAllowance(currentToken, lockedToken);
-  yield put(setProfileState('tokens', [pair, current]));
+  const pair = yield getTokenBalanceAndAllowance(currentPair, lockedPair);
+
+  const allTokens = yield all(tokens
+    .filter(token => token.id !== currentToken.id && token.id !== currentPair.id)
+    .map(function* (token) {
+      const locked = yield select(getLockedTokenBalance(token));
+      const res = yield getTokenBalanceAndAllowance(token, locked);
+      return res;
+    }));
+  yield put(setProfileState('tokens', [pair, current, ...allTokens]));
+  yield put(setProfileState('currentTokens', [pair, current]));
 }
 
 export function* loadNetwork() {
@@ -123,8 +137,8 @@ function* getTokenBalanceAndAllowance(token, locked) {
   return {
     ...token,
     isTradable: allowance.gt(0),
-    fullBalance: ZeroEx.toUnitAmount(tokenBalance, token.decimals).toFixed(8),
-    balance: ZeroEx.toUnitAmount(tokenBalance, token.decimals).minus(locked).toFixed(8),
+    fullBalance: ZeroEx.toUnitAmount(tokenBalance, token.decimals).toFixed(6),
+    balance: ZeroEx.toUnitAmount(tokenBalance, token.decimals).minus(locked).toFixed(6),
   };
 }
 

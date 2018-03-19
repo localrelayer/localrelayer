@@ -4,14 +4,14 @@ import {
   Col,
 } from 'antd';
 
-import UserBalance from './UserBalanceContainer';
+import UserTotalBalance from './UserTotalBalanceContainer';
 import UserOrders from './UserOrdersContainer';
 import UserHistory from './UserHistoryContainer';
 
 export default () =>
   <Row>
     <Col span={12}>
-      <UserBalance />
+      <UserTotalBalance />
     </Col>
     <Col span={12}>
       <UserOrders />

@@ -37,7 +37,7 @@ import {
 } from '../SharedStyles';
 import TokensList from './TokensList';
 import UserProfile from '../UserProfile';
-
+import logo from '../../assets/logo.png';
 
 type Props = {
   /** User object */
@@ -87,7 +87,11 @@ const Header = ({
   togglePopover,
 }: Props): Node => (
   <HeaderContainer>
-    <LogoContainer />
+    <LogoContainer>Instex</LogoContainer>
+    <MenuContainer theme="dark" mode="horizontal">
+      <Menu.Item key="home"><Link to="/ZRX-WETH"><Icon type="swap" />Trade</Link></Menu.Item>
+      <Menu.Item key="account"><Link to="/account"><Icon type="home" />Account</Link></Menu.Item>
+    </MenuContainer>
     <Popover
       trigger={['click']}
       placement="bottom"
@@ -113,10 +117,6 @@ const Header = ({
         Tokens ({`${selectedToken.symbol}/${tokenPair.symbol}`}) <Icon type="down" />
       </HeaderButton>
     </Popover>
-    <MenuContainer theme="dark" mode="horizontal">
-      <Menu.Item key="home"><Link to="/ZRX-WETH">Home</Link></Menu.Item>
-      <Menu.Item key="account"><Link to="/account">Account</Link></Menu.Item>
-    </MenuContainer>
     <HeaderButton shape="circle" type="primary">
       <Icon type="question-circle" />
     </HeaderButton>

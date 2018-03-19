@@ -3,10 +3,14 @@ import { Menu, Layout, Button } from 'antd';
 
 export const LogoContainer = styled.div`
   width: 120px;
-  height: 31px;
-  background: rgba(255, 255, 255, 0.2);
-  margin: 16px 28px 16px 0;
+  height: 30px;
+  // margin: 16px 28px 16px 0;
   float: left;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  color: white;
+  font-size: 1.7rem;
 `;
 
 export const MenuContainer = styled(Menu)`
@@ -26,8 +30,9 @@ export const AlignRight = styled.div`
 `;
 
 export const HeaderButton = styled(Button)`
+  background-color: #e8324ab8;
   margin-left: 8px;
-  background-color: #203d58;
+  // background-color: #203d58;
   border: none;
 `;
 

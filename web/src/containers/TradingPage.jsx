@@ -21,11 +21,11 @@ export default () =>
         <BuySell />
         <UserBalance />
       </Col>
-      <Col span={12}>
+      <Col span={11}>
         <TradingChart />
         <OrderBook />
       </Col>
-      <Col span={5}>
+      <Col span={6}>
         <TradingHistory />
       </Col>
     </Row>

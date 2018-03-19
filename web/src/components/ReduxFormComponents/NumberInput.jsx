@@ -36,6 +36,7 @@ export default class NumberInput extends Component<Props> {
         label={label}
         validateStatus={`${(error && touched) ? 'error' : ''}`}
         help={`${(error && touched) ? error : ''}`}
+        style={{ width: '100%', display: 'inline-block' }}
       >
         <InputNumber
           {...input}
