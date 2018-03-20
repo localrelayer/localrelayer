@@ -11,6 +11,7 @@ const initialState: UiState = {
   isBalanceLoading: false,
   activeTab: 'buy',
   bannerMessage: null,
+  activeLink: '',
 };
 
 export default function ui(

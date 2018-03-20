@@ -37,7 +37,7 @@ import {
 } from '../SharedStyles';
 import TokensList from './TokensList';
 import UserProfile from '../UserProfile';
-import logo from '../../assets/logo.png';
+import logo from '../../assets/logo4.png';
 
 type Props = {
   /** User object */
@@ -60,10 +60,14 @@ type Props = {
   onTokenSearch: Function,
   /** Selected trading pair */
   tokenPair: Token,
-    /** Is popover visible */
-    popoverVisible: boolean,
-    /** Toggle popover visibility */
-    togglePopover: Function,
+  /** Is popover visible */
+  popoverVisible: boolean,
+  /** Toggle popover visibility */
+  togglePopover: Function,
+  /** Change active link */
+  setActiveLink: Function,
+  /** List of active strings */
+  activeLink: string,
 };
 
 /**
@@ -85,10 +89,19 @@ const Header = ({
   onPairSelect,
   popoverVisible,
   togglePopover,
+  setActiveLink,
+  activeLink,
 }: Props): Node => (
   <HeaderContainer>
-    <LogoContainer>Instex</LogoContainer>
-    <MenuContainer theme="dark" mode="horizontal">
+    <img
+      alt="logo"
+      src={logo}
+      style={{
+       height: '100%',
+       marginRight: 15,
+     }}
+    />
+    <MenuContainer onClick={setActiveLink} selectedKeys={[activeLink]} theme="dark" mode="horizontal">
       <Menu.Item key="home"><Link to="/ZRX-WETH"><Icon type="swap" />Trade</Link></Menu.Item>
       <Menu.Item key="account"><Link to="/account"><Icon type="home" />Account</Link></Menu.Item>
     </MenuContainer>
