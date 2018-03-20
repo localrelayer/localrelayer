@@ -170,6 +170,7 @@ export function* setTokens(): Saga<void> {
       console.error(e);
     }
   }
+  yield put(uiActions.setUiState('activeLink', 'home'));
   yield put(uiActions.setUiState('currentTokenId', selectedToken ? selectedToken.id : zrxToken.id));
   yield put(uiActions.setUiState('currentPairId', pairToken ? pairToken.id : wethToken.id));
 }

@@ -35,6 +35,7 @@ type Props = {
   selectedToken: Token,
   tokenPair: Token,
   dispatch: Dispatch<*>,
+  activeLink: string,
 };
 
 const HeaderContainer: StatelessFunctionalComponent<Props> =
@@ -44,8 +45,10 @@ const HeaderContainer: StatelessFunctionalComponent<Props> =
     selectedToken,
     tokenPair,
     dispatch,
+    activeLink,
   }: Props): Node =>
     <Header
+      activeLink={activeLink}
       user={user}
       tokens={tokens}
       tokenPair={tokenPair}
@@ -53,6 +56,7 @@ const HeaderContainer: StatelessFunctionalComponent<Props> =
       onTokenSelect={token => dispatch(push(`${token.symbol}-${tokenPair.symbol}`))}
       onPairSelect={token => dispatch(push(`${selectedToken.symbol}-${token.symbol}`))}
       onTokenSearch={query => dispatch(setUiState('searchQuery', query))}
+      setActiveLink={e => dispatch(setUiState('activeLink', e.key))}
     />;
 
 const mapStateToProps: MapStateToProps<*, *, *> = state => ({
@@ -60,6 +64,7 @@ const mapStateToProps: MapStateToProps<*, *, *> = state => ({
   user: state.profile,
   selectedToken: getCurrentToken(state),
   tokenPair: getCurrentPair(state),
+  activeLink: state.ui.activeLink,
 });
 
 export default connect(mapStateToProps)(HeaderContainer);
