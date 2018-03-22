@@ -19,11 +19,18 @@ import {
   getFormValues,
   change,
 } from 'redux-form';
+import DowloadMetamask from '../components/Modals/DowloadMetamask';
+import NoToken from '../components/Modals/NoToken';
 
 const sagas = {
   exp: fillDate,
   price: fillPrice,
   amount: fillAmount,
+};
+
+const modals = {
+  DowloadMetamask: DowloadMetamask(),
+  NoToken: NoToken(),
 };
 
 export function* fillAmount({ coef, orderType }): Saga<*> {
@@ -66,10 +73,17 @@ export function* sendNotification({ payload: { type, message } }) {
   });
 }
 
-export function* showModal({ payload: { title, type, text } }) {
+export function* showModal({
+  payload: {
+    title,
+    type,
+    text,
+    name,
+  },
+}) {
   yield Modal[type]({
     title,
-    content: text,
+    content: modals[name] || text,
   });
 }
 

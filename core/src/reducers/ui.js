@@ -12,6 +12,7 @@ const initialState: UiState = {
   activeTab: 'buy',
   bannerMessage: null,
   activeLink: '',
+  shouldRunTutorial: false,
 };
 
 export default function ui(

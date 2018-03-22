@@ -27,6 +27,7 @@ export const showModal = (
   payload: {
     title: string,
     type: string,
+    name?: string,
     text?: *,
   },
 ): UiAction => ({

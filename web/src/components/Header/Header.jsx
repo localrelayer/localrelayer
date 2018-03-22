@@ -24,7 +24,6 @@ import {
   Badge,
 } from 'antd';
 import {
-  LogoContainer,
   MenuContainer,
   HeaderContainer,
   AlignRight,
@@ -65,9 +64,11 @@ type Props = {
   /** Toggle popover visibility */
   togglePopover: Function,
   /** Change active link */
-  setActiveLink: Function,
+  setActiveLink?: Function,
   /** List of active strings */
   activeLink: string,
+  /** Trigger help */
+  onHelpClick?: Function,
 };
 
 /**
@@ -91,6 +92,7 @@ const Header = ({
   togglePopover,
   setActiveLink,
   activeLink,
+  onHelpClick,
 }: Props): Node => (
   <HeaderContainer>
     <img
@@ -103,7 +105,7 @@ const Header = ({
     />
     <MenuContainer onClick={setActiveLink} selectedKeys={[activeLink]} theme="dark" mode="horizontal">
       <Menu.Item key="home"><Link to="/ZRX-WETH"><Icon type="swap" />Trade</Link></Menu.Item>
-      <Menu.Item key="account"><Link to="/account"><Icon type="home" />Account</Link></Menu.Item>
+      <Menu.Item id="account_link" key="account"><Link to="/account"><Icon type="home" />Account</Link></Menu.Item>
     </MenuContainer>
     <Popover
       trigger={['click']}
@@ -113,6 +115,7 @@ const Header = ({
       content={
         <TokenContainer>
           <TokensList
+            id="tokensList"
             onSearch={onTokenSearch}
             tokens={tokens}
             selectedToken={selectedToken}
@@ -126,11 +129,11 @@ const Header = ({
         </TokenContainer>
       }
     >
-      <HeaderButton type="primary">
+      <HeaderButton id="selectTokenButton" type="primary">
         Tokens ({`${selectedToken.symbol}/${tokenPair.symbol}`}) <Icon type="down" />
       </HeaderButton>
     </Popover>
-    <HeaderButton shape="circle" type="primary">
+    <HeaderButton shape="circle" type="primary" onClick={onHelpClick}>
       <Icon type="question-circle" />
     </HeaderButton>
     <AlignRight>
@@ -144,7 +147,7 @@ const Header = ({
         }
       >
         <Badge>
-          <UserButton onClick={() => onUserClick(user)} type="primary">
+          <UserButton id="account" onClick={() => onUserClick(user)} type="primary">
             <Icon type="user" />{' '}
             {user.connectionStatus === connectionStatuses.CONNECTED ? (
               <Truncate>{user.address}</Truncate>
@@ -168,6 +171,8 @@ Header.defaultProps = {
   user: {},
   onUserClick: () => {},
   onTokenSearch: () => {},
+  onHelpClick: () => {},
+  setActiveLink: () => {},
 };
 
 export default enhance(Header);

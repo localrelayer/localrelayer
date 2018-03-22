@@ -1,8 +1,5 @@
 // @flow
 import {
-  createElement,
-} from 'react';
-import {
   call,
   put,
   fork,
@@ -75,13 +72,8 @@ export function* initialize(): Saga<void> {
     yield put(
       uiActions.showModal({
         title: 'You are not connected to Ethereum',
-        type: 'warn',
-        text: createElement(
-          'div',
-          null,
-          'Please use ',
-          createElement('a', { href: 'https://metamask.io/' }, 'Metamask'),
-        ),
+        type: 'info',
+        name: 'DowloadMetamask',
       }),
     );
     yield put(ProfileActions.setProfileState('connectionStatus', connectionStatuses.NOT_CONNECTED));
@@ -114,19 +106,22 @@ export function* setTokens(): Saga<void> {
     tokens.find(t => t.symbol === token || t.id === token);
   const pairToken =
     tokens.find(t => t.symbol === pair || t.id === pair);
-  const networkZrxAddress = zeroEx ? yield call([zeroEx.exchange, zeroEx.exchange.getZRXTokenAddress]) : null;
-  const networkWethAddress = zeroEx ? yield call([zeroEx.tokenRegistry, zeroEx.tokenRegistry.getTokenAddressBySymbolIfExistsAsync], 'WETH') : null;
+  const networkZrxAddress = zeroEx ?
+    yield call([zeroEx.exchange, zeroEx.exchange.getZRXTokenAddress]) : null;
+  const networkWethAddress = zeroEx ?
+    yield call([
+      zeroEx.tokenRegistry, zeroEx.tokenRegistry.getTokenAddressBySymbolIfExistsAsync,
+    ], 'WETH') : null;
 
   const zrxToken = tokens.find(t => t.symbol === 'ZRX' || t.id === networkZrxAddress) || {};
   const wethToken = tokens.find(t => t.symbol === 'WETH' || t.id === networkWethAddress) || {};
 
-  if (!selectedToken && window.web3.utils.isAddress(token)) {
+  if (!selectedToken && window.web3 && window.web3.utils.isAddress(token)) {
     try {
-      const ERC20Token = window.web3.eth.contract(EIP20.abi);
-      const deployed = ERC20Token.at(token);
-      const name = yield cps(deployed.name);
-      const symbol = yield cps(deployed.symbol);
-      const decimals = yield cps(deployed.decimals);
+      const deployed = new window.web3.eth.Contract(EIP20.abi, token);
+      const name = yield call(deployed.methods.name().call);
+      const symbol = yield call(deployed.methods.symbol().call);
+      const decimals = yield call(deployed.methods.decimals().call);
       const responseUrlToken = yield call(fetchResourcesRequest, {
         payload: {
           resourceName: 'tokens',
@@ -167,6 +162,11 @@ export function* setTokens(): Saga<void> {
       }
       yield put(uiActions.setUiState('bannerMessage', 'You are trading not listed token, please be aware of scam and double check the address'));
     } catch (e) {
+      yield put(uiActions.showModal({
+        title: "Couldn't find token by address",
+        name: 'NoToken',
+        type: 'warning',
+      }));
       console.error(e);
     }
   }
