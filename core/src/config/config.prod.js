@@ -1,5 +1,5 @@
 module.exports = {
-  apiUrl: 'http://api.instex.io/api',
-  socketUrl: 'http://socket.instex.io:8081',
+  apiUrl: 'https://api.instex.io/api',
+  socketUrl: 'https://socket.instex.io:8081',
   useMock: false,
 };
