@@ -1,3 +1,3 @@
 module.exports = {
-  apiUrl: 'http://instex.io/api',
+  apiUrl: 'http://api.instex.io/api',
 };

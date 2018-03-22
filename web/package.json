@@ -7,6 +7,7 @@
     "test:watch": "yarn test --watchAll",
     "lint": "eslint ./src --ext .js,.jsx --ignore-pattern '/dist/' --ignore-pattern '*.prod.js' --ignore-pattern '*.test.js' --ignore-pattern '**/node_modules/*'",
     "start": "NODE_ENV=development node --trace-warnings ./node_modules/.bin/webpack-dev-server --config webpack.config.development.js",
+    "build": "cross-env NODE_ENV=production webpack --config webpack.config.production.js --progress --profile --colors",
     "flow": "flow",
     "postinstall": "flow-typed install --overwrite && yarn link \"instex-core\"",
     "styleguide": "styleguidist server",
@@ -84,7 +85,10 @@
     "react-styleguidist": "6.1.0",
     "redux-devtools": "3.4.0",
     "redux-devtools-extension": "^2.13.2",
+    "cross-env": "5.0.1",
     "webpack": "3.10.0",
+    "webpack-s3-plugin": "1.0.0-rc.0",
+    "uglifyjs-webpack-plugin": "1.2.4",
     "webpack-dev-server": "2.9.5",
     "webpack-merge": "4.1.1"
   }
