@@ -3,6 +3,8 @@ const webpack = require('webpack');
 const merge = require('webpack-merge');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const S3Plugin = require('webpack-s3-plugin');
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 const config = require('./webpack.config.base');
 
@@ -34,11 +36,21 @@ module.exports = merge(config, {
     new ExtractTextPlugin({
       filename: 'bundle.css',
     }),
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        warnings: false,
+    new UglifyJSPlugin(),
+    new webpack.optimize.DedupePlugin(),
+    new S3Plugin({
+      s3Options: {
+        accessKeyId: 'AKIAIBIKUDUXXS73SUCQ',
+        secretAccessKey: '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',
+        region: 'us-west-1',
+      },
+      s3UploadOptions: {
+        Bucket: 'instex-app',
+      },
+      cloudfrontInvalidateOptions: {
+        DistributionId: 'E2L8JEDH9NXQMT',
+        Items: ['/*'],
       },
     }),
-    new webpack.optimize.DedupePlugin(),
   ],
 });
