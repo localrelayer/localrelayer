@@ -17,7 +17,7 @@ module.exports = {
         use: ['babel-loader?cacheDirectory=true'],
       },
       {
-        test: /\.less$/,
+        test: /\.(less|css)$/,
         use: [
           'style-loader',
           'css-loader',

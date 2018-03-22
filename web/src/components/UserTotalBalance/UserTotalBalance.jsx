@@ -105,7 +105,7 @@ const UserTotalBalance = ({
   isBalanceLoading,
 }: Props): Node => (
   <Element name="UserTotalBalance">
-    <CardContainer id="user-balance" bordered={false} title={<div>My Balance ({balance} ETH)</div>}>
+    <CardContainer id="user-total-balance" bordered={false} title={<div>My Balance ({balance} ETH)</div>}>
       <WrapForm wrap={wrap} unwrap={unwrap} onSubmit={() => {}} isLoading={isBalanceLoading} />
       <Card.Grid>
         <TableContainer

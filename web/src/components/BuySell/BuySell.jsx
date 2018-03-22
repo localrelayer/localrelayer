@@ -47,7 +47,7 @@ const BuySell: StatelessFunctionalComponent<Props> = ({
   currentPair,
   fillField,
 }: Props): Node =>
-  <CardContainer>
+  <CardContainer id="orderForm">
     <Card.Meta title="Create Order" />
     <Tabs
       type="card"

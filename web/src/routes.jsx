@@ -29,6 +29,7 @@ import history from './history';
 import UserPage from './containers/UserPage';
 import Header from './containers/HeaderContainer';
 import TradingPage from './containers/TradingPage';
+import JoyrideWrapper from './JoyrideWrapper';
 
 type Props = {
   bannerMessage: string,
@@ -46,6 +47,7 @@ const routes = ({
     onUpdate={() => window.scrollTo(0, 0)}
   >
     <div>
+      <JoyrideWrapper />
       <Helmet>
         <meta charSet="utf-8" />
         <title>{getTitle(currentToken, currentPair)}</title>

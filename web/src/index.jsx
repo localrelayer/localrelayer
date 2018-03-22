@@ -9,6 +9,7 @@ import { LocaleProvider } from 'antd';
 import enUS from 'antd/lib/locale-provider/en_US';
 import type { ComponentType } from 'react';
 
+import 'react-joyride/lib/react-joyride-compiled.css';
 import './assets/main.less';
 
 import store from './store';

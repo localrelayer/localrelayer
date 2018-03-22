@@ -27,6 +27,7 @@ export type UiAction =
   payload: {
     title: string,
     type: string,
+    name?: string,
     text?: *,
   },
 |}

@@ -57,6 +57,7 @@ const HeaderContainer: StatelessFunctionalComponent<Props> =
       onPairSelect={token => dispatch(push(`${selectedToken.symbol}-${token.symbol}`))}
       onTokenSearch={query => dispatch(setUiState('searchQuery', query))}
       setActiveLink={e => dispatch(setUiState('activeLink', e.key))}
+      onHelpClick={() => dispatch(setUiState('shouldRunTutorial', true))}
     />;
 
 const mapStateToProps: MapStateToProps<*, *, *> = state => ({

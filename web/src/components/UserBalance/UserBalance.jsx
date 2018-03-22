@@ -73,6 +73,7 @@ const getColumns = onToggle => [
     key: 'tradable',
     render: (text, record) => (
       <Switch
+        className="unlock"
         checked={record.isTradable}
         checkedChildren={<Icon type="check" />}
         onChange={checked => checked && onToggle(record)}
