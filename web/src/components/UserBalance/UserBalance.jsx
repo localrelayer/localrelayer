@@ -6,6 +6,7 @@ import { Card, Switch, Icon, Tooltip, Popover } from 'antd';
 import { Element } from 'react-scroll';
 import WrapForm from './WrapForm';
 import { CardContainer, TableContainer } from './styled';
+import { Overlay } from '../SharedStyles';
 
 type Props = {
   /** Array of Tokens on user balance */
@@ -27,6 +28,8 @@ type Props = {
   unwrap: () => void,
   /** Is something loading */
   isBalanceLoading: boolean,
+  /** Is user connected to ethereum */
+  isConnected: boolean,
 };
 
 const getColumns = onToggle => [
@@ -96,9 +99,20 @@ const UserBalance = ({
   wrap,
   unwrap,
   isBalanceLoading,
+  isConnected,
 }: Props): Node => (
   <Element name="userBalance">
     <CardContainer id="user-balance" bordered={false} title={<div>My Balance ({balance} ETH)</div>}>
+      <Overlay isShown={!isConnected}>
+        <h3
+          style={{
+            margin: '20px',
+            marginTop: '100px',
+          }}
+        >
+          You are viewing this in read-only mode. Connect a wallet to see your balance
+        </h3>
+      </Overlay>
       <WrapForm wrap={wrap} unwrap={unwrap} onSubmit={() => {}} isLoading={isBalanceLoading} />
       <Card.Grid>
         <TableContainer

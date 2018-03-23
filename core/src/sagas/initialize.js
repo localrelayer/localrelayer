@@ -44,7 +44,17 @@ import {
 } from '../selectors';
 
 export function* initialize(): Saga<void> {
-  yield call(loadZeroEx);
+  try {
+    yield call(loadZeroEx);
+  } catch (e) {
+    yield put(
+      uiActions.showModal({
+        title: "Can't connect to Ethereum",
+        type: 'error',
+        text: 'Please check your account and network in the wallet',
+      }),
+    );
+  }
   yield call(fetchResourcesRequest, {
     payload: {
       resourceName: 'tokens',

@@ -147,7 +147,7 @@ const Header = ({
         }
       >
         <Badge>
-          <UserButton id="account" onClick={() => onUserClick(user)} type="primary">
+          <UserButton onClick={() => onUserClick(user)} type="primary">
             <Icon type="user" />{' '}
             {user.connectionStatus === connectionStatuses.CONNECTED ? (
               <Truncate>{user.address}</Truncate>
@@ -158,11 +158,17 @@ const Header = ({
           </UserButton>
         </Badge>
       </Popover>
-      <Badge count={user.notifications ? user.notifications.length : 0}>
-        <HeaderButton shape="circle" type="primary">
-          <Icon type="bell" />
-        </HeaderButton>
-      </Badge>
+      <Popover
+        placement="bottom"
+        trigger={['click']}
+        content={<div style={{ padding: '12px 16px' }}>No notifications</div>}
+      >
+        <Badge count={user.notifications ? user.notifications.length : 0}>
+          <HeaderButton shape="circle" type="primary">
+            <Icon type="bell" />
+          </HeaderButton>
+        </Badge>
+      </Popover>
     </AlignRight>
   </HeaderContainer>
 );

@@ -63,6 +63,7 @@
     "babel-preset-env": "1.6.1",
     "babel-preset-react": "6.24.1",
     "babel-preset-stage-0": "6.24.1",
+    "cross-env": "5.0.1",
     "enzyme": "3.3.0",
     "enzyme-adapter-react-16": "1.1.0",
     "eslint": "4.15.0",
@@ -85,11 +86,11 @@
     "react-styleguidist": "6.1.0",
     "redux-devtools": "3.4.0",
     "redux-devtools-extension": "^2.13.2",
-    "cross-env": "5.0.1",
-    "webpack": "3.10.0",
-    "webpack-s3-plugin": "1.0.0-rc.0",
     "uglifyjs-webpack-plugin": "1.2.4",
+    "webpack": "3.10.0",
+    "webpack-bundle-analyzer": "^2.11.1",
     "webpack-dev-server": "2.9.5",
-    "webpack-merge": "4.1.1"
+    "webpack-merge": "4.1.1",
+    "webpack-s3-plugin": "1.0.0-rc.0"
   }
 }
