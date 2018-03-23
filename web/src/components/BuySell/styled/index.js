@@ -15,6 +15,7 @@ export const CardContainer = styled(Card)`
     text-align: center;
     padding-bottom: 10px;
   }
+  position: relative;
 `;
 
 export const InputLabel = styled.label``;

@@ -2,6 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 const merge = require('webpack-merge');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 const config = require('./webpack.config.base');
 
@@ -31,6 +32,7 @@ module.exports = merge(config, {
     }),
     new webpack.NamedModulesPlugin(),
     new webpack.HotModuleReplacementPlugin(),
+    // new BundleAnalyzerPlugin(),
   ],
 
   devServer: {

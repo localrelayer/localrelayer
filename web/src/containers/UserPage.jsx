@@ -9,7 +9,10 @@ import UserOrders from './UserOrdersContainer';
 import UserHistory from './UserHistoryContainer';
 
 export default () =>
-  <Row>
+  <Row style={{
+    minHeight: 'calc(100vh - 64px)',
+  }}
+  >
     <Col span={12}>
       <UserTotalBalance />
     </Col>

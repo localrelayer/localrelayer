@@ -30,6 +30,7 @@ type Props = {
   currentPair: Token,
   dispatch: Dispatch<*>,
   activeTab: string,
+  isConnected: boolean,
 }
 
 const BuySellContainer = ({
@@ -37,9 +38,11 @@ const BuySellContainer = ({
   currentPair,
   dispatch,
   activeTab,
+  isConnected,
 }: Props) => (
   <StyleContainer>
     <BuySell
+      isConnected={isConnected}
       currentToken={currentToken}
       currentPair={currentPair}
       activeTab={activeTab}
@@ -62,6 +65,7 @@ const mapStateToProps: MapStateToProps<*, *, *> = (state) => {
     currentToken: getUserTokenBy('id', currentToken.id)(state),
     currentPair: getUserTokenBy('id', currentPair.id)(state),
     activeTab,
+    isConnected: state.profile.connectionStatus !== 'Not connected to Ethereum' && state.profile.connectionStatus !== 'Locked',
   };
 };
 

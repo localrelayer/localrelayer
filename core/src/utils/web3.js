@@ -5,28 +5,29 @@ import {
 
 const Web3 = require('web3');
 
-export const loadZeroEx = () =>
-  new Promise((resolve) => {
-    // Wait for loading completion to avoid race conditions with web3 injection timing.
-    window.addEventListener('load', async () => {
-      const { web3 } = window;
-      // Checking if Web3 has been injected by the browser (Mist/MetaMask)
-      if (typeof web3 !== 'undefined') {
-        let networkId = 50;
-        try {
-          networkId = +(await promisify(web3.version.getNetwork)());
-        } catch (e) {
-          console.warn('Couldn\'t get a network, using testnet');
-        }
-        const zeroEx = initializeZeroEx(networkId);
-        console.warn('Injected web3 detected.');
-        resolve(zeroEx);
-      } else {
-        resolve(null);
-        console.warn('No web3 instance injected, please use Metamask');
+export const loadZeroEx = () => new Promise((resolve) => {
+  // Wait for loading completion to avoid race conditions with web3 injection timing.
+  window.addEventListener('load', async () => {
+    const { web3 } = window;
+    // Checking if Web3 has been injected by the browser (Mist/MetaMask)
+    if (typeof web3 !== 'undefined') {
+      let networkId = 50;
+      console.log('that is', web3);
+      try {
+        networkId = +(await promisify(web3.version.getNetwork()));
+      } catch (e) {
+        console.warn('Couldn\'t get a network, using testnet');
       }
-    });
+      console.log(web3);
+      const zeroEx = initializeZeroEx(networkId);
+      console.warn('Injected web3 detected.');
+      resolve(zeroEx);
+    } else {
+      resolve(null);
+      console.warn('No web3 instance injected, please use Metamask');
+    }
   });
+});
 
 export const initializeZeroEx = (networkId = 50) => {
   // Use Mist/MetaMask's provider.

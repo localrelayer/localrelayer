@@ -29,6 +29,7 @@ export const CardContainer = styled(Card)`
       box-shadow: none;
     }
   }
+  position: relative;
 `;
 
 export const TableContainer = styled(Table)`

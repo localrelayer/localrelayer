@@ -15,6 +15,7 @@ import {
 
 import BuySellForm from './BuySellForm';
 import { CardContainer } from './styled';
+import { Overlay } from '../SharedStyles';
 
 const { TabPane } = Tabs;
 
@@ -31,6 +32,8 @@ type Props = {
   currentPair: Token,
   /** Fill field with presetted value */
   fillField: Function,
+  /** Is user connected to ethereum */
+  isConnected: boolean,
 };
 
 /**
@@ -46,8 +49,18 @@ const BuySell: StatelessFunctionalComponent<Props> = ({
   currentToken,
   currentPair,
   fillField,
+  isConnected,
 }: Props): Node =>
   <CardContainer id="orderForm">
+    <Overlay isShown={!isConnected}>
+      <h3 style={{
+        margin: '20px',
+        marginTop: '100px',
+      }}
+      >
+      You are viewing this in read-only mode. Connect a wallet to create order
+      </h3>
+    </Overlay>
     <Card.Meta title="Create Order" />
     <Tabs
       type="card"
@@ -73,7 +86,6 @@ const BuySell: StatelessFunctionalComponent<Props> = ({
         />
       </TabPane>
     </Tabs>
-
   </CardContainer>;
 
 export default BuySell;
