@@ -17,6 +17,7 @@ import {
   getLocation,
 } from 'react-router-redux';
 import pathToRegexp from 'path-to-regexp';
+import BigNumber from 'bignumber.js';
 import {
   fetchResourcesRequest,
   saveResourceRequest,
@@ -44,17 +45,7 @@ import {
 } from '../selectors';
 
 export function* initialize(): Saga<void> {
-  try {
-    yield call(loadZeroEx);
-  } catch (e) {
-    yield put(
-      uiActions.showModal({
-        title: "Can't connect to Ethereum",
-        type: 'error',
-        text: 'Please check your account and network in the wallet',
-      }),
-    );
-  }
+  yield call(loadZeroEx);
   yield call(fetchResourcesRequest, {
     payload: {
       resourceName: 'tokens',
@@ -77,7 +68,6 @@ export function* initialize(): Saga<void> {
   // Prefilling buy/sell form
   // yield put(uiActions.fillField('price', { orderType: 'sell' }));
   yield put(uiActions.fillField('exp', { period: ['1', 'day'] }));
-
   if (!window.web3) {
     yield put(
       uiActions.showModal({

@@ -35,7 +35,7 @@ export const getColumns = (
     render: (text: string, order: Order) => {
       const field = order.status === 'canceled' ? 'canceled_at' : 'completed_at';
       return (
-        <Tooltip title={moment(order[field]).format('llll')}>
+        <Tooltip title={moment(order[field]).format('ddd, MMM DD, YYYY hh:mm:ss A')}>
           {moment(order[field]).format('DD/MM/YYYY HH:mm')}
         </Tooltip>
       );

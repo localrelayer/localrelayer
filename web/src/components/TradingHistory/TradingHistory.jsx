@@ -36,7 +36,7 @@ const columns = [
     title: 'Date',
     dataIndex: 'completed_at',
     render: (text: string) => (
-      <Tooltip title={moment(text).format('llll')}>
+      <Tooltip title={moment(text).format('ddd, MMM DD, YYYY hh:mm:ss A')}>
         {moment(text).format('DD/MM HH:mm')}
       </Tooltip>
     ),
