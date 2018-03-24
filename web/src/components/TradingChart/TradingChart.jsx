@@ -55,7 +55,7 @@ export default class extends Component<Props> {
         'paneProperties.rightAxisProperties.autoScaleDisabled': true,
         'mainSeriesProperties.priceAxisProperties.autoScale': false,
         'paneProperties.topMargin': 15,
-        'paneProperties.bottomMargin': 15,
+        'paneProperties.bottomMargin': 25,
       },
 
     });

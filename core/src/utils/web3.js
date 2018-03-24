@@ -1,29 +1,29 @@
 import { ZeroEx } from '0x.js';
-import {
-  promisify,
-} from 'es6-promisify';
 
 const Web3 = require('web3');
+
+let web3;
 
 export const loadZeroEx = () => new Promise((resolve) => {
   // Wait for loading completion to avoid race conditions with web3 injection timing.
   window.addEventListener('load', async () => {
-    const { web3 } = window;
     // Checking if Web3 has been injected by the browser (Mist/MetaMask)
-    if (typeof web3 !== 'undefined') {
-      let networkId = 50;
-      console.log('that is', web3);
+    if (typeof window.web3 !== 'undefined') {
+      let networkId;
+      web3 = new Web3(window.web3.currentProvider);
       try {
-        networkId = +(await promisify(web3.version.getNetwork()));
+        networkId = +(await web3.eth.net.getId());
       } catch (e) {
+        console.warn(e);
         console.warn('Couldn\'t get a network, using testnet');
+        networkId = 50;
       }
-      console.log(web3);
       const zeroEx = initializeZeroEx(networkId);
       console.warn('Injected web3 detected.');
       resolve(zeroEx);
     } else {
       resolve(null);
+      window.web3 = undefined;
       console.warn('No web3 instance injected, please use Metamask');
     }
   });
@@ -34,7 +34,6 @@ export const initializeZeroEx = (networkId = 50) => {
   const zeroEx = new ZeroEx(window.web3.currentProvider, {
     networkId,
   });
-  const web3 = new Web3(window.web3.currentProvider);
   window.web3 = web3;
   window.zeroEx = zeroEx;
 

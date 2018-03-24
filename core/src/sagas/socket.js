@@ -29,9 +29,9 @@ import {
 } from './profile';
 
 export function socketConnect() {
-  console.log('_______')
-  console.log(config.socketUrl)
-  console.log('_______')
+  console.log('_______');
+  console.log(config.socketUrl);
+  console.log('_______');
   const socket = io(config.socketUrl);
   return new Promise((resolve) => {
     socket.on('connect', () => {

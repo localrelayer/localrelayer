@@ -37,10 +37,6 @@ const getTitle = (symbol, tokenPairSymbol, change24Hour, lastPrice) => (
       {symbol} / {tokenPairSymbol}{' '}
     </div>
     <LastPriceContainer>
-      {/* <Colored color={+change24Hour >= 0 ? 'green' : 'red'}>
-        {change24Hour && <IconContainer type={+change24Hour >= 0 ? 'caret-up' : 'caret-down'} />}
-      </Colored>
-      {' '} */}
       <span>{lastPrice || 'No trades'}</span>
     </LastPriceContainer>
   </Title>
@@ -106,6 +102,7 @@ const TokenCard = ({
             <div>
               <div>High: {highPrice || '--'}</div>
               <div>Low: {lowPrice || '--'}</div>
+
             </div>
             <div>
               {isPositive ?

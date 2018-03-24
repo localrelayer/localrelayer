@@ -4,6 +4,9 @@
 import type {
   Token,
 } from 'instex-core/types';
+import {
+  socketConnect,
+} from 'instex-core/src/sagas/socket';
 import config from '../../config';
 
 
@@ -131,8 +134,15 @@ export const getDatafeed = (token: Token) => ({
     }), 0);
   },
 
-  subscribeBars: () => {
-    console.log('subscribeBars');
+  subscribeBars: async (symbolInfo, resolution, onRealtimeCallback, subscriberUID) => {
+    const socket = await socketConnect();
+    socket.on('updated_bar', (data) => {
+      console.log(data.token, symbolInfo.ticker);
+      if (data.token === symbolInfo.ticker) {
+        onRealtimeCallback(data.bar);
+      }
+    });
+    console.log('subscribeBars', symbolInfo, resolution, subscriberUID);
   },
 
   unsubscribeBars: () => {

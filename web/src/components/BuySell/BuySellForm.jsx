@@ -20,7 +20,6 @@ import {
 } from 'redux';
 import type {
   Node,
-  StatelessFunctionalComponent,
 } from 'react';
 
 import type {
@@ -43,6 +42,9 @@ import {
   LabelListContainer,
   AdditionInfoContainer,
 } from './styled';
+
+// eslint-disable-next-line
+const parseNumber = val => (isNaN(parseFloat(val)) ? undefined : parseFloat(val));
 
 const validate = (values, props) => {
   const errors = {};
@@ -113,7 +115,7 @@ function disabledDate(current) {
  * @author [Vladimir Pal](https://github.com/VladimirPal)
  */
 
-const BuySellForm: StatelessFunctionalComponent<Props> = ({
+const BuySellForm = ({
   handleSubmit,
   currentToken,
   currentPair,
@@ -129,7 +131,7 @@ const BuySellForm: StatelessFunctionalComponent<Props> = ({
       id="price"
       type="text"
       name="price"
-      parse={val => (isNaN(parseFloat(val)) ? undefined : parseFloat(val))}
+      parse={parseNumber}
       label={
         <LabelContainer>
           <div>Price</div>
@@ -146,7 +148,7 @@ const BuySellForm: StatelessFunctionalComponent<Props> = ({
       id="amount"
       type="text"
       name="amount"
-      parse={val => (isNaN(parseFloat(val)) ? undefined : parseFloat(val))}
+      parse={parseNumber}
       label={
         <LabelContainer>
           <div>Amount</div>

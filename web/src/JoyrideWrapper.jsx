@@ -139,7 +139,7 @@ class JoyrideWrapper extends Component<Props> {
       type="continuous"
       steps={steps}
       stepIndex={0}
-      debug
+      // debug
       autoStart
       showSkipButton
       run={shouldRunTutorial}
