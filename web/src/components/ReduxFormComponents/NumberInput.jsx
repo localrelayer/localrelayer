@@ -13,6 +13,7 @@ type Props = {
   label: string,
   meta: FieldProps.meta,
   placeholder: string,
+  disabled: boolean,
 };
 
 export default class NumberInput extends Component<Props> {
@@ -26,6 +27,7 @@ export default class NumberInput extends Component<Props> {
       input,
       label,
       placeholder,
+      disabled,
       meta: {
         touched,
         error,
@@ -40,6 +42,7 @@ export default class NumberInput extends Component<Props> {
       >
         <InputNumber
           {...input}
+          disabled={disabled}
           precision={8}
           step={0.1}
           min={0}
