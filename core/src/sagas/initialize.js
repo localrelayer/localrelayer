@@ -26,7 +26,6 @@ import {
   loadZeroEx,
   connectionStatuses,
   SMALLEST_AMOUNT,
-  NODE_ADDRESS,
 } from '../utils/web3';
 import * as ProfileActions from '../actions/profile';
 import {
@@ -78,8 +77,8 @@ export function* initialize(): Saga<void> {
     );
     yield put(ProfileActions.setProfileState('connectionStatus', connectionStatuses.NOT_CONNECTED));
   } else {
-    const balanceInWei = yield cps(window.web3.eth.getBalance, NODE_ADDRESS);
-    const BIGGEST_AMOUNT = window.web3.utils.fromWei(balanceInWei, 'ether');
+    // Max Amount - 10 eth
+    const BIGGEST_AMOUNT = 10;
 
     // using window as transport
     window.BIGGEST_AMOUNT = BigNumber(BIGGEST_AMOUNT).toFixed(8).toString();

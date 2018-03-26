@@ -12,7 +12,6 @@ import {
 } from 'recompose';
 import {
   Card,
-  Tag,
 } from 'antd';
 import {
   Title,
@@ -37,7 +36,7 @@ const getTitle = (symbol, tokenPairSymbol, change24Hour, lastPrice) => (
       {symbol} / {tokenPairSymbol}{' '}
     </div>
     <LastPriceContainer>
-      <span>{lastPrice || 'No trades'}</span>
+      <span>{lastPrice || 'No trades in 24hr'}</span>
     </LastPriceContainer>
   </Title>
 );

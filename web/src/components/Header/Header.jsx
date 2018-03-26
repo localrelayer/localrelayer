@@ -147,7 +147,7 @@ const Header = ({
         }
       >
         <Badge>
-          <UserButton onClick={() => onUserClick(user)} type="primary">
+          <UserButton id="account" onClick={() => onUserClick(user)} type="primary">
             <Icon type="user" />{' '}
             {user.connectionStatus === connectionStatuses.CONNECTED ? (
               <Truncate>{user.address}</Truncate>
