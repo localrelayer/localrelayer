@@ -10,12 +10,14 @@ import type {
 } from 'instex-core/types';
 import {
   Tabs,
-  Card,
+  Avatar,
 } from 'antd';
 
 import BuySellForm from './BuySellForm';
 import { CardContainer } from './styled';
-import { Overlay } from '../SharedStyles';
+import {
+  Overlay,
+} from '../SharedStyles';
 
 const { TabPane } = Tabs;
 
@@ -51,41 +53,43 @@ const BuySell: StatelessFunctionalComponent<Props> = ({
   fillField,
   isConnected,
 }: Props): Node =>
-  <CardContainer id="orderForm">
-    <Overlay isShown={!isConnected}>
-      <h3 style={{
+  <div id="orderForm">
+
+    <CardContainer>
+      <Overlay isShown={!isConnected}>
+        <h3 style={{
         margin: '20px',
         marginTop: '100px',
       }}
-      >
+        >
       You are viewing this in read-only mode. Connect a wallet to create order
-      </h3>
-    </Overlay>
-    <Card.Meta title="Create Order" />
-    <Tabs
-      type="card"
-      onChange={changeActiveTab}
-      activeKey={activeTab}
-    >
-      <TabPane tab="Buy" key="buy">
-        <BuySellForm
-          fillField={fillField}
-          type={activeTab}
-          currentToken={currentToken}
-          currentPair={currentPair}
-          onSubmit={values => onSubmit({ ...values, type: activeTab })}
-        />
-      </TabPane>
-      <TabPane tab="Sell" key="sell">
-        <BuySellForm
-          fillField={fillField}
-          type={activeTab}
-          currentToken={currentToken}
-          currentPair={currentPair}
-          onSubmit={values => onSubmit({ ...values, type: activeTab })}
-        />
-      </TabPane>
-    </Tabs>
-  </CardContainer>;
+        </h3>
+      </Overlay>
+      <Tabs
+        onChange={changeActiveTab}
+        activeKey={activeTab}
+        tabBarExtraContent={<h3>{currentToken.symbol || ''}/{currentPair.symbol || ''}</h3>}
+      >
+        <TabPane tab="Buy" key="buy">
+          <BuySellForm
+            fillField={fillField}
+            type={activeTab}
+            currentToken={currentToken}
+            currentPair={currentPair}
+            onSubmit={values => onSubmit({ ...values, type: activeTab })}
+          />
+        </TabPane>
+        <TabPane tab="Sell" key="sell">
+          <BuySellForm
+            fillField={fillField}
+            type={activeTab}
+            currentToken={currentToken}
+            currentPair={currentPair}
+            onSubmit={values => onSubmit({ ...values, type: activeTab })}
+          />
+        </TabPane>
+      </Tabs>
+    </CardContainer>
+  </div>;
 
 export default BuySell;

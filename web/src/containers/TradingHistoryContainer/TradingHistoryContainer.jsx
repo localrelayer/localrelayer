@@ -27,7 +27,7 @@ const TradingChartContainer: StatelessFunctionalComponent<Props> = ({
 }: Props): Node =>
   <TradingHistory
     orders={orders}
-    pagination={{ pageSize: 15 }}
+    pagination={{ pageSize: 10 }}
   />;
 
 const mapStateToProps: MapStateToProps<*, *, *> = state => ({

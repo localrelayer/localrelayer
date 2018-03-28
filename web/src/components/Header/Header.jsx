@@ -79,6 +79,13 @@ type Props = {
 
 const enhance = withState('popoverVisible', 'togglePopover', false);
 
+const getTokenButtonTitle = (selectedToken: Token, tokenPair: Token) => {
+  if (selectedToken.symbol && tokenPair.symbol) {
+    return `(${selectedToken.symbol}/${tokenPair.symbol})`;
+  }
+  return '';
+};
+
 const Header = ({
   user,
   onUserClick,
@@ -118,11 +125,11 @@ const Header = ({
             id="tokensList"
             onSearch={onTokenSearch}
             tokens={tokens}
-            selectedToken={selectedToken}
             onSelect={(token) => {
               togglePopover(false);
               onTokenSelect(token);
             }}
+            selectedToken={selectedToken}
             tokenPair={tokenPair}
             onPairSelect={onPairSelect}
           />
@@ -130,7 +137,7 @@ const Header = ({
       }
     >
       <HeaderButton id="selectTokenButton" type="primary">
-        Tokens ({`${selectedToken.symbol}/${tokenPair.symbol}`}) <Icon type="down" />
+        Tokens {getTokenButtonTitle(selectedToken, tokenPair)} <Icon type="down" />
       </HeaderButton>
     </Popover>
     <HeaderButton shape="circle" type="primary" onClick={onHelpClick}>

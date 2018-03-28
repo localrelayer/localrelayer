@@ -175,6 +175,7 @@ export function* setTokens(): Saga<void> {
 }
 
 function* checkNewToken({ payload: { pathname } }): Saga<void> {
+  console.log(pathname);
   const tokens = yield select(getResourceMappedList('tokens', 'allTokens'));
   const reg = pathToRegexp('/:token-:pair');
   const [a, token, pair] = reg.exec(pathname) || []; // eslint-disable-line

@@ -4,8 +4,11 @@ import type { Node } from 'react';
 import type { Tokens } from 'instex-core/types';
 import { Card, Switch, Icon, Tooltip, Popover } from 'antd';
 import { Element } from 'react-scroll';
-import WrapForm from './WrapForm';
+import WrapForm from '../UserBalance/WrapForm';
 import { CardContainer, TableContainer } from './styled';
+import {
+  ComponentTitle,
+} from '../SharedStyles';
 
 type Props = {
   /** Array of Tokens on user balance */
@@ -105,7 +108,8 @@ const UserTotalBalance = ({
   isBalanceLoading,
 }: Props): Node => (
   <Element name="UserTotalBalance">
-    <CardContainer id="user-total-balance" bordered={false} title={<div>My Balance ({balance} ETH)</div>}>
+    <ComponentTitle>My Balance ({balance} ETH)</ComponentTitle>
+    <CardContainer id="user-total-balance" bordered={false}>
       <WrapForm wrap={wrap} unwrap={unwrap} onSubmit={() => {}} isLoading={isBalanceLoading} />
       <Card.Grid>
         <TableContainer
