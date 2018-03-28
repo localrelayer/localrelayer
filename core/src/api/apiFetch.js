@@ -1,7 +1,9 @@
+/*
 import {
   finance,
   random,
 } from 'faker';
+*/
 import {
   times,
 } from 'ramda';

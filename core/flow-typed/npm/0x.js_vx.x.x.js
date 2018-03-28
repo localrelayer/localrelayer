@@ -1,4 +1,4 @@
-// flow-typed signature: 5409b83635080cba667975561457fded
+// flow-typed signature: 1d8c6e45bf466b705cff2328a80ca6b3
 // flow-typed version: <<STUB>>/0x.js_v^0.33.0/flow_v0.63.1
 
 /**
@@ -79,6 +79,14 @@ declare module '0x.js/lib/src/contract_wrappers/token_wrapper' {
 }
 
 declare module '0x.js/lib/src/index' {
+  declare module.exports: any;
+}
+
+declare module '0x.js/lib/src/monorepo_scripts/postpublish' {
+  declare module.exports: any;
+}
+
+declare module '0x.js/lib/src/monorepo_scripts/stagedocs' {
   declare module.exports: any;
 }
 
@@ -242,6 +250,10 @@ declare module '0x.js/lib/test/utils/token_utils' {
   declare module.exports: any;
 }
 
+declare module '0x.js/lib/test/utils/web3_wrapper' {
+  declare module.exports: any;
+}
+
 // Filename aliases
 declare module '0x.js/lib/src/0x.js' {
   declare module.exports: $Exports<'0x.js/lib/src/0x'>;
@@ -287,6 +299,12 @@ declare module '0x.js/lib/src/contract_wrappers/token_wrapper.js' {
 }
 declare module '0x.js/lib/src/index.js' {
   declare module.exports: $Exports<'0x.js/lib/src/index'>;
+}
+declare module '0x.js/lib/src/monorepo_scripts/postpublish.js' {
+  declare module.exports: $Exports<'0x.js/lib/src/monorepo_scripts/postpublish'>;
+}
+declare module '0x.js/lib/src/monorepo_scripts/stagedocs.js' {
+  declare module.exports: $Exports<'0x.js/lib/src/monorepo_scripts/stagedocs'>;
 }
 declare module '0x.js/lib/src/order_watcher/event_watcher.js' {
   declare module.exports: $Exports<'0x.js/lib/src/order_watcher/event_watcher'>;
@@ -407,4 +425,7 @@ declare module '0x.js/lib/test/utils/report_callback_errors.js' {
 }
 declare module '0x.js/lib/test/utils/token_utils.js' {
   declare module.exports: $Exports<'0x.js/lib/test/utils/token_utils'>;
+}
+declare module '0x.js/lib/test/utils/web3_wrapper.js' {
+  declare module.exports: $Exports<'0x.js/lib/test/utils/web3_wrapper'>;
 }

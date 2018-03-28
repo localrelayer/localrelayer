@@ -33,7 +33,6 @@
     "web3": "1.0.0-beta.29"
   },
   "devDependencies": {
-    "faker": "git://github.com/Marak/faker.js.git",
     "babel-core": "6.26.0",
     "babel-eslint": "8.2.1",
     "babel-loader": "7.1.2",
