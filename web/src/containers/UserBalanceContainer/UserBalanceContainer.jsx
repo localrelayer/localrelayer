@@ -37,7 +37,7 @@ const UserBalanceContainer: StatelessFunctionalComponent<Props> = ({
     <UserBalance
       isBalanceLoading={isBalanceLoading}
       tokens={tokens}
-      onToggle={token => dispatch(callContract('setAllowance', token))}
+      onToggle={(checked, token) => (checked ? dispatch(callContract('setAllowance', token)) : dispatch(callContract('unsetAllowance', token)))}
       balance={balance}
       wrap={() => dispatch(callContract('deposit'))}
       unwrap={() => dispatch(callContract('withdraw'))}

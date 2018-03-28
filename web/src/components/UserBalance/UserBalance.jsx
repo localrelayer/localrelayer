@@ -5,8 +5,14 @@ import type { Tokens } from 'instex-core/types';
 import { Card, Switch, Icon, Tooltip, Popover } from 'antd';
 import { Element } from 'react-scroll';
 import WrapForm from './WrapForm';
-import { CardContainer, TableContainer } from './styled';
-import { Overlay } from '../SharedStyles';
+import {
+  CardContainer,
+  TableContainer,
+} from './styled';
+import {
+  Overlay,
+  ComponentTitle,
+} from '../SharedStyles';
 
 type Props = {
   /** Array of Tokens on user balance */
@@ -79,7 +85,7 @@ const getColumns = onToggle => [
         className="unlock"
         checked={record.isTradable}
         checkedChildren={<Icon type="check" />}
-        onChange={checked => checked && onToggle(record)}
+        onChange={checked => onToggle(checked, record)}
       />
     ),
   },
@@ -101,13 +107,15 @@ const UserBalance = ({
   isBalanceLoading,
   isConnected,
 }: Props): Node => (
-  <Element name="userBalance">
-    <CardContainer id="user-balance" bordered={false} title={<div>My Balance ({balance} ETH)</div>}>
+  <Element id="user-balance" name="userBalance">
+    {console.log(tokens)}
+    <ComponentTitle>My Balance ({balance} ETH)</ComponentTitle>
+    <CardContainer bordered={false}>
       <Overlay isShown={!isConnected}>
         <h3
           style={{
             margin: '20px',
-            marginTop: '100px',
+            marginTop: '50px',
           }}
         >
           You are viewing this in read-only mode. Connect a wallet to see your balance
@@ -116,6 +124,7 @@ const UserBalance = ({
       <WrapForm wrap={wrap} unwrap={unwrap} onSubmit={() => {}} isLoading={isBalanceLoading} />
       <Card.Grid>
         <TableContainer
+          size="middle"
           loading={isBalanceLoading}
           onRow={record => ({
             onClick: () => onTokenClick(record),

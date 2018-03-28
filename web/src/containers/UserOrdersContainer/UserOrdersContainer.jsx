@@ -33,8 +33,11 @@ const UserOrdersContainer: StatelessFunctionalComponent<Props> = ({
   dispatch,
 }: Props): Node =>
   <UserOrders
-    title="Active orders"
+    title="My orders"
     orders={orders}
+    pagination={{
+      pageSize: 10,
+    }}
     onCancel={(orderId: string) => {
       dispatch(cancelOrder(orderId));
     }}

@@ -25,3 +25,11 @@ export const Overlay = styled.div`
   transition: opacity .5s;
 `;
 
+export const ComponentTitle = styled.h3`
+  background: #fafafa;
+  margin-bottom: 0;
+  padding: 10px;
+  text-align: center;
+  border: 1px solid #e8e8e8;
+  border-bottom: none;
+`;
