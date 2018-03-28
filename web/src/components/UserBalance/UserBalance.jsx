@@ -85,7 +85,7 @@ const getColumns = onToggle => [
         className="unlock"
         checked={record.isTradable}
         checkedChildren={<Icon type="check" />}
-        onChange={checked => checked && onToggle(record)}
+        onChange={checked => onToggle(checked, record)}
       />
     ),
   },
@@ -108,6 +108,7 @@ const UserBalance = ({
   isConnected,
 }: Props): Node => (
   <Element id="user-balance" name="userBalance">
+    {console.log(tokens)}
     <ComponentTitle>My Balance ({balance} ETH)</ComponentTitle>
     <CardContainer bordered={false}>
       <Overlay isShown={!isConnected}>

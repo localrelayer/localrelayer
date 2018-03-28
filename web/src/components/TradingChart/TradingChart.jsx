@@ -32,7 +32,7 @@ export default class extends Component<Props> {
   initalizedChartWidget = (token: Token) => {
     // eslint-disable-next-line
     const widget = new window.TradingView.widget({
-      debug: true,
+      // debug: true,
       interval: '60',
       allow_symbol_change: false,
       height: window.innerWidth > 1800 ? '700px' : '450px',
