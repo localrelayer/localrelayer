@@ -33,6 +33,7 @@ type Props = {
 const columns = {
   sell: [
     {
+      key: 'isUser',
       render: (text, order) => (order.isUser ? <Icon type="user" /> : null),
     },
     {
