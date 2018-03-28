@@ -9,6 +9,7 @@ import type {
 } from 'instex-core/types';
 import {
   Icon,
+  Divider,
 } from 'antd';
 
 import {
@@ -32,6 +33,10 @@ type Props = {
 const columns = {
   sell: [
     {
+      key: 'isUser',
+      render: (text, order) => (order.isUser ? <Icon type="user" /> : null),
+    },
+    {
       title: 'Price',
       dataIndex: 'price',
       key: 'price',
@@ -51,13 +56,13 @@ const columns = {
         </Colored>,
     },
     {
-      render: (text, order) => (order.isUser ? <Icon type="user" /> : null),
-    },
-    {
       render: (text, order) => (order.status === 'pending' ? <Icon type="loading" /> : null),
     },
   ],
   buy: [
+    {
+      render: (text, order) => (order.isUser ? <Icon type="user" /> : null),
+    },
     {
       title: 'Price',
       dataIndex: 'price',
@@ -74,9 +79,6 @@ const columns = {
       key: 'total',
       render: (text: string) =>
         <Colored color="green">{text}</Colored>,
-    },
-    {
-      render: (text, order) => (order.isUser ? <Icon type="user" /> : null),
     },
     {
       render: (text, order) => (order.status === 'pending' ? <Icon type="loading" /> : null),
@@ -102,7 +104,11 @@ const OrderBook: StatelessFunctionalComponent<Props> = ({
       columns={columns.sell}
       onClick={fillOrder}
     />
+    <Divider type="vertical" />
     <OrdersList
+      style={{
+        margin: 0,
+      }}
       data={buyOrders}
       title="Buy orders"
       columns={columns.buy}

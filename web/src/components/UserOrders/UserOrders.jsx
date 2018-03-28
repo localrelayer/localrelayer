@@ -1,7 +1,11 @@
 // @flow
 import React from 'react';
 import type { Node } from 'react';
-import { Tooltip, Button } from 'antd';
+import {
+  Tooltip,
+  Button,
+  Icon,
+} from 'antd';
 import type { Order } from 'instex-core/types';
 import { Element } from 'react-scroll';
 import moment from 'moment';
@@ -19,50 +23,61 @@ type Props = {
   onCancel: (id: string) => void,
   /** Table title */
   title: string,
+  /** Antd pagination config object */
+  pagination: {
+    pageSize: number,
+  } | null,
 };
 
 export const getColumns = (onCancel: (id: string) => void) => [
-  {
-    title: 'Type',
-    dataIndex: 'type',
-    key: 'type',
-    render: (text: string, record: Order) => (
-      <Colored color={record.type === 'sell' ? 'red' : 'green'}>{text}</Colored>
-    ),
-  },
+  // {
+  //   title: 'Type',
+  //   dataIndex: 'type',
+  //   key: 'type',
+  //   render: (text: string, record: Order) => (
+  //     <Colored color={record.type === 'sell' ? 'red' : 'green'}>{text}</Colored>
+  //   ),
+  // },
   {
     title: 'Pair',
+    key: 'user/pair',
     render: (text: string, order: Order) => `${order.tokenSymbol}/${order.pairSymbol}`,
-  },
-  {
-    title: 'Price',
-    dataIndex: 'price',
-    key: 'price',
-  },
-  {
-    title: 'Amount',
-    dataIndex: 'amount',
-    key: 'amount',
-  },
-  {
-    title: 'Total',
-    dataIndex: 'total',
-    key: 'total',
   },
   {
     title: 'Expires',
     dataIndex: 'expires',
-    key: 'expires',
+    key: 'user/expires',
     render: (text: string) => (
       <Tooltip title={moment(text).format('ddd, MMM DD, YYYY hh:mm:ss A')}>
-        {moment(text).format('DD/MM/YYYY HH:mm')}
+        {moment(text).format('DD/MM HH:mm')}
       </Tooltip>
     ),
   },
   {
+    title: 'Price',
+    dataIndex: 'price',
+    key: 'user/price',
+    render: (text: string) => Number(text).toFixed(4),
+  },
+  {
+    title: 'Amount',
+    dataIndex: 'amount',
+    key: 'user/amount',
+    render: (text: string, record: Order) => <Colored color={record.type === 'buy' ? 'green' : 'red'}>{Number(text).toFixed(2)}</Colored>,
+  },
+  // {
+  //   title: 'Total',
+  //   dataIndex: 'total',
+  //   key: 'total',
+  //   render: (text: string, record: Order) =>
+  //     <Colored color={record.type === 'buy' ? 'green' : 'red'}>{Number(text).toFixed(2)}</Colored>,
+  // },
+  {
     title: 'Action',
+    key: 'user/action',
     render: (text: string, record: Order) => (
-      <Button
+      <a
+
         className="cancel"
         onClick={(e) => {
           e.stopPropagation();
@@ -70,9 +85,9 @@ export const getColumns = (onCancel: (id: string) => void) => [
         }}
         size="small"
         type="primary"
-      >
-        Cancel
-      </Button>
+
+      >Cancel
+      </a>
     ),
   },
 ];
@@ -87,11 +102,13 @@ const UserOrders = ({
   orders,
   onCancel,
   title,
+  pagination,
 }: Props): Node => (
   <Element name="userOrders">
     <UserOrdersContainer>
       <OrdersList
         title={title}
+        pagination={pagination}
         columns={getColumns(onCancel)}
         data={orders}
       />

@@ -34,6 +34,7 @@ const sagas = {
   deposit,
   withdraw,
   setAllowance,
+  unsetAllowance,
 };
 
 // Deposit WETH (wrap)
@@ -122,6 +123,33 @@ function* setAllowance(token) {
       tokenAddress: contractAddress,
       field: 'isTradable',
       value: true,
+    }));
+  } catch (e) {
+    yield put(sendNotification({ message: e.message, type: 'error' }));
+    console.error(e);
+  }
+}
+
+function* unsetAllowance(token) {
+  const { zeroEx } = window;
+  const contractAddress = token.id;
+  const account = yield select(getAddress);
+  try {
+    const txHash = yield call(
+      [zeroEx.token, zeroEx.token.setProxyAllowanceAsync],
+      contractAddress,
+      account,
+      BigNumber(0),
+      { gasLimit: 80000 },
+    );
+    yield put(setUiState('isBalanceLoading', true));
+    yield call([zeroEx, zeroEx.awaitTransactionMinedAsync], txHash);
+    yield put(setUiState('isBalanceLoading', false));
+
+    yield put(ProfileActions.updateToken({
+      tokenAddress: contractAddress,
+      field: 'isTradable',
+      value: false,
     }));
   } catch (e) {
     yield put(sendNotification({ message: e.message, type: 'error' }));

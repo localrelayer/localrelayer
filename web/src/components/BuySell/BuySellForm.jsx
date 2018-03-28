@@ -184,35 +184,27 @@ const BuySellForm = ({
       component={DateInput}
     />
     <AdditionInfoContainer>
-      <div>
-        <div>Total:</div>
-        <div>
-          {total} {currentPair.symbol}
-        </div>
-      </div>
-      <div>
-        <div>Fee:</div>
-        <div>
-          {totalFee} {type === 'sell' ? currentPair.symbol : currentToken.symbol}
-          <Popover
-            placement="bottom"
-            title={
+      <article>Total: {total} {currentPair.symbol}</article>
+      <article>
+        Fee: {totalFee} {type === 'sell' ? currentPair.symbol : currentToken.symbol}
+        <Popover
+          placement="bottom"
+          title={
+            <div>
               <div>
-                <div>
                   Ethereum tx fee: {transactionFee}{' '}
-                  {type === 'sell' ? currentPair.symbol : currentToken.symbol}
-                </div>
-                <div>
-                  Instex fee: {exchangeFee}{' '}
-                  {type === 'sell' ? currentPair.symbol : currentToken.symbol}
-                </div>
+                {type === 'sell' ? currentPair.symbol : currentToken.symbol}
               </div>
+              <div>
+                  Instex fee: {exchangeFee}{' '}
+                {type === 'sell' ? currentPair.symbol : currentToken.symbol}
+              </div>
+            </div>
             }
-          >
-            <Icon style={{ marginLeft: 3, marginTop: 3 }} type="info-circle-o" />
-          </Popover>
-        </div>
-      </div>
+        >
+          <Icon style={{ marginLeft: 3, marginTop: 3 }} type="info-circle-o" />
+        </Popover>
+      </article>
     </AdditionInfoContainer>
     <PlaceOrderButton size="large" type="primary" htmlType="submit">
       Place order
