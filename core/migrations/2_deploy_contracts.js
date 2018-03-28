@@ -4,7 +4,7 @@ const EIP20Factory = artifacts.require('./EIP20Factory.sol');
 const { ZeroEx } = require('0x.js');
 const fs = require('fs');
 const Web3 = require('web3');
-const { finance } = require('faker');
+// const { finance } = require('faker');
 
 const generateTradingInfo = () => ({
   volume: finance.amount(0, 500, 8),

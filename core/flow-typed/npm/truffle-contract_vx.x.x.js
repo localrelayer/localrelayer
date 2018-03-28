@@ -1,4 +1,4 @@
-// flow-typed signature: da074200f2923ab3c102314813028458
+// flow-typed signature: 9aa3b1d6554dd637094ddf0df978c28b
 // flow-typed version: <<STUB>>/truffle-contract_v^3.0.2/flow_v0.63.1
 
 /**
@@ -54,19 +54,11 @@ declare module 'truffle-contract/test/deprecated_keys' {
   declare module.exports: any;
 }
 
-declare module 'truffle-contract/test/lib/MetaCoin.sol' {
-  declare module.exports: any;
-}
-
 declare module 'truffle-contract/test/linking' {
   declare module.exports: any;
 }
 
 declare module 'truffle-contract/test/networks' {
-  declare module.exports: any;
-}
-
-declare module 'truffle-contract/test/upgrade' {
   declare module.exports: any;
 }
 
@@ -105,17 +97,11 @@ declare module 'truffle-contract/test/customoptions.js' {
 declare module 'truffle-contract/test/deprecated_keys.js' {
   declare module.exports: $Exports<'truffle-contract/test/deprecated_keys'>;
 }
-declare module 'truffle-contract/test/lib/MetaCoin.sol.js' {
-  declare module.exports: $Exports<'truffle-contract/test/lib/MetaCoin.sol'>;
-}
 declare module 'truffle-contract/test/linking.js' {
   declare module.exports: $Exports<'truffle-contract/test/linking'>;
 }
 declare module 'truffle-contract/test/networks.js' {
   declare module.exports: $Exports<'truffle-contract/test/networks'>;
-}
-declare module 'truffle-contract/test/upgrade.js' {
-  declare module.exports: $Exports<'truffle-contract/test/upgrade'>;
 }
 declare module 'truffle-contract/test/util.js' {
   declare module.exports: $Exports<'truffle-contract/test/util'>;
