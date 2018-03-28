@@ -3,6 +3,7 @@ import React from 'react';
 
 import {
   Table,
+  Pagination,
 } from 'antd';
 
 import type {
@@ -14,9 +15,10 @@ import type {
 
 import {
   OrdersListContainer,
-  TableTitle,
 } from './styled';
-
+import {
+  ComponentTitle,
+} from '../SharedStyles';
 
 type Props = {
   /** Orders info */
@@ -52,14 +54,16 @@ const OrdersList = ({
   onClick,
 }: Props): Node =>
   <OrdersListContainer>
-    <TableTitle>{title}</TableTitle>
+    <ComponentTitle>{title}</ComponentTitle>
     <Table
       size="small"
       rowKey="id"
       bordered={bordered}
       columns={columns}
       dataSource={data}
-      pagination={pagination}
+      pagination={
+        <Pagination size="small" {...pagination} />
+      }
       onRow={record => ({
         onClick: () => onClick(record),
       })}

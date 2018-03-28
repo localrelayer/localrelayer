@@ -12,8 +12,6 @@ export const Title = styled.div`
 `;
 
 export const CardContainer = styled(Card)`
-  max-width: 400px;
-
   & .ant-card-actions {
     & li:first-child {
       width: 60% !important;

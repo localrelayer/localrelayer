@@ -2,7 +2,6 @@ import styled from 'styled-components';
 import { Card, Button } from 'antd';
 
 export const CardContainer = styled(Card)`
-  max-width: 400px;
   & .ant-card-head-title {
     text-align: center;
     font-size: 1.1rem;
@@ -27,6 +26,7 @@ export const PlaceOrderButton = styled(Button)`
 export const LabelContainer = styled.div`
   display: flex;
   justify-content: space-between;
+  font-size: 0.82rem;
 `;
 
 export const LabelListContainer = styled.div`
@@ -39,6 +39,8 @@ export const LabelListContainer = styled.div`
 
 export const AdditionInfoContainer = styled.div`
   margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
   font-size: 0.75rem;
   & div {
     display: flex;
