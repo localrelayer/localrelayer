@@ -17,8 +17,8 @@ export const Title = styled.div`
 export const CardContainer = styled(Card)`
   padding: 0;
   min-height: 223px;
+  border: 1px solid #e8e8e8;
   & > .ant-card-head {
-    border: 1px solid #e8e8e8;
     text-align: center;
     background-color: #fafafa;
   }
@@ -28,6 +28,9 @@ export const CardContainer = styled(Card)`
     box-shadow: none;
     &:hover {
       box-shadow: none;
+    }
+    .ant-table {
+      padding: 10px;
     }
   }
   position: relative;

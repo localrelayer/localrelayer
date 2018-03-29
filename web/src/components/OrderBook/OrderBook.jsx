@@ -9,11 +9,11 @@ import type {
 } from 'instex-core/types';
 import {
   Icon,
-  Divider,
 } from 'antd';
 
 import {
   OrderBookContainer,
+  SpreadContainer,
 } from './styled';
 import {
   Colored,
@@ -104,7 +104,7 @@ const OrderBook: StatelessFunctionalComponent<Props> = ({
       columns={columns.sell}
       onClick={fillOrder}
     />
-    <Divider type="vertical" />
+    { /* <SpreadContainer>Spread 0.00549669</SpreadContainer> */ }
     <OrdersList
       style={{
         margin: 0,

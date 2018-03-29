@@ -24,7 +24,7 @@ export const CardContainer = styled(Card)`
 
 export const PriceContainer = styled.div`
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
 `;
 
@@ -43,3 +43,8 @@ export const IconContainer = styled(Icon)`
 
 export const LinkContainer = styled.a``;
 
+export const ChangeContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  font-size: 1rem;
+`;

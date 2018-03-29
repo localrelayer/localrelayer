@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export const OrdersListContainer = styled.div`
   flex: 1;
   margin: 10px;
-  min-height: 456px;
+  min-height: 455px;
   background: white;
 
   .ant-table-placeholder {
@@ -16,6 +16,7 @@ export const OrdersListContainer = styled.div`
   }
   .ant-table-small {
     background: white;
+    min-height: 357px;
   }
 
   .ant-table-tbody > tr > td {

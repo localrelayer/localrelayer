@@ -19,6 +19,7 @@ import {
   PriceContainer,
   AvatarContainer,
   LastPriceContainer,
+  ChangeContainer,
   LinkContainer,
 } from './styled';
 import {
@@ -82,17 +83,12 @@ const TokenCard = ({
   } = tradingInfo || {};
   const isPositive = +change24Hour >= 0;
 
+  // <LinkContainer target="_blank" rel="noopener" href={`https://etherscan.io/token/${id}`}>
+  //   <Truncate>{id}</Truncate>
+  // </LinkContainer>
+
   return (
-    <CardContainer
-      actions={[
-        <div>Volume: {volume || 0} {symbol}</div>,
-        <div id="watch-btn" onClick={onClick}>
-          <LinkContainer target="_blank" rel="noopener" href={`https://etherscan.io/token/${id}`}>
-            <Truncate>{id}</Truncate>
-          </LinkContainer>
-        </div>,
-    ]}
-    >
+    <CardContainer>
       <Meta
         avatar={<AvatarContainer src={url} />}
         title={getTitle(symbol, tokenPair.symbol, change24Hour, lastPrice)}
@@ -104,12 +100,14 @@ const TokenCard = ({
 
             </div>
             <div>
-              {isPositive ?
-                <Colored color="green">{`+${change24Hour || '0.00'}%`}</Colored>
-             :
-                <Colored color="red">{`${change24Hour || '0.00'}%`}</Colored>
-            }
-
+              <ChangeContainer>
+                {isPositive ?
+                  <Colored color="green">{`+${change24Hour || '0.00'}%`}</Colored>
+                :
+                  <Colored color="red">{`${change24Hour || '0.00'}%`}</Colored>
+                }
+              </ChangeContainer>
+              <div>Volume: {volume ? Number(volume).toFixed(4) : 0}</div>
             </div>
           </PriceContainer>
       }
