@@ -2,21 +2,21 @@ import styled from 'styled-components';
 
 export const OrdersListContainer = styled.div`
   flex: 1;
-  margin: 10px;
-  min-height: 455px;
+  height: 100%;
+  // min-height: 455px;
   background: white;
 
   .ant-table-placeholder {
-    min-height: 375px;
+    // min-height: 375px;
   }
 
   .ant-table {
-    font-size: 0.83rem;
+    font-size: 0.8rem;
     border-radius: 0px;
   }
   .ant-table-small {
     background: white;
-    min-height: 357px;
+    // min-height: 357px;
   }
 
   .ant-table-tbody > tr > td {

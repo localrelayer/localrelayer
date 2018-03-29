@@ -12,13 +12,11 @@ export const Title = styled.div`
 `;
 
 export const CardContainer = styled(Card)`
-  & .ant-card-actions {
-    & li:first-child {
-      width: 60% !important;
-    }
-    & li:last-child {
-      width: 40% !important;
-    }
+  height: 100%;
+  margin: 0;
+
+  .ant-card-body {
+    padding: 15px;
   }
 `;
 

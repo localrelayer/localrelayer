@@ -45,9 +45,10 @@ BigNumber.config({ EXPONENTIAL_AT: 5000 });
 export function* createOrder({
   amount,
   price,
-  exp,
   type,
 }: OrderData): Saga<*> {
+  const exp = moment().add('1', 'year');
+  console.log(exp);
   const { zeroEx } = window;
   const { NULL_ADDRESS } = ZeroEx;
   const EXCHANGE_ADDRESS = yield zeroEx.exchange.getContractAddress();
@@ -93,7 +94,7 @@ export function* createOrder({
     takerTokenAddress,
     makerTokenAmount,
     takerTokenAmount,
-    expirationUnixTimestampSec: BigNumber(moment(exp).unix()),
+    expirationUnixTimestampSec: BigNumber(exp.unix()),
   };
 
   const orderHash = ZeroEx.getOrderHashHex(zrxOrder);

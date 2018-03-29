@@ -41,6 +41,7 @@ import {
   LabelContainer,
   LabelListContainer,
   AdditionInfoContainer,
+  FormContainer,
 } from './styled';
 
 // eslint-disable-next-line
@@ -54,9 +55,9 @@ const validate = (values, props) => {
   if (!values.price || values.price === 0) {
     errors.price = 'Please enter price';
   }
-  if (!values.exp) {
-    errors.exp = 'Please enter expire date';
-  }
+  // if (!values.exp) {
+  //   errors.exp = 'Please enter expire date';
+  // }
   if (values.price && values.amount) {
     if (!/^-?\d+\.?\d*$/.test(values.price)) {
       errors.price = 'Please only numbers';
@@ -126,7 +127,7 @@ const BuySellForm = ({
   transactionFee,
   exchangeFee,
 }: Props): Node => (
-  <Form layout="vertical" onSubmit={handleSubmit}>
+  <FormContainer layout="vertical" onSubmit={handleSubmit}>
     <Field
       id="price"
       type="text"
@@ -163,7 +164,7 @@ const BuySellForm = ({
       placeholder={currentToken.symbol}
       component={NumberInput}
     />
-    <Field
+    { /* <Field
       id="exp"
       type="text"
       name="exp"
@@ -183,6 +184,7 @@ const BuySellForm = ({
       disabledDate={disabledDate}
       component={DateInput}
     />
+    */ }
     <AdditionInfoContainer>
       <article>Total: {total} {currentPair.symbol}</article>
       <article>
@@ -209,7 +211,7 @@ const BuySellForm = ({
     <PlaceOrderButton size="large" type="primary" htmlType="submit">
       Place order
     </PlaceOrderButton>
-  </Form>
+  </FormContainer>
 );
 
 BuySellForm.defaultProps = {

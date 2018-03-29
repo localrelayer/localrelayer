@@ -1,5 +1,9 @@
 import styled from 'styled-components';
-import { Card, Button } from 'antd';
+import {
+  Card,
+  Button,
+  Form,
+} from 'antd';
 
 export const CardContainer = styled(Card)`
   & .ant-card-head-title {
@@ -38,7 +42,7 @@ export const LabelListContainer = styled.div`
 `;
 
 export const AdditionInfoContainer = styled.div`
-  margin-bottom: 20px;
+  margin: 20px 0;
   display: flex;
   justify-content: space-between;
   font-size: 0.75rem;
@@ -46,5 +50,15 @@ export const AdditionInfoContainer = styled.div`
     display: flex;
     justify-content: space-between;
   }
+`;
+
+export const FormContainer = styled(Form)`
+  .ant-form-item {
+    margin-bottom: 10px;
+  }
+`;
+
+export const ExtraContentContainer = styled.div`
+  font-size: 0.75rem;
 `;
 

@@ -3,7 +3,6 @@ import React from 'react';
 import type { Node } from 'react';
 import type { Tokens } from 'instex-core/types';
 import { Card, Switch, Icon, Tooltip, Popover } from 'antd';
-import { Element } from 'react-scroll';
 import WrapForm from './WrapForm';
 import {
   CardContainer,
@@ -107,23 +106,23 @@ const UserBalance = ({
   isBalanceLoading,
   isConnected,
 }: Props): Node => (
-  <Element id="user-balance" name="userBalance">
-    <ComponentTitle>My Balance ({balance} ETH)</ComponentTitle>
+  <div id="user-balance">
+    <ComponentTitle>Balances ({balance} ETH)</ComponentTitle>
+    <Overlay isShown={!isConnected}>
+      <h3
+        style={{
+      margin: '20px',
+      marginTop: '50px',
+    }}
+      >
+    You are viewing this in read-only mode. Connect a wallet to see your balance
+      </h3>
+    </Overlay>
     <CardContainer bordered={false}>
-      <Overlay isShown={!isConnected}>
-        <h3
-          style={{
-            margin: '20px',
-            marginTop: '50px',
-          }}
-        >
-          You are viewing this in read-only mode. Connect a wallet to see your balance
-        </h3>
-      </Overlay>
       <WrapForm wrap={wrap} unwrap={unwrap} onSubmit={() => {}} isLoading={isBalanceLoading} />
       <Card.Grid>
         <TableContainer
-          size="middle"
+          size="small"
           loading={isBalanceLoading}
           onRow={record => ({
             onClick: () => onTokenClick(record),
@@ -134,7 +133,7 @@ const UserBalance = ({
         />
       </Card.Grid>
     </CardContainer>
-  </Element>
+  </div>
 );
 
 UserBalance.defaultProps = {

@@ -6,7 +6,6 @@ import {
   Tag,
 } from 'antd';
 import type { Order } from 'instex-core/types';
-import { Element } from 'react-scroll';
 import moment from 'moment';
 
 import { UserOrdersContainer } from './styled';
@@ -88,15 +87,16 @@ const UserHistory = ({
   orders,
   title,
 }: Props): Node => (
-  <Element name="userOrders">
-    <UserOrdersContainer>
-      <OrdersList
-        title={title}
-        columns={getColumns()}
-        data={orders}
-      />
-    </UserOrdersContainer>
-  </Element>
+  <UserOrdersContainer>
+    <OrdersList
+      pagination={{
+        position: 'top',
+      }}
+      title={title}
+      columns={getColumns()}
+      data={orders}
+    />
+  </UserOrdersContainer>
 );
 
 export default UserHistory;

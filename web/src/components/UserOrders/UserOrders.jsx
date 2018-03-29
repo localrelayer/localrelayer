@@ -104,16 +104,14 @@ const UserOrders = ({
   title,
   pagination,
 }: Props): Node => (
-  <Element name="userOrders">
-    <UserOrdersContainer>
-      <OrdersList
-        title={title}
-        pagination={pagination}
-        columns={getColumns(onCancel)}
-        data={orders}
-      />
-    </UserOrdersContainer>
-  </Element>
+  <UserOrdersContainer>
+    <OrdersList
+      title={title}
+      pagination={pagination}
+      columns={getColumns(onCancel)}
+      data={orders}
+    />
+  </UserOrdersContainer>
 );
 
 UserOrders.defaultProps = {

@@ -9,6 +9,7 @@ import type {
 } from 'instex-core/types';
 import {
   Icon,
+  Badge,
 } from 'antd';
 
 import {
@@ -99,20 +100,18 @@ const OrderBook: StatelessFunctionalComponent<Props> = ({
 }: Props): Node => (
   <OrderBookContainer>
     <OrdersList
-      data={sellOrders}
-      title="Sell orders"
+      data={sellOrders.slice(0, 12)}
       columns={columns.sell}
       onClick={fillOrder}
+      pagination={false}
     />
-    { /* <SpreadContainer>Spread 0.00549669</SpreadContainer> */ }
+    <SpreadContainer><Badge status="processing" text={0.026927} /></SpreadContainer>
     <OrdersList
-      style={{
-        margin: 0,
-      }}
-      data={buyOrders}
-      title="Buy orders"
+      data={buyOrders.slice(0, 12)}
       columns={columns.buy}
       onClick={fillOrder}
+      showHeader={false}
+      pagination={false}
     />
   </OrderBookContainer>
 );

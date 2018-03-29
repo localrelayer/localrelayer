@@ -16,7 +16,7 @@ export const Title = styled.div`
 
 export const CardContainer = styled(Card)`
   padding: 0;
-  min-height: 223px;
+  // min-height: 223px;
   border: 1px solid #e8e8e8;
   & > .ant-card-head {
     text-align: center;
@@ -30,7 +30,7 @@ export const CardContainer = styled(Card)`
       box-shadow: none;
     }
     .ant-table {
-      padding: 10px;
+      padding: 0 10px;
     }
   }
   position: relative;
@@ -40,6 +40,7 @@ export const TableContainer = styled(Table)`
   border-left: 1px solid #e8e8e8;
   border-right: 1px solid #e8e8e8;
   border-top: 1px solid #e8e8e8;
+  border: none;
   .ant-table-thead > tr > th {
     background: white;
   }
@@ -59,7 +60,7 @@ export const InputGroupContainer = styled(InputGroup)`
 `;
 
 export const FormContainer = styled(Form)`
-  padding: 20px 0 !important;
+  padding: 13px 0 !important;
   border: 1px solid #e8e8e8;
   border-bottom: none;
 `;

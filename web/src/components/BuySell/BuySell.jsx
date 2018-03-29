@@ -10,11 +10,14 @@ import type {
 } from 'instex-core/types';
 import {
   Tabs,
-  Avatar,
+  Icon,
 } from 'antd';
 
 import BuySellForm from './BuySellForm';
-import { CardContainer } from './styled';
+import {
+  CardContainer,
+  ExtraContentContainer,
+} from './styled';
 import {
   Overlay,
 } from '../SharedStyles';
@@ -36,6 +39,16 @@ type Props = {
   fillField: Function,
   /** Is user connected to ethereum */
   isConnected: boolean,
+};
+
+const getExtraContent = (type, currentToken, currentPair) => {
+  if (currentPair.symbol && currentToken.symbol) {
+    return type === 'sell' ?
+      `${currentToken.symbol} ${Number(currentToken.balance)}`
+      :
+      `${currentPair.symbol} ${Number(currentPair.balance)} `;
+  }
+  return '';
 };
 
 /**
@@ -68,7 +81,7 @@ const BuySell: StatelessFunctionalComponent<Props> = ({
       <Tabs
         onChange={changeActiveTab}
         activeKey={activeTab}
-        tabBarExtraContent={<h3>{currentToken.symbol || ''}/{currentPair.symbol || ''}</h3>}
+        tabBarExtraContent={<ExtraContentContainer><Icon type="wallet" />{' '}{getExtraContent(activeTab, currentToken, currentPair)}</ExtraContentContainer>}
       >
         <TabPane tab="Buy" key="buy">
           <BuySellForm
