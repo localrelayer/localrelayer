@@ -63,7 +63,7 @@ export const getColumns = (onCancel: (id: string) => void) => [
     title: 'Amount',
     dataIndex: 'amount',
     key: 'user/amount',
-    render: (text: string, record: Order) => <Colored color={record.type === 'buy' ? 'green' : 'red'}>{Number(text).toFixed(2)}</Colored>,
+    render: (text: string, record: Order) => <Colored color={record.type === 'buy' ? 'green' : 'red'}>{Number(text).toFixed(4)}</Colored>,
   },
   // {
   //   title: 'Total',

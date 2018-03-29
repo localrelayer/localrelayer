@@ -108,7 +108,6 @@ const UserBalance = ({
   isConnected,
 }: Props): Node => (
   <Element id="user-balance" name="userBalance">
-    {console.log(tokens)}
     <ComponentTitle>My Balance ({balance} ETH)</ComponentTitle>
     <CardContainer bordered={false}>
       <Overlay isShown={!isConnected}>

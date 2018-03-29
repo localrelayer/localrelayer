@@ -45,6 +45,7 @@ export default class extends Component<Props> {
         'use_localstorage_for_settings',
         'left_toolbar',
         'header_symbol_search',
+        'header_indicators',
       ],
       client_id: 'tradingview.com',
       user_id: 'public_user_id',
@@ -56,6 +57,16 @@ export default class extends Component<Props> {
         'mainSeriesProperties.priceAxisProperties.autoScale': false,
         'paneProperties.topMargin': 15,
         'paneProperties.bottomMargin': 25,
+        volumePaneSize: 'small',
+        'scalesProperties.fontSize': 10,
+        'mainSeriesProperties.candleStyle.upColor': '#1ea83b',
+        'mainSeriesProperties.candleStyle.downColor': '#d93636',
+        'paneProperties.vertGridProperties.style': 1,
+        'paneProperties.horzGridProperties.style': 1,
+      },
+      studies_overrides: {
+        'volume.volume.color.0': 'rgba(217, 54, 54, 0.05)',
+        'volume.volume.color.1': 'rgba(30, 169, 60, 0.05)',
       },
 
     });
