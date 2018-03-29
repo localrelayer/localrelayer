@@ -2,12 +2,23 @@
 import 'regenerator-runtime/runtime';
 
 import React from 'react';
-import { render as reactRender } from 'react-dom';
-import { Provider } from 'react-redux';
-import { AppContainer } from 'react-hot-loader';
-import { LocaleProvider } from 'antd';
+import {
+  render as reactRender,
+} from 'react-dom';
+import {
+  Provider,
+} from 'react-redux';
+import {
+  AppContainer,
+} from 'react-hot-loader';
+import {
+  LocaleProvider,
+} from 'antd';
 import enUS from 'antd/lib/locale-provider/en_US';
-import type { ComponentType } from 'react';
+
+import type {
+  ComponentType,
+} from 'react';
 
 import 'react-joyride/lib/react-joyride-compiled.css';
 import './assets/main.less';

@@ -15,3 +15,4 @@ module.file_ext=.css
 module.file_ext=.less
 module.name_mapper.extension='css' -> 'empty/object'
 module.name_mapper.extension='less' -> 'empty/object'
+module.name_mapper='^components$' -> '<PROJECT_ROOT>/web/src/components/'

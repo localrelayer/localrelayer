@@ -1,12 +1,10 @@
-/*
-import {
-  finance,
-  random,
-} from 'faker';
-*/
-import {
-  times,
-} from 'ramda';
+// @flow
+import * as R from 'ramda';
+
+import type {
+  ID,
+  TokenAttributes,
+} from '../types';
 
 import config from '../config';
 import tokensSeeds from './seeds/tokens.json';
@@ -21,31 +19,55 @@ export const tokens = tokensSeeds.map(({
   address,
 }));
 
-const fakeTokens = () =>
+const fakeTokens = (): Promise<{
+  data: Array<{
+    type: string,
+    id: ID,
+    links: {|
+      self: string,
+    |},
+  } & TokenAttributes>,
+}> =>
   Promise.resolve({
-    data: tokens.map(({ id, ...attributes }) => ({
+    data: tokens.map(({
+      id,
+      ...attributes
+    }) => ({
       type: 'tokens',
       id,
       links: {
         self: `${config.apiUrl}/tokens/${id}`,
       },
-      attributes: { ...attributes },
+      attributes,
     })),
   });
 
+/* eslint-disable */
+function uuidv4() {
+  return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+    (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+  )
+}
+/* eslint-enable */
+
+const randomDecimal = (
+  min,
+  max,
+) =>
+  (Math.random() * ((min - max) + max)).toFixed(4);
 
 const getTestOrder = tokenId =>
   index => ({
-    id: random.uuid(),
-    price: finance.amount(0, 2, 4),
-    amount: finance.amount(0, 1000, 4),
-    total: finance.amount(0, 1000, 4),
+    id: uuidv4(),
+    price: randomDecimal(0, 2),
+    amount: randomDecimal(0, 1000),
+    total: randomDecimal(0, 1000),
     token_id: tokenId,
     action: Math.random() > 0.5 ? 'sell' : 'buy',
     completed_at: (index % 2) ? new Date().toString() : null,
   });
 
-export const generateTestOrders = token => times(getTestOrder(token), 100);
+export const generateTestOrders = token => R.times(getTestOrder(token), 100);
 
 const fakeOrders = tokenId =>
   Promise.resolve({
@@ -62,6 +84,9 @@ const fakeOrders = tokenId =>
 export function apiFetch({
   url,
   meta,
+}: {
+  url: string,
+  meta: any,
 }) {
   if (config.useMock) {
     switch (url) {

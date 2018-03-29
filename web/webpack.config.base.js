@@ -8,6 +8,9 @@ module.exports = {
   },
   resolve: {
     extensions: ['.js', '.jsx', '.json'],
+    alias: {
+      components: path.resolve(__dirname, 'src/components'),
+    },
   },
   module: {
     rules: [

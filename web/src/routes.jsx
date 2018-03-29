@@ -1,3 +1,4 @@
+// @flow
 import React from 'react';
 import {
   Switch,
@@ -14,22 +15,35 @@ import {
 import {
   Helmet,
 } from 'react-helmet';
+import {
+  ConnectedRouter,
+} from 'react-router-redux';
+
 import type {
-  MapStateToProps,
-} from 'react-redux';
-import { ConnectedRouter } from 'react-router-redux';
+  Token,
+} from 'instex-core/types';
+
 import {
   getCurrentToken,
   getCurrentPair,
 } from 'instex-core/selectors';
-import type {
-  Token,
-} from 'instex-core/types';
+
 import history from './history';
 import UserPage from './containers/UserPage';
 import Header from './containers/HeaderContainer';
 import TradingPage from './containers/TradingPage';
 import JoyrideWrapper from './JoyrideWrapper';
+
+
+const getTitle = (
+  token,
+  pair,
+) =>
+  (
+    (token.symbol && pair.symbol) ?
+      `${token.symbol}/${pair.symbol}` :
+      'Instex'
+  );
 
 type Props = {
   bannerMessage: string,
@@ -50,11 +64,21 @@ const routes = ({
       <JoyrideWrapper />
       <Helmet>
         <meta charSet="utf-8" />
-        <title>{getTitle(currentToken, currentPair)}</title>
+        <title>
+          {getTitle(
+            currentToken,
+            currentPair,
+          )}
+        </title>
       </Helmet>
       <Layout>
         <Header />
-        {bannerMessage && <Alert message={bannerMessage} banner />}
+        {bannerMessage &&
+          <Alert
+            banner
+            message={bannerMessage}
+          />
+        }
         <Switch>
           <Route
             exact
@@ -71,7 +95,7 @@ const routes = ({
             path="*"
             render={() => (
               <Redirect to="/ZRX-WETH" />
-        )}
+            )}
           />
         </Switch>
       </Layout>
@@ -79,17 +103,10 @@ const routes = ({
   </ConnectedRouter>
 );
 
-const mapStateToProps: MapStateToProps<*, *, *> = state => ({
+const mapStateToProps = state => ({
   bannerMessage: state.ui.bannerMessage,
   currentToken: getCurrentToken(state),
   currentPair: getCurrentPair(state),
 });
-
-const getTitle = (token, pair) => {
-  if (token.symbol && pair.symbol) {
-    return `${token.symbol}/${pair.symbol}`;
-  }
-  return 'Instex';
-};
 
 export default connect(mapStateToProps)(routes);

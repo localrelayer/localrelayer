@@ -3,8 +3,13 @@ import React from 'react';
 import {
   connect,
 } from 'react-redux';
-import type { Dispatch } from 'redux';
-import type { MapStateToProps } from 'react-redux';
+import {
+  push,
+} from 'react-router-redux';
+
+import type {
+  Dispatch,
+} from 'redux';
 import type {
   Node,
   StatelessFunctionalComponent,
@@ -14,9 +19,7 @@ import type {
   Tokens,
   Token,
 } from 'instex-core/types';
-import {
-  push,
-} from 'react-router-redux';
+
 import {
   setUiState,
 } from 'instex-core/actions';
@@ -26,7 +29,9 @@ import {
   getCurrentToken,
 } from 'instex-core/selectors';
 
-import Header from '../../components/Header';
+import {
+  Header,
+} from 'components';
 
 
 type Props = {
@@ -53,14 +58,39 @@ const HeaderContainer: StatelessFunctionalComponent<Props> =
       tokens={tokens}
       tokenPair={tokenPair}
       selectedToken={selectedToken}
-      onTokenSelect={token => dispatch(push(`${token.symbol}-${tokenPair.symbol}`))}
-      onPairSelect={token => dispatch(push(`${selectedToken.symbol}-${token.symbol}`))}
-      onTokenSearch={query => dispatch(setUiState('searchQuery', query))}
-      setActiveLink={e => dispatch(setUiState('activeLink', e.key))}
-      onHelpClick={() => dispatch(setUiState('shouldRunTutorial', true))}
+      onTokenSelect={
+        token =>
+          dispatch(
+            push(`${token.symbol}-${tokenPair.symbol}`),
+          )
+      }
+      onPairSelect={
+        token =>
+          dispatch(
+            push(`${selectedToken.symbol}-${token.symbol}`),
+          )
+      }
+      onTokenSearch={
+        query =>
+          dispatch(
+            setUiState('searchQuery', query),
+          )
+      }
+      setActiveLink={
+        e =>
+          dispatch(
+            setUiState('activeLink', e.key),
+          )
+      }
+      onHelpClick={
+        () =>
+          dispatch(
+            setUiState('shouldRunTutorial', true),
+          )
+      }
     />;
 
-const mapStateToProps: MapStateToProps<*, *, *> = state => ({
+const mapStateToProps = state => ({
   tokens: getFilteredTokens(state),
   user: state.profile,
   selectedToken: getCurrentToken(state),

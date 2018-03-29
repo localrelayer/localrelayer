@@ -28,6 +28,13 @@
     "flowtype-errors",
     "jest"
   ],
+  "settings": {
+    "import/resolver": {
+      "webpack": {
+        "config": "./webpack.config.eslint.js"
+      }
+    }
+  },
   "globals": {
     "Web3": true,
     "BigNumber": true
