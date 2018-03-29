@@ -17,7 +17,13 @@ export type TokenAttributes = {
     change24Hour: string,
     lastPrice: string,
   },
-};
+} & AddedTokenAttributes;
+
+export type AddedTokenAttributes = {
+  balance: string,
+  fullBalance: string,
+}
+
 
 export type TokenRelationships = {
 };

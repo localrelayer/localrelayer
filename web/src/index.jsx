@@ -20,6 +20,8 @@ import type {
   ComponentType,
 } from 'react';
 
+import 'react-grid-layout/css/styles.css';
+import 'react-resizable/css/styles.css';
 import 'react-joyride/lib/react-joyride-compiled.css';
 import './assets/main.less';
 

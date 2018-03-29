@@ -34,7 +34,8 @@ type Props = {
   /** Antd pagination config object */
   pagination: {
     pageSize: number,
-  } | null,
+    position?: string
+  } | boolean | null,
   /** Called on row click */
   onClick: Function,
 };
@@ -52,21 +53,21 @@ const OrdersList = ({
   bordered,
   pagination,
   onClick,
+  ...otherProps
 }: Props): Node =>
   <OrdersListContainer>
-    <ComponentTitle>{title}</ComponentTitle>
+    {title && <ComponentTitle>{title}</ComponentTitle>}
     <Table
       size="small"
       rowKey="id"
       bordered={bordered}
       columns={columns}
       dataSource={data}
-      pagination={
-        <Pagination size="small" {...pagination} />
-      }
+      pagination={pagination}
       onRow={record => ({
         onClick: () => onClick(record),
       })}
+      {...otherProps}
     />
   </OrdersListContainer>;
 

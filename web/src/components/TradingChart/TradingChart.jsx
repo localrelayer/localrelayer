@@ -35,7 +35,7 @@ export default class extends Component<Props> {
       // debug: true,
       interval: '60',
       allow_symbol_change: false,
-      height: window.innerWidth > 1800 ? '700px' : '450px',
+      height: '100%',
       width: '100%',
       container_id: 'chart_container',
       datafeed: getDatafeed(token),
@@ -74,12 +74,7 @@ export default class extends Component<Props> {
   }
 
   render() {
-    return <div
-      style={{
-      minHeight: window.innerWidth > 1800 ? '700px' : '450px',
-    }}
-      id="chart_container"
-    />;
+    return <div style={{ height: '100%' }} id="chart_container" />;
   }
 }
 

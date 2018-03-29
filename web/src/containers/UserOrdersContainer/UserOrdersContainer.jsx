@@ -33,7 +33,7 @@ const UserOrdersContainer: StatelessFunctionalComponent<Props> = ({
   dispatch,
 }: Props): Node =>
   <UserOrders
-    title="My orders"
+    title="Opened orders"
     orders={orders}
     pagination={{
       pageSize: 10,

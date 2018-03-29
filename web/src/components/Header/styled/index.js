@@ -23,6 +23,8 @@ export const MenuContainer = styled(Menu)`
 export const HeaderContainer = styled(Layout.Header)`
   display: flex;
   align-items: center;
+  height: 50px;
+  line-height: 50px;
 `;
 
 export const AlignRight = styled.div`
