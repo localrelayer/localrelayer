@@ -110,9 +110,22 @@ const Header = ({
        marginRight: 15,
      }}
     />
-    <MenuContainer onClick={setActiveLink} selectedKeys={[activeLink]} theme="dark" mode="horizontal">
-      <Menu.Item key="home"><Link to="/ZRX-WETH"><Icon type="swap" />Trade</Link></Menu.Item>
-      <Menu.Item id="account_link" key="account"><Link to="/account"><Icon type="home" />Account</Link></Menu.Item>
+    <MenuContainer
+      theme="dark"
+      mode="horizontal"
+      onClick={setActiveLink}
+      selectedKeys={[activeLink]}
+    >
+      <Menu.Item key="home">
+        <Link to="/ZRX-WETH">
+          <Icon type="swap" />Trade
+        </Link>
+      </Menu.Item>
+      <Menu.Item id="account_link" key="account">
+        <Link to="/account">
+          <Icon type="home" />Account
+        </Link>
+      </Menu.Item>
     </MenuContainer>
     <Popover
       trigger={['click']}
@@ -140,7 +153,11 @@ const Header = ({
         Tokens {getTokenButtonTitle(selectedToken, tokenPair)} <Icon type="down" />
       </HeaderButton>
     </Popover>
-    <HeaderButton shape="circle" type="primary" onClick={onHelpClick}>
+    <HeaderButton
+      shape="circle"
+      type="primary"
+      onClick={onHelpClick}
+    >
       <Icon type="question-circle" />
     </HeaderButton>
     <AlignRight>
@@ -154,7 +171,11 @@ const Header = ({
         }
       >
         <Badge>
-          <UserButton id="account" onClick={() => onUserClick(user)} type="primary">
+          <UserButton
+            id="account"
+            type="primary"
+            onClick={() => onUserClick(user)}
+          >
             <Icon type="user" />{' '}
             {user.connectionStatus === connectionStatuses.CONNECTED ? (
               <Truncate>{user.address}</Truncate>
@@ -168,7 +189,11 @@ const Header = ({
       <Popover
         placement="bottom"
         trigger={['click']}
-        content={<div style={{ padding: '12px 16px' }}>No notifications</div>}
+        content={
+          <div style={{ padding: '12px 16px' }}>
+            No notifications
+          </div>
+        }
       >
         <Badge count={user.notifications ? user.notifications.length : 0}>
           <HeaderButton shape="circle" type="primary">
