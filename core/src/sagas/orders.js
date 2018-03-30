@@ -122,7 +122,6 @@ export function* createOrder({
     yield put(saveResourceRequest({
       resourceName: 'orders',
       request: 'createOrder',
-      lists: [type, 'userOrders'],
       message: 'Order created',
       data: {
         attributes: order,

@@ -9,6 +9,7 @@ import {
 import {
   delay,
 } from 'redux-saga';
+import createActionCreators from 'redux-resource-action-creators';
 import type { Saga } from 'redux-saga';
 import BigNumber from 'bignumber.js';
 import { getFormValues, reset } from 'redux-form';
@@ -26,8 +27,8 @@ import {
 } from './profile';
 import {
   getAddress,
-  getUserTokenBy,
   getBalance,
+  getWethToken,
 } from '../selectors';
 
 const sagas = {
@@ -41,7 +42,7 @@ const sagas = {
 function* deposit() {
   const { zeroEx } = window;
 
-  const weth = yield select(getUserTokenBy('symbol', 'WETH'));
+  const weth = yield select(getWethToken);
   const { amount } = yield select(getFormValues('WrapForm'));
   const account = yield select(getAddress);
   const balance = yield select(getBalance);
@@ -79,7 +80,7 @@ function* deposit() {
 function* withdraw() {
   const { zeroEx } = window;
 
-  const weth = yield select(getUserTokenBy('symbol', 'WETH'));
+  const weth = yield select(getWethToken);
   const { amount } = yield select(getFormValues('WrapForm'));
   const account = yield select(getAddress);
 
@@ -104,14 +105,19 @@ function* withdraw() {
   }
 }
 
-function* setAllowance(token) {
+function* setAllowance() {
   const { zeroEx } = window;
-  const contractAddress = token.id;
+  const weth = yield select(getWethToken);
   const account = yield select(getAddress);
   try {
+    const actions = createActionCreators('update', {
+      resourceName: 'tokens',
+      request: 'unlockToken',
+      lists: ['allTokens', 'currentUserTokens'],
+    });
     const txHash = yield call(
       [zeroEx.token, zeroEx.token.setUnlimitedProxyAllowanceAsync],
-      contractAddress,
+      weth.id,
       account,
       { gasLimit: 80000 },
     );
@@ -119,10 +125,14 @@ function* setAllowance(token) {
     yield call([zeroEx, zeroEx.awaitTransactionMinedAsync], txHash);
     yield put(setUiState('isBalanceLoading', false));
 
-    yield put(ProfileActions.updateToken({
-      tokenAddress: contractAddress,
-      field: 'isTradable',
-      value: true,
+    yield put(actions.succeeded({
+      resources: [{
+        id: id,
+        attributes: {
+          ...weth,
+          isTradable: true,
+        },
+      }],
     }));
   } catch (e) {
     yield put(sendNotification({ message: e.message, type: 'error' }));
@@ -130,14 +140,19 @@ function* setAllowance(token) {
   }
 }
 
-function* unsetAllowance(token) {
+function* unsetAllowance() {
   const { zeroEx } = window;
-  const contractAddress = token.id;
+  const weth = yield select(getWethToken);
   const account = yield select(getAddress);
   try {
+    const actions = createActionCreators('update', {
+      resourceName: 'tokens',
+      request: 'unlockToken',
+      lists: ['allTokens', 'currentUserTokens'],
+    });
     const txHash = yield call(
       [zeroEx.token, zeroEx.token.setProxyAllowanceAsync],
-      contractAddress,
+      weth.id,
       account,
       BigNumber(0),
       { gasLimit: 80000 },
@@ -146,10 +161,14 @@ function* unsetAllowance(token) {
     yield call([zeroEx, zeroEx.awaitTransactionMinedAsync], txHash);
     yield put(setUiState('isBalanceLoading', false));
 
-    yield put(ProfileActions.updateToken({
-      tokenAddress: contractAddress,
-      field: 'isTradable',
-      value: false,
+    yield put(actions.succeeded({
+      resources: [{
+        id: weth.id,
+        attributes: {
+          ...weth,
+          isTradable: false,
+        },
+      }],
     }));
   } catch (e) {
     yield put(sendNotification({ message: e.message, type: 'error' }));

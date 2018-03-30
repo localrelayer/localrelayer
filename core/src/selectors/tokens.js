@@ -44,6 +44,13 @@ export const getTokensWithoutCurrentPair = createSelector(
   (tokens, currentId) => tokens.filter(token => token.id !== currentId && token.is_listed),
 );
 
+export const getWethToken = createSelector(
+  [
+    getResourceMappedList('tokens', 'allTokens'),
+  ],
+  tokens => tokens.find(token => token.symbol === 'WETH' && token.is_listed),
+);
+
 export const getFilteredTokens = createSelector(
   [
     getTokensWithoutCurrentPair,

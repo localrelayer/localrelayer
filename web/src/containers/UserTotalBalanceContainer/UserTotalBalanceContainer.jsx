@@ -13,6 +13,9 @@ import type {
 import {
   callContract,
 } from 'instex-core/actions';
+import {
+  getResourceMappedList,
+} from 'instex-core/selectors';
 import UserTotalBalance from '../../components/UserTotalBalance';
 import { StyleContainer } from './styled';
 
@@ -45,7 +48,7 @@ const UserTotalBalanceContainer: StatelessFunctionalComponent<Props> = ({
 );
 
 const mapStateToProps: MapStateToProps<*, *, *> = state => ({
-  tokens: state.profile.tokens,
+  tokens: getResourceMappedList('tokens', 'allTokens')(state),
   balance: state.profile.balance,
   isBalanceLoading: state.ui.isBalanceLoading,
 });

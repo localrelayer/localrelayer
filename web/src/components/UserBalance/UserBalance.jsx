@@ -42,7 +42,7 @@ const getColumns = onToggle => [
     title: 'Token',
     dataIndex: 'symbol',
     key: 'symbol',
-    render: (text, record, i) => (
+    render: (text, record) => (
       <div>
         <Tooltip title={record.name}>{text}</Tooltip>{' '}
         {record.symbol === 'WETH' && (

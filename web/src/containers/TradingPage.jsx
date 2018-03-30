@@ -35,7 +35,7 @@ const layoutSm = [
     i: 'history', x: 5, y: 15, w: 5, h: 12, static: true,
   },
 
-]
+];
 
 const layoutMd = [
   {
