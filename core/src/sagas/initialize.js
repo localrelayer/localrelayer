@@ -54,9 +54,9 @@ export function* initialize(): Saga<void> {
       fetchQuery: {
         sortBy: 'symbol',
         filterCondition: {
-          filter: {
-            'is_listed': true,
-          },
+          // filter: {
+          //   'is_listed': true,
+          // },
         },
       },
     },

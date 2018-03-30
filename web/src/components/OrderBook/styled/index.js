@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import {
-  Tag,
   Divider,
 } from 'antd';
 
@@ -48,6 +47,28 @@ export const OrderBookContainer = styled.div`
 `;
 
 export const SpreadContainer = styled(Divider)`
-  margin: 5px 0 !important;
+  margin: 10px 0 !important;
+  color: rgba(0, 0, 0, 0.65);
+  font-size: 14px;
 `;
 
+export const Table = styled.div`  
+  .Table-row:nth-child(2) {
+    margin-top: 0;
+  }
+`;
+
+export const IconContainer = styled.div`
+  flex-grow: 0.2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const AmountFillContainer = styled.div`
+  position: absolute;
+  height: 100%;
+  width: ${props => props.width};
+  background: ${props => (props.type === 'sell' ? '#ff000017' : '#0080000d')};
+
+`;

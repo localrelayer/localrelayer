@@ -1,3 +1,7 @@
+@import "~antd/dist/antd.less";
+
+@primary-color: #3f51b5;
+
 .ant-popover-inner-content {
   padding: 0 !important;
 }
@@ -11,4 +15,65 @@
   display: flex;
   align-items: flex-end;
   justify-content: center;
+}
+
+.Table {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+  line-height: 1.5;
+  font-size: 0.8rem;
+  background: white;
+  height: 50%;
+  border-top: 1px solid #efedec;
+  padding: 5px;
+}
+.Table-header {
+  display: none;
+  width: 100%;
+
+  &>div {
+    font-weight: 600;  
+  }
+}
+
+.Table-row {
+  width: 100%;
+  border-bottom: 1px solid #efedec;
+
+  &:first-child {
+    border-bottom: 1px solid #efedec;
+  }
+
+  &:not(.Table-header) {
+    &:hover {
+      background: @item-hover-bg;
+      cursor: pointer;
+    }
+  }
+}
+
+@media (min-width: 500px) {
+  .Table-row {
+    display: flex;
+    flex-flow: row nowrap;
+  }
+}
+.Table-row-item {
+  display: flex;
+  flex-flow: row nowrap;
+  flex-grow: 1;
+  flex-basis: 0;
+  padding: 0.2rem 0.5rem;
+  word-break: break-word;
+}
+.Table-row-item:before {
+  content: attr(data-header);
+  width: 30%;
+  font-weight: 700;
+}
+@media (min-width: 500px) {
+  .Table-row-item:before {
+    content: none;
+  }
 }

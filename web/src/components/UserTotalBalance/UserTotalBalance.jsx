@@ -3,7 +3,6 @@ import React from 'react';
 import type { Node } from 'react';
 import type { Tokens } from 'instex-core/types';
 import { Card, Switch, Icon, Tooltip, Popover } from 'antd';
-import { Element } from 'react-scroll';
 import WrapForm from '../UserBalance/WrapForm';
 import { CardContainer, TableContainer } from './styled';
 import {
@@ -107,7 +106,7 @@ const UserTotalBalance = ({
   unwrap,
   isBalanceLoading,
 }: Props): Node => (
-  <Element name="UserTotalBalance">
+  <div style={{ height: '100%' }}>
     <ComponentTitle>My Balance ({balance} ETH)</ComponentTitle>
     <CardContainer id="user-total-balance" bordered={false}>
       <WrapForm wrap={wrap} unwrap={unwrap} onSubmit={() => {}} isLoading={isBalanceLoading} />
@@ -124,7 +123,7 @@ const UserTotalBalance = ({
         />
       </Card.Grid>
     </CardContainer>
-  </Element>
+  </div>
 );
 
 UserTotalBalance.defaultProps = {

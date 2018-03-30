@@ -44,9 +44,9 @@ export const getColumns = (onCancel: (id: string) => void) => [
     render: (text: string, order: Order) => `${order.tokenSymbol}/${order.pairSymbol}`,
   },
   {
-    title: 'Expires',
-    dataIndex: 'expires',
-    key: 'user/expires',
+    title: 'Date',
+    dataIndex: 'created_at',
+    key: 'user/created_at',
     render: (text: string) => (
       <Tooltip title={moment(text).format('ddd, MMM DD, YYYY hh:mm:ss A')}>
         {moment(text).format('DD/MM HH:mm')}
