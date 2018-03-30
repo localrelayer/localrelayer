@@ -27,12 +27,11 @@ type Props = {
 };
 
 const getSpread = (sellOrder, buyOrder) => {
-  console.log(sellOrder, buyOrder);
   if (sellOrder && buyOrder) {
     return (+sellOrder.price - +buyOrder.price).toFixed(6);
   }
   return '0.000000';
-}
+};
 
 /**
  * Order Book
@@ -47,7 +46,7 @@ const OrderBook: StatelessFunctionalComponent<Props> = ({
 }: Props): Node => (
   <OrderBookContainer>
     <TableContainer type="sell" orders={sellOrders.slice(0, 12).reverse()} fillOrder={fillOrder} showHeader />
-    <SpreadContainer><span style={{ marginRight: 10 }}>{getSpread(sellOrders[0], buyOrders[0])}</span>{' '}<Badge status="processing" text="Realtime" /></SpreadContainer>
+    <SpreadContainer><span style={{ marginRight: 5 }}>{getSpread(sellOrders[0], buyOrders[0])}</span>{' '}<Badge status="processing" text="Realtime" /></SpreadContainer>
     <TableContainer type="buy" orders={buyOrders.slice(-12)} fillOrder={fillOrder} />
   </OrderBookContainer>
 );

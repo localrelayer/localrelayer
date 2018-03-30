@@ -12,7 +12,7 @@ import {
   getCurrentPair,
   getBuyOrders,
   getSellOrders,
-  getUserTokenBy,
+  getResourceItemBydId,
   getCurrentToken,
 } from 'instex-core/selectors';
 import {
@@ -36,8 +36,8 @@ const modals = {
 export function* fillAmount({ coef, orderType }): Saga<*> {
   const currentPair = yield select(getCurrentPair);
   const currentToken = yield select(getCurrentToken);
-  const pair = yield select(getUserTokenBy('id', currentPair.id));
-  const token = yield select(getUserTokenBy('id', currentToken.id));
+  const pair = yield select(getResourceItemBydId('tokens', currentPair.id));
+  const token = yield select(getResourceItemBydId('tokens', currentToken.id));
   const values = yield select(getFormValues('BuySellForm'));
 
   const formPrice = values ? values.price : null;

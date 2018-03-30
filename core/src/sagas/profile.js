@@ -12,6 +12,7 @@ import {
 import {
   ZeroEx,
 } from '0x.js';
+import createActionCreators from 'redux-resource-action-creators';
 import type {
   Saga,
 } from 'redux-saga';
@@ -99,7 +100,7 @@ export function* loadTokensBalance() {
 
   const lockedToken = yield select(getLockedTokenBalance(currentToken));
   const lockedPair = yield select(getLockedPairBalance);
-  // We need to substract order in orders amount
+
   const current = yield getTokenBalanceAndAllowance(currentToken, lockedToken);
   const pair = yield getTokenBalanceAndAllowance(currentPair, lockedPair);
 
@@ -110,8 +111,24 @@ export function* loadTokensBalance() {
       const res = yield getTokenBalanceAndAllowance(token, locked);
       return res;
     }));
-  yield put(setProfileState('tokens', [pair, current, ...allTokens]));
-  yield put(setProfileState('currentTokens', [pair, current]));
+
+  const addTokensBalancesAction = createActionCreators('update', {
+    resourceName: 'tokens',
+    request: 'addTokensBalances',
+  });
+  yield put(addTokensBalancesAction.succeeded({
+    resources: [pair, current, ...allTokens].map(t => ({ id: t.id, attributes: { ...t } })),
+  }));
+
+  const addActiveUserTokensAction = createActionCreators('update', {
+    resourceName: 'tokens',
+    request: 'addActiveUserTokens',
+    list: 'currentUserTokens',
+  });
+
+  yield put(addActiveUserTokensAction.succeeded({
+    resources: [pair, current].map(t => ({ id: t.id, attributes: { ...t } })),
+  }));
 }
 
 export function* loadNetwork() {
