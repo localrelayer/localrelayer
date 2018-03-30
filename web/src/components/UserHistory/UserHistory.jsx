@@ -26,13 +26,20 @@ const colorsByStatus = {
   pending: 'geekblue',
 };
 
+const statusFieldMapping = {
+  canceled: 'canceled_at',
+  completed: 'completed_at',
+  failed: 'completed_at',
+  pending: 'created_at',
+};
+
 export const getColumns = (
 ) => [
   {
     title: 'Date',
     dataIndex: 'date',
     render: (text: string, order: Order) => {
-      const field = order.status === 'canceled' ? 'canceled_at' : 'completed_at';
+      const field = statusFieldMapping[order.status] || 'created_at';
       return (
         <Tooltip title={moment(order[field]).format('ddd, MMM DD, YYYY hh:mm:ss A')}>
           {moment(order[field]).format('DD/MM/YYYY HH:mm')}
@@ -90,7 +97,7 @@ const UserHistory = ({
   <UserOrdersContainer>
     <OrdersList
       pagination={{
-        position: 'top',
+        pageSize: 7,
       }}
       title={title}
       columns={getColumns()}

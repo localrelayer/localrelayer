@@ -68,7 +68,7 @@ const layoutLg = [
     i: 'orderBook', x: 0, y: 0, w: 3, h: 18, static: true,
   },
   {
-    i: 'balance', x: 0, y: 18, w: 3, h: 7, static: true,
+    i: 'balance', x: 0, y: 18, w: 3, h: 6, static: true,
   },
 
   {

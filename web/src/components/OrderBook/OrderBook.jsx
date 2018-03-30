@@ -8,7 +8,6 @@ import type {
   Orders,
 } from 'instex-core/types';
 import {
-  Icon,
   Badge,
 } from 'antd';
 
@@ -16,11 +15,7 @@ import {
   OrderBookContainer,
   SpreadContainer,
 } from './styled';
-import {
-  Colored,
-} from '../SharedStyles';
-import OrdersList from '../OrdersList';
-
+import TableContainer from './Table';
 
 type Props = {
   /** Buy orders */
@@ -31,61 +26,13 @@ type Props = {
   fillOrder: Function,
 };
 
-const columns = {
-  sell: [
-    {
-      key: 'isUser',
-      render: (text, order) => (order.isUser ? <Icon type="user" /> : null),
-    },
-    {
-      title: 'Price',
-      dataIndex: 'price',
-      key: 'price',
-    },
-    {
-      title: 'Amount',
-      dataIndex: 'amount',
-      key: 'amount',
-    },
-    {
-      title: 'Total',
-      dataIndex: 'total',
-      key: 'total',
-      render: (text: string) =>
-        <Colored color="red">
-          {text}
-        </Colored>,
-    },
-    {
-      render: (text, order) => (order.status === 'pending' ? <Icon type="loading" /> : null),
-    },
-  ],
-  buy: [
-    {
-      render: (text, order) => (order.isUser ? <Icon type="user" /> : null),
-    },
-    {
-      title: 'Price',
-      dataIndex: 'price',
-      key: 'price',
-    },
-    {
-      title: 'Amount',
-      dataIndex: 'amount',
-      key: 'amount',
-    },
-    {
-      title: 'Total',
-      dataIndex: 'total',
-      key: 'total',
-      render: (text: string) =>
-        <Colored color="green">{text}</Colored>,
-    },
-    {
-      render: (text, order) => (order.status === 'pending' ? <Icon type="loading" /> : null),
-    },
-  ],
-};
+const getSpread = (sellOrder, buyOrder) => {
+  console.log(sellOrder, buyOrder);
+  if (sellOrder && buyOrder) {
+    return (+sellOrder.price - +buyOrder.price).toFixed(6);
+  }
+  return '0.000000';
+}
 
 /**
  * Order Book
@@ -99,20 +46,9 @@ const OrderBook: StatelessFunctionalComponent<Props> = ({
   fillOrder,
 }: Props): Node => (
   <OrderBookContainer>
-    <OrdersList
-      data={sellOrders.slice(0, 12)}
-      columns={columns.sell}
-      onClick={fillOrder}
-      pagination={false}
-    />
-    <SpreadContainer><Badge status="processing" text={0.026927} /></SpreadContainer>
-    <OrdersList
-      data={buyOrders.slice(0, 12)}
-      columns={columns.buy}
-      onClick={fillOrder}
-      showHeader={false}
-      pagination={false}
-    />
+    <TableContainer type="sell" orders={sellOrders.slice(0, 12).reverse()} fillOrder={fillOrder} showHeader />
+    <SpreadContainer><span style={{ marginRight: 10 }}>{getSpread(sellOrders[0], buyOrders[0])}</span>{' '}<Badge status="processing" text="Realtime" /></SpreadContainer>
+    <TableContainer type="buy" orders={buyOrders.slice(-12)} fillOrder={fillOrder} />
   </OrderBookContainer>
 );
 

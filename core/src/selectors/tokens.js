@@ -41,7 +41,7 @@ export const getTokensWithoutCurrentPair = createSelector(
     getResourceMappedList('tokens', 'allTokens'),
     getCurrentPairId,
   ],
-  (tokens, currentId) => tokens.filter(token => token.id !== currentId),
+  (tokens, currentId) => tokens.filter(token => token.id !== currentId && token.is_listed),
 );
 
 export const getFilteredTokens = createSelector(

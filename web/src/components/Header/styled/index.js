@@ -32,7 +32,8 @@ export const AlignRight = styled.div`
 `;
 
 export const HeaderButton = styled(Button)`
-  background-color: #e8324ab8;
+  // background-color: #e8324ab8;
+  // background-color: #2c455f;
   margin-left: 8px;
   // background-color: #203d58;
   border: none;

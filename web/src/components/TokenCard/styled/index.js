@@ -22,6 +22,7 @@ export const CardContainer = styled(Card)`
 
 export const PriceContainer = styled.div`
   display: flex;
+  font-size: 0.8rem;
   align-items: flex-end;
   justify-content: space-between;
 `;
@@ -32,7 +33,7 @@ export const AvatarContainer = styled(Avatar)`
 
 export const LastPriceContainer = styled.div`
   font-weight: 400;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
 `;
 
 export const IconContainer = styled(Icon)`

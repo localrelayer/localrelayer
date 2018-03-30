@@ -178,6 +178,7 @@ export function* loadUserOrders() {
           filter: {
             'deleted_at': null,
             'maker_address': account,
+            'child_id': null,
             'status': {
               'ne': 'new',
             },
