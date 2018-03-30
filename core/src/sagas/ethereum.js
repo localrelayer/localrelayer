@@ -127,7 +127,7 @@ function* setAllowance() {
 
     yield put(actions.succeeded({
       resources: [{
-        id: id,
+        id: weth.id,
         attributes: {
           ...weth,
           isTradable: true,
