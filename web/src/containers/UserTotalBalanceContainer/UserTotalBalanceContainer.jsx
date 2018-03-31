@@ -25,6 +25,7 @@ type Props = {
   dispatch: Dispatch,
   isBalanceLoading: boolean,
   lockedBalance: string,
+  isConnected: boolean,
 };
 
 const UserTotalBalanceContainer: StatelessFunctionalComponent<Props> = ({
@@ -33,6 +34,7 @@ const UserTotalBalanceContainer: StatelessFunctionalComponent<Props> = ({
   dispatch,
   isBalanceLoading,
   lockedBalance,
+  isConnected,
 }: Props): Node => (
   <StyleContainer>
     <UserTotalBalance
@@ -43,6 +45,7 @@ const UserTotalBalanceContainer: StatelessFunctionalComponent<Props> = ({
       wrap={() => dispatch(callContract('deposit'))}
       unwrap={() => dispatch(callContract('withdraw'))}
       lockedBalance={lockedBalance}
+      isConnected={isConnected}
     />
   </StyleContainer>
 );
@@ -51,6 +54,7 @@ const mapStateToProps: MapStateToProps<*, *, *> = state => ({
   tokens: getResourceMappedList('tokens', 'allTokens')(state),
   balance: state.profile.balance,
   isBalanceLoading: state.ui.isBalanceLoading,
+  isConnected: state.profile.connectionStatus !== 'Not connected to Ethereum' && state.profile.connectionStatus !== 'Locked',
 });
 
 export default connect(mapStateToProps)(UserTotalBalanceContainer);

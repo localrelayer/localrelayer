@@ -31,7 +31,7 @@ const calculateFill = (amount, orders) => {
   // const fill = amount / avg >= 1 ? '100%' : `${(amount / avg) * 100}%`;
   // const fill = amount >= median ? '100%' : `${(amount / median) * 100}%`;
 
-  return `${(amount / 10000) * 100}%`;
+  return `${(amount / 1000) * 100}%`;
 };
 
 export default ({
@@ -74,6 +74,6 @@ export default ({
         </div>
       ))
       :
-      <div style={{ margin: '10% auto' }}>No {type} orders</div>
+      <div style={{ margin: type === 'sell' ? '72% auto' : '8% auto' }}>No {type} orders</div>
     }
   </Table>);
