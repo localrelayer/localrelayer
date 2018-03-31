@@ -6,6 +6,7 @@ import type {
 import {
   getDatafeed,
 } from './Datafeed';
+import '../../../dist/charting_library/static/chart.css';
 
 type Props = {
   token: Token,
@@ -71,6 +72,7 @@ export default class extends Component<Props> {
         'paneProperties.horzGridProperties.color': '#0f2335',
         'paneProperties.vertGridProperties.color': '#0f2335',
         'scalesProperties.backgroundColor': '#0f2335',
+        'scalesProperties.lineColor': '#0f2335',
       },
       studies_overrides: {
         'volume.volume.color.0': 'rgba(217, 54, 54, 0.05)',
