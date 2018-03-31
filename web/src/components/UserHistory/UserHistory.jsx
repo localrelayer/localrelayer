@@ -97,7 +97,7 @@ const UserHistory = ({
   <UserOrdersContainer>
     <OrdersList
       pagination={{
-        pageSize: 7,
+        pageSize: 5,
       }}
       title={title}
       columns={getColumns()}
