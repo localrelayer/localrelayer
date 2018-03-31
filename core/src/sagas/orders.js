@@ -146,6 +146,9 @@ export function* loadOrders(): Saga<*> {
       withDeleted: false,
       mergeListIds: false,
       fetchQuery: {
+        limitCondition: {
+          limit: 50,
+        },
         filterCondition: {
           filter: {
             'token.address': {
@@ -171,6 +174,9 @@ export function* loadOrders(): Saga<*> {
       withDeleted: false,
       mergeListIds: false,
       fetchQuery: {
+        limitCondition: {
+          limit: 50,
+        },
         filterCondition: {
           filter: {
             'token.address': {
@@ -196,6 +202,9 @@ export function* loadOrders(): Saga<*> {
       withDeleted: false,
       mergeListIds: false,
       fetchQuery: {
+        limitCondition: {
+          limit: 500,
+        },
         filterCondition: {
           filter: {
             'token.address': {

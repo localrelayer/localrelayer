@@ -24,7 +24,8 @@ const steps = [
     text: (
       <div>
         <article>
-        You need to use Metamask (Ledger support is in progress) to interact with exchange
+        You need to use Metamask to interact with exchange.
+        Ledger support is in development.
         </article>
       </div>
     ),
@@ -37,7 +38,7 @@ const steps = [
     text: (
       <div>
         <article>
-          If you can't find the desired token, try entering the token address in url.
+          If you can't find the desired token, ether the token address in url.
           For example:
         </article>
         <br />
@@ -53,17 +54,16 @@ const steps = [
     text: (
       <div>
         <article>
-      You need to convert your ETH (Ethereum Tokens ) to WETH (Wrapped Ethereum Tokens).
+      You need to convert your ETH (Ethereum) to WETH (Wrapped Ethereum Tokens).
         </article>
         <br />
         <article>
-          <a rel="noopener noreferrer" target="_blank" href="https://etherscan.io/address/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2">WETH is a smart contract</a> - you can exchange ETH to WETH and back as 1:1 any time.
+          <a rel="noopener noreferrer" target="_blank" href="https://etherscan.io/address/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2">WETH is a smart token</a> - you can anytime exchange ETH/WETH back and forth at 1:1 rate. You can read about WETH in more details <a href="https://weth.io/">here</a>.
         </article>
         <br />
         <article>
-      You can read about WETH in more details <a href="https://weth.io/">here</a>.
+          P.S. Don't wrap all ETH - you'll need a tiny amount to pay gas
         </article>
-        <br />
       </div>
     ),
     selector: '#user-balance',
@@ -74,15 +74,15 @@ const steps = [
     text: (
       <div>
         <article>
-        All tokens stay in your wallet until a transaction completes, and WETH is transferred instantly to the seller's wallet upon completion.
+          All tokens stay in your wallet until a transaction completes, and WETH is transferred instantly to the seller's wallet upon completion.
         </article>
         <br />
         <article>
-      To allow this type of interface to occur, users must allow 0x protocol a token to sell from their digital wallet.
+          You have to allow 0x protocol to exchange the token from your wallet.
         </article>
         <br />
         <article>
-      For more details look <a href="https://tokenallowance.io/">here</a>
+          For more details look <a href="https://tokenallowance.io/">here</a>
         </article>
       </div>
     ),
@@ -91,18 +91,30 @@ const steps = [
     position: 'top',
   },
   {
-    title: '5. Create order',
+    title: '5. Choose order from the order book',
     text: (
       <div>
         <article>
-          Enter desired price, amount and order expire date and click 'Place order'.
+          You can click on desired order to fill up the buy form.
+        </article>
+      </div>
+    ),
+    textAlign: 'center',
+    selector: '#Order-book',
+    position: 'right',
+  },
+  {
+    title: '6. Create a new order',
+    text: (
+      <div>
+        <article>
           As soon as matched order will be found - your order will be filled.
         </article>
       </div>
     ),
     textAlign: 'center',
     selector: '#orderForm',
-    position: 'top',
+    position: 'left',
   },
 ];
 

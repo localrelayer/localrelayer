@@ -44,7 +44,7 @@ const OrderBook: StatelessFunctionalComponent<Props> = ({
   sellOrders,
   fillOrder,
 }: Props): Node => (
-  <OrderBookContainer>
+  <OrderBookContainer id="Order-book">
     <TableContainer type="sell" orders={sellOrders.slice(0, 12).reverse()} fillOrder={fillOrder} showHeader />
     <SpreadContainer><span style={{ marginRight: 5 }}>{getSpread(sellOrders[0], buyOrders[0])}</span>{' '}<Badge status="processing" text="Realtime" /></SpreadContainer>
     <TableContainer type="buy" orders={buyOrders.slice(-12)} fillOrder={fillOrder} />

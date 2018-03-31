@@ -87,9 +87,9 @@ const getColumns = () => [{
   render: (text) => {
     if (!text) return '--';
     return text > 0 ? (
-      <Colored color="green">{`+${text}%`}</Colored>
+      <Colored className="green">{`+${text}%`}</Colored>
     ) : (
-      <Colored color="red">{`${text}%`}</Colored>
+      <Colored className="red">{`${text}%`}</Colored>
     );
   },
 }];

@@ -1,6 +1,66 @@
 @import "~antd/dist/antd.less";
 
-@primary-color: #3f51b5;
+@primary-color: #3782c3;
+@body-background: #1f415d;
+@layout-body-background: #1f415d;
+@component-background: #0f2335;
+@layout-header-background: @component-background;
+@heading-color          : fade(#fff, 90%);
+@text-color             : fade(#fff, 85%);
+@text-color-secondary   : fade(#fff, 60%);
+@border-color-base      : #0f2335;  // base border outline a component
+@border-color-split     : #0f2335;  // split border inside a component
+@background-color-light: #1f415d;
+@item-hover-bg: #2a6394;
+@popover-bg: #00132f;
+@link-color: @primary-color;
+@tab-active-color: white;
+@btn-default-bg: #174263;
+@radio-button-active-color: white;
+@btn-primary-bg: #245988;
+@btn-group-border: #312549;
+@background-color-base: #02323a;
+
+@green: #1ea83b;
+@red: #da3636;
+
+.green {
+  color: @green;
+}
+
+.red {
+  color: @red;
+}
+
+@table-row-hover-bg: @item-hover-bg;
+
+.ant-table-body {
+  background: @component-background;
+}
+
+.ant-input-number-input-wrap {
+  background: @layout-body-background;
+  border-radius: 3px;
+}
+
+.ant-input-number-input {
+  background: @layout-body-background;
+}
+
+.ant-input {
+  background: @layout-body-background;
+}
+
+.ant-tabs-tab-active {
+  color: @tab-active-color !important;
+}
+
+.react-grid-item.cssTransforms {
+  transition-property: none;
+}
+.animated .react-grid-item.cssTransforms {
+  transition-property: transform;
+}
 
 .ant-popover-inner-content {
   padding: 0 !important;
@@ -17,15 +77,42 @@
   justify-content: center;
 }
 
+.ant-radio-button-wrapper {
+  color: white;
+  border-color: transparent;
+}
+
+.ant-input-number {
+  background: transparent;
+}
+
+.ant-table-placeholder {
+  display: none;
+}
+
+.ant-alert-warning {
+  background: #009688;
+  & .anticon {
+    color: white;
+  }
+}
+
+.ant-table-small {
+  border: none;
+}
+
+#Order-book {
+  background: @component-background;
+}
+
 .Table {
   display: flex;
   flex-flow: column nowrap;
   justify-content: flex-start;
   line-height: 1.5;
   font-size: 0.8rem;
-  background: white;
+  background: @component-background;
   height: 50%;
-  border-top: 1px solid #efedec;
   padding: 5px;
 }
 .Table-header {
@@ -39,11 +126,6 @@
 
 .Table-row {
   width: 100%;
-  border-bottom: 1px solid #efedec;
-
-  &:first-child {
-    border-bottom: 1px solid #efedec;
-  }
 
   &:not(.Table-header) {
     &:hover {
@@ -75,5 +157,35 @@
 @media (min-width: 500px) {
   .Table-row-item:before {
     content: none;
+  }
+}
+
+// Joyride rewritten styles
+
+.joyride-tooltip {
+  background: @component-background;
+  color: @text-color;
+}
+
+.joyride-tooltip__header {
+  border-bottom: 1px solid @primary-color;
+  color: @heading-color;
+}
+
+.joyride-tooltip__button {
+  color: @link-color;
+
+  &:hover, &:focus, &:active {
+    color: @primary-5;
+  }
+}
+
+.joyride-tooltip__button--primary {
+  background: @btn-primary-bg;
+  color: @text-color;
+
+  &:hover, &:focus, &:active {
+    background: @primary-5;
+    color: @text-color;
   }
 }

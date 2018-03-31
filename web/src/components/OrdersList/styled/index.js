@@ -4,18 +4,18 @@ export const OrdersListContainer = styled.div`
   flex: 1;
   height: 100%;
   // min-height: 455px;
-  background: white;
+  // background: white;
 
   .ant-table-placeholder {
     // min-height: 375px;
   }
 
   .ant-table {
-    font-size: 0.8rem;
+    font-size: 0.83rem;
     border-radius: 0px;
   }
   .ant-table-small {
-    background: white;
+    // background: white;
     // min-height: 357px;
   }
 
@@ -25,10 +25,10 @@ export const OrdersListContainer = styled.div`
 `;
 
 export const TableTitle = styled.h3`
-  background: #fafafa;
+  // background: #fafafa;
   margin-bottom: 0;
   padding: 10px;
   text-align: center;
-  border: 1px solid #e8e8e8;
+  // border: 1px solid #e8e8e8;
   border-bottom: none;
 `;

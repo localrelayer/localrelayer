@@ -14,7 +14,6 @@ import type { Saga } from 'redux-saga';
 import BigNumber from 'bignumber.js';
 import { getFormValues, reset } from 'redux-form';
 import { ZeroEx } from '0x.js';
-import * as ProfileActions from '../actions/profile';
 import * as actionTypes from '../actions/types';
 import {
   sendNotification,
@@ -29,6 +28,7 @@ import {
   getAddress,
   getBalance,
   getWethToken,
+  getResourceItemBydId,
 } from '../selectors';
 
 const sagas = {
@@ -105,9 +105,9 @@ function* withdraw() {
   }
 }
 
-function* setAllowance() {
+function* setAllowance(token) {
   const { zeroEx } = window;
-  const weth = yield select(getWethToken);
+  // const  = yield select(getResourceItemBydId('tokens', token.id));
   const account = yield select(getAddress);
   try {
     const actions = createActionCreators('update', {
@@ -117,7 +117,7 @@ function* setAllowance() {
     });
     const txHash = yield call(
       [zeroEx.token, zeroEx.token.setUnlimitedProxyAllowanceAsync],
-      weth.id,
+      token.id,
       account,
       { gasLimit: 80000 },
     );
@@ -127,9 +127,9 @@ function* setAllowance() {
 
     yield put(actions.succeeded({
       resources: [{
-        id: weth.id,
+        id: token.id,
         attributes: {
-          ...weth,
+          ...token,
           isTradable: true,
         },
       }],
@@ -140,9 +140,8 @@ function* setAllowance() {
   }
 }
 
-function* unsetAllowance() {
+function* unsetAllowance(token) {
   const { zeroEx } = window;
-  const weth = yield select(getWethToken);
   const account = yield select(getAddress);
   try {
     const actions = createActionCreators('update', {
@@ -152,7 +151,7 @@ function* unsetAllowance() {
     });
     const txHash = yield call(
       [zeroEx.token, zeroEx.token.setProxyAllowanceAsync],
-      weth.id,
+      token.id,
       account,
       BigNumber(0),
       { gasLimit: 80000 },
@@ -163,9 +162,9 @@ function* unsetAllowance() {
 
     yield put(actions.succeeded({
       resources: [{
-        id: weth.id,
+        id: token.id,
         attributes: {
-          ...weth,
+          ...token,
           isTradable: false,
         },
       }],

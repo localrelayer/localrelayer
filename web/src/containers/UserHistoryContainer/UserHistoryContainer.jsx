@@ -33,7 +33,7 @@ const UserHistoryContainer: StatelessFunctionalComponent<Props> = ({
   dispatch,
 }: Props): Node =>
   <UserHistory
-    title="Trading History"
+    title="My Trading History"
     orders={orders}
     onCancel={(orderId: string) => {
       dispatch(cancelOrder(orderId));

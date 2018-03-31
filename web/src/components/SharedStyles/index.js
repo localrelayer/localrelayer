@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const Colored = styled.span`
-  color: ${props => props.color || 'black'};
+  color: ${props => props.color};
 `;
 
 export const Truncate = styled.div`
@@ -19,17 +19,15 @@ export const Overlay = styled.div`
   width: 100%;
   height: 100%;
   z-index: 1000;
-  background: #eee;
+  background: #000;
   opacity: 0.8;
   text-align: center;
   transition: opacity .5s;
 `;
 
 export const ComponentTitle = styled.h3`
-  background: #fafafa;
   margin-bottom: 0;
   padding: 10px;
   text-align: center;
-  border: 1px solid #e8e8e8;
   border-bottom: none;
 `;

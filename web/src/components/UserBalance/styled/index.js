@@ -17,10 +17,10 @@ export const Title = styled.div`
 export const CardContainer = styled(Card)`
   padding: 0;
   // min-height: 223px;
-  border: 1px solid #e8e8e8;
+  // border: 1px solid #e8e8e8;
   & > .ant-card-head {
     text-align: center;
-    background-color: #fafafa;
+    // background-color: #fafafa;
   }
   .ant-card-grid {
     width: 100%;
@@ -37,9 +37,9 @@ export const CardContainer = styled(Card)`
 `;
 
 export const TableContainer = styled(Table)`
-  border-left: 1px solid #e8e8e8;
-  border-right: 1px solid #e8e8e8;
-  border-top: 1px solid #e8e8e8;
+  // border-left: 1px solid #e8e8e8;
+  // border-right: 1px solid #e8e8e8;
+  // border-top: 1px solid #e8e8e8;
   border: none;
   .ant-table-thead > tr > th {
     background: white;
@@ -61,6 +61,6 @@ export const InputGroupContainer = styled(InputGroup)`
 
 export const FormContainer = styled(Form)`
   padding: 13px 0 !important;
-  border: 1px solid #e8e8e8;
+  // border: 1px solid #e8e8e8;
   border-bottom: none;
 `;

@@ -3,11 +3,8 @@ import React from 'react';
 import type { Node } from 'react';
 import {
   Tooltip,
-  Button,
-  Icon,
 } from 'antd';
 import type { Order } from 'instex-core/types';
-import { Element } from 'react-scroll';
 import moment from 'moment';
 
 import { UserOrdersContainer } from './styled';
@@ -30,14 +27,14 @@ type Props = {
 };
 
 export const getColumns = (onCancel: (id: string) => void) => [
-  // {
-  //   title: 'Type',
-  //   dataIndex: 'type',
-  //   key: 'type',
-  //   render: (text: string, record: Order) => (
-  //     <Colored color={record.type === 'sell' ? 'red' : 'green'}>{text}</Colored>
-  //   ),
-  // },
+  {
+    title: 'Type',
+    dataIndex: 'type',
+    key: 'type',
+    render: (text: string, record: Order) => (
+      <Colored className={record.type === 'sell' ? 'red' : 'green'}>{text}</Colored>
+    ),
+  },
   {
     title: 'Pair',
     key: 'user/pair',
@@ -57,13 +54,13 @@ export const getColumns = (onCancel: (id: string) => void) => [
     title: 'Price',
     dataIndex: 'price',
     key: 'user/price',
-    render: (text: string) => Number(text).toFixed(4),
+    render: (text: string) => Number(text).toFixed(6),
   },
   {
     title: 'Amount',
     dataIndex: 'amount',
     key: 'user/amount',
-    render: (text: string, record: Order) => <Colored color={record.type === 'buy' ? 'green' : 'red'}>{Number(text).toFixed(4)}</Colored>,
+    render: (text: string) => Number(text).toFixed(6)
   },
   // {
   //   title: 'Total',

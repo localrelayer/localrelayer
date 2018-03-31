@@ -32,6 +32,9 @@ const validate = (values) => {
   return errors;
 };
 
+// eslint-disable-next-line
+const parseNumber = val => (isNaN(parseFloat(val)) ? undefined : parseFloat(val));
+
 type Props = {
   wrap: () => void,
   unwrap: () => void,
@@ -54,7 +57,7 @@ const WrapForm: StatelessFunctionalComponent<Props> = ({
   <FormContainer onSubmit={handleSubmit}>
     <InputGroupContainer compact>
       <Field
-        parse={val => (isNaN(parseFloat(val)) ? null : parseFloat(val))}
+        parse={parseNumber}
         name="amount"
         component={NumberInput}
         placeholder="ETH amount"

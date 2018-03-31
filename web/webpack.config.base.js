@@ -28,10 +28,10 @@ module.exports = {
             loader: 'less-loader',
             options: {
               modifyVars: {
-                'primary-color': '#941728',
-                'layout-body-background': '#EFEDEC',
-                'layout-header-background': '#23223A',
-                'error-color': '#E7324A',
+                // 'primary-color': '#941728',
+                // 'layout-body-background': '#EFEDEC',
+                // 'layout-header-background': '#23223A',
+                // 'error-color': '#E7324A',
                 // 'component-background': '#26ADE4',
                 // 'background-color-light': '#E8BF56',
               },

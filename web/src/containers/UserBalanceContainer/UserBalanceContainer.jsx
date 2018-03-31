@@ -50,14 +50,11 @@ const UserBalanceContainer: StatelessFunctionalComponent<Props> = ({
   </StyleContainer>
 );
 
-const mapStateToProps: MapStateToProps<*, *, *> = state => {
-  console.log(getResourceMappedList('tokens', 'currentUserTokens')(state))
-  return {
-    tokens: getResourceMappedList('tokens', 'currentUserTokens')(state),
-    balance: state.profile.balance,
-    isBalanceLoading: state.ui.isBalanceLoading,
-    isConnected: state.profile.connectionStatus !== 'Not connected to Ethereum' && state.profile.connectionStatus !== 'Locked',
-  }
-};
+const mapStateToProps: MapStateToProps<*, *, *> = state => ({
+  tokens: getResourceMappedList('tokens', 'currentUserTokens')(state),
+  balance: state.profile.balance,
+  isBalanceLoading: state.ui.isBalanceLoading,
+  isConnected: state.profile.connectionStatus !== 'Not connected to Ethereum' && state.profile.connectionStatus !== 'Locked',
+});
 
 export default connect(mapStateToProps)(UserBalanceContainer);
