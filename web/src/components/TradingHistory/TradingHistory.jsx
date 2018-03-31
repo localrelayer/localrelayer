@@ -57,7 +57,7 @@ const columns = [
     key: 'total',
     render: (text: string, record) => (
       <Colored
-        color={record.type === 'sell' ? 'red' : 'green'}
+        className={record.type === 'sell' ? 'red' : 'green'}
       >
         {text}
       </Colored>

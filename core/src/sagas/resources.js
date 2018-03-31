@@ -39,7 +39,6 @@ export function* fetchResourcesRequest({
     prepend,
   });
   yield put(actions.pending());
-
   const response = yield call(apiCall, 'FILTER', {
     ...fetchQuery,
     additionalInclude,

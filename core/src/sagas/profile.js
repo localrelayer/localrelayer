@@ -112,22 +112,24 @@ export function* loadTokensBalance() {
       return res;
     }));
 
-  const addTokensBalancesAction = createActionCreators('update', {
-    resourceName: 'tokens',
-    request: 'addTokensBalances',
-  });
-  yield put(addTokensBalancesAction.succeeded({
-    resources: [pair, current, ...allTokens].map(t => ({ id: t.id, attributes: { ...t } })),
-  }));
-
   const addActiveUserTokensAction = createActionCreators('update', {
     resourceName: 'tokens',
     request: 'addActiveUserTokens',
     list: 'currentUserTokens',
+    mergeListIds: false,
   });
 
   yield put(addActiveUserTokensAction.succeeded({
     resources: [pair, current].map(t => ({ id: t.id, attributes: { ...t } })),
+  }));
+
+  const addTokensBalancesAction = createActionCreators('update', {
+    resourceName: 'tokens',
+    request: 'addTokensBalances',
+    list: 'allTokens',
+  });
+  yield put(addTokensBalancesAction.succeeded({
+    resources: [pair, current, ...allTokens].map(t => ({ id: t.id, attributes: { ...t } })),
   }));
 }
 

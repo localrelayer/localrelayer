@@ -12,10 +12,10 @@ const layout = [
     i: 'userBalance', x: 0, y: 0, w: 6, h: 18, static: true,
   },
   {
-    i: 'userHistory', x: 6, y: 0, w: 6, h: 10, static: true,
+    i: 'userHistory', x: 6, y: 0, w: 6, h: 8.8, static: true,
   },
   {
-    i: 'UserOrders', x: 6, y: 10, w: 6, h: 12, static: true,
+    i: 'UserOrders', x: 6, y: 8.8, w: 6, h: 12, static: true,
   },
 ];
 

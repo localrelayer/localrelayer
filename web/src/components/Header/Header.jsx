@@ -36,7 +36,7 @@ import {
 } from '../SharedStyles';
 import TokensList from './TokensList';
 import UserProfile from '../UserProfile';
-import logo from '../../assets/logo4.png';
+import logo from '../../assets/logo5.png';
 
 type Props = {
   /** User object */
@@ -107,7 +107,6 @@ const Header = ({
       src={logo}
       style={{
        height: '100%',
-       marginRight: 15,
      }}
     />
     <MenuContainer
@@ -153,13 +152,6 @@ const Header = ({
         Tokens {getTokenButtonTitle(selectedToken, tokenPair)} <Icon type="down" />
       </HeaderButton>
     </Popover>
-    <HeaderButton
-      shape="circle"
-      type="primary"
-      onClick={onHelpClick}
-    >
-      <Icon type="question-circle" />
-    </HeaderButton>
     <AlignRight>
       <Popover
         placement="bottom"
@@ -196,11 +188,20 @@ const Header = ({
         }
       >
         <Badge count={user.notifications ? user.notifications.length : 0}>
-          <HeaderButton shape="circle" type="primary">
-            <Icon type="bell" />
-          </HeaderButton>
+          <HeaderButton icon="bell" shape="circle" type="primary" />
         </Badge>
       </Popover>
+      <Badge>
+        <HeaderButton
+          style={{
+            background: '#673ab7',
+          }}
+          shape="circle"
+          type="primary"
+          onClick={onHelpClick}
+          icon="question-circle"
+        />
+      </Badge>
     </AlignRight>
   </HeaderContainer>
 );

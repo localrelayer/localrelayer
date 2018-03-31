@@ -51,7 +51,7 @@ const columns = [
     dataIndex: 'total',
     key: 'total',
     render: (text: string) =>
-      <Colored color="red">
+      <Colored className="red">
         {text}
       </Colored>,
   },

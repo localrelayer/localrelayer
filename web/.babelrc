@@ -13,7 +13,6 @@
     "flow"
   ],
   "retainLines": true,
-  "plugins": [["import", { "libraryName": "antd", "style": true }]],
   "env": {
     "production": {
       "plugins": ["transform-flow-strip-types"]

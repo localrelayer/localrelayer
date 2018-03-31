@@ -24,13 +24,21 @@ import {
 
 const validate = (values) => {
   const errors = {};
+
+  if (!/^-?\d+\.?\d*$/.test(values.amount)) {
+    errors.amount = 'Numbers only';
+  }
+
   if (!values.amount) {
-    errors.amount = 'Please enter amount';
+    errors.amount = 'Amount is required';
   } else if (values.amount <= 0) {
     errors.amount = 'Amount can be only positive';
   }
   return errors;
 };
+
+// eslint-disable-next-line
+const parseNumber = val => (isNaN(parseFloat(val)) ? undefined : parseFloat(val));
 
 type Props = {
   wrap: () => void,
@@ -54,14 +62,15 @@ const WrapForm: StatelessFunctionalComponent<Props> = ({
   <FormContainer onSubmit={handleSubmit}>
     <InputGroupContainer compact>
       <Field
-        parse={val => (isNaN(parseFloat(val)) ? null : parseFloat(val))}
         name="amount"
+        type="text"
         component={NumberInput}
         placeholder="ETH amount"
+        // parse={parseNumber}
       />
       <Button.Group>
-        <Button disabled={isLoading} onClick={handleSubmit(unwrap)}>Withdraw</Button>
-        <Button disabled={isLoading} onClick={handleSubmit(wrap)}>Deposit</Button>
+        <Button type="primary" disabled={isLoading} onClick={handleSubmit(unwrap)}>Withdraw</Button>
+        <Button type="primary" disabled={isLoading} onClick={handleSubmit(wrap)}>Deposit</Button>
       </Button.Group>
     </InputGroupContainer>
   </FormContainer>
@@ -71,5 +80,6 @@ export default reduxForm({
   form: 'WrapForm',
   touchOnBlur: true,
   touchOnChange: true,
+  enableReinitialize: true,
   validate,
 })(WrapForm);

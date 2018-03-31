@@ -1,6 +1,5 @@
 // @flow
-// import * as R from 'ramda';
-// import moment from 'moment';
+
 import type {
   Token,
 } from 'instex-core/types';
@@ -8,55 +7,6 @@ import {
   socketConnect,
 } from 'instex-core/src/sagas/socket';
 import config from '../../config';
-
-
-// const generateMockBars = ({
-//   start,
-//   end,
-//   resolution,
-//   symbolInfo,
-// }) => {
-//   const diff = end.diff(start, 'days');
-//   return Array.from(Array(diff).keys()).map((i) => {
-//     const time = start.clone().add(i, 'day').startOf('day');
-//     const msTime = time.unix() * 1000;
-//     return {
-//       time: msTime,
-//       close: 10 + i,
-//       open: 1,
-//       high: 10 + i,
-//       low: 1 + i,
-//     };
-//   });
-// };
-
-// const resolutionsDiffMap = {
-//   1: {
-//     moment: 'minutes',
-//     divide: 1,
-//     multiply: 1,
-//   },
-//   10: {
-//     moment: 'minutes',
-//     divide: 10,
-//     multiply: 10,
-//   },
-//   30: {
-//     moment: 'minutes',
-//     divide: 30,
-//     multiply: 30,
-//   },
-//   60: {
-//     moment: 'hours',
-//     divide: 1,
-//     multiply: 1,
-//   },
-//   D: {
-//     moment: 'days',
-//     divide: 1,
-//     multiply: 1,
-//   },
-// };
 
 export const getDatafeed = (token: Token) => ({
   onReady: (cb: any) => {
@@ -134,15 +84,13 @@ export const getDatafeed = (token: Token) => ({
     }), 0);
   },
 
-  subscribeBars: async (symbolInfo, resolution, onRealtimeCallback, subscriberUID) => {
+  subscribeBars: async (symbolInfo: any, resolution: any, onRealtimeCallback: any) => {
     const socket = await socketConnect();
     socket.on('updated_bar', (data) => {
-      console.log(data.token, symbolInfo.ticker);
       if (data.token === symbolInfo.ticker) {
         onRealtimeCallback(data.bar);
       }
     });
-    console.log('subscribeBars', symbolInfo, resolution, subscriberUID);
   },
 
   unsubscribeBars: () => {

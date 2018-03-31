@@ -50,7 +50,7 @@ const columns = [
     dataIndex: 'total',
     key: 'total',
     render: (text: string) =>
-      <Colored color="green">{text}</Colored>,
+      <Colored className="green">{text}</Colored>,
   },
   {
     render: (text, order) => (order.status === 'pending' ? <Icon type="loading" /> : null),

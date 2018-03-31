@@ -24,7 +24,28 @@ export const CardContainer = styled(Card)`
 export const InputLabel = styled.label``;
 
 export const PlaceOrderButton = styled(Button)`
+  background: ${props => props.type === 'sell' ? '#da3636' : '#1ea83b'};
+  border-color: ${props => props.type === 'sell' ? '#da3636' : '#1ea83b'};
+  color: white;
   width: 100%;
+
+  &:hover {
+    background: ${props => props.type === 'sell' ? '#ca5252' : '#4fb564'};
+    border-color: ${props => props.type === 'sell' ? '#ca5252' : '#4fb564'};
+    color: white;
+  }
+
+  &:focus {
+    background: ${props => props.type === 'sell' ? '#ca5252' : '#4fb564'};
+    border-color: ${props => props.type === 'sell' ? '#ca5252' : '#4fb564'};
+    color: white;
+  }
+  
+  &:active {
+    background: ${props => props.type === 'sell' ? '#ca5252' : '#4fb564'};
+    border-color: ${props => props.type === 'sell' ? '#ca5252' : '#4fb564'};
+    color: white;
+  }
 `;
 
 export const LabelContainer = styled.div`
@@ -37,7 +58,6 @@ export const LabelListContainer = styled.div`
   & a {
     text-decoration: underline;
     margin: 2.5px;
-    opacity: 0.75;
   }
 `;
 

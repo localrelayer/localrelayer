@@ -68,7 +68,7 @@ const BuySell: StatelessFunctionalComponent<Props> = ({
 }: Props): Node =>
   <div id="orderForm">
 
-    <CardContainer>
+    <CardContainer bordered={false}>
       <Overlay isShown={!isConnected}>
         <h3 style={{
         margin: '20px',

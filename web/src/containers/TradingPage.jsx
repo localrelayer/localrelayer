@@ -13,26 +13,26 @@ const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
 const layoutSm = [
   {
-    i: 'orderBook', x: 0, y: 3, w: 3, h: 18, static: true,
+    i: 'orderBook', x: 0, y: 0, w: 1, h: 18, static: true,
   },
   {
-    i: 'balance', x: 6.5, y: 12, w: 3.5, h: 6, static: true,
+    i: 'balance', x: 1, y: 3, w: 1, h: 6, static: true,
   },
 
   {
-    i: 'chart', x: 3, y: 21, w: 7, h: 12, static: true,
+    i: 'chart', x: 0, y: 18, w: 2, h: 12, static: true,
   },
   {
-    i: 'userOrders', x: 0, y: 20, w: 5, h: 12, static: true,
+    i: 'userOrders', x: 0, y: 30, w: 2, h: 12, static: true,
   },
   {
-    i: 'tokenCard', x: 6.5, y: 0, w: 3.5, h: 3, static: true,
+    i: 'tokenCard', x: 6.5, y: 0, w: 1, h: 3, static: true,
   },
   {
-    i: 'buySell', x: 3, y: 3, w: 3.5, h: 9, static: true,
+    i: 'buySell', x: 1, y: 3, w: 1, h: 9, static: true,
   },
   {
-    i: 'history', x: 5, y: 15, w: 5, h: 12, static: true,
+    i: 'history', x: 0, y: 42, w: 2, h: 12, static: true,
   },
 
 ];
@@ -42,40 +42,40 @@ const layoutMd = [
     i: 'orderBook', x: 0, y: 0, w: 3, h: 18, static: true,
   },
   {
-    i: 'balance', x: 6.5, y: 12, w: 3.5, h: 6, static: true,
+    i: 'balance', x: 6.5, y: 13, w: 3.5, h: 6, static: true,
   },
 
   {
-    i: 'chart', x: 3, y: 0, w: 7, h: 12, static: true,
+    i: 'chart', x: 3, y: 0, w: 7, h: 10, static: true,
   },
   {
-    i: 'userOrders', x: 0, y: 20, w: 5, h: 12, static: true,
+    i: 'userOrders', x: 3, y: 19, w: 7, h: 12, static: true,
   },
   {
-    i: 'tokenCard', x: 6.5, y: 12, w: 3.5, h: 3, static: true,
+    i: 'tokenCard', x: 6.5, y: 10, w: 3.5, h: 3, static: true,
   },
   {
-    i: 'buySell', x: 3, y: 3, w: 3.5, h: 9, static: true,
+    i: 'buySell', x: 3, y: 10, w: 3.5, h: 9, static: true,
   },
   {
-    i: 'history', x: 5, y: 15, w: 5, h: 12, static: true,
+    i: 'history', x: 0, y: 19, w: 3, h: 12, static: true,
   },
 
 ];
 
 const layoutLg = [
   {
-    i: 'orderBook', x: 0, y: 0, w: 3, h: 18, static: true,
+    i: 'orderBook', x: 0, y: 0, w: 3, h: 16, static: true,
   },
   {
-    i: 'balance', x: 0, y: 18, w: 3, h: 6, static: true,
+    i: 'balance', x: 0, y: 16.35, w: 3, h: 6, static: true,
   },
 
   {
     i: 'chart', x: 3, y: 0, w: 6, h: 12, static: true,
   },
   {
-    i: 'userOrders', x: 3, y: 12, w: 6, h: 12, static: true,
+    i: 'userOrders', x: 3, y: 12, w: 6, h: 9, static: true,
   },
 
   {
@@ -85,7 +85,7 @@ const layoutLg = [
     i: 'buySell', x: 9, y: 3, w: 3, h: 9, static: true,
   },
   {
-    i: 'history', x: 9, y: 12, w: 3, h: 12, static: true,
+    i: 'history', x: 9, y: 12, w: 3, h: 9, static: true,
   },
 ];
 

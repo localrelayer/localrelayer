@@ -100,9 +100,9 @@ export function* setTokens(): Saga<void> {
   const tokens = yield select(getResourceMappedList('tokens', 'allTokens'));
   const reg = pathToRegexp('/:token-:pair');
   const [a, token, pair] = reg.exec(pathname) || []; // eslint-disable-line
-
+  console.log(token, tokens)
   let selectedToken =
-    tokens.find(t => t.symbol === token || t.id === token);
+    tokens.find(t => (t.symbol === token || t.id === token) && t.is_listed);
   const pairToken =
     tokens.find(t => t.symbol === pair || t.id === pair);
   const networkZrxAddress = zeroEx ?
@@ -114,6 +114,8 @@ export function* setTokens(): Saga<void> {
 
   const zrxToken = tokens.find(t => t.symbol === 'ZRX' || t.id === networkZrxAddress) || {};
   const wethToken = tokens.find(t => t.symbol === 'WETH' || t.id === networkWethAddress) || {};
+
+  console.log(selectedToken);
 
   if (!selectedToken && window.web3 && window.web3.utils.isAddress(token)) {
     try {

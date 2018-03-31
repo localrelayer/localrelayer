@@ -20,8 +20,8 @@ type Props = {
 };
 
 const colorsByStatus = {
-  canceled: 'magenta',
-  completed: 'green',
+  canceled: '#da3636',
+  completed: '#1ea83b',
   failed: 'red',
   pending: 'geekblue',
 };
@@ -52,7 +52,7 @@ export const getColumns = (
     dataIndex: 'type',
     key: 'type',
     render: (text: string, record: Order) => (
-      <Colored color={record.type === 'sell' ? 'red' : 'green'}>{text}</Colored>
+      <Colored className={record.type === 'sell' ? 'red' : 'green'}>{text}</Colored>
     ),
   },
   {

@@ -48,7 +48,7 @@ export const OrderBookContainer = styled.div`
 
 export const SpreadContainer = styled(Divider)`
   margin: 10px 0 !important;
-  color: rgba(0, 0, 0, 0.65) !important;
+  // color: rgba(0, 0, 0, 0.65) !important;
 `;
 
 export const Table = styled.div`  
@@ -67,8 +67,9 @@ export const IconContainer = styled.div`
 export const AmountFillContainer = styled.div`
   position: absolute;
   height: 100%;
-  z-index: -1;
+  z-index: 1;
+  left: 0;
+  top: 0;
   width: ${props => props.width};
-  background: ${props => (props.type === 'sell' ? '#ff000017' : '#0080000d')};
-
+  background: ${props => (props.type === 'sell' ? '#ff000040' : '#00800029')};
 `;

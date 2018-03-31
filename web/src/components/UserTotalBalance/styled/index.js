@@ -18,9 +18,9 @@ export const CardContainer = styled(Card)`
   padding: 0;
   height: 100%;
   & > .ant-card-head {
-    border: 1px solid #e8e8e8;
+    // border: 1px solid #e8e8e8;
     text-align: center;
-    background-color: #fafafa;
+    // background-color: #fafafa;
   }
   .ant-card-grid {
     width: 100%;
@@ -33,12 +33,12 @@ export const CardContainer = styled(Card)`
 `;
 
 export const TableContainer = styled(Table)`
-  // border-left: 1px solid #e8e8e8;
-  // border-right: 1px solid #e8e8e8;
-  // border-top: 1px solid #e8e8e8;
+.ant-table-body {
+  min-height: 643px;
+}
   padding: 0 10px;
   .ant-table-thead > tr > th {
-    background: white;
+    // background: white;
   }
 `;
 

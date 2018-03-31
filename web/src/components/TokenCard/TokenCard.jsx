@@ -88,9 +88,9 @@ const TokenCard = ({
   // </LinkContainer>
 
   return (
-    <CardContainer>
+    <CardContainer bordered={false}>
       <Meta
-        avatar={<AvatarContainer src={url} />}
+        // avatar={<AvatarContainer shape="square" src={url} />}
         title={getTitle(symbol, tokenPair.symbol, change24Hour, lastPrice)}
         description={
           <PriceContainer>
@@ -102,9 +102,9 @@ const TokenCard = ({
             <div>
               <ChangeContainer>
                 {isPositive ?
-                  <Colored color="green">{`+${change24Hour || '0.00'}%`}</Colored>
+                  <Colored className="green">{`+${change24Hour || '0.00'}%`}</Colored>
                 :
-                  <Colored color="red">{`${change24Hour || '0.00'}%`}</Colored>
+                  <Colored className="red">{`${change24Hour || '0.00'}%`}</Colored>
                 }
               </ChangeContainer>
               <div>Volume: {volume ? Number(volume).toFixed(4) : 0}</div>

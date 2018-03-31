@@ -6,6 +6,10 @@ import {
 export const TokenListContainer = styled.div`
   display: flex;
   flex-direction: column;
+
+  .ant-table-body {
+    background: #00132f;
+  }
 `;
 
 export const InputContainer = styled.div`

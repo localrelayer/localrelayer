@@ -37,6 +37,8 @@ export const HeaderButton = styled(Button)`
   margin-left: 8px;
   // background-color: #203d58;
   border: none;
+
+  background: #163146;
 `;
 
 export const UserButton = styled(HeaderButton)`
@@ -45,8 +47,8 @@ export const UserButton = styled(HeaderButton)`
 `;
 
 export const TokenContainer = styled.div`
-  background-color: white;
-  border: 1px solid #e8e8e8;
+  // background-color: white;
+  // border: 1px solid #e8e8e8;
   .ant-table-small {
     border: none;
   }

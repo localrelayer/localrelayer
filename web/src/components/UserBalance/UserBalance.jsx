@@ -47,7 +47,7 @@ const getColumns = onToggle => [
         <Tooltip title={record.name}>{text}</Tooltip>{' '}
         {record.symbol === 'WETH' && (
           <Popover
-            placement="right"
+            placement="bottom"
             title={<div>Wrapping ETH allows you to trade directly with alt tokens</div>}
           >
             <Icon type="question-circle-o" />

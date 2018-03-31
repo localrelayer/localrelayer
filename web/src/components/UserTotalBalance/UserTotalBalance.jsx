@@ -112,7 +112,7 @@ const UserTotalBalance = ({
       <WrapForm wrap={wrap} unwrap={unwrap} onSubmit={() => {}} isLoading={isBalanceLoading} />
       <Card.Grid>
         <TableContainer
-          size="middle"
+          size="small"
           bordered={false}
           loading={isBalanceLoading}
           onRow={record => ({
