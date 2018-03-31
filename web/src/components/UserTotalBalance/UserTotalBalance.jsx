@@ -2,11 +2,12 @@
 import React from 'react';
 import type { Node } from 'react';
 import type { Tokens } from 'instex-core/types';
-import { Card, Switch, Icon, Tooltip, Popover } from 'antd';
+import { Card, Switch, Icon, Popover } from 'antd';
 import WrapForm from '../UserBalance/WrapForm';
 import { CardContainer, TableContainer } from './styled';
 import {
   ComponentTitle,
+  Overlay,
 } from '../SharedStyles';
 
 type Props = {
@@ -29,6 +30,8 @@ type Props = {
   unwrap: () => void,
   /** Is something loading */
   isBalanceLoading: boolean,
+  /** Is user connected to ethereum */
+  isConnected: boolean,
 };
 
 const getColumns = onToggle => [
@@ -105,10 +108,22 @@ const UserTotalBalance = ({
   wrap,
   unwrap,
   isBalanceLoading,
+  isConnected,
 }: Props): Node => (
   <div style={{ height: '100%' }}>
     <ComponentTitle>My Balance ({balance} ETH)</ComponentTitle>
     <CardContainer id="user-total-balance" bordered={false}>
+      <Overlay isShown={!isConnected}>
+        <h3
+          style={{
+        margin: '20px',
+        marginTop: '200px',
+        width: '100%',
+      }}
+        >
+      You are viewing this in read-only mode. Connect a wallet to see your balance
+        </h3>
+      </Overlay>
       <WrapForm wrap={wrap} unwrap={unwrap} onSubmit={() => {}} isLoading={isBalanceLoading} />
       <Card.Grid>
         <TableContainer
