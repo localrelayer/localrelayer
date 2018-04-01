@@ -48,6 +48,8 @@ export default class extends Component<Props> {
         'header_symbol_search',
         'header_indicators',
         'border_around_the_chart',
+        'header_undo_redo',
+        'header_compare',
       ],
       client_id: 'tradingview.com',
       user_id: 'public_user_id',
@@ -73,6 +75,7 @@ export default class extends Component<Props> {
         'paneProperties.vertGridProperties.color': '#0f2335',
         'scalesProperties.backgroundColor': '#0f2335',
         'scalesProperties.lineColor': '#0f2335',
+        'mainSeriesProperties.candleStyle.drawBorder': false,
       },
       studies_overrides: {
         'volume.volume.color.0': 'rgba(217, 54, 54, 0.05)',

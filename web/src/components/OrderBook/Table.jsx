@@ -74,6 +74,6 @@ export default ({
         </div>
       ))
       :
-      <div style={{ margin: type === 'sell' ? '72% auto' : '8% auto' }}>No {type} orders</div>
+      <div style={{ margin: type === 'sell' ? '7% auto' : '72% auto' }}>No {type} orders</div>
     }
   </Table>);

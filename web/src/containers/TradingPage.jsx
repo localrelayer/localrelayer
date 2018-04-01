@@ -68,7 +68,7 @@ const layoutLg = [
     i: 'orderBook', x: 0, y: 0, w: 3, h: 16, static: true,
   },
   {
-    i: 'balance', x: 0, y: 16.35, w: 3, h: 6, static: true,
+    i: 'balance', x: 0, y: 16, w: 3, h: 6, static: true,
   },
 
   {
@@ -111,7 +111,7 @@ const layoutLg2 = [
     i: 'buySell', x: 19, y: 3, w: 5, h: 9, static: true,
   },
   {
-    i: 'history', x: 19, y: 15, w: 5, h: 12, static: true,
+    i: 'history', x: 19, y: 12, w: 5, h: 12, static: true,
   },
 ];
 
@@ -137,7 +137,7 @@ const layoutLg3 = [
     i: 'buySell', x: 10, y: 3, w: 2, h: 9, static: true,
   },
   {
-    i: 'history', x: 10, y: 15, w: 2, h: 12, static: true,
+    i: 'history', x: 10, y: 12, w: 2, h: 12, static: true,
   },
 ];
 
