@@ -60,15 +60,15 @@ export const getColumns = (onCancel: (id: string) => void) => [
     title: 'Amount',
     dataIndex: 'amount',
     key: 'user/amount',
-    render: (text: string) => Number(text).toFixed(6)
+    render: (text: string) => Number(text).toFixed(6),
   },
-  // {
-  //   title: 'Total',
-  //   dataIndex: 'total',
-  //   key: 'total',
-  //   render: (text: string, record: Order) =>
-  //     <Colored color={record.type === 'buy' ? 'green' : 'red'}>{Number(text).toFixed(2)}</Colored>,
-  // },
+  {
+    title: 'Total',
+    dataIndex: 'total',
+    key: 'total',
+    render: (text: string) =>
+      Number(text).toFixed(6),
+  },
   {
     title: 'Action',
     key: 'user/action',

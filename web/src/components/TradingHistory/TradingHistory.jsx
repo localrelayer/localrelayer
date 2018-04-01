@@ -81,6 +81,10 @@ const TradingHistory: StatelessFunctionalComponent<Props> =
         title="Trading History"
         columns={columns}
         data={orders}
+        onClick={order => {
+          console.log(order);
+          window.open(`https://kovan.etherscan.io/tx/${order.tx_hash}`);
+        }}
         pagination={pagination}
       />
     </TradingHistoryContainer>;
