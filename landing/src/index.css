@@ -1,0 +1,16 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  background: #0e2434;
+  min-height: 100vh;
+  color: white;
+  font-weight: 200;
+  font-family: 'Roboto', Circular, Helvetica Neue, Helvetica, Arial, sans-serif;
+}
+
+img {
+  max-height: 100%;
+  max-width: 100%;
+}
+
