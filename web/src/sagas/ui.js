@@ -5,14 +5,13 @@ import {
 } from 'redux-saga/effects';
 import type { Saga } from 'redux-saga';
 import * as types from 'instex-core/actionTypes';
-import { notification, Modal, message } from 'antd';
+import { notification, Modal, message as antMessage } from 'antd';
 import { titleCase } from 'change-case';
 import moment from 'moment';
 import {
   getCurrentPair,
   getBuyOrders,
   getSellOrders,
-  getResourceItemBydId,
   getCurrentToken,
 } from 'instex-core/selectors';
 import {
@@ -64,19 +63,19 @@ export function* fillDate({ period }) {
 }
 
 
-export function* sendNotification({ payload: { type, message: content } }) {
+export function* sendNotification({ payload: { type, message } }) {
   // Ignore metamask errors
   if (message.includes('MetaMask')) return;
   yield notification[type]({
-    message: titleCase(content),
+    message: titleCase(message),
   });
 }
 
 export function* sendMessage({ payload: { type, content, destroy } }) {
   if (destroy) {
-    yield message.destroy();
+    yield antMessage.destroy();
   } else {
-    yield message[type](content);
+    yield antMessage[type](content);
   }
 }
 
