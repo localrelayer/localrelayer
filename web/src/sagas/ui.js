@@ -34,10 +34,9 @@ const modals = {
 };
 
 export function* fillAmount({ coef, orderType }): Saga<*> {
-  const currentPair = yield select(getCurrentPair);
-  const currentToken = yield select(getCurrentToken);
-  const pair = yield select(getResourceItemBydId('tokens', currentPair.id));
-  const token = yield select(getResourceItemBydId('tokens', currentToken.id));
+  const pair = yield select(getCurrentPair);
+  const token = yield select(getCurrentToken);
+
   const values = yield select(getFormValues('BuySellForm'));
 
   const formPrice = values ? values.price : null;
@@ -48,9 +47,9 @@ export function* fillAmount({ coef, orderType }): Saga<*> {
   const orderPrice = lastOrder ? lastOrder.price : 0;
 
   const fillValue = orderType === 'sell' ?
-    BigNumber(token.balance).times(coef)
+    BigNumber(token.balance || 0).times(coef)
     :
-    BigNumber(pair.balance).div(formPrice || orderPrice).times(coef);
+    BigNumber(pair.balance || 0).div(formPrice || orderPrice).times(coef);
   yield put(change('BuySellForm', 'amount', fillValue.toNumber().toFixed(8)));
 }
 

@@ -104,14 +104,6 @@ export function* loadTokensBalance() {
   const current = yield getTokenBalanceAndAllowance(currentToken, lockedToken);
   const pair = yield getTokenBalanceAndAllowance(currentPair, lockedPair);
 
-  const allTokens = yield all(tokens
-    .filter(token => token.id !== currentToken.id && token.id !== currentPair.id)
-    .map(function* (token) {
-      const locked = yield select(getLockedTokenBalance(token));
-      const res = yield getTokenBalanceAndAllowance(token, locked);
-      return res;
-    }));
-
   const addActiveUserTokensAction = createActionCreators('update', {
     resourceName: 'tokens',
     request: 'addActiveUserTokens',
@@ -122,6 +114,14 @@ export function* loadTokensBalance() {
   yield put(addActiveUserTokensAction.succeeded({
     resources: [pair, current].map(t => ({ id: t.id, attributes: { ...t } })),
   }));
+
+  const allTokens = yield all(tokens
+    .filter(token => token.id !== currentToken.id && token.id !== currentPair.id)
+    .map(function* (token) {
+      const locked = yield select(getLockedTokenBalance(token));
+      const res = yield getTokenBalanceAndAllowance(token, locked);
+      return res;
+    }));
 
   const addTokensBalancesAction = createActionCreators('update', {
     resourceName: 'tokens',

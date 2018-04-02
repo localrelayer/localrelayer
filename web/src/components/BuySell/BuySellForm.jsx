@@ -81,6 +81,7 @@ const validate = (values, props) => {
     }
     if (props.type === 'sell' && BigNumber(values.amount).gt(props.currentToken.balance || 0)) {
       errors.amount = "You don't have the required amount";
+      console.warn('sell', BigNumber(values.amount));
     }
     if (
       props.type === 'buy' &&
@@ -88,6 +89,8 @@ const validate = (values, props) => {
         .times(values.amount)
         .gt(props.currentPair.balance || 0)
     ) {
+      console.warn('buy', BigNumber(values.price)
+        .times(values.amount), props.currentPair.balance);
       errors.amount = "You don't have the required amount";
     }
   }
