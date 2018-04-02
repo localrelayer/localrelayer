@@ -63,7 +63,7 @@ export function* createOrder({
   let makerTokenAmount;
   let takerTokenAmount;
   if (type === 'sell') {
-    const feeAmount = BigNumber(total).times(EXCHANGE_FEE).add(TRANSACTION_FEE.toFixed(6));
+    const feeAmount = BigNumber(total).times(EXCHANGE_FEE).add(TRANSACTION_FEE).toFixed(6);
 
     makerTokenAddress = currentToken.id;
     takerTokenAddress = currentPair.id;
@@ -73,7 +73,7 @@ export function* createOrder({
       ZeroEx.toBaseUnitAmount(BigNumber(total).minus(feeAmount), currentPair.decimals);
   } else if (type === 'buy') {
     const feeAmount = BigNumber(amount).times(EXCHANGE_FEE)
-      .add(BigNumber(TRANSACTION_FEE).div(price).toFixed(6));
+      .add(BigNumber(TRANSACTION_FEE).div(price).toFixed(6)).toFixed(6);
 
     makerTokenAddress = currentPair.id;
     takerTokenAddress = currentToken.id;
