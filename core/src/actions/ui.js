@@ -23,6 +23,17 @@ export const sendNotification = (
   payload,
 });
 
+export const sendMessage = (
+  payload: {
+    content: any,
+    type: string,
+    destroy: boolean,
+  },
+): UiAction => ({
+  type: actionTypes.SEND_MESSAGE,
+  payload,
+});
+
 export const showModal = (
   payload: {
     title: string,

@@ -44,6 +44,7 @@ export const HeaderButton = styled(Button)`
 export const UserButton = styled(HeaderButton)`
   display: flex;
   align-items: center;
+  min-width: 190px;
 `;
 
 export const TokenContainer = styled.div`

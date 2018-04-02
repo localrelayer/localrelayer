@@ -5,7 +5,7 @@ import {
 } from 'redux-saga/effects';
 import type { Saga } from 'redux-saga';
 import * as types from 'instex-core/actionTypes';
-import { notification, Modal } from 'antd';
+import { notification, Modal, message } from 'antd';
 import { titleCase } from 'change-case';
 import moment from 'moment';
 import {
@@ -64,12 +64,20 @@ export function* fillDate({ period }) {
 }
 
 
-export function* sendNotification({ payload: { type, message } }) {
+export function* sendNotification({ payload: { type, message: content } }) {
   // Ignore metamask errors
   if (message.includes('MetaMask')) return;
   yield notification[type]({
-    message: titleCase(message),
+    message: titleCase(content),
   });
+}
+
+export function* sendMessage({ payload: { type, content, destroy } }) {
+  if (destroy) {
+    yield message.destroy();
+  } else {
+    yield message[type](content);
+  }
 }
 
 export function* showModal({
@@ -88,6 +96,10 @@ export function* showModal({
 
 export function* listenNotifications() {
   yield takeEvery(types.SEND_NOTIFICATION, sendNotification);
+}
+
+export function* listenMessages() {
+  yield takeEvery(types.SEND_MESSAGE, sendMessage);
 }
 
 export function* listenShowModal() {

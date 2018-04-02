@@ -9,6 +9,7 @@ import {
   listenFillField,
   listenNotifications,
   listenShowModal,
+  listenMessages,
 } from './ui';
 
 export default function* rootSaga() {
@@ -17,5 +18,6 @@ export default function* rootSaga() {
     fork(listenNotifications),
     fork(listenFillField),
     fork(listenShowModal),
+    fork(listenMessages),
   ]);
 }

@@ -23,6 +23,10 @@ export type UiAction =
   payload: any,
 |} |
 {|
+  type: typeof actionTypes.SEND_MESSAGE,
+  payload: any,
+|} |
+{|
   type: typeof actionTypes.SHOW_MODAL,
   payload: {
     title: string,

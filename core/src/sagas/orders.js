@@ -22,6 +22,7 @@ import {
 import {
   sendNotification,
   saveResourceRequest,
+  sendMessage,
 } from '../actions';
 import type {
   OrderData,
@@ -104,6 +105,8 @@ export function* createOrder({
       ...zrxOrder,
       ecSignature,
     };
+    yield put(sendMessage({ content: 'Placing order', type: 'loading' }));
+
     yield zeroEx.exchange.validateOrderFillableOrThrowAsync(signedZRXOrder);
 
     const order = {
@@ -122,7 +125,6 @@ export function* createOrder({
     yield put(saveResourceRequest({
       resourceName: 'orders',
       request: 'createOrder',
-      message: 'Order created',
       data: {
         attributes: order,
         resourceName: 'orders',

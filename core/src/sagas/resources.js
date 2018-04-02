@@ -14,6 +14,7 @@ import {
 import * as resourcesActions from '../actions/resources';
 import {
   sendNotification,
+  sendMessage,
 } from '../actions/ui';
 
 
@@ -64,7 +65,6 @@ export function* saveResourceRequest({
     request,
     lists,
     mergeResources,
-    message,
     prepend,
   },
 }) {
@@ -86,9 +86,7 @@ export function* saveResourceRequest({
     yield put(actions.succeeded({
       resources: [response.data],
     }));
-    if (message) {
-      yield put(sendNotification({ message, type: 'success' }));
-    }
+    yield put(sendMessage({ destroy: true }));
     return response;
   } catch (err) {
     yield put(sendNotification({
