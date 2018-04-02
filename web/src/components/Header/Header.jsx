@@ -193,6 +193,7 @@ const Header = ({
       </Popover>
       <Badge>
         <HeaderButton
+          id="help"
           style={{
             background: '#673ab7',
           }}

@@ -4,7 +4,6 @@ import type {
   MapStateToProps,
 } from 'react-redux';
 import type { Dispatch } from 'redux';
-
 import {
   connect,
 } from 'react-redux';
@@ -15,11 +14,12 @@ import {
 type Props = {
   shouldRunTutorial: boolean,
   dispatch: Dispatch<*>,
+  autoStart?: boolean,
 };
 
 const steps = [
   {
-    title: '1. Connect your wallet',
+    title: '1. Make sure your wallet is connected',
     textAlign: 'center',
     text: (
       <div>
@@ -30,7 +30,7 @@ const steps = [
       </div>
     ),
     selector: '#account',
-    position: 'top',
+    position: 'bottom',
   },
   {
     title: '2. Select token you want to trade',
@@ -116,15 +116,40 @@ const steps = [
     selector: '#orderForm',
     position: 'left',
   },
+  // {
+  //   title: '7. Click here to rerun the tour',
+  //   text: (
+  //     <div>
+  //       <article>
+  //         If you have some troubles, please contact us on <a target="_blank" rel="noopener noreferrer" href="https://t.me/instex">Telegram</a> or with <a target="_blank" rel="noopener noreferrer" href="mailto://help@instex.io">Email</a>
+  //       </article>
+  //     </div>
+  //   ),
+  //   textAlign: 'center',
+  //   selector: '#help',
+  //   position: 'bottom-left',
+  // },
 ];
 
 class JoyrideWrapper extends Component<Props> {
+  componentDidMount() {
+    const hasVisited = localStorage.getItem('visited');
+    if (!hasVisited) {
+      this.props.dispatch(setUiState('shouldRunTutorial', true));
+      this.props.dispatch(setUiState('joyRideAutoStart', false));
+      localStorage.setItem('visited', true);
+    }
+  }
+
   handleJoyrideCallback = (result) => {
     // if (result.type === 'step:before') {
     //   // Keep internal state in sync with joyride
     //   this.setState({ stepIndex: result.index });
     // }
+    this.props.dispatch(setUiState('joyRideAutoStart', true));
+
     console.log(result);
+
     if (result.type === 'finished' && this.props.shouldRunTutorial) {
       // Need to set our running state to false, so we can restart if we click start again.
       this.joyride.reset(true);
@@ -132,6 +157,11 @@ class JoyrideWrapper extends Component<Props> {
     }
 
     if (result.type === 'error:target_not_found') {
+      this.joyride.reset(true);
+      this.props.dispatch(setUiState('shouldRunTutorial', false));
+    }
+
+    if (result.action === 'close' && this.props.shouldRunTutorial) {
       this.joyride.reset(true);
       this.props.dispatch(setUiState('shouldRunTutorial', false));
     }
@@ -144,7 +174,7 @@ class JoyrideWrapper extends Component<Props> {
   }
 
   render() {
-    const { shouldRunTutorial } = this.props;
+    const { shouldRunTutorial, autoStart } = this.props;
     return <Joyride
       scrollToFirstStep
       ref={(e) => { this.joyride = e; }}
@@ -152,8 +182,9 @@ class JoyrideWrapper extends Component<Props> {
       steps={steps}
       stepIndex={0}
       // debug
-      autoStart
+      autoStart={autoStart}
       showSkipButton
+      showStepsProgress
       run={shouldRunTutorial}
       callback={this.handleJoyrideCallback}
     />;
@@ -161,7 +192,12 @@ class JoyrideWrapper extends Component<Props> {
 }
 const mapStateToProps: MapStateToProps<*, *, *> = state => ({
   shouldRunTutorial: state.ui.shouldRunTutorial,
+  autoStart: state.ui.joyRideAutoStart,
 });
+
+JoyrideWrapper.defaultProps = {
+  autoStart: true,
+};
 
 
 export default connect(mapStateToProps)(JoyrideWrapper);

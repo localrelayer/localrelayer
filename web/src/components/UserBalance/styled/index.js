@@ -15,7 +15,7 @@ export const Title = styled.div`
 `;
 
 export const CardContainer = styled(Card)`
-  padding: 0;
+  padding: 7px 0;
   // min-height: 223px;
   // border: 1px solid #e8e8e8;
   & > .ant-card-head {
