@@ -6,7 +6,6 @@ import type {
 import {
   getDatafeed,
 } from './Datafeed';
-import '../../../dist/charting_library/static/chart.css';
 
 type Props = {
   token: Token,

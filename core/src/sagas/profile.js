@@ -16,7 +16,9 @@ import createActionCreators from 'redux-resource-action-creators';
 import type {
   Saga,
 } from 'redux-saga';
-
+import {
+  trackMixpanel,
+} from '../utils/mixpanel';
 
 import {
   socketConnect,
@@ -78,6 +80,10 @@ export function* loadUser(): Saga<*> {
       yield put(sendSocketMessage('login', {
         address: newAccount,
       }));
+      trackMixpanel(
+        'Log in',
+        { 'address': newAccount },
+      );
     }
   }
 }

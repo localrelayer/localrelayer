@@ -4,7 +4,6 @@ import {
   put,
   fork,
   select,
-  cps,
   takeEvery,
 } from 'redux-saga/effects';
 import {
@@ -27,6 +26,9 @@ import {
   connectionStatuses,
   SMALLEST_AMOUNT,
 } from '../utils/web3';
+import {
+  trackMixpanel,
+} from '../utils/mixpanel';
 import * as ProfileActions from '../actions/profile';
 import {
   runLoadUser,
@@ -41,6 +43,7 @@ import {
   getResourceMappedList,
   getCurrentToken,
   getCurrentPair,
+  getAddress,
 } from '../selectors';
 
 export function* initialize(): Saga<void> {
@@ -92,6 +95,7 @@ export function* initialize(): Saga<void> {
 
 export function* setTokens(): Saga<void> {
   const { zeroEx } = window;
+  const address = yield select(getAddress);
 
   yield put(reset('BuySellForm'));
   yield put(uiActions.setUiState('bannerMessage', null));
@@ -100,6 +104,14 @@ export function* setTokens(): Saga<void> {
   const tokens = yield select(getResourceMappedList('tokens', 'allTokens'));
   const reg = pathToRegexp('/:token-:pair');
   const [a, token, pair] = reg.exec(pathname) || []; // eslint-disable-line
+
+  // TODO: better links
+  if (token && pair) {
+    yield put(uiActions.setUiState('activeLink', 'home'));
+  } else {
+    yield put(uiActions.setUiState('activeLink', 'account'));
+  }
+
   let selectedToken =
     tokens.find(t => (t.symbol === token || t.id === token) && t.is_listed);
   const pairToken =
@@ -115,6 +127,10 @@ export function* setTokens(): Saga<void> {
   const wethToken = tokens.find(t => t.symbol === 'WETH' || t.id === networkWethAddress) || {};
 
   if (!selectedToken && window.web3 && window.web3.utils.isAddress(token)) {
+    trackMixpanel(
+      'New token created',
+      { address },
+    );
     try {
       const deployed = new window.web3.eth.Contract(EIP20.abi, token);
       const name = yield call(deployed.methods.name().call);
@@ -168,7 +184,6 @@ export function* setTokens(): Saga<void> {
       console.error(e);
     }
   }
-  yield put(uiActions.setUiState('activeLink', 'home'));
   yield put(uiActions.setUiState('currentTokenId', selectedToken ? selectedToken.id : zrxToken.id));
   yield put(uiActions.setUiState('currentPairId', pairToken ? pairToken.id : wethToken.id));
 }

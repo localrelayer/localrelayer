@@ -40,6 +40,9 @@ import config from '../config';
 import {
   customApiRequest,
 } from '../api';
+import {
+  trackMixpanel,
+} from '../utils/mixpanel';
 
 BigNumber.config({ EXPONENTIAL_AT: 5000 });
 
@@ -132,6 +135,10 @@ export function* createOrder({
     }));
     yield put(reset('BuySellForm'));
     yield call(loadTokensBalance);
+    trackMixpanel(
+      'Order created',
+      { address },
+    );
   } catch (e) {
     yield put(sendNotification({ message: e.message, type: 'error' }));
     console.error(e);

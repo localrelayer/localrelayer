@@ -15,6 +15,7 @@
     "bignumber.js": "5.0.0",
     "es6-promisify": "^6.0.0",
     "human-standard-token-abi": "1.0.2",
+    "mixpanel-browser": "^2.19.0",
     "moment": "^2.20.1",
     "path-to-regexp": "^2.1.0",
     "ramda": "0.25.0",
