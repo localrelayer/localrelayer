@@ -62,13 +62,11 @@ export const HelpButton = styled.a`
 
 export const HelpContainer = styled.div`
   display: flex;
-  flex-direction: column;
-  .title {
-    text-decoration: underline;
-    color: white;
+  a {
+    text-align: center;
   }
   & img {
-    max-height: 30px;
+    max-height: 80px;
     margin: 0 10px;
   }
 `;
