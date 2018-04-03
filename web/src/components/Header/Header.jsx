@@ -42,21 +42,23 @@ import TokensList from './TokensList';
 import UserProfile from '../UserProfile';
 import logo from '../../assets/logo5.png';
 import telegram from '../../assets/telegram.png';
-import email from '../../assets/mail.png';
+import email from '../../assets/letter.png';
+import twitter from '../../assets/twitter.png';
 
 const Help = () => (
   <HelpContainer>
     <a target="_blank" rel="noopener noreferrer" href="https://t.me/instex">
       <img src={telegram} alt="telegram" />
-      {' '}
-      <span className="title">Telegram</span>
+      Telegram
     </a>
     <a href="mailto:hi@instex.io">
       <img src={email} alt="email" />
-      {' '}
-      <span className="title">Email</span>
+      Email
     </a>
-
+    <a target="_blank" rel="noopener noreferrer" href="https://twitter.com/Instex_0x">
+      <img src={twitter} alt="twitter" />
+      Twitter
+    </a>
   </HelpContainer>
 );
 
