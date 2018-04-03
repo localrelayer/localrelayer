@@ -86,9 +86,10 @@ const getColumns = onToggle => [
     key: 'tradable',
     render: (text, record) => (
       <Switch
+        className="unlock"
         checked={record.isTradable}
         checkedChildren={<Icon type="check" />}
-        onChange={checked => checked && onToggle(record)}
+        onChange={checked => onToggle(checked, record)}
       />
     ),
   },
@@ -116,10 +117,10 @@ const UserTotalBalance = ({
       <Overlay isShown={!isConnected}>
         <h3
           style={{
-        margin: '20px',
-        marginTop: '200px',
-        width: '100%',
-      }}
+            margin: '20px',
+            marginTop: '200px',
+            width: '100%',
+          }}
         >
       You are viewing this in read-only mode. Connect a wallet to see your balance
         </h3>
