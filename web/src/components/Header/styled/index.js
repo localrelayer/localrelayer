@@ -14,7 +14,6 @@ export const LogoContainer = styled.div`
 `;
 
 export const MenuContainer = styled(Menu)`
-  margin-left: 20px;
   & > .ant-menu-item-selected {
     background: none !important;
   }
@@ -54,3 +53,23 @@ export const TokenContainer = styled.div`
     border: none;
   }
 `;
+
+export const HelpButton = styled.a`
+  margin-right: 15px;
+  color: white;
+  text-decoration: underline;
+`;
+
+export const HelpContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  .title {
+    text-decoration: underline;
+    color: white;
+  }
+  & img {
+    max-height: 30px;
+    margin: 0 10px;
+  }
+`;
+

@@ -1,6 +1,8 @@
 // @flow
 import React from 'react';
-import { withState } from 'recompose';
+import {
+  withState,
+} from 'recompose';
 
 import type {
   Node,
@@ -16,12 +18,12 @@ import {
 import {
   connectionStatuses,
 } from 'instex-core/src/utils/web3';
-
 import {
   Menu,
   Popover,
   Icon,
   Badge,
+  Modal,
 } from 'antd';
 import {
   MenuContainer,
@@ -30,6 +32,8 @@ import {
   HeaderButton,
   UserButton,
   TokenContainer,
+  HelpButton,
+  HelpContainer,
 } from './styled';
 import {
   Truncate,
@@ -37,6 +41,24 @@ import {
 import TokensList from './TokensList';
 import UserProfile from '../UserProfile';
 import logo from '../../assets/logo5.png';
+import telegram from '../../assets/telegram.png';
+import email from '../../assets/mail.png';
+
+const Help = () => (
+  <HelpContainer>
+    <a target="_blank" rel="noopener noreferrer" href="https://t.me/instex">
+      <img src={telegram} alt="telegram" />
+      {' '}
+      <span className="title">Telegram</span>
+    </a>
+    <a href="mailto:hi@instex.io">
+      <img src={email} alt="email" />
+      {' '}
+      <span className="title">Email</span>
+    </a>
+
+  </HelpContainer>
+);
 
 type Props = {
   /** User object */
@@ -106,7 +128,7 @@ const Header = ({
       alt="logo"
       src={logo}
       style={{
-       height: '100%',
+       height: '80%',
      }}
     />
     <MenuContainer
@@ -153,6 +175,10 @@ const Header = ({
       </HeaderButton>
     </Popover>
     <AlignRight>
+      <HelpButton
+        onClick={() => Modal.info({ title: 'Contact us for help', content: Help() })}
+      >Help
+      </HelpButton>
       <Popover
         placement="bottom"
         trigger={['click']}
