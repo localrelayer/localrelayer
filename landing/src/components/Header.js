@@ -11,25 +11,28 @@ const NavBar = styled.nav`
 `;
 
 const LogoContainer = styled.div`
-  padding: 25px;
+  padding: 10px 30px;
+`;
+
+const ImgContainer = styled.img`
+  max-height: 40px;
 `;
 
 const RightLinks = styled.div`
-  margin: 0 50px;
-
+  margin-right: 50px;
   img {
-    height: 40px;
+    max-height: 30px;
   }
 `;
 
 export default () => (
   <NavBar>
     <LogoContainer>
-      <img style={{ height: 50 }} src={logo} alt="logo" />
+      <ImgContainer src={logo} alt="logo" />
     </LogoContainer>
 
     <RightLinks>
-      <img src={zeroEx} alt="Powered by 0x.js" />
+      <ImgContainer src={zeroEx} alt="Powered by 0x.js" />
     </RightLinks>
   </NavBar>
 );
