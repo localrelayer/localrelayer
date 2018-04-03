@@ -1,12 +1,10 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: sans-serif;
-  background: #0e2434;
+  background: linear-gradient(90deg, rgb(55, 0, 90) 0%, rgb(8, 58, 101) 100%);
   min-height: 100vh;
   color: white;
-  font-weight: 200;
-  font-family: 'Roboto', Circular, Helvetica Neue, Helvetica, Arial, sans-serif;
+  font-family: 'Work Sans', Circular, Helvetica Neue, Helvetica, Arial, sans-serif;
 }
 
 img {

@@ -22,9 +22,9 @@ const UserProfile: StatelessFunctionalComponent<Props> = ({
   balance,
   network,
 }: Props): Node => (
-  <Card style={{ width: 300 }}>
+  <Card id="userCard" style={{ width: 300 }}>
     <Meta
-      avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
+      avatar={<Avatar src="https://pbs.twimg.com/profile_images/916433801139679237/8EZcpoYC_400x400.jpg" />}
       title={address}
       description={
         <div>

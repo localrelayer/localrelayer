@@ -40,7 +40,7 @@ import {
 } from '../SharedStyles';
 import TokensList from './TokensList';
 import UserProfile from '../UserProfile';
-import logo from '../../assets/logo5.png';
+import logo from '../../assets/logo5beta.png';
 import telegram from '../../assets/telegram.png';
 import email from '../../assets/letter.png';
 import twitter from '../../assets/twitter.png';
@@ -130,7 +130,7 @@ const Header = ({
       alt="logo"
       src={logo}
       style={{
-       height: '80%',
+       height: '100%',
      }}
     />
     <MenuContainer

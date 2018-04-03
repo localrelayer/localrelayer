@@ -3,10 +3,10 @@ import styled from 'styled-components';
 import medium from '../assets/medium.png';
 import twitter from '../assets/twitter.png';
 import telegram from '../assets/telegram.png';
-import email from '../assets/mail.svg';
+import email from '../assets/email.svg';
 
 const Footer = styled.footer`
-  padding: 50px;
+  padding: 50px 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -27,15 +27,25 @@ const Contact = styled.div`
   display: flex;
   width: 100%;
   justify-content: center;
+  background: #00000054;
+  padding: 50px 0;
+  @media (max-width: 960px) {
+    flex-direction: column;
+    align-items: center;
+  }
 `;
 
 const Links = styled.div`
+  margin-top: 50px;
   display: flex;
 `;
 
 const TextContainer = styled.div`
   font-size: 1.1rem;
   margin-right: 10%;
+  @media (max-width: 960px) {
+    padding: 0 50px;
+  }
 `;
 
 const GetInTouch = styled.div`
@@ -43,13 +53,13 @@ const GetInTouch = styled.div`
   a {
     all: unset;
     font-weight: 500;
-    color: #b8cdf7;
     cursor: pointer;
+    text-decoration: underline;
   }
 `;
 
 const Legal = styled.div`
-  margin-top: 100px;
+  margin-top: 50px;
 `;
 
 export default () => (
