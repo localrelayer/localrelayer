@@ -10,6 +10,9 @@ import {
 import {
   setUiState,
 } from 'instex-core/actions';
+import {
+  Modal,
+} from 'antd';
 
 type Props = {
   shouldRunTutorial: boolean,
@@ -159,6 +162,7 @@ class JoyrideWrapper extends Component<Props> {
     if (result.type === 'error:target_not_found') {
       this.joyride.reset(true);
       this.props.dispatch(setUiState('shouldRunTutorial', false));
+      Modal.info({ title: 'To continue tour, please connect a wallet' });
     }
 
     if (result.action === 'close' && this.props.shouldRunTutorial) {

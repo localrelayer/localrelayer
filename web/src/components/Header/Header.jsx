@@ -126,13 +126,20 @@ const Header = ({
   onHelpClick,
 }: Props): Node => (
   <HeaderContainer>
-    <img
-      alt="logo"
-      src={logo}
+    <Link
       style={{
-       height: '100%',
-     }}
-    />
+      height: '100%',
+    }}
+      to="/ZRX-WETH"
+    >
+      <img
+        style={{
+          height: '100%',
+        }}
+        alt="logo"
+        src={logo}
+      />
+    </Link>
     <MenuContainer
       theme="dark"
       mode="horizontal"
