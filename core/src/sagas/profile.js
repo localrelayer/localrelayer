@@ -143,6 +143,9 @@ export function* loadNetwork() {
   const { web3 } = window;
   const networkId = yield cps(web3.eth.net.getId);
   const network = getNetworkById(networkId);
+  if (process.NODE_ENV === 'production' && networkId != 42) {
+    yield put(showModal({ title: 'Please connect to the Kovan Testnet.', type: 'error', text: 'We\'re still in beta, please stay updated for news' }));
+  }
   yield put(setProfileState('network', network));
 }
 
