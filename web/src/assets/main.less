@@ -119,7 +119,8 @@
 
 .Table {
   display: flex;
-  flex-flow: column nowrap;
+  flex-flow: row wrap;
+  overflow: auto;
   justify-content: flex-start;
   line-height: 1.5;
   font-size: 0.8rem;
@@ -144,6 +145,7 @@
       background: @item-hover-bg;
       cursor: pointer;
     }
+  max-height: 25px;
   }
 }
 
