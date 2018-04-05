@@ -28,8 +28,10 @@ import {
   getAddress,
   getBalance,
   getWethToken,
-  getResourceItemBydId,
 } from '../selectors';
+import {
+  trackMixpanel,
+} from '../utils/mixpanel';
 
 const sagas = {
   deposit,
@@ -47,11 +49,11 @@ function* deposit() {
   const account = yield select(getAddress);
   const balance = yield select(getBalance);
 
-  if (balance === amount) {
+  if (balance <= 0.0001) {
     yield put(showModal({
       title: 'Do not deposit all of your ETH!',
       type: 'info',
-      text: 'Otherwise you cannot pay for transactions.',
+      text: 'You need to pay for deposit transactions.',
     }));
   } else {
     const ethToConvert = ZeroEx.toBaseUnitAmount(new BigNumber(amount), weth.decimals);
@@ -64,7 +66,15 @@ function* deposit() {
       yield put(setUiState('isBalanceLoading', true));
       yield put(reset('WrapForm'));
       yield call([zeroEx, zeroEx.awaitTransactionMinedAsync], txHash);
+
+      // Somewhy balance isn't updated until 10 seconds will end
       yield call(delay, 10000);
+
+      trackMixpanel(
+        'Deposit',
+        { address: account },
+      );
+
       yield put(sendNotification({ message: 'Deposit successful', type: 'success' }));
       yield call(loadTokensBalance);
       yield call(loadBalance);
@@ -94,13 +104,23 @@ function* withdraw() {
     yield put(setUiState('isBalanceLoading', true));
     yield put(reset('WrapForm'));
     yield call([zeroEx, zeroEx.awaitTransactionMinedAsync], txHash);
+
+    // Somewhy balance isn't updated until 10 seconds will end
     yield call(delay, 10000);
+
+    trackMixpanel(
+      'Withdraw',
+      { address: account },
+    );
+
     yield put(sendNotification({ message: 'Withdrawal successful', type: 'success' }));
     yield call(loadTokensBalance);
     yield call(loadBalance);
     yield put(setUiState('isBalanceLoading', false));
   } catch (e) {
     yield put(sendNotification({ message: e.message, type: 'error' }));
+    yield put(setUiState('isBalanceLoading', false));
+
     console.error(e);
   }
 }
@@ -125,6 +145,11 @@ function* setAllowance(token) {
     yield call([zeroEx, zeroEx.awaitTransactionMinedAsync], txHash);
     yield put(setUiState('isBalanceLoading', false));
 
+    trackMixpanel(
+      'Allowance setted',
+      { address: account, token: token.id },
+    );
+
     yield put(actions.succeeded({
       resources: [{
         id: token.id,
@@ -136,6 +161,8 @@ function* setAllowance(token) {
     }));
   } catch (e) {
     yield put(sendNotification({ message: e.message, type: 'error' }));
+    yield put(setUiState('isBalanceLoading', false));
+
     console.error(e);
   }
 }
@@ -160,6 +187,11 @@ function* unsetAllowance(token) {
     yield call([zeroEx, zeroEx.awaitTransactionMinedAsync], txHash);
     yield put(setUiState('isBalanceLoading', false));
 
+    trackMixpanel(
+      'Allowance unsetted',
+      { address: account, token: token.id },
+    );
+
     yield put(actions.succeeded({
       resources: [{
         id: token.id,
@@ -171,6 +203,7 @@ function* unsetAllowance(token) {
     }));
   } catch (e) {
     yield put(sendNotification({ message: e.message, type: 'error' }));
+    yield put(setUiState('isBalanceLoading', false));
     console.error(e);
   }
 }
