@@ -3,6 +3,9 @@ import {
   Icon,
 } from 'antd';
 import {
+  lifecycle,
+} from 'recompose';
+import {
   Table,
   IconContainer,
   AmountFillContainer,
@@ -31,23 +34,30 @@ const calculateFill = (amount, orders) => {
   // const fill = amount / avg >= 1 ? '100%' : `${(amount / avg) * 100}%`;
   // const fill = amount >= median ? '100%' : `${(amount / median) * 100}%`;
 
-  return `${(amount / 1000) * 100}%`;
+  const maxAmount = Math.max(...orders.map(o => o.amount));
+
+  // return `${(amount / 1000 > 1 ? 1 : amount / 1000) * 100}%`;
+  return `${(amount / maxAmount) * 100}%`;
 };
 
-export default ({
+const enchance = lifecycle({
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.orders.length && this.props.orders.length !== nextProps.orders.length) {
+      const element = document.getElementById('sell-book');
+      setTimeout(() => {
+        element.scrollTop = element.scrollHeight;
+      }, 0);
+    }
+  },
+});
+
+export default enchance(({
   showHeader,
   orders,
   fillOrder,
   type,
 }: Props) => (
-  <Table className="Table">
-    {showHeader &&
-      <div className="Table-row Table-header">
-        <div className="Table-row-item">Price</div>
-        <div className="Table-row-item">Amount</div>
-        <div className="Table-row-item">Total</div>
-        <IconContainer className="Table-row-item" />
-      </div>}
+  <Table id={`${type}-book`} className="Table">
     {
       orders.length > 0 ? orders.map((order, i) => (
         <div
@@ -76,4 +86,4 @@ export default ({
       :
       <div style={{ margin: type === 'sell' ? '7% auto' : '72% auto' }}>No {type} orders</div>
     }
-  </Table>);
+  </Table>));

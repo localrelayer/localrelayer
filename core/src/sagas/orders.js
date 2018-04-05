@@ -137,7 +137,7 @@ export function* createOrder({
     yield call(loadTokensBalance);
     trackMixpanel(
       'Order created',
-      { address },
+      { address, token: currentToken.id },
     );
   } catch (e) {
     yield put(sendNotification({ message: e.message, type: 'error' }));

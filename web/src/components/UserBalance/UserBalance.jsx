@@ -107,18 +107,18 @@ const UserBalance = ({
   isConnected,
 }: Props): Node => (
   <div id="user-balance">
-    <ComponentTitle>Balances ({balance} ETH)</ComponentTitle>
-    <Overlay isShown={!isConnected}>
-      <h3
-        style={{
-      margin: '20px',
-      marginTop: '50px',
-    }}
-      >
-    You are viewing this in read-only mode. Connect a wallet to see your balance
-      </h3>
-    </Overlay>
+    <ComponentTitle>Balances ({balance || 0} ETH)</ComponentTitle>
     <CardContainer bordered={false}>
+      <Overlay isShown={!isConnected}>
+        <h3
+          style={{
+            margin: '20px',
+            marginTop: '50px',
+          }}
+        >
+    You are viewing this in read-only mode. Connect a wallet to see your balance
+        </h3>
+      </Overlay>
       <WrapForm wrap={wrap} unwrap={unwrap} onSubmit={() => {}} isLoading={isBalanceLoading} />
       <Card.Grid>
         <TableContainer

@@ -14,6 +14,7 @@ import {
 import {
   OrderBookContainer,
   SpreadContainer,
+  IconContainer,
 } from './styled';
 import TableContainer from './Table';
 
@@ -45,9 +46,15 @@ const OrderBook: StatelessFunctionalComponent<Props> = ({
   fillOrder,
 }: Props): Node => (
   <OrderBookContainer id="Order-book">
-    <TableContainer type="sell" orders={sellOrders.slice(0, 12).reverse()} fillOrder={fillOrder} showHeader />
+    <div className="Table-row Table-header">
+      <div className="Table-row-item">Price</div>
+      <div className="Table-row-item">Amount</div>
+      <div className="Table-row-item">Total</div>
+      <IconContainer className="Table-row-item" />
+    </div>
+    <TableContainer type="sell" orders={sellOrders.slice(0, 50).reverse()} fillOrder={fillOrder} showHeader />
     <SpreadContainer><span style={{ marginRight: 5 }}>{getSpread(sellOrders[0], buyOrders[0])}</span>{' '}<Badge status="processing" text="Realtime" /></SpreadContainer>
-    <TableContainer type="buy" orders={buyOrders.slice(-12)} fillOrder={fillOrder} />
+    <TableContainer type="buy" orders={buyOrders.slice(-50)} fillOrder={fillOrder} />
   </OrderBookContainer>
 );
 
