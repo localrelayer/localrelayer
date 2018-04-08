@@ -11,6 +11,31 @@ import TokenCard from './TokenCardContainer';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
+const layoutXs = [
+  {
+    i: 'tokenCard', x: 0, y: 0, w: 1, h: 3, static: true,
+  },
+  {
+    i: 'buySell', x: 1, y: 3, w: 1, h: 9, static: true,
+  },
+  {
+    i: 'orderBook', x: 0, y: 12, w: 1, h: 18, static: true,
+  },
+  {
+    i: 'balance', x: 1, y: 30, w: 1, h: 6, static: true,
+  },
+  {
+    i: 'history', x: 0, y: 36, w: 1, h: 12, static: true,
+  },
+  {
+    i: 'userOrders', x: 0, y: 48, w: 1, h: 12, static: true,
+  },
+  {
+    i: 'chart', x: 0, y: 0, w: 0, h: 0, static: true,
+  },
+];
+
+
 const layoutSm = [
   {
     i: 'orderBook', x: 0, y: 0, w: 1, h: 18, static: true,
@@ -20,10 +45,10 @@ const layoutSm = [
   },
 
   {
-    i: 'chart', x: 0, y: 18, w: 2, h: 12, static: true,
+    i: 'chart', x: 0, y: 19, w: 2, h: 12, static: true,
   },
   {
-    i: 'userOrders', x: 0, y: 30, w: 2, h: 12, static: true,
+    i: 'userOrders', x: 0, y: 31, w: 2, h: 12, static: true,
   },
   {
     i: 'tokenCard', x: 6.5, y: 0, w: 1, h: 3, static: true,
@@ -32,9 +57,8 @@ const layoutSm = [
     i: 'buySell', x: 1, y: 3, w: 1, h: 9, static: true,
   },
   {
-    i: 'history', x: 0, y: 42, w: 2, h: 12, static: true,
+    i: 'history', x: 0, y: 43, w: 2, h: 12, static: true,
   },
-
 ];
 
 const layoutMd = [
@@ -145,6 +169,7 @@ export default () =>
   <ResponsiveReactGridLayout
     className="layout"
     layouts={{
+      xs: layoutXs,
       sm: layoutSm,
       md: layoutMd,
       lg: layoutLg,
@@ -152,7 +177,8 @@ export default () =>
       lg3: layoutLg3,
     }}
     breakpoints={{
-      sm: 0,
+      xs: 0,
+      sm: 600,
       md: 1000,
       lg: 1350,
       lg2: 1550,
@@ -163,6 +189,7 @@ export default () =>
     width="100vh"
     onLayoutChange={() => {}}
     cols={{
+      xs: 1,
       sm: 2,
       md: 10,
       lg: 12,

@@ -6,7 +6,6 @@ import {
   getFormValues,
 } from 'redux-form';
 import {
-  Form,
   Popover,
   Icon,
 } from 'antd';

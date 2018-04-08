@@ -54,20 +54,20 @@ export const getColumns = (onCancel: (id: string) => void) => [
     title: 'Price',
     dataIndex: 'price',
     key: 'user/price',
-    render: (text: string) => Number(text).toFixed(6),
+    render: (text: string) => Number(text).toFixed(4),
   },
   {
     title: 'Amount',
     dataIndex: 'amount',
     key: 'user/amount',
-    render: (text: string) => Number(text).toFixed(6),
+    render: (text: string) => Number(text).toFixed(4),
   },
   {
     title: 'Total',
     dataIndex: 'total',
     key: 'total',
     render: (text: string) =>
-      Number(text).toFixed(6),
+      Number(text).toFixed(4),
   },
   {
     title: 'Action',

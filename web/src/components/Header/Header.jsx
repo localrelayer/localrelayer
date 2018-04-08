@@ -2,6 +2,7 @@
 import React from 'react';
 import {
   withState,
+  compose,
 } from 'recompose';
 
 import type {
@@ -14,53 +15,38 @@ import type {
 } from 'instex-core/types';
 import {
   Link,
+  NavLink,
 } from 'react-router-dom';
 import {
   connectionStatuses,
 } from 'instex-core/src/utils/web3';
+import pathToRegexp from 'path-to-regexp';
 import {
-  Menu,
+  // Menu,
   Popover,
   Icon,
   Badge,
   Modal,
+  Alert,
+  Button,
 } from 'antd';
 import {
-  MenuContainer,
+  LinksContainer,
   HeaderContainer,
   AlignRight,
   HeaderButton,
   UserButton,
   TokenContainer,
   HelpButton,
-  HelpContainer,
 } from './styled';
 import {
   Truncate,
 } from '../SharedStyles';
 import TokensList from './TokensList';
 import UserProfile from '../UserProfile';
+import CustomTokenForm from './CustomTokenForm';
 import logo from '../../assets/logo5beta.png';
-import telegram from '../../assets/telegram.png';
-import email from '../../assets/letter.png';
-import twitter from '../../assets/twitter.png';
-
-const Help = () => (
-  <HelpContainer>
-    <a target="_blank" rel="noopener noreferrer" href="https://t.me/instex">
-      <img src={telegram} alt="telegram" />
-      Telegram
-    </a>
-    <a href="mailto:hi@instex.io">
-      <img src={email} alt="email" />
-      Email
-    </a>
-    <a target="_blank" rel="noopener noreferrer" href="https://twitter.com/Instex_0x">
-      <img src={twitter} alt="twitter" />
-      Twitter
-    </a>
-  </HelpContainer>
-);
+import Help from './Help';
 
 type Props = {
   /** User object */
@@ -93,6 +79,14 @@ type Props = {
   activeLink: string,
   /** Trigger help */
   onHelpClick?: Function,
+  /** Is modal visible */
+  modalVisible: boolean,
+  /** Toggle modal visibility */
+  toggleModal: Function,
+  /** Set custom token address */
+  setTokenAddress: Function,
+  /** Check if we can submit form in modal */
+  isCustomTokenFormValid: Boolean,
 };
 
 /**
@@ -101,7 +95,17 @@ type Props = {
  * @author [Tim Reznich](https://github.com/imbaniac)
  */
 
-const enhance = withState('popoverVisible', 'togglePopover', false);
+const checkIsActiveToken = (match, location) => {
+  const { pathname } = location;
+  const reg = pathToRegexp('/:token-:pair');
+  const [a, token, pair] = reg.exec(pathname) || []; // eslint-disable-line
+  return token && pair;
+};
+
+const checkIsActiveAccount = (match, location) => location.pathname === '/account';
+
+const enhancePopover = withState('popoverVisible', 'togglePopover', false);
+const enhanceModal = withState('modalVisible', 'toggleModal', false);
 
 const getTokenButtonTitle = (selectedToken: Token, tokenPair: Token) => {
   if (selectedToken.symbol && tokenPair.symbol) {
@@ -113,133 +117,172 @@ const getTokenButtonTitle = (selectedToken: Token, tokenPair: Token) => {
 const Header = ({
   user,
   onUserClick,
-  onTokenSelect,
   tokens,
   selectedToken,
   tokenPair,
   onTokenSearch,
+  onTokenSelect,
   onPairSelect,
   popoverVisible,
   togglePopover,
-  setActiveLink,
-  activeLink,
   onHelpClick,
+  modalVisible,
+  toggleModal,
+  setTokenAddress,
+  isCustomTokenFormValid,
+  // eslint-disable-next-line
+  location,
 }: Props): Node => (
-  <HeaderContainer>
-    <Link
-      style={{
-      height: '100%',
-    }}
-      to="/ZRX-WETH"
-    >
-      <img
+  <div>
+    <label htmlFor="show-menu" className="show-menu">
+      <Link
+        to="/ZRX-WETH"
+        style={{
+          height: '50px',
+        }}
+      >
+        <img alt="logo" src={logo} />
+      </Link>
+      <Icon style={{ fontSize: '2rem' }} type="bars" />
+    </label>
+    <input type="checkbox" id="show-menu" role="button" />
+    <HeaderContainer id="menu">
+      <Link
+        id="main-header-logo"
         style={{
           height: '100%',
         }}
-        alt="logo"
-        src={logo}
-      />
-    </Link>
-    <MenuContainer
-      theme="dark"
-      mode="horizontal"
-      onClick={setActiveLink}
-      selectedKeys={[activeLink]}
-    >
-      <Menu.Item key="home">
-        <Link to="/ZRX-WETH">
+        to="/ZRX-WETH"
+      >
+        <img alt="logo" src={logo} />
+      </Link>
+      <LinksContainer>
+        <NavLink
+          isActive={match => checkIsActiveToken(match, location)}
+          activeStyle={{ color: 'white' }}
+          to="/ZRX-WETH"
+        >
           <Icon type="swap" />Trade
-        </Link>
-      </Menu.Item>
-      <Menu.Item id="account_link" key="account">
-        <Link to="/account">
+        </NavLink>
+        <NavLink
+          isActive={match => checkIsActiveAccount(match, location)}
+          activeStyle={{ color: 'white' }}
+          to="/account"
+        >
           <Icon type="home" />Account
-        </Link>
-      </Menu.Item>
-    </MenuContainer>
-    <Popover
-      trigger={['click']}
-      placement="bottom"
-      visible={popoverVisible}
-      onVisibleChange={togglePopover}
-      content={
-        <TokenContainer>
-          <TokensList
-            id="tokensList"
-            onSearch={onTokenSearch}
-            tokens={tokens}
-            onSelect={(token) => {
-              togglePopover(false);
-              onTokenSelect(token);
-            }}
-            selectedToken={selectedToken}
-            tokenPair={tokenPair}
-            onPairSelect={onPairSelect}
-          />
-        </TokenContainer>
-      }
-    >
-      <HeaderButton id="selectTokenButton" type="primary">
-        Tokens {getTokenButtonTitle(selectedToken, tokenPair)} <Icon type="down" />
-      </HeaderButton>
-    </Popover>
-    <AlignRight>
-      <HelpButton
-        onClick={() => Modal.info({ title: 'Contact us for help', content: Help() })}
-      >Help
-      </HelpButton>
+        </NavLink>
+      </LinksContainer>
       <Popover
-        placement="bottom"
         trigger={['click']}
+        placement="bottom"
+        visible={popoverVisible}
+        onVisibleChange={togglePopover}
         content={
-          <div>
-            <UserProfile {...user} />
-          </div>
+          <TokenContainer>
+            <TokensList
+              id="tokensList"
+              onSearch={onTokenSearch}
+              tokens={tokens}
+              onSelect={(token) => {
+                togglePopover(false);
+                onTokenSelect(token.symbol);
+              }}
+              selectedToken={selectedToken}
+              tokenPair={tokenPair}
+              onPairSelect={onPairSelect}
+            />
+          </TokenContainer>
         }
       >
-        <Badge>
-          <UserButton
-            id="account"
+        <UserButton id="selectTokenButton" type="primary">
+          Tokens {getTokenButtonTitle(selectedToken, tokenPair)} <Icon type="down" />
+        </UserButton>
+      </Popover>
+      <UserButton onClick={() => toggleModal(true)} type="primary">
+        Token by Address <Icon type="copy" />
+      </UserButton>
+      <Modal
+        title="Trade not listed token"
+        visible={modalVisible}
+        destroyOnClose
+        onCancel={() => toggleModal(false)}
+        footer={[
+          <Button type="default" key="back" onClick={() => toggleModal(false)}>
+            Cancel
+          </Button>,
+          <Button
+            key="submit"
             type="primary"
-            onClick={() => onUserClick(user)}
+            onClick={
+              isCustomTokenFormValid &&
+              (() => {
+                setTokenAddress();
+                toggleModal(false);
+              })
+            }
           >
-            <Icon type="user" />{' '}
-            {user.connectionStatus === connectionStatuses.CONNECTED ? (
-              <Truncate>{user.address}</Truncate>
-            ) : (
-              user.connectionStatus
-            )}
-            <Icon type="down" />
-          </UserButton>
-        </Badge>
-      </Popover>
-      <Popover
-        placement="bottom"
-        trigger={['click']}
-        content={
-          <div style={{ padding: '12px 16px' }}>
-            No notifications
-          </div>
-        }
+            Submit
+          </Button>,
+        ]}
       >
-        <Badge count={user.notifications ? user.notifications.length : 0}>
-          <HeaderButton icon="bell" shape="circle" type="primary" />
-        </Badge>
-      </Popover>
-      <Badge>
-        <HeaderButton
-          id="help"
-          style={{
-            background: '#673ab7',
-          }}
-          shape="circle"
-          type="primary"
-          onClick={onHelpClick}
-          icon="question-circle"
+        <Alert
+          message="Double check that you want to trade precisely this address"
+          description="There are a lot of scam tokens. Difference even in 1 symbol can cost you money."
+          type="info"
         />
-      </Badge>
-    </AlignRight>
-  </HeaderContainer>
+        <CustomTokenForm />
+      </Modal>
+      <AlignRight id="right-menu">
+        <Popover
+          placement="bottom"
+          trigger={['click']}
+          content={
+            <div>
+              <UserProfile {...user} />
+            </div>
+          }
+        >
+          <Badge>
+            <UserButton id="account" type="primary" onClick={() => onUserClick(user)}>
+              <Icon type="user" />{' '}
+              {user.connectionStatus === connectionStatuses.CONNECTED ? (
+                <Truncate>{user.address}</Truncate>
+              ) : (
+                user.connectionStatus
+              )}
+              <Icon type="down" />
+            </UserButton>
+          </Badge>
+        </Popover>
+        <div>
+          <HelpButton onClick={() => Modal.info({ title: 'Contact us for help', content: Help() })}>
+            Help
+          </HelpButton>
+          <Popover
+            placement="bottom"
+            trigger={['click']}
+            content={<div style={{ padding: '12px 16px' }}>No notifications</div>}
+          >
+            <Badge count={user.notifications ? user.notifications.length : 0}>
+              <HeaderButton icon="bell" shape="circle" type="primary" />
+            </Badge>
+          </Popover>
+          <Badge>
+            <HeaderButton
+              id="help"
+              style={{
+                background: '#673ab7',
+              }}
+              shape="circle"
+              type="primary"
+              onClick={onHelpClick}
+              icon="question-circle"
+            />
+          </Badge>
+        </div>
+      </AlignRight>
+    </HeaderContainer>
+  </div>
 );
 
 Header.defaultProps = {
@@ -250,4 +293,4 @@ Header.defaultProps = {
   setActiveLink: () => {},
 };
 
-export default enhance(Header);
+export default compose(enhancePopover, enhanceModal)(Header);
