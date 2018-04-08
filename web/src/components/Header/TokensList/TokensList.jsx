@@ -2,7 +2,8 @@
 import React from 'react';
 import {
   Input,
-  Radio,
+  // Radio,
+  Select,
 } from 'antd';
 
 import type {
@@ -23,8 +24,9 @@ import {
   Colored,
 } from '../../SharedStyles';
 
-const RadioButton = Radio.Button;
-const RadioGroup = Radio.Group;
+// const RadioButton = Radio.Button;
+// const RadioGroup = Radio.Group;
+const { Option } = Select;
 
 type Props = {
   /** List of all orders */
@@ -112,10 +114,15 @@ const TokensList: StatelessFunctionalComponent<Props> = ({
     <InputContainer>
       <Input
         autoFocus
-        placeholder="Search token"
+        placeholder="Search token name, symbol or address"
         onChange={e => onSearch(e.target.value)}
+        addonAfter={
+          <Select defaultValue="WETH" style={{ width: 100 }}>
+            <Option value="WETH">WETH</Option>
+          </Select>
+        }
       />
-      <RadioGroup
+      { /* <RadioGroup
         onChange={(e) => {
           const pair = tokens.find(token => token.symbol === e.target.value) || {};
           onPairSelect(pair);
@@ -123,9 +130,9 @@ const TokensList: StatelessFunctionalComponent<Props> = ({
         value={tokenPair.symbol}
       >
         <RadioButton value="WETH">WETH</RadioButton>
-        { /* <RadioButton value="DAI">DAI</RadioButton> */ }
-        { /* <RadioButton value="USDT">USDT</RadioButton> */ }
-      </RadioGroup>
+        <RadioButton value="DAI">DAI</RadioButton>
+        <RadioButton value="USDT">USDT</RadioButton>
+      </RadioGroup> */ }
     </InputContainer>
     <TableContainer
       size="small"

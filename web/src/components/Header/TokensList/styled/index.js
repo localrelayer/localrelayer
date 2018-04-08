@@ -26,5 +26,6 @@ export const TableContainer = styled(Table)`
   &:hover {
     cursor: pointer;
   }
+  min-height: 100px;
 `;
 

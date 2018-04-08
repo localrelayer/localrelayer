@@ -99,6 +99,11 @@ const UserHistory = ({
       pagination={{
         pageSize: 5,
       }}
+      onClick={(order) => {
+        if (order.tx_hash) {
+          window.open(`https://kovan.etherscan.io/tx/${order.tx_hash}`);
+        }
+      }}
       title={title}
       columns={getColumns()}
       data={orders}

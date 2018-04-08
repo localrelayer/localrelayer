@@ -44,11 +44,8 @@ import {
   setProfileState,
 } from '../actions';
 
-
 export function* loadUser(): Saga<*> {
-  const {
-    web3,
-  } = window;
+  const { web3 } = window;
   const prevAccount = yield select(getAddress);
   const accounts = yield cps(web3.eth.getAccounts);
   const newAccount = accounts[0];
@@ -57,19 +54,17 @@ export function* loadUser(): Saga<*> {
     yield put(setProfileState('address', newAccount));
     if (!accounts.length) {
       yield put(setProfileState('connectionStatus', connectionStatuses.LOCKED));
-      yield put(showModal({
-        title: 'Your Metamask account is locked',
-        type: 'warn',
-        text: 'Please unlock it to interact with exchange',
-      }));
+      yield put(
+        showModal({
+          title: 'Your Metamask account is locked',
+          type: 'warn',
+          text: 'Please unlock it to interact with exchange',
+        }),
+      );
     } else {
       yield put(setProfileState('connectionStatus', connectionStatuses.CONNECTED));
 
-      yield all([
-        call(loadBalance),
-        call(loadNetwork),
-        call(loadUserOrders),
-      ]);
+      yield all([call(loadBalance), call(loadNetwork), call(loadUserOrders)]);
       // We need to access user orders, so we wait for it
       yield call(loadTokensBalance);
       if (!socketConnected) {
@@ -77,13 +72,12 @@ export function* loadUser(): Saga<*> {
         yield fork(handleSocketIO, socket);
         yield put(setProfileState('socketConnected', true));
       }
-      yield put(sendSocketMessage('login', {
-        address: newAccount,
-      }));
-      trackMixpanel(
-        'Log in',
-        { 'address': newAccount },
+      yield put(
+        sendSocketMessage('login', {
+          address: newAccount,
+        }),
       );
+      trackMixpanel('Log in', { address: newAccount });
     }
   }
 }
@@ -94,7 +88,12 @@ export function* loadBalance(): Saga<*> {
   const balance = yield cps(web3.eth.getBalance, account);
   const formattedBalance = web3.utils.fromWei(balance, 'ether');
   yield put(
-    setProfileState('balance', BigNumber(formattedBalance).toFixed(8).toString()),
+    setProfileState(
+      'balance',
+      BigNumber(formattedBalance)
+        .toFixed(8)
+        .toString(),
+    ),
   );
 }
 
@@ -107,9 +106,6 @@ export function* loadTokensBalance() {
   const lockedToken = yield select(getLockedTokenBalance(currentToken));
   const lockedPair = yield select(getLockedPairBalance);
 
-  const current = yield getTokenBalanceAndAllowance(currentToken, lockedToken);
-  const pair = yield getTokenBalanceAndAllowance(currentPair, lockedPair);
-
   const addActiveUserTokensAction = createActionCreators('update', {
     resourceName: 'tokens',
     request: 'addActiveUserTokens',
@@ -117,26 +113,40 @@ export function* loadTokensBalance() {
     mergeListIds: false,
   });
 
-  yield put(addActiveUserTokensAction.succeeded({
-    resources: [pair, current].map(t => ({ id: t.id, attributes: { ...t } })),
-  }));
-
-  const allTokens = yield all(tokens
-    .filter(token => token.id !== currentToken.id && token.id !== currentPair.id)
-    .map(function* (token) {
-      const locked = yield select(getLockedTokenBalance(token));
-      const res = yield getTokenBalanceAndAllowance(token, locked);
-      return res;
-    }));
-
   const addTokensBalancesAction = createActionCreators('update', {
     resourceName: 'tokens',
     request: 'addTokensBalances',
     list: 'allTokens',
   });
-  yield put(addTokensBalancesAction.succeeded({
-    resources: [pair, current, ...allTokens].map(t => ({ id: t.id, attributes: { ...t } })),
-  }));
+
+  try {
+    const current = yield getTokenBalanceAndAllowance(currentToken, lockedToken);
+    const pair = yield getTokenBalanceAndAllowance(currentPair, lockedPair);
+
+    yield put(
+      addActiveUserTokensAction.succeeded({
+        resources: [pair, current].map(t => ({ id: t.id, attributes: { ...t } })),
+      }),
+    );
+
+    const allTokens = yield all(
+      tokens
+        .filter(token => token.id !== currentToken.id && token.id !== currentPair.id)
+        .map(function* (token) {
+          const locked = yield select(getLockedTokenBalance(token));
+          const res = yield getTokenBalanceAndAllowance(token, locked);
+          return res;
+        }),
+    );
+
+    yield put(
+      addTokensBalancesAction.succeeded({
+        resources: [pair, current, ...allTokens].map(t => ({ id: t.id, attributes: { ...t } })),
+      }),
+    );
+  } catch (e) {
+    console.error('Couldn load balance', e);
+  }
 }
 
 export function* loadNetwork() {
@@ -144,7 +154,13 @@ export function* loadNetwork() {
   const networkId = yield cps(web3.eth.net.getId);
   const network = getNetworkById(networkId);
   if (process.env.NODE_ENV === 'production' && networkId != 42) {
-    yield put(showModal({ title: 'Please connect to the Kovan Testnet.', type: 'error', text: 'We\'re still in beta, please stay updated for news' }));
+    yield put(
+      showModal({
+        title: 'Please connect to the Kovan Testnet.',
+        type: 'error',
+        text: "We're still in beta, please stay updated for news",
+      }),
+    );
   }
   yield put(setProfileState('network', network));
 }
@@ -152,11 +168,7 @@ export function* loadNetwork() {
 function* getTokenBalanceAndAllowance(token, locked) {
   const { zeroEx } = window;
   const account = yield select(getAddress);
-  const tokenBalance = yield call(
-    [zeroEx.token, zeroEx.token.getBalanceAsync],
-    token.id,
-    account,
-  );
+  const tokenBalance = yield call([zeroEx.token, zeroEx.token.getBalanceAsync], token.id, account);
   const allowance = yield call(
     [zeroEx.token, zeroEx.token.getProxyAllowanceAsync],
     token.id,
@@ -166,7 +178,9 @@ function* getTokenBalanceAndAllowance(token, locked) {
     ...token,
     isTradable: allowance.gt(0),
     fullBalance: ZeroEx.toUnitAmount(tokenBalance, token.decimals).toFixed(6),
-    balance: ZeroEx.toUnitAmount(tokenBalance, token.decimals).minus(locked).toFixed(6),
+    balance: ZeroEx.toUnitAmount(tokenBalance, token.decimals)
+      .minus(locked)
+      .toFixed(6),
   };
 }
 
@@ -182,11 +196,11 @@ export function* loadUserOrders() {
       fetchQuery: {
         filterCondition: {
           filter: {
-            'completed_at': null,
-            'child_id': null,
-            'canceled_at': null,
-            'deleted_at': null,
-            'maker_address': account,
+            completed_at: null,
+            child_id: null,
+            canceled_at: null,
+            deleted_at: null,
+            maker_address: account,
           },
         },
         sortBy: '-created_at',
@@ -204,11 +218,11 @@ export function* loadUserOrders() {
       fetchQuery: {
         filterCondition: {
           filter: {
-            'deleted_at': null,
-            'maker_address': account,
-            'child_id': null,
-            'status': {
-              'ne': 'new',
+            deleted_at: null,
+            maker_address: account,
+            child_id: null,
+            status: {
+              ne: 'new',
             },
           },
         },

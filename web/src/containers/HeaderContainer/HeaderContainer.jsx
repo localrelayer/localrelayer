@@ -6,7 +6,10 @@ import {
 import {
   push,
 } from 'react-router-redux';
-
+import {
+  getFormValues,
+  isValid,
+} from 'redux-form';
 import type {
   Dispatch,
 } from 'redux';
@@ -40,7 +43,9 @@ type Props = {
   selectedToken: Token,
   tokenPair: Token,
   dispatch: Dispatch<*>,
-  activeLink: string,
+  customTokenAddress: string,
+  isCustomTokenFormValid: Boolean,
+  location: Object,
 };
 
 const HeaderContainer: StatelessFunctionalComponent<Props> =
@@ -50,24 +55,26 @@ const HeaderContainer: StatelessFunctionalComponent<Props> =
     selectedToken,
     tokenPair,
     dispatch,
-    activeLink,
+    customTokenAddress,
+    isCustomTokenFormValid,
+    location,
   }: Props): Node =>
     <Header
-      activeLink={activeLink}
       user={user}
       tokens={tokens}
       tokenPair={tokenPair}
       selectedToken={selectedToken}
+      isCustomTokenFormValid={isCustomTokenFormValid}
       onTokenSelect={
-        token =>
+        symbol =>
           dispatch(
-            push(`${token.symbol}-${tokenPair.symbol}`),
+            push(`${symbol}-${tokenPair.symbol}`),
           )
       }
       onPairSelect={
-        token =>
+        symbol =>
           dispatch(
-            push(`${selectedToken.symbol}-${token.symbol}`),
+            push(`${selectedToken.symbol}-${symbol}`),
           )
       }
       onTokenSearch={
@@ -76,26 +83,33 @@ const HeaderContainer: StatelessFunctionalComponent<Props> =
             setUiState('searchQuery', query),
           )
       }
-      setActiveLink={
-        e =>
-          dispatch(
-            setUiState('activeLink', e.key),
-          )
-      }
       onHelpClick={
         () =>
           dispatch(
             setUiState('shouldRunTutorial', true),
           )
       }
+      setTokenAddress={
+        () =>
+          customTokenAddress && dispatch(
+            push(`${customTokenAddress}-${tokenPair.symbol}`),
+          )
+      }
+      location={location}
     />;
 
-const mapStateToProps = state => ({
-  tokens: getFilteredTokens(state),
-  user: state.profile,
-  selectedToken: getCurrentToken(state),
-  tokenPair: getCurrentPair(state),
-  activeLink: state.ui.activeLink,
-});
+const mapStateToProps = (state) => {
+  const { address: customTokenAddress = '' } = getFormValues('CustomTokenForm')(state) || {};
+  const isCustomTokenFormValid = isValid('CustomTokenForm')(state);
+  return {
+    location: state.router.location,
+    tokens: getFilteredTokens(state),
+    user: state.profile,
+    selectedToken: getCurrentToken(state),
+    tokenPair: getCurrentPair(state),
+    customTokenAddress,
+    isCustomTokenFormValid,
+  };
+};
 
 export default connect(mapStateToProps)(HeaderContainer);

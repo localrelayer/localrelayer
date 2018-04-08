@@ -21,7 +21,8 @@
     "no-use-before-define": "off",
     "flowtype/define-flow-type": 1,
     "flowtype-errors/show-errors": 2,
-    "react/default-props-match-prop-types": "off"
+    "react/default-props-match-prop-types": "off",
+    "jsx-a11y/label-has-for": "off"
   },
   "plugins": [
     "flowtype",

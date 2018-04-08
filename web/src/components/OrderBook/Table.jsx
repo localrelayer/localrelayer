@@ -52,7 +52,6 @@ const enchance = lifecycle({
 });
 
 export default enchance(({
-  showHeader,
   orders,
   fillOrder,
   type,
@@ -84,6 +83,6 @@ export default enchance(({
         </div>
       ))
       :
-      <div style={{ margin: type === 'sell' ? '7% auto' : '72% auto' }}>No {type} orders</div>
+      <div style={{ margin: 'auto' }}>No {type} orders</div>
     }
   </Table>));
