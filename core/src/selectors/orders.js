@@ -21,6 +21,7 @@ export const getBuyOrders = createSelector(
       !order.canceled_at &&
       !order.completed_at &&
       !order.child_id &&
+      order.status !== 'failed' &&
       order.type === 'buy')
     .map(order => ({
       ...order,
@@ -42,6 +43,7 @@ export const getSellOrders = createSelector(
       !order.canceled_at &&
       !order.completed_at &&
       !order.child_id &&
+      order.status !== 'failed' &&
       order.type === 'sell')
     .map(order => ({
       ...order,
@@ -62,6 +64,7 @@ export const getCompletedOrders = createSelector(
     .filter(order =>
       !order.canceled_at &&
       order.completed_at &&
+      order.status === 'completed' &&
       order.is_history)
     .map(order => ({
       ...order,

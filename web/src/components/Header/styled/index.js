@@ -73,8 +73,10 @@ export const HelpButton = styled.a`
 
 export const HelpContainer = styled.div`
   display: flex;
+  flex-wrap: wrap;
   a {
     text-align: center;
+    padding: 10px;
   }
   & img {
     max-height: 80px;
