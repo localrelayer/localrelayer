@@ -77,7 +77,7 @@ export function* createOrder({
       ZeroEx.toBaseUnitAmount(BigNumber(total).minus(feeAmount), currentPair.decimals);
   } else if (type === 'buy') {
     const feeAmount = BigNumber(amount).times(EXCHANGE_FEE)
-      .add(BigNumber(TRANSACTION_FEE).div(price).toFixed(6)).toFixed(6);
+      .add(BigNumber(TRANSACTION_FEE).div(price)).toFixed(6);
 
     makerTokenAddress = currentPair.id;
     takerTokenAddress = currentToken.id;
@@ -166,6 +166,7 @@ export function* loadOrders(): Saga<*> {
             'completed_at': null,
             'child_id': null,
             'canceled_at': null,
+            'status': 'new',
             'deleted_at': null,
             'type': 'buy',
           },
@@ -195,6 +196,7 @@ export function* loadOrders(): Saga<*> {
             'child_id': null,
             'canceled_at': null,
             'deleted_at': null,
+            'status': 'new',
             'type': 'sell',
           },
         },

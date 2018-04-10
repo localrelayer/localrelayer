@@ -61,7 +61,7 @@ export const connectionStatuses = {
 
 export const NODE_ADDRESS = '0x004e344251110fa1cb09aa31c95c6598ed07dce6';
 export const SMALLEST_AMOUNT = 0.005;
-// Around 1$ for now
-export const TRANSACTION_FEE = 0;
+// Hardcoded - around 1$ for now ($400/eth)
+export const TRANSACTION_FEE = 0.0025;
 // Percentage fee (our fee)
 export const EXCHANGE_FEE = 0;
