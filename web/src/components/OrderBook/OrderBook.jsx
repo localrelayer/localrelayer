@@ -52,9 +52,9 @@ const OrderBook: StatelessFunctionalComponent<Props> = ({
       <div className="Table-row-item">Total</div>
       <IconContainer className="Table-row-item" />
     </div>
-    <TableContainer type="sell" orders={sellOrders.slice(0, 50).reverse()} fillOrder={fillOrder} showHeader />
+    <TableContainer type="sell" orders={sellOrders} fillOrder={fillOrder} />
     <SpreadContainer><span style={{ marginRight: 5 }}>{getSpread(sellOrders[0], buyOrders[0])}</span>{' '}<Badge status="processing" text="Realtime" /></SpreadContainer>
-    <TableContainer type="buy" orders={buyOrders.slice(-50)} fillOrder={fillOrder} />
+    <TableContainer type="buy" orders={buyOrders} fillOrder={fillOrder} />
   </OrderBookContainer>
 );
 
