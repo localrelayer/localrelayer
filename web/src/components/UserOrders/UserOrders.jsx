@@ -28,14 +28,6 @@ type Props = {
 
 export const getColumns = (onCancel: (id: string) => void) => [
   {
-    title: 'Type',
-    dataIndex: 'type',
-    key: 'type',
-    render: (text: string, record: Order) => (
-      <Colored className={record.type === 'sell' ? 'red' : 'green'}>{text}</Colored>
-    ),
-  },
-  {
     title: 'Pair',
     key: 'user/pair',
     render: (text: string, order: Order) => `${order.tokenSymbol}/${order.pairSymbol}`,
@@ -66,8 +58,13 @@ export const getColumns = (onCancel: (id: string) => void) => [
     title: 'Total',
     dataIndex: 'total',
     key: 'total',
-    render: (text: string) =>
-      Number(text).toFixed(4),
+    render: (text: string, record: Order) =>
+      <div className={record.type === 'sell' ? 'red' : 'green'} >{Number(text).toFixed(4)}</div>,
+  },
+  {
+    title: 'Status',
+    dataIndex: 'status',
+    key: 'status',
   },
   {
     title: 'Action',

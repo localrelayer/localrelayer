@@ -23,9 +23,8 @@ type Props = {
   type: 'sell'|'buy',
 };
 
-const calculateFill = (amount, orders) => {
-  const avg = orders.reduce((sum, order) => sum + +order.amount, 0) / orders.length;
-
+const calculateFill = (total, orders) => {
+  // const avg = orders.reduce((sum, order) => sum + +order.amount, 0) / orders.length;
   // const sortedOrders = orders.sort((a, b) => a.amount - b.amount);
   // const lowMiddle = Math.floor((sortedOrders.length - 1) / 2);
   // const highMiddle = Math.ceil((sortedOrders.length - 1) / 2);
@@ -34,15 +33,16 @@ const calculateFill = (amount, orders) => {
   // const fill = amount / avg >= 1 ? '100%' : `${(amount / avg) * 100}%`;
   // const fill = amount >= median ? '100%' : `${(amount / median) * 100}%`;
 
-  const maxAmount = Math.max(...orders.map(o => o.amount));
+  const maxTotal = Math.max(...orders.map(o => o.total));
 
   // return `${(amount / 1000 > 1 ? 1 : amount / 1000) * 100}%`;
-  return `${(amount / maxAmount) * 100}%`;
+  return `${(total / maxTotal) * 100}%`;
 };
 
 const enchance = lifecycle({
   componentWillReceiveProps(nextProps) {
     if (nextProps.orders.length && this.props.orders.length !== nextProps.orders.length) {
+      // Scroll to bottom of sell-book
       const element = document.getElementById('sell-book');
       setTimeout(() => {
         element.scrollTop = element.scrollHeight;
@@ -58,13 +58,10 @@ export default enchance(({
 }: Props) => (
   <Table id={`${type}-book`} className="Table">
     {
-      orders.length > 0 ? orders.map((order, i) => (
+      orders.length > 0 ? orders.map(order => (
         <div
           key={order.id}
-          style={{
-            position: 'relative',
-            marginTop: i === 0 && type === 'sell' ? 'auto' : 0,
-          }}
+          style={{ position: 'relative' }}
           className="Table-row"
           onClick={() => fillOrder(order)}
         >
@@ -79,7 +76,7 @@ export default enchance(({
           <IconContainer className="Table-row-item" >
             {order.status === 'pending' ? <Icon type="loading" /> : null}
           </IconContainer>
-          <AmountFillContainer width={calculateFill(order.amount, orders)} type={type} />
+          <AmountFillContainer width={calculateFill(order.total, orders)} type={type} />
         </div>
       ))
       :
