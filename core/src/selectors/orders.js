@@ -2,7 +2,7 @@
 import {
   createSelector,
 } from 'reselect';
-import BigNumber from 'bignumber.js';
+import BigNumber from '../utils/BigNumber';
 import {
   getResourceMap,
   getResourceMappedList,

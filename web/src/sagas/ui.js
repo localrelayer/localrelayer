@@ -6,7 +6,7 @@ import {
 import type { Saga } from 'redux-saga';
 import * as types from 'instex-core/actionTypes';
 import { notification, Modal, message as antMessage } from 'antd';
-import { titleCase } from 'change-case';
+import { upperCaseFirst } from 'change-case';
 import moment from 'moment';
 import {
   getCurrentPair,
@@ -14,6 +14,7 @@ import {
   getSellOrders,
   getCurrentToken,
 } from 'instex-core/selectors';
+import BigNumber from 'instex-core/src/utils/BigNumber';
 import {
   getFormValues,
   change,
@@ -67,7 +68,7 @@ export function* sendNotification({ payload: { type, message } }) {
   // Ignore metamask errors
   if (message.includes('MetaMask')) return;
   yield notification[type]({
-    message: titleCase(message),
+    message: upperCaseFirst(message),
   });
 }
 

@@ -9,8 +9,8 @@ import {
   Popover,
   Icon,
 } from 'antd';
-import moment from 'moment';
-import BigNumber from 'bignumber.js';
+// import moment from 'moment';
+import BigNumber from 'instex-core/src/utils/BigNumber';
 import {
   connect,
 } from 'react-redux';
@@ -33,7 +33,7 @@ import {
 } from 'instex-core/src/utils/web3';
 import {
   NumberInput,
-  DateInput,
+  // DateInput,
 } from '../ReduxFormComponents';
 import {
   PlaceOrderButton,
@@ -49,20 +49,20 @@ const parseNumber = val => (isNaN(parseFloat(val)) ? undefined : parseFloat(val)
 const validate = (values, props) => {
   const errors = {};
   if (!values.amount || values.amount === 0) {
-    errors.amount = 'Please enter amount';
+    errors.amount = 'Please enter an amount';
   }
   if (!values.price || values.price === 0) {
-    errors.price = 'Please enter price';
+    errors.price = 'Please enter a price';
   }
   // if (!values.exp) {
   //   errors.exp = 'Please enter expire date';
   // }
   if (values.price && values.amount) {
     if (!/^-?\d+\.?\d*$/.test(values.price)) {
-      errors.price = 'Please only numbers';
+      errors.price = 'Only numbers allowed';
     }
     if (!/^-?\d+\.?\d*$/.test(values.amount)) {
-      errors.amount = 'Please only numbers';
+      errors.amount = 'Only numbers allowed';
     }
     if (
       BigNumber(values.price)
@@ -80,16 +80,13 @@ const validate = (values, props) => {
     }
     if (props.type === 'sell' && BigNumber(values.amount).gt(props.currentToken.balance || 0)) {
       errors.amount = "You don't have the required amount";
-      console.warn('sell', BigNumber(values.amount));
     }
     if (
       props.type === 'buy' &&
       BigNumber(values.price)
         .times(values.amount)
-        .gt(props.currentPair.balance || 0)
+        .gt(BigNumber(props.currentPair.balance || 0).add(props.balance || 0))
     ) {
-      console.warn('buy', BigNumber(values.price)
-        .times(values.amount), props.currentPair.balance);
       errors.amount = "You don't have the required amount";
     }
   }
@@ -108,9 +105,9 @@ type Props = {
   total?: string,
 };
 
-function disabledDate(current) {
-  return current && current < moment().subtract(1, 'hour');
-}
+// function disabledDate(current) {
+//   return current && current < moment().subtract(1, 'hour');
+// }
 
 /**
  * Buy/Sell form

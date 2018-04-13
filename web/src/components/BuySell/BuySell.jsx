@@ -39,6 +39,8 @@ type Props = {
   fillField: Function,
   /** Is user connected to ethereum */
   isConnected: boolean,
+  /** My balance */
+  balance: string,
 };
 
 const getExtraContent = (type, currentToken, currentPair) => {
@@ -65,6 +67,7 @@ const BuySell: StatelessFunctionalComponent<Props> = ({
   currentPair,
   fillField,
   isConnected,
+  balance,
 }: Props): Node =>
   <div id="orderForm">
 
@@ -89,7 +92,8 @@ const BuySell: StatelessFunctionalComponent<Props> = ({
             type={activeTab}
             currentToken={currentToken}
             currentPair={currentPair}
-            onSubmit={values => onSubmit({ ...values, type: activeTab })}
+            onSubmit={onSubmit}
+            balance={balance}
           />
         </TabPane>
         <TabPane tab="Sell" key="sell">
@@ -98,7 +102,8 @@ const BuySell: StatelessFunctionalComponent<Props> = ({
             type={activeTab}
             currentToken={currentToken}
             currentPair={currentPair}
-            onSubmit={values => onSubmit({ ...values, type: activeTab })}
+            onSubmit={onSubmit}
+            balance={balance}
           />
         </TabPane>
       </Tabs>

@@ -22,7 +22,8 @@
     "flowtype/define-flow-type": 1,
     "flowtype-errors/show-errors": 2,
     "react/default-props-match-prop-types": "off",
-    "jsx-a11y/label-has-for": "off"
+    "jsx-a11y/label-has-for": "off",
+    "no-confusing-arrow": "off",
   },
   "plugins": [
     "flowtype",

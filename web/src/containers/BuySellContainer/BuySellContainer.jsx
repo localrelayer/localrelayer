@@ -6,7 +6,7 @@ import type { MapStateToProps } from 'react-redux';
 import {
   getCurrentPair,
   getCurrentToken,
-  getResourceItemBydId,
+  getBalance,
 } from 'instex-core/selectors';
 import {
   createOrder,
@@ -31,6 +31,7 @@ type Props = {
   dispatch: Dispatch<*>,
   activeTab: string,
   isConnected: boolean,
+  balance: string,
 }
 
 const BuySellContainer = ({
@@ -39,9 +40,11 @@ const BuySellContainer = ({
   dispatch,
   activeTab,
   isConnected,
+  balance,
 }: Props) => (
   <StyleContainer>
     <BuySell
+      balance={balance}
       isConnected={isConnected}
       currentToken={currentToken}
       currentPair={currentPair}
@@ -60,10 +63,12 @@ const mapStateToProps: MapStateToProps<*, *, *> = (state) => {
   const { activeTab } = state.ui;
   const currentToken = getCurrentToken(state);
   const currentPair = getCurrentPair(state);
+  const balance = getBalance(state);
   return {
     currentToken,
     currentPair,
     activeTab,
+    balance,
     isConnected: state.profile.connectionStatus !== 'Not connected to Ethereum' && state.profile.connectionStatus !== 'Locked',
   };
 };
