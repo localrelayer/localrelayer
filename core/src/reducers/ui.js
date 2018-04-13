@@ -13,6 +13,8 @@ const initialState: UiState = {
   bannerMessage: null,
   activeLink: '',
   shouldRunTutorial: false,
+  txHash: '',
+  activeModal: '',
 };
 
 export default function ui(

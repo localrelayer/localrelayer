@@ -29,19 +29,7 @@ export const PlaceOrderButton = styled(Button)`
   color: white;
   width: 100%;
 
-  &:hover {
-    background: ${props => props.type === 'sell' ? '#ca5252' : '#4fb564'};
-    border-color: ${props => props.type === 'sell' ? '#ca5252' : '#4fb564'};
-    color: white;
-  }
-
-  &:focus {
-    background: ${props => props.type === 'sell' ? '#ca5252' : '#4fb564'};
-    border-color: ${props => props.type === 'sell' ? '#ca5252' : '#4fb564'};
-    color: white;
-  }
-  
-  &:active {
+  &:hover, &:focus, &:active {
     background: ${props => props.type === 'sell' ? '#ca5252' : '#4fb564'};
     border-color: ${props => props.type === 'sell' ? '#ca5252' : '#4fb564'};
     color: white;

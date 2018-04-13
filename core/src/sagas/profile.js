@@ -43,6 +43,7 @@ import {
   sendSocketMessage,
   setProfileState,
 } from '../actions';
+import BigNumber from '../utils/BigNumber';
 
 export function* loadUser(): Saga<*> {
   const { web3 } = window;

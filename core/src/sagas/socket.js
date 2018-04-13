@@ -19,7 +19,8 @@ import * as actionTypes from '../actions/types';
 import * as resourcesActions from '../actions/resources';
 import config from '../config';
 import {
-  sendNotification, showModal,
+  sendNotification,
+  setUiState,
 } from '../actions';
 import {
   getResourceItemBydId,
@@ -102,9 +103,10 @@ function* read(socket) {
       yield put(sendNotification({ message: data.message, type: 'success' }));
     }
 
-    // if (data.txHash) {
-    //   yield put(showModal({ title: 'Track your transaction', type: 'success' }));
-    // }
+    if (data.txHash) {
+      yield put(setUiState('activeModal', 'TxModal'));
+      yield put(setUiState('txHash', data.txHash));
+    }
   }
 }
 

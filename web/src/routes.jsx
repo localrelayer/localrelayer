@@ -33,7 +33,7 @@ import UserPage from './containers/UserPage';
 import Header from './containers/HeaderContainer';
 import TradingPage from './containers/TradingPage';
 import JoyrideWrapper from './JoyrideWrapper';
-
+import ModalWrapper from './containers/ModalWrapper';
 
 const getTitle = (
   token,
@@ -98,6 +98,7 @@ const routes = ({
             )}
           />
         </Switch>
+        <ModalWrapper />
       </Layout>
     </div>
   </ConnectedRouter>

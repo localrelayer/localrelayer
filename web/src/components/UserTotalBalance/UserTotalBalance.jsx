@@ -112,7 +112,7 @@ const UserTotalBalance = ({
   isConnected,
 }: Props): Node => (
   <div style={{ height: '100%' }}>
-    <ComponentTitle>My Balance ({balance} ETH)</ComponentTitle>
+    <ComponentTitle>My Balance ({balance || 0} ETH)</ComponentTitle>
     <CardContainer id="user-total-balance" bordered={false}>
       <Overlay isShown={!isConnected}>
         <h3
@@ -130,7 +130,6 @@ const UserTotalBalance = ({
         <TableContainer
           size="small"
           bordered={false}
-          loading={isBalanceLoading}
           onRow={record => ({
             onClick: () => onTokenClick(record),
           })}

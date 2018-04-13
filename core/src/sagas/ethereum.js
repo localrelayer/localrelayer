@@ -11,7 +11,6 @@ import {
 } from 'redux-saga';
 import createActionCreators from 'redux-resource-action-creators';
 import type { Saga } from 'redux-saga';
-import BigNumber from 'bignumber.js';
 import { getFormValues, reset } from 'redux-form';
 import { ZeroEx } from '0x.js';
 import * as actionTypes from '../actions/types';
@@ -32,6 +31,7 @@ import {
 import {
   trackMixpanel,
 } from '../utils/mixpanel';
+import BigNumber from '../utils/BigNumber';
 
 const sagas = {
   deposit,
@@ -53,7 +53,7 @@ function* deposit() {
     yield put(showModal({
       title: 'Do not deposit all of your ETH!',
       type: 'info',
-      text: 'You need to pay for deposit transactions.',
+      text: 'You need a small amount to pay for gas.',
     }));
   } else {
     const ethToConvert = ZeroEx.toBaseUnitAmount(new BigNumber(amount), weth.decimals);
@@ -63,10 +63,13 @@ function* deposit() {
         ethToConvert,
         account,
         { gasLimit: 80000 });
+
+      yield put(setUiState('activeModal', 'TxModal'));
+      yield put(setUiState('txHash', txHash));
+
       yield put(setUiState('isBalanceLoading', true));
       yield put(reset('WrapForm'));
       yield call([zeroEx, zeroEx.awaitTransactionMinedAsync], txHash);
-
       // Somewhy balance isn't updated until 10 seconds will end
       yield call(delay, 10000);
 
@@ -101,6 +104,10 @@ function* withdraw() {
       ethToConvert,
       account,
       { gasLimit: 80000 });
+
+    yield put(setUiState('activeModal', 'TxModal'));
+    yield put(setUiState('txHash', txHash));
+
     yield put(setUiState('isBalanceLoading', true));
     yield put(reset('WrapForm'));
     yield call([zeroEx, zeroEx.awaitTransactionMinedAsync], txHash);
@@ -141,6 +148,10 @@ function* setAllowance(token) {
       account,
       { gasLimit: 80000 },
     );
+
+    yield put(setUiState('activeModal', 'TxModal'));
+    yield put(setUiState('txHash', txHash));
+
     yield put(setUiState('isBalanceLoading', true));
     yield call([zeroEx, zeroEx.awaitTransactionMinedAsync], txHash);
     yield put(setUiState('isBalanceLoading', false));
@@ -149,6 +160,8 @@ function* setAllowance(token) {
       'Allowance setted',
       { address: account, token: token.id },
     );
+
+    yield put(sendNotification({ message: `Trading for "${token.name}" enabled`, type: 'success' }));
 
     yield put(actions.succeeded({
       resources: [{
@@ -183,6 +196,10 @@ function* unsetAllowance(token) {
       BigNumber(0),
       { gasLimit: 80000 },
     );
+
+    yield put(setUiState('activeModal', 'TxModal'));
+    yield put(setUiState('txHash', txHash));
+
     yield put(setUiState('isBalanceLoading', true));
     yield call([zeroEx, zeroEx.awaitTransactionMinedAsync], txHash);
     yield put(setUiState('isBalanceLoading', false));
@@ -191,6 +208,9 @@ function* unsetAllowance(token) {
       'Allowance unsetted',
       { address: account, token: token.id },
     );
+
+    yield put(sendNotification({ message: `Trading for "${token.name}" disabled`, type: 'success' }));
+
 
     yield put(actions.succeeded({
       resources: [{

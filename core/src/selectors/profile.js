@@ -1,6 +1,7 @@
 import {
   createSelector,
 } from 'reselect';
+import BigNumber from '../utils/BigNumber';
 import {
   getUserOrders,
 } from './orders';

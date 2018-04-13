@@ -16,7 +16,6 @@ import {
   getLocation,
 } from 'react-router-redux';
 import pathToRegexp from 'path-to-regexp';
-import BigNumber from 'bignumber.js';
 import {
   fetchResourcesRequest,
   saveResourceRequest,
@@ -45,6 +44,7 @@ import {
   getCurrentPair,
   getAddress,
 } from '../selectors';
+import BigNumber from '../utils/BigNumber';
 
 export function* initialize(): Saga<void> {
   yield call(loadZeroEx);

@@ -6,15 +6,12 @@ import {
   getResourceMap,
 } from './resources';
 import {
-  getCurrentTokenId,
-  getCurrentPairId,
-  getSearchQuery,
+  getUiState,
 } from './ui';
-
 
 export const getCurrentToken = createSelector(
   [
-    getCurrentTokenId,
+    getUiState('currentTokenId'),
     getResourceMap('tokens'),
   ],
   (id, tokens) => (id ? ({
@@ -26,7 +23,7 @@ export const getCurrentToken = createSelector(
 
 export const getCurrentPair = createSelector(
   [
-    getCurrentPairId,
+    getUiState('currentPairId'),
     getResourceMap('tokens'),
   ],
   (id, tokens) => (id ? ({
@@ -39,7 +36,7 @@ export const getCurrentPair = createSelector(
 export const getTokensWithoutCurrentPair = createSelector(
   [
     getResourceMappedList('tokens', 'allTokens'),
-    getCurrentPairId,
+    getUiState('currentPairId'),
   ],
   (tokens, currentId) => tokens.filter(token => token.id !== currentId && token.is_listed),
 );
@@ -54,7 +51,7 @@ export const getWethToken = createSelector(
 export const getFilteredTokens = createSelector(
   [
     getTokensWithoutCurrentPair,
-    getSearchQuery,
+    getUiState('searchQuery'),
   ],
   (
     tokens,

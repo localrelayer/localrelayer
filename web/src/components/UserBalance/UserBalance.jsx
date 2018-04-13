@@ -123,7 +123,6 @@ const UserBalance = ({
       <Card.Grid>
         <TableContainer
           size="small"
-          loading={isBalanceLoading}
           onRow={record => ({
             onClick: () => onTokenClick(record),
           })}

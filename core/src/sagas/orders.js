@@ -8,25 +8,25 @@ import {
 import createActionCreators from 'redux-resource-action-creators';
 import type { Saga } from 'redux-saga';
 import { ZeroEx } from '0x.js';
-import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import {
   reset,
+  getFormValues,
 } from 'redux-form';
 import * as types from '../actions/types';
 import {
   getAddress,
   getCurrentToken,
   getCurrentPair,
+  getUiState,
+  getBalance,
 } from '../selectors';
 import {
   sendNotification,
   saveResourceRequest,
   sendMessage,
+  setUiState,
 } from '../actions';
-import type {
-  OrderData,
-} from '../types';
 import {
   NODE_ADDRESS,
   EXCHANGE_FEE,
@@ -43,20 +43,18 @@ import {
 import {
   trackMixpanel,
 } from '../utils/mixpanel';
+import BigNumber from '../utils/BigNumber';
 
-BigNumber.config({ EXPONENTIAL_AT: 5000 });
-
-export function* createOrder({
-  amount,
-  price,
-  type,
-}: OrderData): Saga<*> {
-  const exp = moment().add('1', 'year');
-  console.log(exp);
+export function* createOrder(): Saga<*> {
   const { zeroEx } = window;
   const { NULL_ADDRESS } = ZeroEx;
   const EXCHANGE_ADDRESS = yield zeroEx.exchange.getContractAddress();
 
+  const { amount, price } = yield select(getFormValues('BuySellForm'));
+  const type = yield select(getUiState('activeTab'));
+  const exp = moment().add('1', 'year');
+
+  const balance = yield select(getBalance);
   const address = yield select(getAddress);
   const currentToken = yield select(getCurrentToken);
   const currentPair = yield select(getCurrentPair);
@@ -67,6 +65,19 @@ export function* createOrder({
   let makerTokenAmount;
   let takerTokenAmount;
   if (type === 'sell') {
+    // Check allowance for token
+
+    const allowance = yield call(
+      [zeroEx.token, zeroEx.token.getProxyAllowanceAsync],
+      currentToken.id,
+      address,
+    );
+
+    if (allowance.eq(0)) {
+      yield put(setUiState('activeModal', 'AllowanceModal'));
+      return;
+    }
+
     const feeAmount = BigNumber(total).times(EXCHANGE_FEE).add(TRANSACTION_FEE).toFixed(6);
 
     makerTokenAddress = currentToken.id;
@@ -76,6 +87,29 @@ export function* createOrder({
     takerTokenAmount =
       ZeroEx.toBaseUnitAmount(BigNumber(total).minus(feeAmount), currentPair.decimals);
   } else if (type === 'buy') {
+    // Check wrapped amount for WETH
+
+    if (currentPair.symbol === 'WETH' && currentPair.is_listed) {
+      if (BigNumber(currentPair.balance).lt(total) && BigNumber(balance).gt(total)) {
+        yield put(setUiState('activeModal', 'WrapModal'));
+        yield put(setUiState('wrapAmount', BigNumber(total).minus(currentPair.balance)));
+        return;
+      }
+    }
+
+    // Check allowance for pair
+
+    const allowance = yield call(
+      [zeroEx.token, zeroEx.token.getProxyAllowanceAsync],
+      currentPair.id,
+      address,
+    );
+
+    if (allowance.eq(0)) {
+      yield put(setUiState('activeModal', 'AllowanceModal'));
+      return;
+    }
+
     const feeAmount = BigNumber(amount).times(EXCHANGE_FEE)
       .add(BigNumber(TRANSACTION_FEE).div(price)).toFixed(6);
 
@@ -102,6 +136,7 @@ export function* createOrder({
   };
 
   const orderHash = ZeroEx.getOrderHashHex(zrxOrder);
+
   try {
     const ecSignature = yield zeroEx.signOrderHashAsync(orderHash, address, true);
     const signedZRXOrder = {
