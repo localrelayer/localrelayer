@@ -157,9 +157,9 @@ export function* loadNetwork() {
   if (process.env.NODE_ENV === 'production' && networkId != 42) {
     yield put(
       showModal({
-        title: 'Please connect to the Kovan Testnet.',
-        type: 'error',
-        text: "We're still in beta, please stay updated for news",
+        title: "We're still in beta.",
+        type: 'info',
+        text: 'Max order is limited to 0.2 ETH while in beta',
       }),
     );
   }

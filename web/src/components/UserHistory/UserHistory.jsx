@@ -101,7 +101,7 @@ const UserHistory = ({
       }}
       onClick={(order) => {
         if (order.tx_hash) {
-          window.open(`https://kovan.etherscan.io/tx/${order.tx_hash}`);
+          window.open(`https://etherscan.io/tx/${order.tx_hash}`);
         }
       }}
       title={title}

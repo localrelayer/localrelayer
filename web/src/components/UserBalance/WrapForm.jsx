@@ -69,8 +69,8 @@ const WrapForm: StatelessFunctionalComponent<Props> = ({
         // parse={parseNumber}
       />
       <Button.Group>
-        <Button type="primary" disabled={isLoading} onClick={handleSubmit(unwrap)}>Withdraw</Button>
-        <Button type="primary" disabled={isLoading} onClick={handleSubmit(wrap)}>Deposit</Button>
+        <Button type="primary" disabled={isLoading} onClick={handleSubmit(unwrap)}>Unwrap</Button>
+        <Button type="primary" disabled={isLoading} onClick={handleSubmit(wrap)}>Wrap</Button>
       </Button.Group>
     </InputGroupContainer>
   </FormContainer>
