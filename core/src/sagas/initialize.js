@@ -105,17 +105,11 @@ export function* setTokens(): Saga<void> {
   const reg = pathToRegexp('/:token-:pair');
   const [a, token, pair] = reg.exec(pathname) || []; // eslint-disable-line
 
-  // TODO: better links
-  if (token && pair) {
-    yield put(uiActions.setUiState('activeLink', 'home'));
-  } else {
-    yield put(uiActions.setUiState('activeLink', 'account'));
-  }
 
   let selectedToken =
-    tokens.find(t => (t.symbol === token || t.id === token) && t.is_listed);
+    tokens.find(t => t.symbol === token || t.id === token.toLowerCase());
   const pairToken =
-    tokens.find(t => t.symbol === pair || t.id === pair);
+    tokens.find(t => (t.symbol === pair || t.id === pair.toLowerCase()) && t.is_listed);
   const networkZrxAddress = zeroEx ?
     yield call([zeroEx.exchange, zeroEx.exchange.getZRXTokenAddress]) : null;
   const networkWethAddress = zeroEx ?
@@ -151,7 +145,7 @@ export function* setTokens(): Saga<void> {
           },
         },
       });
-      const foundToken = responseUrlToken.data.find(t => t.id === token);
+      const foundToken = responseUrlToken.data.find(t => t.id === token.toLowerCase());
 
       if (foundToken) {
         selectedToken = foundToken;
@@ -163,7 +157,7 @@ export function* setTokens(): Saga<void> {
             request: 'createToken',
             data: {
               attributes: {
-                address: token,
+                address: token.toLowerCase(),
                 name,
                 symbol,
                 decimals,
@@ -197,8 +191,10 @@ function* checkNewToken({ payload: { pathname } }): Saga<void> {
     return;
   }
 
-  const tokenItem = tokens.find(t => t.symbol === token || t.id === token) || {};
-  const pairItem = tokens.find(t => t.symbol === pair || t.id === pair) || {};
+  const tokenItem =
+    tokens.find(t => t.symbol === token || t.id === token.toLowerCase());
+  const pairItem =
+    tokens.find(t => (t.symbol === pair || t.id === pair.toLowerCase()) && t.is_listed);
 
   const currentToken = yield select(getCurrentToken);
   const currentPair = yield select(getCurrentPair);
