@@ -145,7 +145,7 @@ export function* setTokens(): Saga<void> {
             sortBy: 'symbol',
             filterCondition: {
               filter: {
-                'address': token,
+                'address': token.toLowerCase(),
               },
             },
           },
