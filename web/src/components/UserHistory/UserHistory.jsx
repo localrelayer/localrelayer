@@ -22,15 +22,13 @@ type Props = {
 const colorsByStatus = {
   canceled: '#da3636',
   completed: '#1ea83b',
-  failed: 'red',
-  pending: 'geekblue',
+  failed: '#6b241f',
 };
 
 const statusFieldMapping = {
   canceled: 'canceled_at',
   completed: 'completed_at',
   failed: 'completed_at',
-  pending: 'created_at',
 };
 
 export const getColumns = (

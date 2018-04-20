@@ -17,10 +17,8 @@ import {
   Link,
   NavLink,
 } from 'react-router-dom';
-import {
-  connectionStatuses,
-} from 'instex-core/src/utils/web3';
 import pathToRegexp from 'path-to-regexp';
+
 import {
   // Menu,
   Popover,
@@ -39,13 +37,10 @@ import {
   TokenContainer,
   HelpButton,
 } from './styled';
-import {
-  Truncate,
-} from '../SharedStyles';
 import TokensList from './TokensList';
 import UserProfile from '../UserProfile';
 import CustomTokenForm from './CustomTokenForm';
-import logo from '../../assets/logo5beta.png';
+import logo from '../../assets/logo5.png';
 import Help from './Help';
 
 type Props = {
@@ -130,8 +125,10 @@ const Header = ({
   toggleModal,
   setTokenAddress,
   isCustomTokenFormValid,
+  onAddressSelect,
+  onProviderSelect,
   // eslint-disable-next-line
-  location,
+  location, // we need to location to see changes
 }: Props): Node => (
   <div>
     <label htmlFor="show-menu" className="show-menu">
@@ -233,27 +230,11 @@ const Header = ({
         <CustomTokenForm />
       </Modal>
       <AlignRight id="right-menu">
-        <Popover
-          placement="bottom"
-          trigger={['click']}
-          content={
-            <div>
-              <UserProfile {...user} />
-            </div>
-          }
-        >
-          <Badge>
-            <UserButton id="account" type="primary" onClick={() => onUserClick(user)}>
-              <Icon type="user" />{' '}
-              {user.connectionStatus === connectionStatuses.CONNECTED ? (
-                <Truncate>{user.address}</Truncate>
-              ) : (
-                user.connectionStatus
-              )}
-              <Icon type="down" />
-            </UserButton>
-          </Badge>
-        </Popover>
+        <UserProfile
+          {...user}
+          onAddressSelect={onAddressSelect}
+          onProviderSelect={onProviderSelect}
+        />
         <div>
           <HelpButton onClick={() => Modal.info({ title: 'Contact us for help', content: Help() })}>
             Help

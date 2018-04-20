@@ -5,6 +5,7 @@ import {
   cps,
   fork,
   all,
+  takeEvery,
 } from 'redux-saga/effects';
 import {
   delay,
@@ -17,15 +18,17 @@ import type {
   Saga,
 } from 'redux-saga';
 import {
+  equals,
+} from 'ramda';
+import {
   trackMixpanel,
 } from '../utils/mixpanel';
-
+import * as types from '../actions/types';
 import {
   socketConnect,
   handleSocketIO,
 } from './socket';
 import {
-  getAddress,
   getCurrentToken,
   getCurrentPair,
   getProfileState,
@@ -36,6 +39,8 @@ import {
 import {
   getNetworkById,
   connectionStatuses,
+  initLedger,
+  initMetamask,
 } from '../utils/web3';
 import * as resourcesActions from '../actions/resources';
 import {
@@ -46,46 +51,75 @@ import {
 import BigNumber from '../utils/BigNumber';
 
 export function* loadUser(): Saga<*> {
-  const { web3 } = window;
-  const prevAccount = yield select(getAddress);
-  const accounts = yield cps(web3.eth.getAccounts);
-  const newAccount = accounts[0];
-  const socketConnected = yield select(getProfileState('socketConnected'));
-  if (prevAccount !== newAccount) {
-    yield put(setProfileState('address', newAccount));
+  const { web3Instance: web3 } = window;
+  const prevAccounts = yield select(getProfileState('addresses'));
+  let accounts = [];
+  try {
+    accounts = yield cps(web3.eth.getAccounts);
+  } catch (e) {
+    console.log('wow', e);
+  }
+
+  if (!equals(prevAccounts, accounts)) {
+    yield put(setProfileState('addresses', accounts));
+    yield put(setProfileState('balance', '0'));
+
+    // TODO: better way to check if ledger is connected
+    // eslint-disable-next-line
+    if (web3._provider._providers && web3._provider._providers[0]._ledgerClientIfExists) {
+      yield put(setProfileState('connectionStatus', connectionStatuses.NOT_CONNECTED));
+      yield put(setProfileState('address', '0x0'));
+
+      // yield put(
+      //   showModal({
+      //     title: 'Ledger is not connected',
+      //     type: 'warn',
+      //     text: 'Please connect and unlock your ledger',
+      //   }),
+      // );
+      return;
+    }
     if (!accounts.length) {
       yield put(setProfileState('connectionStatus', connectionStatuses.LOCKED));
       yield put(
         showModal({
-          title: 'Your Metamask account is locked',
+          title: 'Your wallet is locked',
           type: 'warn',
-          text: 'Please unlock it to interact with exchange',
+          text: 'Please unlock your Metamask',
         }),
       );
     } else {
-      yield put(setProfileState('connectionStatus', connectionStatuses.CONNECTED));
-
-      yield all([call(loadBalance), call(loadNetwork), call(loadUserOrders)]);
-      // We need to access user orders, so we wait for it
-      yield call(loadTokensBalance);
-      if (!socketConnected) {
-        const socket = yield call(socketConnect);
-        yield fork(handleSocketIO, socket);
-        yield put(setProfileState('socketConnected', true));
-      }
-      yield put(
-        sendSocketMessage('login', {
-          address: newAccount,
-        }),
-      );
-      trackMixpanel('Log in', { address: newAccount });
+      yield call(loadUserData, { payload: { address: accounts[0] } });
     }
   }
 }
 
+export function* loadUserData({ payload: { address } }): Saga<*> {
+  console.warn('NEW ACCOUNT');
+
+  const socketConnected = yield select(getProfileState('socketConnected'));
+  yield put(setProfileState('address', address));
+  yield put(setProfileState('connectionStatus', connectionStatuses.CONNECTED));
+
+  yield all([call(loadBalance), call(loadNetwork), call(loadUserOrders)]);
+  // We need to access user orders, so we wait for it
+  yield call(loadTokensBalance);
+  if (!socketConnected) {
+    const socket = yield call(socketConnect);
+    yield fork(handleSocketIO, socket);
+    yield put(setProfileState('socketConnected', true));
+  }
+  yield put(
+    sendSocketMessage('login', {
+      address,
+    }),
+  );
+  trackMixpanel('Log in', { address });
+}
+
 export function* loadBalance(): Saga<*> {
-  const { web3 } = window;
-  const account = yield select(getAddress);
+  const { web3Instance: web3 } = window;
+  const account = yield select(getProfileState('address'));
   const balance = yield cps(web3.eth.getBalance, account);
   const formattedBalance = web3.utils.fromWei(balance, 'ether');
   yield put(
@@ -100,19 +134,7 @@ export function* loadBalance(): Saga<*> {
 
 export function* loadTokensBalance() {
   const tokens = yield select(getResourceMappedList('tokens', 'allTokens'));
-
-  const currentToken = yield select(getCurrentToken);
-  const currentPair = yield select(getCurrentPair);
-
-  const lockedToken = yield select(getLockedTokenBalance(currentToken));
-  const lockedPair = yield select(getLockedPairBalance);
-
-  const addActiveUserTokensAction = createActionCreators('update', {
-    resourceName: 'tokens',
-    request: 'addActiveUserTokens',
-    list: 'currentUserTokens',
-    mergeListIds: false,
-  });
+  const [current, pair] = yield call(loadCurrentTokenAndPairBalance);
 
   const addTokensBalancesAction = createActionCreators('update', {
     resourceName: 'tokens',
@@ -121,18 +143,9 @@ export function* loadTokensBalance() {
   });
 
   try {
-    const current = yield getTokenBalanceAndAllowance(currentToken, lockedToken);
-    const pair = yield getTokenBalanceAndAllowance(currentPair, lockedPair);
-
-    yield put(
-      addActiveUserTokensAction.succeeded({
-        resources: [pair, current].map(t => ({ id: t.id, attributes: { ...t } })),
-      }),
-    );
-
     const allTokens = yield all(
       tokens
-        .filter(token => token.id !== currentToken.id && token.id !== currentPair.id)
+        .filter(token => token.id !== current.id && token.id !== pair.id)
         .map(function* (token) {
           const locked = yield select(getLockedTokenBalance(token));
           const res = yield getTokenBalanceAndAllowance(token, locked);
@@ -146,12 +159,45 @@ export function* loadTokensBalance() {
       }),
     );
   } catch (e) {
-    console.error('Couldn load balance', e);
+    console.error('Couldn load all tokens balance', e);
+  }
+}
+
+export function* loadCurrentTokenAndPairBalance() {
+  const currentToken = yield select(getCurrentToken);
+  const currentPair = yield select(getCurrentPair);
+
+  const lockedToken = yield select(getLockedTokenBalance(currentToken));
+  const lockedPair = yield select(getLockedPairBalance);
+
+  const addActiveUserTokensAction = createActionCreators('update', {
+    resourceName: 'tokens',
+    request: 'addActiveUserTokens',
+    list: 'currentUserTokens',
+    mergeListIds: false,
+  });
+
+  try {
+    const current = yield getTokenBalanceAndAllowance(currentToken, lockedToken);
+    const pair = yield getTokenBalanceAndAllowance(currentPair, lockedPair);
+
+    yield put(
+      addActiveUserTokensAction.succeeded({
+        resources: [pair, current].map(t => ({ id: t.id, attributes: { ...t } })),
+      }),
+    );
+    return [
+      current,
+      pair,
+    ];
+  } catch (e) {
+    console.error('Couldnt load current token and pair balance', e);
+    return [];
   }
 }
 
 export function* loadNetwork() {
-  const { web3 } = window;
+  const { web3Instance: web3 } = window;
   const networkId = yield cps(web3.eth.net.getId);
   const network = getNetworkById(networkId);
   if (process.env.NODE_ENV === 'production' && networkId != 42) {
@@ -168,7 +214,7 @@ export function* loadNetwork() {
 
 function* getTokenBalanceAndAllowance(token, locked) {
   const { zeroEx } = window;
-  const account = yield select(getAddress);
+  const account = yield select(getProfileState('address'));
   const tokenBalance = yield call([zeroEx.token, zeroEx.token.getBalanceAsync], token.id, account);
   const allowance = yield call(
     [zeroEx.token, zeroEx.token.getProxyAllowanceAsync],
@@ -186,7 +232,7 @@ function* getTokenBalanceAndAllowance(token, locked) {
 }
 
 export function* loadUserOrders() {
-  const account = yield select(getAddress);
+  const account = yield select(getProfileState('address'));
   yield put(
     resourcesActions.fetchResourcesRequest({
       resourceName: 'orders',
@@ -202,6 +248,7 @@ export function* loadUserOrders() {
             canceled_at: null,
             deleted_at: null,
             maker_address: account,
+            status: 'new',
           },
         },
         sortBy: '-created_at',
@@ -223,7 +270,7 @@ export function* loadUserOrders() {
             maker_address: account,
             child_id: null,
             status: {
-              ne: 'new',
+              notin: ['new', 'pending'],
             },
           },
         },
@@ -233,9 +280,24 @@ export function* loadUserOrders() {
   );
 }
 
+export function* changeProvider({ payload: { provider } }): Saga<*> {
+  yield put(setProfileState('provider', provider));
+  if (provider === 'ledger') yield call(initLedger);
+  if (provider === 'metamask') yield call(initMetamask);
+  yield call(loadUser);
+}
+
 export function* runLoadUser(): Saga<*> {
   while (true) {
     yield fork(loadUser);
     yield call(delay, 3000);
   }
+}
+
+export function* listenChangeProvider(): Saga<*> {
+  yield takeEvery(types.CHANGE_PROVIDER, changeProvider);
+}
+
+export function* listenSetAddress(): Saga<*> {
+  yield takeEvery(types.SET_ADDRESS, loadUserData);
 }

@@ -23,6 +23,7 @@ import type {
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import 'react-joyride/lib/react-joyride-compiled.css';
+import 'react-select/dist/react-select.css';
 import './assets/main.less';
 
 import store from './store';

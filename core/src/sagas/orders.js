@@ -15,17 +15,17 @@ import {
 } from 'redux-form';
 import * as types from '../actions/types';
 import {
-  getAddress,
   getCurrentToken,
   getCurrentPair,
   getUiState,
-  getBalance,
+  getProfileState,
 } from '../selectors';
 import {
   sendNotification,
   saveResourceRequest,
   sendMessage,
   setUiState,
+  showModal,
 } from '../actions';
 import {
   NODE_ADDRESS,
@@ -54,8 +54,10 @@ export function* createOrder(): Saga<*> {
   const type = yield select(getUiState('activeTab'));
   const exp = moment().add('1', 'year');
 
-  const balance = yield select(getBalance);
-  const address = yield select(getAddress);
+  const balance = yield select(getProfileState('balance'));
+  const address = yield select(getProfileState('address'));
+  const provider = yield select(getProfileState('provider'));
+
   const currentToken = yield select(getCurrentToken);
   const currentPair = yield select(getCurrentPair);
   const total = BigNumber(price).times(amount).toString();
@@ -75,6 +77,7 @@ export function* createOrder(): Saga<*> {
 
     if (allowance.eq(0)) {
       yield put(setUiState('activeModal', 'AllowanceModal'));
+      yield put(setUiState('onTxOk', { action: 'createOrder', args: [] }));
       return;
     }
 
@@ -93,6 +96,7 @@ export function* createOrder(): Saga<*> {
       if (BigNumber(currentPair.balance).lt(total) && BigNumber(balance).gt(total)) {
         yield put(setUiState('activeModal', 'WrapModal'));
         yield put(setUiState('wrapAmount', BigNumber(total).minus(currentPair.balance)));
+        yield put(setUiState('onTxOk', { action: 'createOrder', args: [] }));
         return;
       }
     }
@@ -107,6 +111,7 @@ export function* createOrder(): Saga<*> {
 
     if (allowance.eq(0)) {
       yield put(setUiState('activeModal', 'AllowanceModal'));
+      yield put(setUiState('onTxOk', { action: 'createOrder', args: [] }));
       return;
     }
 
@@ -138,7 +143,15 @@ export function* createOrder(): Saga<*> {
   const orderHash = ZeroEx.getOrderHashHex(zrxOrder);
 
   try {
-    const ecSignature = yield zeroEx.signOrderHashAsync(orderHash, address, true);
+    if (provider === 'ledger') {
+      yield put(showModal({
+        title: 'Ledger action required',
+        type: 'info',
+        text: 'Click right button to sign the order',
+      }));
+    }
+
+    const ecSignature = yield zeroEx.signOrderHashAsync(orderHash, address, provider === 'metamask');
     const signedZRXOrder = {
       ...zrxOrder,
       ecSignature,
@@ -281,11 +294,20 @@ export function* cancelOrder({
       request: 'cancelOrder',
     });
     yield put(actions.pending());
-    const accounts = yield cps(window.web3.eth.getAccounts);
+    const account = yield select(getProfileState('address'));
+    const provider = yield select(getProfileState('provider'));
+
+    if (provider === 'ledger') {
+      yield put(showModal({
+        title: 'Ledger action required',
+        type: 'info',
+        text: 'Click right button to cancel the order',
+      }));
+    }
     const signature = yield cps(
-      window.web3.eth.personal.sign,
+      window.web3Instance.eth.personal.sign,
       'Confirmation to cancel order',
-      accounts[0],
+      account,
     );
     yield call(customApiRequest, {
       url: `${config.apiUrl}/orders/${orderId}/cancel`,
@@ -300,6 +322,7 @@ export function* cancelOrder({
     yield call(loadTokensBalance);
   } catch (err) {
     console.log(err);
+    yield put(sendNotification({ message: err.message, type: 'error' }));
   }
 }
 

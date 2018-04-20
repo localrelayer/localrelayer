@@ -14,15 +14,22 @@ export const setProfileState = (
   },
 });
 
-export const loadUser = (): ProfileAction => ({ type: types.LOAD_USER });
-
-export const updateToken = (
-  payload: {
-    tokenAddress: string,
-    field: string,
-    value: any,
-  },
+export const changeProvider = (
+  provider: string,
 ): ProfileAction => ({
-  type: types.UPDATE_TOKEN,
-  payload,
+  type: types.CHANGE_PROVIDER,
+  payload: {
+    provider,
+  },
 });
+
+export const setAddress = (
+  address: string,
+): ProfileAction => ({
+  type: types.SET_ADDRESS,
+  payload: {
+    address,
+  },
+});
+
+export const loadUser = (): ProfileAction => ({ type: types.LOAD_USER });

@@ -22,6 +22,11 @@ import {
   listenCancelOrder,
 } from './orders';
 
+import {
+  listenChangeProvider,
+  listenSetAddress
+} from './profile';
+
 const coreSagas = [
   fork(initialize),
   fork(listenFetchResourceRequest),
@@ -30,6 +35,8 @@ const coreSagas = [
   fork(listenCallContract),
   fork(listenNewOrder),
   fork(listenCancelOrder),
+  fork(listenChangeProvider),
+  fork(listenSetAddress),
 ];
 
 export default coreSagas;

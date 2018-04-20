@@ -14,7 +14,7 @@ import type {
 } from 'react';
 
 import {
-  NumberInput,
+  AntNumberInput,
 } from '../ReduxFormComponents';
 
 import {
@@ -44,7 +44,6 @@ type Props = {
   wrap: () => void,
   unwrap: () => void,
   handleSubmit: (Function) => void,
-  isLoading: boolean,
 };
 
 /**
@@ -57,20 +56,19 @@ const WrapForm: StatelessFunctionalComponent<Props> = ({
   wrap,
   unwrap,
   handleSubmit,
-  isLoading,
 }: Props): Node => (
   <FormContainer onSubmit={handleSubmit}>
     <InputGroupContainer compact>
       <Field
         name="amount"
         type="text"
-        component={NumberInput}
-        placeholder="ETH amount"
-        // parse={parseNumber}
+        component={AntNumberInput}
+        placeholder="Amount"
+        addonAfter="ETH"
       />
       <Button.Group>
-        <Button type="primary" disabled={isLoading} onClick={handleSubmit(unwrap)}>Unwrap</Button>
-        <Button type="primary" disabled={isLoading} onClick={handleSubmit(wrap)}>Wrap</Button>
+        <Button type="primary" onClick={handleSubmit(unwrap)}>Unwrap</Button>
+        <Button type="primary" onClick={handleSubmit(wrap)}>Wrap</Button>
       </Button.Group>
     </InputGroupContainer>
   </FormContainer>

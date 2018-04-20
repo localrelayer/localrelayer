@@ -13,20 +13,9 @@ export function cancelOrder(orderId: string): OrdersAction {
   };
 }
 
-export function createOrder({
-  amount,
-  exp,
-  price,
-  type,
-}: OrderData): OrdersAction {
+export function createOrder(): OrdersAction {
   return {
     type: types.CREATE_ORDER,
-    payload: {
-      amount,
-      exp,
-      price,
-      type,
-    },
   };
 }
 

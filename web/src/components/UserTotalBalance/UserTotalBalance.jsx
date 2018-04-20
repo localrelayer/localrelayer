@@ -129,6 +129,9 @@ const UserTotalBalance = ({
       <Card.Grid>
         <TableContainer
           size="small"
+          pagination={{
+            pageSize: 14,
+          }}
           bordered={false}
           onRow={record => ({
             onClick: () => onTokenClick(record),

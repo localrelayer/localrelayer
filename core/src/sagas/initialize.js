@@ -21,7 +21,7 @@ import {
   saveResourceRequest,
 } from './resources';
 import {
-  loadZeroEx,
+  initMetamask,
   connectionStatuses,
   SMALLEST_AMOUNT,
 } from '../utils/web3';
@@ -37,17 +37,22 @@ import {
   loadOrders,
 } from './orders';
 import * as uiActions from '../actions/ui';
-import EIP20 from '../../build/contracts/EIP20.json';
+import {
+  setProfileState,
+} from '../actions';
 import {
   getResourceMappedList,
   getCurrentToken,
   getCurrentPair,
-  getAddress,
+  getProfileState,
 } from '../selectors';
 import BigNumber from '../utils/BigNumber';
+import ERC20 from '../utils/ERC20';
 
 export function* initialize(): Saga<void> {
-  yield call(loadZeroEx);
+  yield call(initMetamask);
+  yield put(setProfileState('provider', 'metamask'));
+
   yield call(fetchResourcesRequest, {
     payload: {
       resourceName: 'tokens',
@@ -69,8 +74,7 @@ export function* initialize(): Saga<void> {
 
   // Prefilling buy/sell form
   // yield put(uiActions.fillField('price', { orderType: 'sell' }));
-  yield put(uiActions.fillField('exp', { period: ['1', 'day'] }));
-  if (!window.web3) {
+  if (!window.web3Instance) {
     yield put(
       uiActions.showModal({
         title: 'You are not connected to Ethereum',
@@ -95,7 +99,7 @@ export function* initialize(): Saga<void> {
 
 export function* setTokens(): Saga<void> {
   const { zeroEx } = window;
-  const address = yield select(getAddress);
+  const address = yield select(getProfileState('address'));
 
   yield put(reset('BuySellForm'));
   yield put(uiActions.setUiState('bannerMessage', null));
@@ -103,7 +107,7 @@ export function* setTokens(): Saga<void> {
   const { pathname } = yield select(getLocation);
   const tokens = yield select(getResourceMappedList('tokens', 'allTokens'));
   const reg = pathToRegexp('/:token-:pair');
-  const [a, token, pair] = reg.exec(pathname) || []; // eslint-disable-line
+  const [a, token = '', pair = ''] = reg.exec(pathname) || []; // eslint-disable-line
 
 
   let selectedToken =
@@ -120,15 +124,21 @@ export function* setTokens(): Saga<void> {
   const zrxToken = tokens.find(t => t.symbol === 'ZRX' || t.id === networkZrxAddress) || {};
   const wethToken = tokens.find(t => t.symbol === 'WETH' || t.id === networkWethAddress) || {};
 
-  if (!selectedToken && window.web3 && window.web3.utils.isAddress(token)) {
+  console.log(token);
+
+  if (!selectedToken && window.web3Instance && window.web3Instance.utils.isAddress(token)) {
     trackMixpanel(
       'New token created',
       { address },
     );
+    const deployed = new window.web3Instance.eth.Contract(ERC20, token);
+
+
     try {
-      const deployed = new window.web3.eth.Contract(EIP20.abi, token);
       const name = yield call(deployed.methods.name().call);
+      console.warn(name);
       const symbol = yield call(deployed.methods.symbol().call);
+      console.warn(symbol);
       const decimals = yield call(deployed.methods.decimals().call);
       const responseUrlToken = yield call(fetchResourcesRequest, {
         payload: {
@@ -192,9 +202,9 @@ function* checkNewToken({ payload: { pathname } }): Saga<void> {
   }
 
   const tokenItem =
-    tokens.find(t => t.symbol === token || t.id === token.toLowerCase());
+    tokens.find(t => t.symbol === token || t.id === token.toLowerCase()) || {};
   const pairItem =
-    tokens.find(t => (t.symbol === pair || t.id === pair.toLowerCase()) && t.is_listed);
+    tokens.find(t => (t.symbol === pair || t.id === pair.toLowerCase()) && t.is_listed) || {};
 
   const currentToken = yield select(getCurrentToken);
   const currentPair = yield select(getCurrentPair);

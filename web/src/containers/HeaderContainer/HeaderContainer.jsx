@@ -25,6 +25,8 @@ import type {
 
 import {
   setUiState,
+  setAddress,
+  changeProvider,
 } from 'instex-core/actions';
 import {
   getFilteredTokens,
@@ -96,6 +98,13 @@ const HeaderContainer: StatelessFunctionalComponent<Props> =
           )
       }
       location={location}
+      onAddressSelect={
+        address =>
+        dispatch(
+          setAddress(address),
+        )
+      }
+      onProviderSelect={provider => dispatch(changeProvider(provider))}
     />;
 
 const mapStateToProps = (state) => {
