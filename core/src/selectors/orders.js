@@ -7,14 +7,13 @@ import {
   getResourceMap,
   getResourceMappedList,
 } from './resources';
-import {
-  getAddress,
-} from './profile';
+
+const getProfileState = key => ({ profile }) => profile[key];
 
 export const getBuyOrders = createSelector(
   [
     getResourceMappedList('orders', 'buy'),
-    getAddress,
+    getProfileState('address'),
   ],
   (orders, address) => orders
     .filter(order =>
@@ -36,7 +35,7 @@ export const getBuyOrders = createSelector(
 export const getSellOrders = createSelector(
   [
     getResourceMappedList('orders', 'sell'),
-    getAddress,
+    getProfileState('address'),
   ],
   (orders, address) => orders
     .filter(order =>
@@ -58,7 +57,7 @@ export const getSellOrders = createSelector(
 export const getCompletedOrders = createSelector(
   [
     getResourceMappedList('orders', 'completedOrders'),
-    getAddress,
+    getProfileState('address'),
   ],
   (orders, address) => orders
     .filter(order =>

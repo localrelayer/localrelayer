@@ -1,4 +1,4 @@
-// flow-typed signature: 3ee206922ff4d2aa9fde6534df97e091
+// flow-typed signature: b54fa37d5daa575fdf14e41df3770b9a
 // flow-typed version: <<STUB>>/truffle_v^4.0.5/flow_v0.63.1
 
 /**
@@ -46,6 +46,10 @@ declare module 'truffle/nil' {
   declare module.exports: any;
 }
 
+declare module 'truffle/scripts/geth-accounts' {
+  declare module.exports: any;
+}
+
 declare module 'truffle/test/scenarios' {
   declare module.exports: any;
 }
@@ -59,6 +63,10 @@ declare module 'truffle/test/scenarios/contract_names/test_imports' {
 }
 
 declare module 'truffle/test/scenarios/cyclic_dependencies/compiles' {
+  declare module.exports: any;
+}
+
+declare module 'truffle/test/scenarios/ethpm/ethpm' {
   declare module.exports: any;
 }
 
@@ -78,11 +86,19 @@ declare module 'truffle/test/scenarios/reporter' {
   declare module.exports: any;
 }
 
+declare module 'truffle/test/scenarios/sandbox' {
+  declare module.exports: any;
+}
+
 declare module 'truffle/test/scenarios/server' {
   declare module.exports: any;
 }
 
 declare module 'truffle/test/scenarios/solidity_testing/with_balances' {
+  declare module.exports: any;
+}
+
+declare module 'truffle/test/sources/ethpm/truffle' {
   declare module.exports: any;
 }
 
@@ -105,6 +121,9 @@ declare module 'truffle/cli.webpack.config.js' {
 declare module 'truffle/nil.js' {
   declare module.exports: $Exports<'truffle/nil'>;
 }
+declare module 'truffle/scripts/geth-accounts.js' {
+  declare module.exports: $Exports<'truffle/scripts/geth-accounts'>;
+}
 declare module 'truffle/test/scenarios.js' {
   declare module.exports: $Exports<'truffle/test/scenarios'>;
 }
@@ -116,6 +135,9 @@ declare module 'truffle/test/scenarios/contract_names/test_imports.js' {
 }
 declare module 'truffle/test/scenarios/cyclic_dependencies/compiles.js' {
   declare module.exports: $Exports<'truffle/test/scenarios/cyclic_dependencies/compiles'>;
+}
+declare module 'truffle/test/scenarios/ethpm/ethpm.js' {
+  declare module.exports: $Exports<'truffle/test/scenarios/ethpm/ethpm'>;
 }
 declare module 'truffle/test/scenarios/happy_path/happypath.js' {
   declare module.exports: $Exports<'truffle/test/scenarios/happy_path/happypath'>;
@@ -129,9 +151,15 @@ declare module 'truffle/test/scenarios/migrations/parameters.js' {
 declare module 'truffle/test/scenarios/reporter.js' {
   declare module.exports: $Exports<'truffle/test/scenarios/reporter'>;
 }
+declare module 'truffle/test/scenarios/sandbox.js' {
+  declare module.exports: $Exports<'truffle/test/scenarios/sandbox'>;
+}
 declare module 'truffle/test/scenarios/server.js' {
   declare module.exports: $Exports<'truffle/test/scenarios/server'>;
 }
 declare module 'truffle/test/scenarios/solidity_testing/with_balances.js' {
   declare module.exports: $Exports<'truffle/test/scenarios/solidity_testing/with_balances'>;
+}
+declare module 'truffle/test/sources/ethpm/truffle.js' {
+  declare module.exports: $Exports<'truffle/test/sources/ethpm/truffle'>;
 }

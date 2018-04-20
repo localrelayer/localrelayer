@@ -14,6 +14,7 @@ type Props = {
   meta: FieldProps.meta,
   placeholder: string,
   disabled: boolean,
+  formatter?: Function,
 };
 
 export default class NumberInput extends Component<Props> {
@@ -28,6 +29,7 @@ export default class NumberInput extends Component<Props> {
       label,
       placeholder,
       disabled,
+      formatter,
       meta: {
         touched,
         error,
@@ -46,6 +48,7 @@ export default class NumberInput extends Component<Props> {
           precision={8}
           step={0.1}
           min={0}
+          formatter={formatter}
           style={{ width: '100%' }}
           placeholder={placeholder}
           ref={(el) => {

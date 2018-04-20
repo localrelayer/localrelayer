@@ -6,7 +6,7 @@ import type { MapStateToProps } from 'react-redux';
 import {
   getCurrentPair,
   getCurrentToken,
-  getBalance,
+  getProfileState,
 } from 'instex-core/selectors';
 import {
   createOrder,
@@ -63,13 +63,13 @@ const mapStateToProps: MapStateToProps<*, *, *> = (state) => {
   const { activeTab } = state.ui;
   const currentToken = getCurrentToken(state);
   const currentPair = getCurrentPair(state);
-  const balance = getBalance(state);
+  const balance = getProfileState('balance')(state);
   return {
     currentToken,
     currentPair,
     activeTab,
     balance,
-    isConnected: state.profile.connectionStatus !== 'Not connected to Ethereum' && state.profile.connectionStatus !== 'Locked',
+    isConnected: state.profile.connectionStatus !== 'Not connected' && state.profile.connectionStatus !== 'Locked',
   };
 };
 

@@ -1,45 +1,71 @@
 import { ZeroEx } from '0x.js';
+import Web3ProviderEngine from 'web3-provider-engine';
+import {
+  ledgerEthereumBrowserClientFactoryAsync as ledgerEthereumClientFactoryAsync,
+  LedgerSubprovider,
+} from '@0xproject/subproviders';
+
+const RpcSubprovider = require('web3-provider-engine/subproviders/rpc.js');
 
 const Web3 = require('web3');
 
-let web3;
+export const startMetamask = () =>
+  new Promise(() => {
+    window.addEventListener('load', async () => {
+      initMetamask();
+    });
+  });
 
-export const loadZeroEx = () => new Promise((resolve) => {
-  // Wait for loading completion to avoid race conditions with web3 injection timing.
-  window.addEventListener('load', async () => {
-    // Checking if Web3 has been injected by the browser (Mist/MetaMask)
-    if (typeof window.web3 !== 'undefined') {
-      let networkId;
-      web3 = new Web3(window.web3.currentProvider);
-      try {
-        networkId = +(await web3.eth.net.getId());
-      } catch (e) {
-        console.warn(e);
-        console.warn('Couldn\'t get a network, using testnet');
-        networkId = 50;
-      }
-      const zeroEx = initializeZeroEx(networkId);
-      console.warn('Injected web3 detected.');
-      resolve(zeroEx);
-    } else {
-      resolve(null);
-      window.web3 = undefined;
-      console.warn('No web3 instance injected, please use Metamask');
+export const initMetamask = async () => {
+  if (typeof window.web3 !== 'undefined') {
+    const web3 = new Web3(window.web3.currentProvider);
+    let networkId;
+    try {
+      networkId = +await web3.eth.net.getId();
+    } catch (e) {
+      console.warn(e);
+      console.warn("Couldn't get a network, using mainnet");
+      networkId = 1;
     }
-  });
-});
-
-export const initializeZeroEx = (networkId = 50) => {
-  // Use Mist/MetaMask's provider.
-  const zeroEx = new ZeroEx(window.web3.currentProvider, {
-    networkId,
-  });
-  window.web3 = web3;
-  window.zeroEx = zeroEx;
-
-  return zeroEx;
+    const zeroEx = new ZeroEx(window.web3.currentProvider, {
+      networkId,
+    });
+    window.zeroEx = zeroEx;
+    window.web3Instance = web3;
+  }
 };
 
+export const initLedger = async () => {
+  const providerEngine = new Web3ProviderEngine();
+  const networkId = 1;
+
+  const ledgerSubprovider = new LedgerSubprovider({
+    networkId,
+    ledgerEthereumClientFactoryAsync,
+  });
+
+  providerEngine.addProvider(ledgerSubprovider);
+  providerEngine.addProvider(
+    new RpcSubprovider({
+      rpcUrl: 'https://mainnet.infura.io/metamask',
+    }),
+  );
+  providerEngine.start();
+
+  // network connectivity error
+  providerEngine.on('error', (err) => {
+    // report connectivity errors
+    console.error(err.stack);
+  });
+
+  const web3 = new Web3(providerEngine);
+
+  const zeroEx = new ZeroEx(providerEngine, {
+    networkId,
+  });
+  window.zeroEx = zeroEx;
+  window.web3Instance = web3;
+};
 
 export const getNetworkById = (id: number) => {
   const networks = {
@@ -54,7 +80,7 @@ export const getNetworkById = (id: number) => {
 };
 
 export const connectionStatuses = {
-  NOT_CONNECTED: 'Not connected to Ethereum',
+  NOT_CONNECTED: 'Not connected',
   CONNECTED: 'Connected',
   LOCKED: 'Locked',
 };

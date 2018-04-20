@@ -13,6 +13,7 @@ import {
 import {
   Colored,
 } from '../SharedStyles';
+import loader from '../../assets/eth.gif';
 
 type Props = {
   // List of orders
@@ -74,7 +75,7 @@ export default enchance(({
             {order.isUser ? <Icon type="user" /> : null}
           </IconContainer>
           <IconContainer className="Table-row-item" >
-            {order.status === 'pending' ? <Icon type="loading" /> : null}
+            {order.status === 'pending' ? <img alt="pending" src={loader} /> : null}
           </IconContainer>
           <AmountFillContainer width={calculateFill(order.total, orders)} type={type} />
         </div>

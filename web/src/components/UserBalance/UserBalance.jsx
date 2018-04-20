@@ -31,8 +31,6 @@ type Props = {
   wrap: () => void,
   /** Function that is called by unwrap button */
   unwrap: () => void,
-  /** Is something loading */
-  isBalanceLoading: boolean,
   /** Is user connected to ethereum */
   isConnected: boolean,
 };
@@ -103,7 +101,6 @@ const UserBalance = ({
   balance,
   wrap,
   unwrap,
-  isBalanceLoading,
   isConnected,
 }: Props): Node => (
   <div id="user-balance">
@@ -119,7 +116,7 @@ const UserBalance = ({
     You are viewing this in read-only mode. Connect a wallet to see your balance
         </h3>
       </Overlay>
-      <WrapForm wrap={wrap} unwrap={unwrap} onSubmit={() => {}} isLoading={isBalanceLoading} />
+      <WrapForm wrap={wrap} unwrap={unwrap} onSubmit={() => {}} />
       <Card.Grid>
         <TableContainer
           size="small"

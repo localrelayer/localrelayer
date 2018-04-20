@@ -14,6 +14,7 @@ const initialState: ProfileState = {
   tokens: [],
   connectionStatus: '',
   network: '',
+  provider: '',
 };
 
 export default function profileReducer(
@@ -26,17 +27,6 @@ export default function profileReducer(
         ...state,
         [action.payload.key]: action.payload.value,
       };
-    case types.UPDATE_TOKEN: {
-      const { tokenAddress, field, value } = action.payload;
-      return {
-        ...state,
-        tokens: state.tokens.map(token => (
-          token.id === tokenAddress ?
-            ({ ...token, [field]: value })
-            :
-            token)),
-      };
-    }
     case types.CLEAR_ALL_REDUCERS:
       return initialState;
     default:

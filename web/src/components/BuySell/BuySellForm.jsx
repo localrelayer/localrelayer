@@ -32,7 +32,7 @@ import {
   TRANSACTION_FEE,
 } from 'instex-core/src/utils/web3';
 import {
-  NumberInput,
+  AntNumberInput,
   // DateInput,
 } from '../ReduxFormComponents';
 import {
@@ -65,15 +65,15 @@ const validate = (values, props) => {
       errors.amount = 'Only numbers allowed';
     }
     if (
-      BigNumber(values.price)
-        .times(values.amount)
+      BigNumber(+values.price)
+        .times(+values.amount)
         .lt(window.SMALLEST_AMOUNT || 0)
     ) {
       errors.amount = 'Order is too small :(';
     }
     if (
-      BigNumber(values.price)
-        .times(values.amount)
+      BigNumber(+values.price)
+        .times(+values.amount)
         .gt(window.BIGGEST_AMOUNT || 0)
     ) {
       errors.amount = "Order is too big, we can't process it :(";
@@ -83,9 +83,9 @@ const validate = (values, props) => {
     }
     if (
       props.type === 'buy' &&
-      BigNumber(values.price)
-        .times(values.amount)
-        .gt(BigNumber(props.currentPair.balance || 0).add(props.balance || 0))
+      BigNumber(+values.price)
+        .times(+values.amount)
+        .gt(BigNumber(+props.currentPair.balance || 0).add(+props.balance || 0))
     ) {
       errors.amount = "You don't have the required amount";
     }
@@ -131,7 +131,7 @@ const BuySellForm = ({
       id="price"
       type="text"
       name="price"
-      parse={parseNumber}
+      // parse={parseNumber}
       label={
         <LabelContainer>
           <div>Price</div>
@@ -142,13 +142,14 @@ const BuySellForm = ({
         </LabelContainer>
       }
       placeholder={currentPair.symbol}
-      component={NumberInput}
+      addonAfter={currentPair.symbol}
+      component={AntNumberInput}
     />
     <Field
       id="amount"
       type="text"
       name="amount"
-      parse={parseNumber}
+      // parse={parseNumber}
       label={
         <LabelContainer>
           <div>Amount</div>
@@ -161,7 +162,8 @@ const BuySellForm = ({
         </LabelContainer>
       }
       placeholder={currentToken.symbol}
-      component={NumberInput}
+      addonAfter={currentToken.symbol}
+      component={AntNumberInput}
     />
     { /* <Field
       id="exp"
@@ -223,17 +225,17 @@ BuySellForm.defaultProps = {
 const mapStateToProps: MapStateToProps<*, *, *> = (state, props) => {
   const { type } = props;
   const { amount = 0, price = 0 } = getFormValues('BuySellForm')(state) || {};
-  const total = BigNumber(amount).times(price);
+  const total = BigNumber(+amount).times(+price);
 
   let exchangeFee;
   let transactionFee;
 
   if (type === 'sell') {
-    exchangeFee = BigNumber(total).times(EXCHANGE_FEE);
+    exchangeFee = BigNumber(+total).times(EXCHANGE_FEE);
     transactionFee = price ? TRANSACTION_FEE : 0;
   } else {
-    exchangeFee = BigNumber(amount).times(EXCHANGE_FEE);
-    transactionFee = price ? BigNumber(TRANSACTION_FEE).div(price) : 0;
+    exchangeFee = BigNumber(+amount).times(EXCHANGE_FEE);
+    transactionFee = price ? BigNumber(TRANSACTION_FEE).div(+price) : 0;
   }
 
   const totalFee = exchangeFee.add(transactionFee);
@@ -250,7 +252,6 @@ export default compose(
   reduxForm({
     form: 'BuySellForm',
     touchOnChange: true,
-    enableReinitialize: true,
     validate,
   }),
   connect(mapStateToProps),

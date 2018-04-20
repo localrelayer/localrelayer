@@ -9,7 +9,7 @@ import TextInput from 'components/ReduxFormComponents/TextInput';
 const validate = (values) => {
   const errors = {};
   console.log(values);
-  if (!values.address || !window.web3.utils.isAddress(values.address)) {
+  if (!values.address || !window.web3Instance.utils.isAddress(values.address)) {
     errors.address = 'Please enter valid token address';
   }
   return errors;

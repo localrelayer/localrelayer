@@ -13,11 +13,15 @@ export type ProfileAction =
   type: typeof actionTypes.LOAD_USER,
 |} |
 {|
-  type: typeof actionTypes.UPDATE_TOKEN,
+  type: typeof actionTypes.CHANGE_PROVIDER,
   payload: {|
-    tokenAddress: string,
-    field: string,
-    value: any,
+    provider: string,
+  |}
+|} |
+{|
+  type: typeof actionTypes.SET_ADDRESS,
+  payload: {|
+    address: string,
   |}
 |}
 

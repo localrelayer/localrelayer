@@ -11,7 +11,7 @@ import type {
   StatelessFunctionalComponent,
 } from 'react';
 import {
-  callContract,
+  setUiState,
 } from 'instex-core/actions';
 import {
   getResourceMappedList,
@@ -40,10 +40,24 @@ const UserTotalBalanceContainer: StatelessFunctionalComponent<Props> = ({
     <UserTotalBalance
       isBalanceLoading={isBalanceLoading}
       tokens={tokens}
-      onToggle={(checked, token) => (checked ? dispatch(callContract('setAllowance', token)) : dispatch(callContract('unsetAllowance', token)))}
+      onToggle={(checked, token) => {
+      if (checked) {
+        dispatch(setUiState('activeModal', 'GasModal'));
+        dispatch(setUiState('onGasOk', { action: 'callContract', args: ['setAllowance', token] }));
+      } else {
+        dispatch(setUiState('activeModal', 'GasModal'));
+        dispatch(setUiState('onGasOk', { action: 'callContract', args: ['unsetAllowance', token] }));
+      }
+    }}
       balance={balance}
-      wrap={() => dispatch(callContract('deposit'))}
-      unwrap={() => dispatch(callContract('withdraw'))}
+      wrap={() => {
+      dispatch(setUiState('activeModal', 'GasModal'));
+      dispatch(setUiState('onGasOk', { action: 'callContract', args: ['deposit'] }));
+    }}
+      unwrap={() => {
+      dispatch(setUiState('activeModal', 'GasModal'));
+      dispatch(setUiState('onGasOk', { action: 'callContract', args: ['withdraw'] }));
+    }}
       lockedBalance={lockedBalance}
       isConnected={isConnected}
     />

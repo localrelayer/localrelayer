@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Layout, Button } from 'antd';
+import { Layout, Button, Avatar } from 'antd';
 
 export const LogoContainer = styled.div`
   width: 120px;
@@ -33,7 +33,7 @@ export const HeaderContainer = styled(Layout.Header)`
   line-height: 50px;
 
   img {
-    height: 50px;
+    height: 42px;
   }
 `;
 
@@ -74,13 +74,24 @@ export const HelpButton = styled.a`
 export const HelpContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   a {
     text-align: center;
     padding: 10px;
+    color: #ffffffc4;
   }
   & img {
-    max-height: 80px;
-    margin: 0 10px;
+    max-height: 40px;
+    margin: 0 5px;
   }
 `;
 
+export const AvatarContainer = styled(Avatar)`
+  padding: 5px;
+  background: none;
+
+  & img {
+    height: 100%;
+    width: 100%;
+  }
+`;

@@ -24,8 +24,7 @@ import {
   loadBalance,
 } from './profile';
 import {
-  getAddress,
-  getBalance,
+  getProfileState,
   getWethToken,
 } from '../selectors';
 import {
@@ -46,8 +45,12 @@ function* deposit() {
 
   const weth = yield select(getWethToken);
   const { amount } = yield select(getFormValues('WrapForm'));
-  const account = yield select(getAddress);
-  const balance = yield select(getBalance);
+  const { gasPrice, gasLimit } = yield select(getFormValues('GasForm'));
+  const gasPriceWei = window.web3Instance.utils.toWei(gasPrice, 'gwei');
+
+  const account = yield select(getProfileState('address'));
+  const balance = yield select(getProfileState('balance'));
+  const provider = yield select(getProfileState('provider'));
 
   if (balance <= 0.0001) {
     yield put(showModal({
@@ -58,20 +61,33 @@ function* deposit() {
   } else {
     const ethToConvert = ZeroEx.toBaseUnitAmount(new BigNumber(amount), weth.decimals);
     try {
+      if (provider === 'ledger') {
+        yield put(showModal({
+          title: 'Ledger action required',
+          type: 'info',
+          text: 'Click right button to send transaction',
+        }));
+      }
+
       const txHash = yield call([zeroEx.etherToken, zeroEx.etherToken.depositAsync],
         weth.id,
         ethToConvert,
         account,
-        { gasLimit: 80000 });
+        {
+          gasLimit,
+          gasPrice: BigNumber(gasPriceWei),
+        });
 
       yield put(setUiState('activeModal', 'TxModal'));
       yield put(setUiState('txHash', txHash));
 
-      yield put(setUiState('isBalanceLoading', true));
       yield put(reset('WrapForm'));
+
+      yield put(setUiState('isTxLoading', true));
       yield call([zeroEx, zeroEx.awaitTransactionMinedAsync], txHash);
       // Somewhy balance isn't updated until 10 seconds will end
       yield call(delay, 10000);
+      yield put(setUiState('isTxLoading', false));
 
       trackMixpanel(
         'Deposit',
@@ -81,9 +97,9 @@ function* deposit() {
       yield put(sendNotification({ message: 'Deposit successful', type: 'success' }));
       yield call(loadTokensBalance);
       yield call(loadBalance);
-      yield put(setUiState('isBalanceLoading', false));
     } catch (e) {
       yield put(sendNotification({ message: e.message, type: 'error' }));
+      yield put(setUiState('isTxLoading', false));
       console.error(e);
     }
   }
@@ -95,25 +111,41 @@ function* withdraw() {
 
   const weth = yield select(getWethToken);
   const { amount } = yield select(getFormValues('WrapForm'));
-  const account = yield select(getAddress);
+  const { gasPrice, gasLimit } = yield select(getFormValues('GasForm'));
+  const gasPriceWei = window.web3Instance.utils.toWei(gasPrice, 'gwei');
+
+  const account = yield select(getProfileState('address'));
+  const provider = yield select(getProfileState('provider'));
 
   const ethToConvert = ZeroEx.toBaseUnitAmount(new BigNumber(amount), weth.decimals);
   try {
+    if (provider === 'ledger') {
+      yield put(showModal({
+        title: 'Ledger action required',
+        type: 'info',
+        text: 'Click right button to send transaction',
+      }));
+    }
     const txHash = yield call([zeroEx.etherToken, zeroEx.etherToken.withdrawAsync],
       weth.id,
       ethToConvert,
       account,
-      { gasLimit: 80000 });
+      {
+        gasLimit,
+        gasPrice: BigNumber(gasPriceWei),
+      });
 
     yield put(setUiState('activeModal', 'TxModal'));
     yield put(setUiState('txHash', txHash));
 
-    yield put(setUiState('isBalanceLoading', true));
     yield put(reset('WrapForm'));
+
+    yield put(setUiState('isTxLoading', true));
     yield call([zeroEx, zeroEx.awaitTransactionMinedAsync], txHash);
 
     // Somewhy balance isn't updated until 10 seconds will end
     yield call(delay, 10000);
+    yield put(setUiState('isTxLoading', false));
 
     trackMixpanel(
       'Withdraw',
@@ -123,38 +155,48 @@ function* withdraw() {
     yield put(sendNotification({ message: 'Withdrawal successful', type: 'success' }));
     yield call(loadTokensBalance);
     yield call(loadBalance);
-    yield put(setUiState('isBalanceLoading', false));
   } catch (e) {
     yield put(sendNotification({ message: e.message, type: 'error' }));
-    yield put(setUiState('isBalanceLoading', false));
-
+    yield put(setUiState('isTxLoading', false));
     console.error(e);
   }
 }
 
 function* setAllowance(token) {
   const { zeroEx } = window;
-  // const  = yield select(getResourceItemBydId('tokens', token.id));
-  const account = yield select(getAddress);
+  const account = yield select(getProfileState('address'));
+  const provider = yield select(getProfileState('provider'));
+
+  const { gasPrice, gasLimit } = yield select(getFormValues('GasForm'));
+  const gasPriceWei = window.web3Instance.utils.toWei(gasPrice, 'gwei');
   try {
     const actions = createActionCreators('update', {
       resourceName: 'tokens',
       request: 'unlockToken',
       lists: ['allTokens', 'currentUserTokens'],
     });
+
+    if (provider === 'ledger') {
+      yield put(showModal({
+        title: 'Ledger action required',
+        type: 'info',
+        text: 'Click right button to send transaction',
+      }));
+    }
+
     const txHash = yield call(
       [zeroEx.token, zeroEx.token.setUnlimitedProxyAllowanceAsync],
       token.id,
       account,
-      { gasLimit: 80000 },
+      { gasPrice: BigNumber(gasPriceWei), gasLimit },
     );
 
     yield put(setUiState('activeModal', 'TxModal'));
     yield put(setUiState('txHash', txHash));
 
-    yield put(setUiState('isBalanceLoading', true));
+    yield put(setUiState('isTxLoading', true));
     yield call([zeroEx, zeroEx.awaitTransactionMinedAsync], txHash);
-    yield put(setUiState('isBalanceLoading', false));
+    yield put(setUiState('isTxLoading', false));
 
     trackMixpanel(
       'Allowance setted',
@@ -174,7 +216,7 @@ function* setAllowance(token) {
     }));
   } catch (e) {
     yield put(sendNotification({ message: e.message, type: 'error' }));
-    yield put(setUiState('isBalanceLoading', false));
+    yield put(setUiState('isTxLoading', false));
 
     console.error(e);
   }
@@ -182,27 +224,37 @@ function* setAllowance(token) {
 
 function* unsetAllowance(token) {
   const { zeroEx } = window;
-  const account = yield select(getAddress);
+  const account = yield select(getProfileState('address'));
+  const provider = yield select(getProfileState('provider'));
+  const { gasPrice, gasLimit } = yield select(getFormValues('GasForm'));
+  const gasPriceWei = window.web3Instance.utils.toWei(gasPrice, 'gwei');
   try {
     const actions = createActionCreators('update', {
       resourceName: 'tokens',
       request: 'unlockToken',
       lists: ['allTokens', 'currentUserTokens'],
     });
+    if (provider === 'ledger') {
+      yield put(showModal({
+        title: 'Ledger action required',
+        type: 'info',
+        text: 'Click right button to send transaction',
+      }));
+    }
     const txHash = yield call(
       [zeroEx.token, zeroEx.token.setProxyAllowanceAsync],
       token.id,
       account,
       BigNumber(0),
-      { gasLimit: 80000 },
+      { gasPrice: BigNumber(gasPriceWei), gasLimit },
     );
 
     yield put(setUiState('activeModal', 'TxModal'));
     yield put(setUiState('txHash', txHash));
 
-    yield put(setUiState('isBalanceLoading', true));
+    yield put(setUiState('isTxLoading', true));
     yield call([zeroEx, zeroEx.awaitTransactionMinedAsync], txHash);
-    yield put(setUiState('isBalanceLoading', false));
+    yield put(setUiState('isTxLoading', false));
 
     trackMixpanel(
       'Allowance unsetted',
@@ -223,7 +275,7 @@ function* unsetAllowance(token) {
     }));
   } catch (e) {
     yield put(sendNotification({ message: e.message, type: 'error' }));
-    yield put(setUiState('isBalanceLoading', false));
+    yield put(setUiState('isTxLoading', false));
     console.error(e);
   }
 }

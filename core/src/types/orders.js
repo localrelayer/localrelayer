@@ -73,7 +73,6 @@ export type OrdersAction =
 |} |
 {|
   type: typeof actionTypes.CREATE_ORDER,
-  payload: OrderData,
 |} |
 {|
   type: typeof actionTypes.FILL_ORDER,

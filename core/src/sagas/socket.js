@@ -27,6 +27,8 @@ import {
 } from '../selectors';
 import {
   loadUserOrders,
+  loadBalance,
+  loadCurrentTokenAndPairBalance,
 } from './profile';
 
 export function socketConnect() {
@@ -84,6 +86,8 @@ function* read(socket) {
         }),
       );
       yield call(loadUserOrders);
+      yield call(loadBalance);
+      yield call(loadCurrentTokenAndPairBalance);
     } else if (data.tradingInfo) {
       const token = yield select(getResourceItemBydId('tokens', data.token));
       yield put({
