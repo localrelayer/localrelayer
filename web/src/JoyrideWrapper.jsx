@@ -119,19 +119,6 @@ const steps = [
     selector: '#orderForm',
     position: 'left',
   },
-  // {
-  //   title: '7. Click here to rerun the tour',
-  //   text: (
-  //     <div>
-  //       <article>
-  //         If you have some troubles, please contact us on <a target="_blank" rel="noopener noreferrer" href="https://t.me/instex">Telegram</a> or with <a target="_blank" rel="noopener noreferrer" href="mailto://help@instex.io">Email</a>
-  //       </article>
-  //     </div>
-  //   ),
-  //   textAlign: 'center',
-  //   selector: '#help',
-  //   position: 'bottom-left',
-  // },
 ];
 
 class JoyrideWrapper extends Component<Props> {
@@ -145,10 +132,6 @@ class JoyrideWrapper extends Component<Props> {
   }
 
   handleJoyrideCallback = (result) => {
-    // if (result.type === 'step:before') {
-    //   // Keep internal state in sync with joyride
-    //   this.setState({ stepIndex: result.index });
-    // }
     this.props.dispatch(setUiState('joyRideAutoStart', true));
 
     console.log(result);
@@ -169,12 +152,6 @@ class JoyrideWrapper extends Component<Props> {
       this.joyride.reset(true);
       this.props.dispatch(setUiState('shouldRunTutorial', false));
     }
-
-    // if (typeof joyride.callback === 'function') {
-    //   joyride.callback(result);
-    // } else {
-    //   console.log(result);
-    // }
   }
 
   render() {

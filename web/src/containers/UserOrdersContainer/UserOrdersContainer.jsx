@@ -36,7 +36,7 @@ const UserOrdersContainer: StatelessFunctionalComponent<Props> = ({
     title="Opened orders"
     orders={orders}
     pagination={{
-      pageSize: 7,
+      pageSize: 10,
     }}
     onCancel={(orderId: string) => {
       dispatch(cancelOrder(orderId));

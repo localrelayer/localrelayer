@@ -25,10 +25,10 @@ const layoutXs = [
     i: 'balance', x: 1, y: 28, w: 1, h: 6, static: true,
   },
   {
-    i: 'history', x: 0, y: 34.5, w: 1, h: 8, static: true,
+    i: 'history', x: 0, y: 45, w: 1, h: 11, static: true,
   },
   {
-    i: 'userOrders', x: 0, y: 43, w: 1, h: 8, static: true,
+    i: 'userOrders', x: 0, y: 34, w: 1, h: 11, static: true,
   },
   {
     i: 'chart', x: 0, y: 0, w: 0, h: 0, static: true,
@@ -45,10 +45,10 @@ const layoutSm = [
   },
 
   {
-    i: 'chart', x: 0, y: 19, w: 2, h: 12, static: true,
+    i: 'chart', x: 0, y: 18, w: 2, h: 12, static: true,
   },
   {
-    i: 'userOrders', x: 0, y: 31, w: 2, h: 8, static: true,
+    i: 'userOrders', x: 0, y: 30, w: 2, h: 11, static: true,
   },
   {
     i: 'tokenCard', x: 0, y: 0, w: 1, h: 3, static: true,
@@ -57,7 +57,7 @@ const layoutSm = [
     i: 'buySell', x: 0, y: 3, w: 1, h: 9, static: true,
   },
   {
-    i: 'history', x: 0, y: 40, w: 2, h: 8, static: true,
+    i: 'history', x: 0, y: 41, w: 2, h: 11, static: true,
   },
 ];
 
@@ -66,40 +66,40 @@ const layoutMd = [
     i: 'orderBook', x: 7, y: 0, w: 3, h: 19, static: true,
   },
   {
-    i: 'balance', x: 0, y: 12.75, w: 3.5, h: 6, static: true,
+    i: 'balance', x: 0, y: 13, w: 3.5, h: 6, static: true,
   },
 
   {
     i: 'chart', x: 0, y: 0, w: 7, h: 10, static: true,
   },
   {
-    i: 'userOrders', x: 3, y: 19, w: 7, h: 8, static: true,
+    i: 'userOrders', x: 3.5, y: 19, w: 6.5, h: 11, static: true,
   },
   {
-    i: 'tokenCard', x: 0, y: 10, w: 3.5, h: 2.75, static: true,
+    i: 'tokenCard', x: 0, y: 10, w: 3.5, h: 3, static: true,
   },
   {
     i: 'buySell', x: 3.5, y: 10, w: 3.5, h: 9, static: true,
   },
   {
-    i: 'history', x: 0, y: 19, w: 3, h: 8, static: true,
+    i: 'history', x: 0, y: 19, w: 3.5, h: 11, static: true,
   },
 
 ];
 
 const layoutLg = [
   {
-    i: 'orderBook', x: 9, y: 0, w: 3, h: 9.75, static: true,
+    i: 'orderBook', x: 9, y: 0, w: 3, h: 12, static: true,
   },
   {
     i: 'balance', x: 0, y: 12, w: 3, h: 6, static: true,
   },
 
   {
-    i: 'chart', x: 3, y: 0, w: 6, h: 10, static: true,
+    i: 'chart', x: 3, y: 0, w: 6, h: 12, static: true,
   },
   {
-    i: 'userOrders', x: 3, y: 10, w: 6, h: 8, static: true,
+    i: 'userOrders', x: 3, y: 12, w: 6, h: 11, static: true,
   },
 
   {
@@ -109,23 +109,23 @@ const layoutLg = [
     i: 'buySell', x: 0, y: 3, w: 3, h: 9, static: true,
   },
   {
-    i: 'history', x: 9, y: 10, w: 3, h: 6, static: true,
+    i: 'history', x: 9, y: 12, w: 3, h: 11, static: true,
   },
 ];
 
 const layoutLg2 = [
   {
-    i: 'orderBook', x: 19, y: 0, w: 5, h: 16, static: true,
+    i: 'orderBook', x: 19, y: 0, w: 5, h: 14, static: true,
   },
   {
     i: 'balance', x: 0, y: 12, w: 5, h: 7, static: true,
   },
 
   {
-    i: 'chart', x: 5, y: 0, w: 14, h: 16, static: true,
+    i: 'chart', x: 5, y: 0, w: 14, h: 14, static: true,
   },
   {
-    i: 'userOrders', x: 5, y: 12, w: 14, h: 8, static: true,
+    i: 'userOrders', x: 5, y: 14, w: 14, h: 11, static: true,
   },
 
   {
@@ -135,7 +135,7 @@ const layoutLg2 = [
     i: 'buySell', x: 0, y: 3, w: 5, h: 9, static: true,
   },
   {
-    i: 'history', x: 19, y: 16, w: 5, h: 8, static: true,
+    i: 'history', x: 19, y: 14, w: 5, h: 11, static: true,
   },
 ];
 
@@ -151,7 +151,7 @@ const layoutLg3 = [
     i: 'chart', x: 2, y: 0, w: 8, h: 20, static: true,
   },
   {
-    i: 'userOrders', x: 2, y: 20, w: 8, h: 8, static: true,
+    i: 'userOrders', x: 2, y: 20, w: 8, h: 11, static: true,
   },
 
   {
@@ -161,7 +161,7 @@ const layoutLg3 = [
     i: 'buySell', x: 0, y: 3, w: 2, h: 9, static: true,
   },
   {
-    i: 'history', x: 10, y: 20, w: 2, h: 8, static: true,
+    i: 'history', x: 10, y: 20, w: 2, h: 11, static: true,
   },
 ];
 

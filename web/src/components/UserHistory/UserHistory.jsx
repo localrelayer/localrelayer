@@ -92,11 +92,8 @@ const UserHistory = ({
   orders,
   title,
 }: Props): Node => (
-  <UserOrdersContainer>
+  <UserOrdersContainer className="component-container">
     <OrdersList
-      pagination={{
-        pageSize: 5,
-      }}
       onClick={(order) => {
         if (order.tx_hash) {
           window.open(`https://etherscan.io/tx/${order.tx_hash}`);

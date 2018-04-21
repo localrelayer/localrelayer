@@ -76,7 +76,7 @@ const TradingHistory: StatelessFunctionalComponent<Props> =
     orders,
     pagination,
   }: Props): Node =>
-    <TradingHistoryContainer>
+    <TradingHistoryContainer className="component-container">
       <OrdersList
         title="Trading History"
         columns={columns}

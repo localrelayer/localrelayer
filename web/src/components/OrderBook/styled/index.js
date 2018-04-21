@@ -1,11 +1,7 @@
 import styled from 'styled-components';
-import {
-  Divider,
-} from 'antd';
 
 export const OrderBookContainer = styled.div`
   display: flex;
-  height: 97%;
   flex-direction: column;
   position: relative;
   .ant-badge-status-processing {
@@ -46,9 +42,8 @@ export const OrderBookContainer = styled.div`
   }
 `;
 
-export const SpreadContainer = styled(Divider)`
-  margin: 10px 0 !important;
-  // color: rgba(0, 0, 0, 0.65) !important;
+export const SpreadContainer = styled.div`
+  margin: 10px auto;
 `;
 
 export const Table = styled.div`  

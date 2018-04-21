@@ -71,3 +71,10 @@ export const getFilteredTokens = createSelector(
       address.includes(searchQueryLower);
     }),
 );
+
+export const getListedTokens = createSelector(
+  [getResourceMappedList('tokens', 'allTokens')],
+  tokens =>
+    tokens.filter(token => token.is_listed),
+);
+

@@ -97,7 +97,7 @@ const UserOrders = ({
   title,
   pagination,
 }: Props): Node => (
-  <UserOrdersContainer>
+  <UserOrdersContainer className="component-container">
     <OrdersList
       title={title}
       pagination={pagination}

@@ -145,7 +145,7 @@ export function* loadTokensBalance() {
   try {
     const allTokens = yield all(
       tokens
-        .filter(token => token.id !== current.id && token.id !== pair.id)
+        .filter(token => token.id !== current.id && token.id !== pair.id && token.is_listed)
         .map(function* (token) {
           const locked = yield select(getLockedTokenBalance(token));
           const res = yield getTokenBalanceAndAllowance(token, locked);
