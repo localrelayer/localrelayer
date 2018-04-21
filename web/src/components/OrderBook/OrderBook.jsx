@@ -45,7 +45,7 @@ const OrderBook: StatelessFunctionalComponent<Props> = ({
   sellOrders,
   fillOrder,
 }: Props): Node => (
-  <OrderBookContainer id="Order-book">
+  <OrderBookContainer className="component-container" id="Order-book">
     <div className="Table-row Table-header">
       <div className="Table-row-item">Price</div>
       <div className="Table-row-item">Amount</div>
@@ -53,7 +53,9 @@ const OrderBook: StatelessFunctionalComponent<Props> = ({
       <IconContainer className="Table-row-item" />
     </div>
     <TableContainer type="sell" orders={sellOrders} fillOrder={fillOrder} />
-    <SpreadContainer>Spread: <span style={{ marginRight: 5 }}>{getSpread(sellOrders[0], buyOrders[0])}</span></SpreadContainer>
+    <SpreadContainer>
+      Spread: <span style={{ marginRight: 5 }}>{getSpread(sellOrders[0], buyOrders[0])}</span>
+    </SpreadContainer>
     <TableContainer type="buy" orders={buyOrders} fillOrder={fillOrder} />
   </OrderBookContainer>
 );

@@ -239,6 +239,7 @@ const Header = ({
           <HelpButton onClick={() => Modal.info({ title: 'Contact us for help', content: Help() })}>
             Help
           </HelpButton>
+          { /*
           <Popover
             placement="bottom"
             trigger={['click']}
@@ -248,6 +249,7 @@ const Header = ({
               <HeaderButton icon="bell" shape="circle" type="primary" />
             </Badge>
           </Popover>
+          */ }
           <Badge>
             <HeaderButton
               id="help"

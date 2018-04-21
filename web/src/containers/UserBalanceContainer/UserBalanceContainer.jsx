@@ -37,7 +37,7 @@ const UserBalanceContainer: StatelessFunctionalComponent<Props> = ({
   lockedBalance,
   isConnected,
 }: Props): Node => (
-  <StyleContainer>
+  <StyleContainer className="component-container">
     <UserBalance
       isBalanceLoading={isBalanceLoading}
       tokens={tokens}

@@ -130,7 +130,7 @@ const UserTotalBalance = ({
         <TableContainer
           size="small"
           pagination={{
-            pageSize: 14,
+            pageSize: 13,
           }}
           bordered={false}
           onRow={record => ({

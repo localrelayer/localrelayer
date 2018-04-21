@@ -14,7 +14,7 @@ import {
   setUiState,
 } from 'instex-core/actions';
 import {
-  getResourceMappedList,
+  getListedTokens,
 } from 'instex-core/selectors';
 import UserTotalBalance from '../../components/UserTotalBalance';
 import { StyleContainer } from './styled';
@@ -36,7 +36,7 @@ const UserTotalBalanceContainer: StatelessFunctionalComponent<Props> = ({
   lockedBalance,
   isConnected,
 }: Props): Node => (
-  <StyleContainer>
+  <StyleContainer className="component-container">
     <UserTotalBalance
       isBalanceLoading={isBalanceLoading}
       tokens={tokens}
@@ -65,7 +65,7 @@ const UserTotalBalanceContainer: StatelessFunctionalComponent<Props> = ({
 );
 
 const mapStateToProps: MapStateToProps<*, *, *> = state => ({
-  tokens: getResourceMappedList('tokens', 'allTokens')(state),
+  tokens: getListedTokens(state),
   balance: state.profile.balance,
   isBalanceLoading: state.ui.isBalanceLoading,
   isConnected: state.profile.connectionStatus !== 'Not connected to Ethereum' && state.profile.connectionStatus !== 'Locked',

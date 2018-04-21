@@ -15,8 +15,6 @@ export const Title = styled.div`
 `;
 
 export const CardContainer = styled(Card)`
-  padding: 10px 0;
-  min-height: 195px;
   & > .ant-card-head {
     text-align: center;
   }
@@ -55,6 +53,6 @@ export const InputGroupContainer = styled(InputGroup)`
 `;
 
 export const FormContainer = styled(Form)`
-  padding: 15px 0 !important;
+  padding: 5px 0 !important;
   border-bottom: none;
 `;
