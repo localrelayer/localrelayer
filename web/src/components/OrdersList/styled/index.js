@@ -20,7 +20,7 @@ export const OrdersListContainer = styled.div`
   }
 
   .ant-table-tbody > tr > td {
-    padding: 6px !important;
+    padding: 5px !important;
   }
 `;
 

@@ -24,8 +24,8 @@ export const CardContainer = styled(Card)`
 export const InputLabel = styled.label``;
 
 export const PlaceOrderButton = styled(Button)`
-  background: ${props => props.type === 'sell' ? '#da3636' : '#1ea83b'};
-  border-color: ${props => props.type === 'sell' ? '#da3636' : '#1ea83b'};
+  background: ${props => props.type === 'sell' ? '#a03756' : '#719367'};
+  border-color: ${props => props.type === 'sell' ? '#a03756' : '#719367'};
   color: white;
   width: 100%;
 
