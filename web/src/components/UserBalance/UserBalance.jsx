@@ -104,7 +104,7 @@ const UserBalance = ({
   isConnected,
 }: Props): Node => (
   <div id="user-balance">
-    <ComponentTitle>Balances ({balance || 0} ETH)</ComponentTitle>
+    <ComponentTitle>Balance ({balance || 0} ETH)</ComponentTitle>
     <CardContainer bordered={false}>
       <Overlay isShown={!isConnected}>
         <h3

@@ -79,6 +79,8 @@ export const HelpContainer = styled.div`
     text-align: center;
     padding: 10px;
     color: #ffffffc4;
+    display: flex;
+    align-items: center;
   }
   & img {
     max-height: 40px;

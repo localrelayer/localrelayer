@@ -24,7 +24,7 @@
     "setupTestFrameworkScriptFile": "<rootDir>/src/setupTests.js"
   },
   "dependencies": {
-    "antd": "3.1.1",
+    "antd": "3.4.1",
     "bignumber.js": "5.0.0",
     "change-case": "^3.0.1",
     "file-loader": "^1.1.9",

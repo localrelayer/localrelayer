@@ -27,7 +27,7 @@ export const Overlay = styled.div`
 
 export const ComponentTitle = styled.h3`
   margin-bottom: 0;
-  padding: 10px;
+  padding: 5px;
   text-align: center;
   border-bottom: none;
 `;

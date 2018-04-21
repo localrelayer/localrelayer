@@ -66,11 +66,11 @@ export default enchance(({
           className="Table-row"
           onClick={() => fillOrder(order)}
         >
-          <div className="Table-row-item" data-header="Header1">
-            <Colored className={type === 'sell' ? 'red' : 'green'}>{order.price}</Colored>
-          </div>
+          <div className="Table-row-item" data-header="Header1">{order.price}</div>
           <div className="Table-row-item" data-header="Header2">{order.amount}</div>
-          <div className="Table-row-item" data-header="Header3">{order.total}</div>
+          <div className="Table-row-item" data-header="Header3">
+            <Colored className={type === 'sell' ? 'red' : 'green'}>{order.total}</Colored>
+          </div>
           <IconContainer className="Table-row-item" >
             {order.isUser ? <Icon type="user" /> : null}
           </IconContainer>

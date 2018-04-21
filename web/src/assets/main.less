@@ -22,8 +22,10 @@
 @background-color-base: #02323a;
 @firm-color: #673ab7;
 
-@green: #1ea83b;
-@red: #da3636;
+// @green: #1ea83b;
+@green: #719367;
+// @red: #da3636;
+@red: #a03756;
 
 img {
   height: 100%;
@@ -162,6 +164,24 @@ img {
   color: @link-color;
 }
 
+.ant-pagination-jump-prev:after, .ant-pagination-jump-next:after {
+  color: @text-color;
+}
+
+.ant-card-contain-grid .ant-card-body {
+  margin: 0;
+}
+
+.ant-table-wrapper {
+  background: @component-background;
+}
+
+
+.ant-popover .ant-table-wrapper {
+  background: @popover-bg;
+}
+
+
 #Order-book {
   background: @component-background;
 }
@@ -232,7 +252,7 @@ img {
 
 #sell-book {
   align-content: flex-end;
-  flex-direction: column-reverse,
+  flex-wrap: wrap-reverse;
 }
 
 #buy-book {

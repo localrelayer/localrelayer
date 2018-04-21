@@ -22,16 +22,16 @@ type Props = {
   orders: Orders,
 };
 
-const TradingChartContainer: StatelessFunctionalComponent<Props> = ({
+const TradingHistoryContainer: StatelessFunctionalComponent<Props> = ({
   orders,
 }: Props): Node =>
   <TradingHistory
     orders={orders}
-    pagination={{ pageSize: 10 }}
+    pagination={{ pageSize: 7 }}
   />;
 
 const mapStateToProps: MapStateToProps<*, *, *> = state => ({
   orders: getCompletedOrders(state),
 });
 
-export default connect(mapStateToProps)(TradingChartContainer);
+export default connect(mapStateToProps)(TradingHistoryContainer);

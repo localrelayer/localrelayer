@@ -4,7 +4,11 @@ export const UserOrdersContainer = styled.div`
   display: flex;
   height: 100%;
 
-  .ant-table-body {
-    min-height: 355px;
+  & .ant-table-empty {
+    height: 300px;
+  }
+
+  .ant-table-small:not(.ant-table-empty) {
+    height: 244px;
   }
 `;

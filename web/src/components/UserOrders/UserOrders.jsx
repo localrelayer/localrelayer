@@ -8,7 +8,6 @@ import type { Order } from 'instex-core/types';
 import moment from 'moment';
 
 import { UserOrdersContainer } from './styled';
-import { Colored } from '../SharedStyles';
 import OrdersList from '../OrdersList';
 
 type Props = {
