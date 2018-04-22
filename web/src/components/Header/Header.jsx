@@ -82,6 +82,11 @@ type Props = {
   setTokenAddress: Function,
   /** Check if we can submit form in modal */
   isCustomTokenFormValid: Boolean,
+  /** Called when eth address changed */
+  onAddressSelect: Function,
+  /** Called when eth provider changed */
+  onProviderSelect: Function,
+  ethPrice: string,
 };
 
 /**
@@ -111,7 +116,6 @@ const getTokenButtonTitle = (selectedToken: Token, tokenPair: Token) => {
 
 const Header = ({
   user,
-  onUserClick,
   tokens,
   selectedToken,
   tokenPair,
@@ -127,6 +131,7 @@ const Header = ({
   isCustomTokenFormValid,
   onAddressSelect,
   onProviderSelect,
+  ethPrice,
   // eslint-disable-next-line
   location, // we need to location to see changes
 }: Props): Node => (
@@ -230,6 +235,9 @@ const Header = ({
         <CustomTokenForm />
       </Modal>
       <AlignRight id="right-menu">
+        <div>
+          ETH PRICE: ${ethPrice || '0.00'}
+        </div>
         <UserProfile
           {...user}
           onAddressSelect={onAddressSelect}

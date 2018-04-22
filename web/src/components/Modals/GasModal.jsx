@@ -23,7 +23,7 @@ import {
 } from 'recompose';
 
 const enchance = lifecycle({
-  componentWillMount() {
+  componentDidMount() {
     window.web3Instance.eth.getGasPrice().then((gasPriceWei) => {
       const gasPrice = window.web3Instance.utils.fromWei(gasPriceWei, 'gwei');
       this.setState({ gasPrice });

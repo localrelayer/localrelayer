@@ -47,8 +47,14 @@ import {
   showModal,
   sendSocketMessage,
   setProfileState,
+  setUiState,
 } from '../actions';
 import BigNumber from '../utils/BigNumber';
+
+const loadEthPrice = async () => {
+  const res = await fetch('https://api.coinmarketcap.com/v1/ticker/ethereum/');
+  return res.json();
+};
 
 export function* loadUser(): Saga<*> {
   const { web3Instance: web3 } = window;
@@ -69,14 +75,6 @@ export function* loadUser(): Saga<*> {
     if (web3._provider._providers && web3._provider._providers[0]._ledgerClientIfExists) {
       yield put(setProfileState('connectionStatus', connectionStatuses.NOT_CONNECTED));
       yield put(setProfileState('address', '0x0'));
-
-      // yield put(
-      //   showModal({
-      //     title: 'Ledger is not connected',
-      //     type: 'warn',
-      //     text: 'Please connect and unlock your ledger',
-      //   }),
-      // );
       return;
     }
     if (!accounts.length) {
@@ -285,6 +283,22 @@ export function* changeProvider({ payload: { provider } }): Saga<*> {
   if (provider === 'ledger') yield call(initLedger);
   if (provider === 'metamask') yield call(initMetamask);
   yield call(loadUser);
+}
+
+export function* updateEthPrice(): Saga<*> {
+  try {
+    const price = (yield call(loadEthPrice))[0].price_usd;
+    yield put(setUiState('ethPrice', price));
+  } catch (e) {
+    console.error('Cant load eth price');
+  }
+}
+
+export function* runLoadEthPrice(): Saga<*> {
+  while (true) {
+    yield fork(updateEthPrice);
+    yield call(delay, 60000);
+  }
 }
 
 export function* runLoadUser(): Saga<*> {

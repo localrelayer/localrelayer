@@ -32,6 +32,7 @@ import {
   getFilteredTokens,
   getCurrentPair,
   getCurrentToken,
+  getUiState,
 } from 'instex-core/selectors';
 
 import {
@@ -48,6 +49,7 @@ type Props = {
   customTokenAddress: string,
   isCustomTokenFormValid: Boolean,
   location: Object,
+  ethPrice: string,
 };
 
 const HeaderContainer: StatelessFunctionalComponent<Props> =
@@ -60,6 +62,7 @@ const HeaderContainer: StatelessFunctionalComponent<Props> =
     customTokenAddress,
     isCustomTokenFormValid,
     location,
+    ethPrice,
   }: Props): Node =>
     <Header
       user={user}
@@ -104,6 +107,7 @@ const HeaderContainer: StatelessFunctionalComponent<Props> =
           setAddress(address),
         )
       }
+      ethPrice={ethPrice}
       onProviderSelect={provider => dispatch(changeProvider(provider))}
     />;
 
@@ -118,6 +122,7 @@ const mapStateToProps = (state) => {
     tokenPair: getCurrentPair(state),
     customTokenAddress,
     isCustomTokenFormValid,
+    ethPrice: getUiState('ethPrice')(state),
   };
 };
 

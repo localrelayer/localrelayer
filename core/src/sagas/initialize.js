@@ -32,6 +32,7 @@ import * as ProfileActions from '../actions/profile';
 import {
   runLoadUser,
   loadTokensBalance,
+  runLoadEthPrice,
 } from './profile';
 import {
   loadOrders,
@@ -93,6 +94,7 @@ export function* initialize(): Saga<void> {
 
     yield fork(listenRouteChange);
     yield fork(runLoadUser);
+    yield fork(runLoadEthPrice);
   }
 }
 
