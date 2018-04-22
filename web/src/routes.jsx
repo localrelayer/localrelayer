@@ -28,6 +28,8 @@ import {
   getCurrentPair,
 } from 'instex-core/selectors';
 
+import ScrollToTop from './ScrollToTop';
+
 import FAQ from './components/FAQ';
 import history from './history';
 import UserPage from './containers/UserPage';
@@ -60,12 +62,8 @@ const routes = ({
 }: Props) => (
   <ConnectedRouter
     history={history}
-    onUpdate={() => {
-      console.log('you');
-      window.scrollTo(0, 0);
-    }}
   >
-    <div>
+    <ScrollToTop>
       <JoyrideWrapper />
       <Helmet>
         <meta charSet="utf-8" />
@@ -111,7 +109,7 @@ const routes = ({
         <Footer />
         <ModalWrapper />
       </Layout>
-    </div>
+    </ScrollToTop>
   </ConnectedRouter>
 );
 
