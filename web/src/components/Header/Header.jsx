@@ -34,6 +34,7 @@ import {
   HeaderButton,
   UserButton,
   TokenContainer,
+  PriceContainer,
 } from './styled';
 import {
   AlignRight,
@@ -235,9 +236,9 @@ const Header = ({
         <CustomTokenForm />
       </Modal>
       <AlignRight id="right-menu">
-        <div>
+        <PriceContainer>
           ETH PRICE: ${ethPrice || '0.00'}
-        </div>
+        </PriceContainer>
         <UserProfile
           {...user}
           onAddressSelect={onAddressSelect}

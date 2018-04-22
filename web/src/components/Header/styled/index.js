@@ -91,3 +91,7 @@ export const AvatarContainer = styled(Avatar)`
     width: 100%;
   }
 `;
+
+export const PriceContainer = styled.div`
+  margin-right: 10px;
+`;
