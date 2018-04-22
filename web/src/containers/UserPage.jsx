@@ -9,25 +9,25 @@ const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
 const layout = [
   {
-    i: 'userBalance', x: 0, y: 0, w: 6, h: 16, static: true,
+    i: 'userBalance', x: 0, y: 0, w: 6, h: 22, static: true,
   },
   {
     i: 'userHistory', x: 6, y: 0, w: 6, h: 11, static: true,
   },
   {
-    i: 'UserOrders', x: 6, y: 12, w: 6, h: 11, static: true,
+    i: 'UserOrders', x: 6, y: 11, w: 6, h: 11, static: true,
   },
 ];
 
 const layoutSm = [
   {
-    i: 'userBalance', x: 0, y: 0, w: 2, h: 16, static: true,
+    i: 'userBalance', x: 0, y: 0, w: 2, h: 22, static: true,
   },
   {
-    i: 'userHistory', x: 6, y: 16, w: 2, h: 8, static: true,
+    i: 'userHistory', x: 6, y: 16, w: 2, h: 11, static: true,
   },
   {
-    i: 'UserOrders', x: 6, y: 24, w: 2, h: 8, static: true,
+    i: 'UserOrders', x: 6, y: 24, w: 2, h: 11, static: true,
   },
 ];
 

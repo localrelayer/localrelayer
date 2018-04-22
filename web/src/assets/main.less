@@ -5,6 +5,7 @@
 @layout-body-background: #1f415d;
 @component-background: #0f2335;
 @layout-header-background: @component-background;
+// @layout-footer-background: @component-background;
 @heading-color          : fade(#fff, 90%);
 @text-color             : fade(#fff, 85%);
 @text-color-secondary   : fade(#fff, 60%);
@@ -13,7 +14,7 @@
 @background-color-light: #1f415d;
 @item-hover-bg: #2a6394;
 @popover-bg: #00132f;
-@link-color: @primary-color;
+@link-color: @text-color;
 @tab-active-color: white;
 @btn-default-bg: #174263;
 @radio-button-active-color: white;
@@ -74,6 +75,10 @@ img {
   background: @layout-body-background;
   border-radius: 3px;
 }
+
+// .ant-layout-footer {
+  // background: @layout-footer-background;
+// }
 
 .ant-input-number-input {
   background: @layout-body-background;
@@ -291,6 +296,10 @@ img {
     background: @primary-5;
     color: @text-color;
   }
+}
+
+.SandboxRoot {
+  background: @component-background !important;
 }
 
 /*Style 'show menu' label button and hide it by default*/

@@ -8,6 +8,7 @@ import UserBalance from './UserBalanceContainer';
 import UserOrders from './UserOrdersContainer';
 import TradingChart from './TradingChartContainer';
 import TokenCard from './TokenCardContainer';
+import News from './NewsContainer';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -32,6 +33,9 @@ const layoutXs = [
   },
   {
     i: 'chart', x: 0, y: 0, w: 0, h: 0, static: true,
+  },
+  {
+    i: 'news', x: 0, y: 56, w: 1, h: 7, static: true,
   },
 ];
 
@@ -59,6 +63,9 @@ const layoutSm = [
   {
     i: 'history', x: 0, y: 41, w: 2, h: 11, static: true,
   },
+  {
+    i: 'news', x: 0, y: 52, w: 1, h: 7, static: true,
+  },
 ];
 
 const layoutMd = [
@@ -84,22 +91,28 @@ const layoutMd = [
   {
     i: 'history', x: 0, y: 19, w: 3.5, h: 11, static: true,
   },
+  {
+    i: 'news', x: 0, y: 30, w: 3.5, h: 7, static: true,
+  },
 
 ];
 
 const layoutLg = [
   {
-    i: 'orderBook', x: 9, y: 0, w: 3, h: 12, static: true,
+    i: 'orderBook', x: 9, y: 0, w: 3, h: 14, static: true,
   },
   {
     i: 'balance', x: 0, y: 12, w: 3, h: 6, static: true,
   },
+  {
+    i: 'news', x: 0, y: 18, w: 3, h: 7, static: true,
+  },
 
   {
-    i: 'chart', x: 3, y: 0, w: 6, h: 12, static: true,
+    i: 'chart', x: 3, y: 0, w: 6, h: 14, static: true,
   },
   {
-    i: 'userOrders', x: 3, y: 12, w: 6, h: 11, static: true,
+    i: 'userOrders', x: 3, y: 14, w: 6, h: 11, static: true,
   },
 
   {
@@ -109,7 +122,7 @@ const layoutLg = [
     i: 'buySell', x: 0, y: 3, w: 3, h: 9, static: true,
   },
   {
-    i: 'history', x: 9, y: 12, w: 3, h: 11, static: true,
+    i: 'history', x: 9, y: 14, w: 3, h: 11, static: true,
   },
 ];
 
@@ -137,6 +150,9 @@ const layoutLg2 = [
   {
     i: 'history', x: 19, y: 14, w: 5, h: 11, static: true,
   },
+  {
+    i: 'news', x: 0, y: 19, w: 5, h: 7, static: true,
+  },
 ];
 
 const layoutLg3 = [
@@ -162,6 +178,9 @@ const layoutLg3 = [
   },
   {
     i: 'history', x: 10, y: 20, w: 2, h: 11, static: true,
+  },
+  {
+    i: 'news', x: 0, y: 19, w: 2, h: 7, static: true,
   },
 ];
 
@@ -208,7 +227,7 @@ export default () =>
     </div>
 
     <div key="chart">
-      <TradingChart key="b1" />
+      <TradingChart />
     </div>
 
     <div key="orderBook">
@@ -217,11 +236,15 @@ export default () =>
 
 
     <div key="buySell">
-      <BuySell key="c1" />
+      <BuySell />
     </div>
 
     <div key="history">
-      <TradingHistory key="c2" />
+      <TradingHistory />
+    </div>
+
+    <div key="news">
+      <News />
     </div>
 
   </ResponsiveReactGridLayout>;

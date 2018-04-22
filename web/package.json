@@ -51,6 +51,7 @@
     "redux-saga": "0.16.0",
     "regenerator-runtime": "^0.11.1",
     "reselect": "3.0.1",
+    "scriptjs": "^2.5.8",
     "styled-components": "2.4.0",
     "svg-inline-loader": "^0.8.0"
   },

@@ -37,12 +37,6 @@ export const HeaderContainer = styled(Layout.Header)`
   }
 `;
 
-export const AlignRight = styled.div`
-  margin-left: auto;
-  display: flex;
-  align-items: center;
-`;
-
 export const HeaderButton = styled(Button)`
   margin-left: 8px;
   border: none;

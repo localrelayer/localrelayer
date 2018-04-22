@@ -63,7 +63,7 @@ const OrdersList = ({
       bordered={bordered}
       columns={columns}
       dataSource={data}
-      pagination={pagination}
+      pagination={pagination.pageSize >= data.length ? false : pagination}
       onRow={record => ({
         onClick: () => onClick(record),
       })}
@@ -74,7 +74,7 @@ const OrdersList = ({
 OrdersList.defaultProps = {
   title: '',
   bordered: false,
-  pagination: null,
+  pagination: {},
   onClick: () => {},
 };
 
