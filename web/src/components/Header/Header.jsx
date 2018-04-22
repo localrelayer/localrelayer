@@ -31,17 +31,17 @@ import {
 import {
   LinksContainer,
   HeaderContainer,
-  AlignRight,
   HeaderButton,
   UserButton,
   TokenContainer,
-  HelpButton,
 } from './styled';
+import {
+  AlignRight,
+} from '../SharedStyles';
 import TokensList from './TokensList';
 import UserProfile from '../UserProfile';
 import CustomTokenForm from './CustomTokenForm';
 import logo from '../../assets/logo5.png';
-import Help from './Help';
 
 type Props = {
   /** User object */
@@ -236,9 +236,6 @@ const Header = ({
           onProviderSelect={onProviderSelect}
         />
         <div>
-          <HelpButton onClick={() => Modal.info({ title: 'Contact us for help', content: Help() })}>
-            Help
-          </HelpButton>
           { /*
           <Popover
             placement="bottom"

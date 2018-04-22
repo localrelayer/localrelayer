@@ -112,26 +112,26 @@ const UserTotalBalance = ({
   isConnected,
 }: Props): Node => (
   <div style={{ height: '100%' }}>
-    <ComponentTitle>My Balance ({balance || 0} ETH)</ComponentTitle>
-    <CardContainer id="user-total-balance" bordered={false}>
-      <Overlay isShown={!isConnected}>
-        <h3
-          style={{
+    <Overlay isShown={!isConnected}>
+      <h3
+        style={{
             margin: '20px',
             marginTop: '200px',
             width: '100%',
           }}
-        >
+      >
       You are viewing this in read-only mode. Connect a wallet to see your balance
-        </h3>
-      </Overlay>
+      </h3>
+    </Overlay>
+    <ComponentTitle>My Balance ({balance || 0} ETH)</ComponentTitle>
+    <CardContainer id="user-total-balance" bordered={false}>
       <WrapForm wrap={wrap} unwrap={unwrap} onSubmit={() => {}} isLoading={isBalanceLoading} />
       <Card.Grid>
         <TableContainer
           size="small"
-          pagination={{
-            pageSize: 13,
-          }}
+          pagination={
+            tokens.length <= 17 ? false : { pageSize: 17 }
+          }
           bordered={false}
           onRow={record => ({
             onClick: () => onTokenClick(record),

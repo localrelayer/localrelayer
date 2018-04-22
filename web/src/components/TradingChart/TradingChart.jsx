@@ -77,8 +77,8 @@ export default class extends Component<Props> {
         'mainSeriesProperties.candleStyle.drawBorder': false,
       },
       studies_overrides: {
-        'volume.volume.color.0': 'rgba(217, 54, 54, 0.05)',
-        'volume.volume.color.1': 'rgba(30, 169, 60, 0.05)',
+        'volume.volume.color.0': 'rgba(217, 54, 54, 0.15)',
+        'volume.volume.color.1': 'rgba(30, 169, 60, 0.15)',
       },
 
     });

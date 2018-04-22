@@ -31,3 +31,9 @@ export const ComponentTitle = styled.h3`
   text-align: center;
   border-bottom: none;
 `;
+
+export const AlignRight = styled.div`
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+`;

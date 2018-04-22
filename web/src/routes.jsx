@@ -28,12 +28,14 @@ import {
   getCurrentPair,
 } from 'instex-core/selectors';
 
+import FAQ from './components/FAQ';
 import history from './history';
 import UserPage from './containers/UserPage';
 import Header from './containers/HeaderContainer';
 import TradingPage from './containers/TradingPage';
 import JoyrideWrapper from './JoyrideWrapper';
 import ModalWrapper from './containers/ModalWrapper';
+import Footer from './containers/FooterContainer';
 
 const getTitle = (
   token,
@@ -58,7 +60,10 @@ const routes = ({
 }: Props) => (
   <ConnectedRouter
     history={history}
-    onUpdate={() => window.scrollTo(0, 0)}
+    onUpdate={() => {
+      console.log('you');
+      window.scrollTo(0, 0);
+    }}
   >
     <div>
       <JoyrideWrapper />
@@ -92,12 +97,18 @@ const routes = ({
           />
           <Route
             exact
+            path="/faq"
+            component={FAQ}
+          />
+          <Route
+            exact
             path="*"
             render={() => (
               <Redirect to="/ZRX-WETH" />
             )}
           />
         </Switch>
+        <Footer />
         <ModalWrapper />
       </Layout>
     </div>

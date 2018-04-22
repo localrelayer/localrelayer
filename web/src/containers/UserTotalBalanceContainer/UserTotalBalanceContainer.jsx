@@ -68,7 +68,7 @@ const mapStateToProps: MapStateToProps<*, *, *> = state => ({
   tokens: getListedTokens(state),
   balance: state.profile.balance,
   isBalanceLoading: state.ui.isBalanceLoading,
-  isConnected: state.profile.connectionStatus !== 'Not connected to Ethereum' && state.profile.connectionStatus !== 'Locked',
+  isConnected: state.profile.connectionStatus !== 'Not connected' && state.profile.connectionStatus !== 'Locked',
 });
 
 export default connect(mapStateToProps)(UserTotalBalanceContainer);

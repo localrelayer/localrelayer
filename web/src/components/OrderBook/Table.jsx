@@ -77,7 +77,7 @@ export default enchance(({
           <IconContainer className="Table-row-item" >
             {order.status === 'pending' ? <img alt="pending" src={loader} /> : null}
           </IconContainer>
-          <AmountFillContainer width={calculateFill(order.total, orders)} type={type} />
+          {/* <AmountFillContainer width={calculateFill(order.total, orders)} type={type} /> */}
         </div>
       ))
       :

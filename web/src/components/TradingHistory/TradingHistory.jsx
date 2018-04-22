@@ -45,16 +45,6 @@ const columns = [
     title: 'Price',
     dataIndex: 'price',
     key: 'price',
-  },
-  {
-    title: 'Amount',
-    dataIndex: 'amount',
-    key: 'amount',
-  },
-  {
-    title: 'Total',
-    dataIndex: 'total',
-    key: 'total',
     render: (text: string, record) => (
       <Colored
         className={record.type === 'sell' ? 'red' : 'green'}
@@ -63,6 +53,23 @@ const columns = [
       </Colored>
     ),
   },
+  {
+    title: 'Amount',
+    dataIndex: 'amount',
+    key: 'amount',
+  },
+  // {
+  //   title: 'Total',
+  //   dataIndex: 'total',
+  //   key: 'total',
+  //   render: (text: string, record) => (
+  //     <Colored
+  //       className={record.type === 'sell' ? 'red' : 'green'}
+  //     >
+  //       {text}
+  //     </Colored>
+  //   ),
+  // },
 ];
 
 /**
