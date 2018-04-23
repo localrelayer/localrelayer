@@ -81,9 +81,9 @@ export function* loadUser(): Saga<*> {
       yield put(setProfileState('connectionStatus', connectionStatuses.LOCKED));
       yield put(
         showModal({
-          title: 'Your wallet is locked',
+          title: 'Your wallet is unavailable',
           type: 'warn',
-          text: 'Please unlock your Metamask',
+          text: 'Please unlock or connect your wallet',
         }),
       );
     } else {
