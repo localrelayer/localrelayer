@@ -37,9 +37,10 @@ import {
 import {
   loadOrders,
 } from './orders';
-import * as uiActions from '../actions/ui';
 import {
   setProfileState,
+  showModal,
+  setUiState,
 } from '../actions';
 import {
   getResourceMappedList,
@@ -74,10 +75,10 @@ export function* initialize(): Saga<void> {
   yield call(loadOrders);
 
   // Prefilling buy/sell form
-  // yield put(uiActions.fillField('price', { orderType: 'sell' }));
+  // yield put(fillField('price', { orderType: 'sell' }));
   if (!window.web3Instance) {
     yield put(
-      uiActions.showModal({
+      showModal({
         title: 'You are not connected to Ethereum',
         type: 'info',
         name: 'DowloadMetamask',
@@ -87,6 +88,16 @@ export function* initialize(): Saga<void> {
   } else {
     // Max Amount - 10 eth
     const BIGGEST_AMOUNT = 0.2;
+
+    if (process.env.NODE_ENV === 'production') {
+      yield put(
+        showModal({
+          title: "We're still in beta.",
+          type: 'info',
+          text: 'Max order is limited to 0.2 ETH while in beta',
+        }),
+      );
+    }
 
     // using window as transport
     window.BIGGEST_AMOUNT = BigNumber(BIGGEST_AMOUNT).toFixed(8).toString();
@@ -104,7 +115,7 @@ export function* setTokens(): Saga<void> {
   const address = yield select(getProfileState('address'));
 
   yield put(reset('BuySellForm'));
-  yield put(uiActions.setUiState('bannerMessage', null));
+  yield put(setUiState('bannerMessage', null));
 
   const { pathname } = yield select(getLocation);
   const tokens = yield select(getResourceMappedList('tokens', 'allTokens'));
@@ -153,8 +164,8 @@ export function* setTokens(): Saga<void> {
         },
       });
       const foundToken = responseUrlToken.data.find(t => t.id === token.toLowerCase());
-      
-      yield put(uiActions.setUiState('bannerMessage', 'You are trading not listed token, please be aware of scam and double check the address'));
+
+      yield put(setUiState('bannerMessage', 'You are trading not listed token, please be aware of scam and double check the address'));
 
       if (foundToken) {
         selectedToken = foundToken;
@@ -182,7 +193,7 @@ export function* setTokens(): Saga<void> {
         { address },
       );
     } catch (e) {
-      yield put(uiActions.showModal({
+      yield put(showModal({
         title: "Couldn't find token by address",
         name: 'NoToken',
         type: 'warning',
@@ -190,8 +201,8 @@ export function* setTokens(): Saga<void> {
       console.error(e);
     }
   }
-  yield put(uiActions.setUiState('currentTokenId', selectedToken ? selectedToken.id : zrxToken.id));
-  yield put(uiActions.setUiState('currentPairId', pairToken ? pairToken.id : wethToken.id));
+  yield put(setUiState('currentTokenId', selectedToken ? selectedToken.id : zrxToken.id));
+  yield put(setUiState('currentPairId', pairToken ? pairToken.id : wethToken.id));
 }
 
 function* checkNewToken({ payload: { pathname } }): Saga<void> {

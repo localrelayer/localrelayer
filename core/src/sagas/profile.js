@@ -198,15 +198,6 @@ export function* loadNetwork() {
   const { web3Instance: web3 } = window;
   const networkId = yield cps(web3.eth.net.getId);
   const network = getNetworkById(networkId);
-  if (process.env.NODE_ENV === 'production' && networkId != 42) {
-    yield put(
-      showModal({
-        title: "We're still in beta.",
-        type: 'info',
-        text: 'Max order is limited to 0.2 ETH while in beta',
-      }),
-    );
-  }
   yield put(setProfileState('network', network));
 }
 
