@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   Icon,
+  Tooltip,
 } from 'antd';
 import {
   lifecycle,
@@ -60,25 +61,27 @@ export default enchance(({
   <Table id={`${type}-book`} className="Table">
     {
       orders.length > 0 ? orders.map(order => (
-        <div
-          key={order.id}
-          style={{ position: 'relative' }}
-          className="Table-row"
-          onClick={() => fillOrder(order)}
-        >
-          <div className="Table-row-item" data-header="Header1">{order.price}</div>
-          <div className="Table-row-item" data-header="Header2">{order.amount}</div>
-          <div className="Table-row-item" data-header="Header3">
-            <Colored className={type === 'sell' ? 'red' : 'green'}>{order.total}</Colored>
+        <Tooltip placement="bottom" title={`Click on order to ${order.type === 'buy' ? 'sell' : 'buy'}`}>
+          <div
+            key={order.id}
+            style={{ position: 'relative' }}
+            className="Table-row"
+            onClick={() => fillOrder(order)}
+          >
+            <div className="Table-row-item" data-header="Header1">{order.price}</div>
+            <div className="Table-row-item" data-header="Header2">{order.amount}</div>
+            <div className="Table-row-item" data-header="Header3">
+              <Colored className={type === 'sell' ? 'red' : 'green'}>{order.total}</Colored>
+            </div>
+            <IconContainer className="Table-row-item" >
+              {order.isUser ? <Icon type="user" /> : null}
+            </IconContainer>
+            <IconContainer className="Table-row-item" >
+              {order.status === 'pending' ? <img alt="pending" src={loader} /> : null}
+            </IconContainer>
+            {/* <AmountFillContainer width={calculateFill(order.total, orders)} type={type} /> */}
           </div>
-          <IconContainer className="Table-row-item" >
-            {order.isUser ? <Icon type="user" /> : null}
-          </IconContainer>
-          <IconContainer className="Table-row-item" >
-            {order.status === 'pending' ? <img alt="pending" src={loader} /> : null}
-          </IconContainer>
-          {/* <AmountFillContainer width={calculateFill(order.total, orders)} type={type} /> */}
-        </div>
+        </Tooltip>
       ))
       :
       <div style={{ margin: 'auto' }}>No {type} orders</div>
