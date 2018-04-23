@@ -67,30 +67,7 @@ function* read(socket) {
     const currentTokenId = yield select(getUiState('currentTokenId'));
 
     if (data.matchedIds && data.token === currentTokenId) {
-      yield put(
-        resourcesActions.fetchResourcesRequest({
-          resourceName: 'orders',
-          request: 'fetchUpdatedMatchedOrders',
-          lists: ['buy', 'sell', 'completedOrders'],
-          prepend: true,
-          withDeleted: false,
-          fetchQuery: {
-            filterCondition: {
-              filter: {
-                'id': {
-                  in: data.matchedIds,
-                },
-                'canceled_at': null,
-                'deleted_at': null,
-              },
-            },
-            sortBy: '-created_at',
-          },
-        }),
-      );
-      yield call(loadUserOrders);
-      yield call(loadBalance);
-      yield call(loadCurrentTokenAndPairBalance);
+      yield fork(loadUpdatedOrders, data.matchedIds);
     } else if (data.tradingInfo) {
       const token = yield select(getResourceItemBydId('tokens', data.token));
       yield put({
@@ -115,6 +92,33 @@ function* read(socket) {
       yield put(setUiState('txHash', data.txHash));
     }
   }
+}
+
+function* loadUpdatedOrders(matchedIds) {
+  yield put(
+    resourcesActions.fetchResourcesRequest({
+      resourceName: 'orders',
+      request: 'fetchUpdatedMatchedOrders',
+      lists: ['buy', 'sell', 'completedOrders'],
+      prepend: true,
+      withDeleted: false,
+      fetchQuery: {
+        filterCondition: {
+          filter: {
+            'id': {
+              in: matchedIds,
+            },
+            'canceled_at': null,
+            'deleted_at': null,
+          },
+        },
+        sortBy: '-created_at',
+      },
+    }),
+  );
+  yield call(loadUserOrders);
+  yield call(loadBalance);
+  yield call(loadCurrentTokenAndPairBalance);
 }
 
 function* write(socket) {
