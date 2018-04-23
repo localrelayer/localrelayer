@@ -24,6 +24,7 @@ import {
 } from '../actions';
 import {
   getResourceItemBydId,
+  getUiState,
 } from '../selectors';
 import {
   loadUserOrders,
@@ -63,7 +64,9 @@ function* read(socket) {
     console.warn('Message from socket');
     console.log(data);
 
-    if (data.matchedIds) {
+    const currentTokenId = yield select(getUiState('currentTokenId'));
+
+    if (data.matchedIds && data.token === currentTokenId) {
       yield put(
         resourcesActions.fetchResourcesRequest({
           resourceName: 'orders',
