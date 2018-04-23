@@ -113,7 +113,7 @@ export function* setTokens(): Saga<void> {
 
 
   let selectedToken =
-    tokens.find(t => t.symbol === token || t.id === token.toLowerCase());
+  tokens.find(t => (t.symbol === token || t.id === token.toLowerCase()) && t.is_listed);
   const pairToken =
     tokens.find(t => (t.symbol === pair || t.id === pair.toLowerCase()) && t.is_listed);
   const networkZrxAddress = zeroEx ?
@@ -129,12 +129,7 @@ export function* setTokens(): Saga<void> {
   console.log(token);
 
   if (!selectedToken && window.web3Instance && window.web3Instance.utils.isAddress(token)) {
-    trackMixpanel(
-      'New token created',
-      { address },
-    );
     const deployed = new window.web3Instance.eth.Contract(ERC20, token);
-
 
     try {
       const name = yield call(deployed.methods.name().call);
@@ -158,6 +153,8 @@ export function* setTokens(): Saga<void> {
         },
       });
       const foundToken = responseUrlToken.data.find(t => t.id === token.toLowerCase());
+      
+      yield put(uiActions.setUiState('bannerMessage', 'You are trading not listed token, please be aware of scam and double check the address'));
 
       if (foundToken) {
         selectedToken = foundToken;
@@ -180,7 +177,10 @@ export function* setTokens(): Saga<void> {
         });
         selectedToken = resp.data;
       }
-      yield put(uiActions.setUiState('bannerMessage', 'You are trading not listed token, please be aware of scam and double check the address'));
+      trackMixpanel(
+        'New token created',
+        { address },
+      );
     } catch (e) {
       yield put(uiActions.showModal({
         title: "Couldn't find token by address",
