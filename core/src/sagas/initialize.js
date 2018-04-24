@@ -24,6 +24,7 @@ import {
   initMetamask,
   connectionStatuses,
   SMALLEST_AMOUNT,
+  BIGGEST_AMOUNT,
 } from '../utils/web3';
 import {
   trackMixpanel,
@@ -86,9 +87,6 @@ export function* initialize(): Saga<void> {
     );
     yield put(ProfileActions.setProfileState('connectionStatus', connectionStatuses.NOT_CONNECTED));
   } else {
-    // Max Amount - 10 eth
-    const BIGGEST_AMOUNT = 0.2;
-
     if (process.env.NODE_ENV === 'production') {
       yield put(
         showModal({
