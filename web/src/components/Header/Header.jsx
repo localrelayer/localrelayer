@@ -237,7 +237,7 @@ const Header = ({
       </Modal>
       <AlignRight id="right-menu">
         <PriceContainer>
-          ETH PRICE: ${ethPrice || '0.00'}
+          ETH/USD: ${ethPrice || '0.00'}
         </PriceContainer>
         <UserProfile
           {...user}
@@ -268,6 +268,7 @@ const Header = ({
               icon="question-circle"
             />
           </Badge>
+         
         </div>
       </AlignRight>
     </HeaderContainer>

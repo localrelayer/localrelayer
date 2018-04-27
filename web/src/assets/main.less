@@ -189,6 +189,9 @@ img {
   background: @component-background;
 }
 
+.ant-badge-count {
+  box-shadow: none;
+}
 
 .ant-popover .ant-table-wrapper {
   background: @popover-bg;
@@ -328,7 +331,7 @@ input[type=checkbox]{
 }
 
 /*Responsive Styles*/
-@media screen and (max-width : 1200px){
+@media screen and (max-width : 1290px){
 
   #main-header-logo {
     display: none;
@@ -336,7 +339,7 @@ input[type=checkbox]{
 
   /*Show menu when invisible checkbox is checked*/
   input[type=checkbox]:checked ~ #menu{
-    max-height: 310px;
+    min-height: 330px;
     opacity: 1;
   }
 

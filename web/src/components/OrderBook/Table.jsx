@@ -61,9 +61,8 @@ export default enchance(({
   <Table id={`${type}-book`} className="Table">
     {
       orders.length > 0 ? orders.map(order => (
-        <Tooltip placement="bottom" title={`Click on order to ${order.type === 'buy' ? 'sell' : 'buy'}`}>
+        <Tooltip key={order.id} placement="bottom" title={`Click on order to ${order.type === 'buy' ? 'sell' : 'buy'}`}>
           <div
-            key={order.id}
             style={{ position: 'relative' }}
             className="Table-row"
             onClick={() => fillOrder(order)}

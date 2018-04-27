@@ -13,6 +13,10 @@ import createActionCreators from 'redux-resource-action-creators';
 import type { Saga } from 'redux-saga';
 import { getFormValues, reset } from 'redux-form';
 import { ZeroEx } from '0x.js';
+import {
+  ledgerEthereumBrowserClientFactoryAsync as ledgerEthereumClientFactoryAsync,
+  LedgerSubprovider,
+} from '@0xproject/subproviders';
 import * as actionTypes from '../actions/types';
 import {
   sendNotification,
@@ -38,6 +42,50 @@ const sagas = {
   setAllowance,
   unsetAllowance,
 };
+
+const Web3 = require('web3');
+
+export const startWeb3 = (): Promise<*> =>
+  new Promise((resolve): any => {
+    window.addEventListener('load', async () => {
+    // Creating websocket web3 version
+      const wsWeb3 = new Web3(new Web3.providers.WebsocketProvider('wss://mainnet.infura.io/_ws'));
+      window.wsWeb3 = wsWeb3;
+
+      await initMetamask();
+      await initLedger();
+      resolve();
+    });
+  });
+
+export const initMetamask = async () => {
+  if (typeof window.web3 !== 'undefined') {
+    const web3 = new Web3(window.web3.currentProvider);
+    let networkId = 1;
+    try {
+      networkId = +await web3.eth.net.getId();
+    } catch (e) {
+      console.warn("Couldn't get a network, using mainnet", e);
+      networkId = 1;
+    }
+    const zeroEx = new ZeroEx(window.web3.currentProvider, {
+      networkId,
+    });
+    window.zeroEx = zeroEx;
+    window.web3Instance = web3;
+  }
+};
+
+export const initLedger = async () => {
+  const networkId = 1;
+
+  const ledgerSubprovider = new LedgerSubprovider({
+    networkId,
+    ledgerEthereumClientFactoryAsync,
+  });
+  window.ledgerSubprovider = ledgerSubprovider;
+};
+
 
 // Deposit WETH (wrap)
 function* deposit() {
@@ -65,7 +113,7 @@ function* deposit() {
         yield put(showModal({
           title: 'Ledger action required',
           type: 'info',
-          text: 'Click right button to send transaction',
+          text: 'Confirm transaction on your Ledger',
         }));
       }
 
@@ -123,7 +171,7 @@ function* withdraw() {
       yield put(showModal({
         title: 'Ledger action required',
         type: 'info',
-        text: 'Click right button to send transaction',
+        text: 'Confirm transaction on your Ledger',
       }));
     }
     const txHash = yield call([zeroEx.etherToken, zeroEx.etherToken.withdrawAsync],
@@ -180,7 +228,7 @@ function* setAllowance(token) {
       yield put(showModal({
         title: 'Ledger action required',
         type: 'info',
-        text: 'Click right button to send transaction',
+        text: 'Confirm transaction on your Ledger',
       }));
     }
 
@@ -238,7 +286,7 @@ function* unsetAllowance(token) {
       yield put(showModal({
         title: 'Ledger action required',
         type: 'info',
-        text: 'Click right button to send transaction',
+        text: 'Confirm transaction on your Ledger',
       }));
     }
     const txHash = yield call(
