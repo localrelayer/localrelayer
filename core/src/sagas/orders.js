@@ -147,7 +147,7 @@ export function* createOrder(): Saga<*> {
       yield put(showModal({
         title: 'Ledger action required',
         type: 'info',
-        text: 'Click right button to sign the order',
+        text: 'Confirm transaction on your Ledger',
       }));
     }
 
@@ -161,9 +161,9 @@ export function* createOrder(): Saga<*> {
     yield zeroEx.exchange.validateOrderFillableOrThrowAsync(signedZRXOrder);
 
     const order = {
-      price: +price,
-      amount: +amount,
-      total: +total,
+      price: (+price).toFixed(8),
+      amount: (+amount).toFixed(8),
+      total: (+total).toFixed(8),
       token_address: currentToken.id,
       pair_address: currentPair.id,
       type,
@@ -297,18 +297,27 @@ export function* cancelOrder({
     const account = yield select(getProfileState('address'));
     const provider = yield select(getProfileState('provider'));
 
+    let signature;
+
     if (provider === 'ledger') {
       yield put(showModal({
         title: 'Ledger action required',
         type: 'info',
-        text: 'Click right button to cancel the order',
+        text: 'Confirm transaction on your Ledger',
       }));
+      signature = yield call([
+        window.ledgerSubprovider,
+        window.ledgerSubprovider.signPersonalMessageAsync,
+      ],
+      window.web3Instance.utils.toHex('Confirmation to cancel order'),
+      account);
+    } else {
+      signature = yield cps(
+        window.web3Instance.eth.personal.sign,
+        'Confirmation to cancel order',
+        account,
+      );
     }
-    const signature = yield cps(
-      window.web3Instance.eth.personal.sign,
-      'Confirmation to cancel order',
-      account,
-    );
     yield call(customApiRequest, {
       url: `${config.apiUrl}/orders/${orderId}/cancel`,
       method: 'POST',

@@ -68,9 +68,9 @@ const BuySell: StatelessFunctionalComponent<Props> = ({
   fillField,
   isConnected,
   balance,
+  shouldAnimate,
 }: Props): Node =>
   <div id="orderForm">
-
     <CardContainer bordered={false}>
       <Overlay isShown={!isConnected}>
         <h3 style={{
@@ -82,6 +82,7 @@ const BuySell: StatelessFunctionalComponent<Props> = ({
         </h3>
       </Overlay>
       <Tabs
+        animated={false}
         onChange={changeActiveTab}
         activeKey={activeTab}
         tabBarExtraContent={<ExtraContentContainer><Icon type="wallet" />{' '}{getExtraContent(activeTab, currentToken, currentPair)}</ExtraContentContainer>}
@@ -94,6 +95,7 @@ const BuySell: StatelessFunctionalComponent<Props> = ({
             currentPair={currentPair}
             onSubmit={onSubmit}
             balance={balance}
+            shouldAnimate={shouldAnimate}
           />
         </TabPane>
         <TabPane tab="Sell" key="sell">
@@ -104,6 +106,7 @@ const BuySell: StatelessFunctionalComponent<Props> = ({
             currentPair={currentPair}
             onSubmit={onSubmit}
             balance={balance}
+            shouldAnimate={shouldAnimate}
           />
         </TabPane>
       </Tabs>

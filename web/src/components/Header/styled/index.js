@@ -29,8 +29,8 @@ export const LinksContainer = styled.div`
 export const HeaderContainer = styled(Layout.Header)`
   display: flex;
   align-items: center;
-  height: 50px;
-  line-height: 50px;
+  height: 55px;
+  line-height: 55px;
 
   img {
     height: 42px;

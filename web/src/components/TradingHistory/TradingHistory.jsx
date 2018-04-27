@@ -10,6 +10,7 @@ import type {
 } from 'instex-core/types';
 import {
   Tooltip,
+  Icon,
 } from 'antd';
 import moment from 'moment';
 
@@ -58,6 +59,9 @@ const columns = [
     dataIndex: 'amount',
     key: 'amount',
   },
+  {
+    render: () => <Icon type="select" />
+  }
   // {
   //   title: 'Total',
   //   dataIndex: 'total',

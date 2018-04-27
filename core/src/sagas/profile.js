@@ -7,19 +7,18 @@ import {
   all,
   takeEvery,
 } from 'redux-saga/effects';
+import moment from 'moment';
 import {
   delay,
 } from 'redux-saga';
 import {
   ZeroEx,
 } from '0x.js';
+import Web3ProviderEngine from 'web3-provider-engine';
 import createActionCreators from 'redux-resource-action-creators';
 import type {
   Saga,
 } from 'redux-saga';
-import {
-  equals,
-} from 'ramda';
 import {
   trackMixpanel,
 } from '../utils/mixpanel';
@@ -35,12 +34,11 @@ import {
   getLockedTokenBalance,
   getLockedPairBalance,
   getResourceMappedList,
+  getWethToken,
 } from '../selectors';
 import {
   getNetworkById,
   connectionStatuses,
-  initLedger,
-  initMetamask,
 } from '../utils/web3';
 import * as resourcesActions from '../actions/resources';
 import {
@@ -50,6 +48,9 @@ import {
   setUiState,
 } from '../actions';
 import BigNumber from '../utils/BigNumber';
+import WETH from '../utils/WETH';
+
+const RpcSubprovider = require('web3-provider-engine/subproviders/rpc.js');
 
 const loadEthPrice = async () => {
   const res = await fetch('https://api.coinmarketcap.com/v1/ticker/ethereum/');
@@ -58,37 +59,29 @@ const loadEthPrice = async () => {
 
 export function* loadUser(): Saga<*> {
   const { web3Instance: web3 } = window;
-  const prevAccounts = yield select(getProfileState('addresses'));
+  const provider = yield select(getProfileState('provider'));
   let accounts = [];
-  try {
-    accounts = yield cps(web3.eth.getAccounts);
-  } catch (e) {
-    console.log('wow', e);
+  if (provider === 'ledger') {
+    try {
+      accounts = yield call([window.ledgerSubprovider, window.ledgerSubprovider.getAccountsAsync]);
+    } catch (e) {
+      console.warn(e.toString());
+    }
+  } else {
+    accounts = yield call(web3.eth.getAccounts);
   }
-
-  if (!equals(prevAccounts, accounts)) {
-    yield put(setProfileState('addresses', accounts));
-    yield put(setProfileState('balance', '0'));
-
-    // TODO: better way to check if ledger is connected
-    // eslint-disable-next-line
-    if (web3._provider._providers && web3._provider._providers[0]._ledgerClientIfExists) {
-      yield put(setProfileState('connectionStatus', connectionStatuses.NOT_CONNECTED));
-      yield put(setProfileState('address', '0x0'));
-      return;
-    }
-    if (!accounts.length) {
-      yield put(setProfileState('connectionStatus', connectionStatuses.LOCKED));
-      yield put(
-        showModal({
-          title: 'Your wallet is unavailable',
-          type: 'warn',
-          text: 'Please unlock or connect your wallet',
-        }),
-      );
-    } else {
-      yield call(loadUserData, { payload: { address: accounts[0] } });
-    }
+  yield put(setProfileState('addresses', accounts));
+  if (!accounts.length) {
+    yield put(setProfileState('connectionStatus', connectionStatuses.LOCKED));
+    yield put(
+      showModal({
+        title: 'Your wallet is unavailable',
+        type: 'warn',
+        text: 'Please unlock or connect your wallet',
+      }),
+    );
+  } else {
+    yield call(loadUserData, { payload: { address: accounts[0] } });
   }
 }
 
@@ -102,6 +95,7 @@ export function* loadUserData({ payload: { address } }): Saga<*> {
   yield all([call(loadBalance), call(loadNetwork), call(loadUserOrders)]);
   // We need to access user orders, so we wait for it
   yield call(loadTokensBalance);
+  // yield call(loadUserEvents);
   if (!socketConnected) {
     const socket = yield call(socketConnect);
     yield fork(handleSocketIO, socket);
@@ -139,14 +133,13 @@ export function* loadTokensBalance() {
     request: 'addTokensBalances',
     list: 'allTokens',
   });
-
   try {
     const allTokens = yield all(
       tokens
         .filter(token => token.id !== current.id && token.id !== pair.id && token.is_listed)
         .map(function* (token) {
           const locked = yield select(getLockedTokenBalance(token));
-          const res = yield getTokenBalanceAndAllowance(token, locked);
+          const res = yield call(getTokenBalanceAndAllowance, token, locked);
           return res;
         }),
     );
@@ -176,8 +169,8 @@ export function* loadCurrentTokenAndPairBalance() {
   });
 
   try {
-    const current = yield getTokenBalanceAndAllowance(currentToken, lockedToken);
-    const pair = yield getTokenBalanceAndAllowance(currentPair, lockedPair);
+    const current = yield call(getTokenBalanceAndAllowance, currentToken, lockedToken);
+    const pair = yield call(getTokenBalanceAndAllowance, currentPair, lockedPair);
 
     yield put(
       addActiveUserTokensAction.succeeded({
@@ -204,6 +197,7 @@ export function* loadNetwork() {
 function* getTokenBalanceAndAllowance(token, locked) {
   const { zeroEx } = window;
   const account = yield select(getProfileState('address'));
+
   const tokenBalance = yield call([zeroEx.token, zeroEx.token.getBalanceAsync], token.id, account);
   const allowance = yield call(
     [zeroEx.token, zeroEx.token.getProxyAllowanceAsync],
@@ -270,9 +264,33 @@ export function* loadUserOrders() {
 }
 
 export function* changeProvider({ payload: { provider } }): Saga<*> {
+  let networkId = 1;
+  try {
+    networkId = yield call(window.web3Instance.eth.net.getId);
+  } catch (e) {
+    console.warn("Couldn't get a network, using mainnet", e);
+    networkId = 1;
+  }
   yield put(setProfileState('provider', provider));
-  if (provider === 'ledger') yield call(initLedger);
-  if (provider === 'metamask') yield call(initMetamask);
+  if (provider === 'ledger') {
+    const providerEngine = new Web3ProviderEngine();
+    providerEngine.addProvider(window.ledgerSubprovider);
+    providerEngine.addProvider(
+      new RpcSubprovider({
+        rpcUrl: 'https://mainnet.infura.io/metamask',
+      }),
+    );
+    providerEngine.start();
+    // network connectivity error
+    providerEngine.on('error', (err) => {
+    // report connectivity errors
+      console.error(err.stack);
+    });
+    window.zeroEx.setProvider(providerEngine, networkId);
+  }
+  if (provider === 'metamask') {
+    window.zeroEx.setProvider(window.web3.currentProvider, networkId);
+  }
   yield call(loadUser);
 }
 
@@ -285,6 +303,117 @@ export function* updateEthPrice(): Saga<*> {
   }
 }
 
+export function* loadUserEvents(): Saga<*> {
+  try {
+    const token = yield select(getCurrentToken);
+    const weth = yield select(getWethToken);
+    const pair = yield select(getCurrentPair);
+
+    const TokenContract = new window.wsWeb3.eth.Contract(WETH, token.id);
+    const PairContract = new window.wsWeb3.eth.Contract(WETH, pair.id);
+
+    const WETHContract = new window.wsWeb3.eth.Contract(WETH, weth.id);
+    const address = yield select(getProfileState('address'));
+
+    const lastBlock = yield call(window.wsWeb3.eth.getBlockNumber);
+
+    console.log(lastBlock);
+
+    // 180 000 blocks in month
+
+    const fromBlock = lastBlock - 180000;
+
+    const Withdrawals = yield call([WETHContract, WETHContract.getPastEvents],
+      'Withdrawal',
+      {
+        fromBlock,
+        filter: { src: address },
+      });
+    const Deposits = yield call([WETHContract, WETHContract.getPastEvents],
+      'Deposit',
+      {
+        fromBlock,
+        filter: { dst: address },
+      });
+
+    const TokenApprovals = yield call([TokenContract, TokenContract.getPastEvents],
+      'Approval',
+      {
+        fromBlock,
+        filter: { src: address },
+      });
+
+    const PairApprovals = yield call([PairContract, TokenContract.getPastEvents],
+      'Approval',
+      {
+        fromBlock,
+        filter: { src: address },
+      });
+
+    const TokenTransfers = yield call([TokenContract, TokenContract.getPastEvents],
+      'Transfer',
+      {
+        fromBlock,
+        filter: { src: address },
+      });
+
+    const PairTransfers = yield call([PairContract, TokenContract.getPastEvents],
+      'Transfer',
+      {
+        fromBlock,
+        filter: { src: address },
+      });
+
+    const allEvents = [
+      ...Withdrawals,
+      ...Deposits,
+      ...TokenApprovals,
+      ...PairApprovals,
+      ...TokenTransfers,
+      ...PairTransfers,
+    ];
+    console.log(allEvents);
+
+    const eventPromises = allEvents
+      .sort((e1, e2) => e1.blockNumber > e2.blockNumber)
+      .map(async (event) => {
+        const block = await window.web3Instance.eth.getBlock(event.blockNumber);
+        return {
+          name: event.event,
+          timestamp: moment.unix(block.timestamp).format('ddd, MMM DD, YYYY hh:mm:ss A'),
+          txHash: event.transactionHash,
+          type: event.type,
+        };
+      });
+
+    // WETHContract.events.Withdrawal({
+    //   fromBlock,
+    //   filter: { src: address },
+    // }, (error, event) => {
+    //   if (error) console.error(error);
+    // })
+    //   .on('data', (event) => {
+    //     console.warn(event); // same results as the optional callback above
+    //   });
+
+    const formattedEvents = yield all(eventPromises);
+
+    console.log(formattedEvents);
+  } catch (e) {
+    console.error('Couldnt get events', e);
+  }
+}
+
+function* checkNewMetamaskAccount() {
+  const { web3Instance: web3 } = window;
+  const prevAddress = yield select(getProfileState('address'));
+  const provider = yield select(getProfileState('provider'));
+  const accounts = yield call(web3.eth.getAccounts);
+  if (provider === 'metamask' && (prevAddress !== accounts[0])) {
+    yield call(loadUserData, { payload: { address: accounts[0] } });
+  }
+}
+
 export function* runLoadEthPrice(): Saga<*> {
   while (true) {
     yield fork(updateEthPrice);
@@ -292,10 +421,10 @@ export function* runLoadEthPrice(): Saga<*> {
   }
 }
 
-export function* runLoadUser(): Saga<*> {
+export function* watchNewMetamaskAccount(): Saga<*> {
   while (true) {
-    yield fork(loadUser);
-    yield call(delay, 3000);
+    yield fork(checkNewMetamaskAccount);
+    yield call(delay, 2000);
   }
 }
 

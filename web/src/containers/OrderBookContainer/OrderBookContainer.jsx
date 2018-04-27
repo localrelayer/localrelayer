@@ -50,7 +50,10 @@ const OrderBookContainer: StatelessFunctionalComponent<Props> =
         dispatch(setUiState('activeTab', order.type === 'buy' ? 'sell' : 'buy'));
         dispatch(change('BuySellForm', 'price', order.price)); // eslint-disable-line
         dispatch(change('BuySellForm', 'amount', order.amount)); // eslint-disable-line
-        dispatch(change('BuySellForm', 'exp', moment().add(1, 'day'))); // eslint-disable-line
+        dispatch(setUiState('shouldAnimate', true));
+        setTimeout(() => {
+          dispatch(setUiState('shouldAnimate', false));
+        }, 500);
         }
       }}
       buyOrders={buyOrders}

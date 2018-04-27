@@ -32,6 +32,7 @@ type Props = {
   activeTab: string,
   isConnected: boolean,
   balance: string,
+  shouldAnimate: boolean,
 }
 
 const BuySellContainer = ({
@@ -41,15 +42,16 @@ const BuySellContainer = ({
   activeTab,
   isConnected,
   balance,
+  shouldAnimate,
 }: Props) => (
-  <StyleContainer>
+  <StyleContainer animate={shouldAnimate}>
     <BuySell
       balance={balance}
       isConnected={isConnected}
       currentToken={currentToken}
       currentPair={currentPair}
       activeTab={activeTab}
-      onSubmit={values => dispatch(createOrder(values))}
+      onSubmit={() => dispatch(createOrder())}
       fillField={(field, values) => dispatch(fillField(field, values))}
       changeActiveTab={(tab) => {
         dispatch(setUiState('activeTab', tab));
@@ -60,7 +62,7 @@ const BuySellContainer = ({
 );
 
 const mapStateToProps: MapStateToProps<*, *, *> = (state) => {
-  const { activeTab } = state.ui;
+  const { activeTab, shouldAnimate } = state.ui;
   const currentToken = getCurrentToken(state);
   const currentPair = getCurrentPair(state);
   const balance = getProfileState('balance')(state);
@@ -70,6 +72,7 @@ const mapStateToProps: MapStateToProps<*, *, *> = (state) => {
     activeTab,
     balance,
     isConnected: state.profile.connectionStatus !== 'Not connected' && state.profile.connectionStatus !== 'Locked',
+    shouldAnimate,
   };
 };
 

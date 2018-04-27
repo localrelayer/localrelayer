@@ -32,7 +32,7 @@ import {
   loadCurrentTokenAndPairBalance,
 } from './profile';
 
-export function socketConnect() {
+export function socketConnect(): Promise<*> {
   console.log('_______');
   console.log(config.socketUrl);
   console.log('_______');
