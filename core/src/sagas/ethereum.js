@@ -24,7 +24,7 @@ import {
   showModal,
 } from '../actions/ui';
 import {
-  loadTokensBalance,
+  loadCurrentTokenAndPairBalance,
   loadBalance,
 } from './profile';
 import {
@@ -49,7 +49,7 @@ export const startWeb3 = (): Promise<*> =>
   new Promise((resolve): any => {
     window.addEventListener('load', async () => {
     // Creating websocket web3 version
-      const wsWeb3 = new Web3(new Web3.providers.WebsocketProvider('wss://mainnet.infura.io/_ws'));
+      const wsWeb3 = new Web3(new Web3.providers.WebsocketProvider('ws://localhost:8545'));
       window.wsWeb3 = wsWeb3;
 
       await initMetamask();
@@ -143,7 +143,7 @@ function* deposit() {
       );
 
       yield put(sendNotification({ message: 'Deposit successful', type: 'success' }));
-      yield call(loadTokensBalance);
+      yield call(loadCurrentTokenAndPairBalance);
       yield call(loadBalance);
     } catch (e) {
       yield put(sendNotification({ message: e.message, type: 'error' }));
@@ -201,7 +201,7 @@ function* withdraw() {
     );
 
     yield put(sendNotification({ message: 'Withdrawal successful', type: 'success' }));
-    yield call(loadTokensBalance);
+    yield call(loadCurrentTokenAndPairBalance);
     yield call(loadBalance);
   } catch (e) {
     yield put(sendNotification({ message: e.message, type: 'error' }));

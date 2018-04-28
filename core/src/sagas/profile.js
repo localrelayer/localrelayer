@@ -6,6 +6,7 @@ import {
   fork,
   all,
   takeEvery,
+  race,
 } from 'redux-saga/effects';
 import moment from 'moment';
 import {
@@ -63,7 +64,13 @@ export function* loadUser(): Saga<*> {
   let accounts = [];
   if (provider === 'ledger') {
     try {
-      accounts = yield call([window.ledgerSubprovider, window.ledgerSubprovider.getAccountsAsync]);
+      const { ledgerAccounts } = yield race({
+        ledgerAccounts: call([window.ledgerSubprovider, window.ledgerSubprovider.getAccountsAsync]),
+        timeout: call(delay, 2000),
+      });
+      if (ledgerAccounts) {
+        accounts = ledgerAccounts;
+      }
     } catch (e) {
       console.warn(e.toString());
     }
@@ -281,9 +288,7 @@ export function* changeProvider({ payload: { provider } }): Saga<*> {
       }),
     );
     providerEngine.start();
-    // network connectivity error
     providerEngine.on('error', (err) => {
-    // report connectivity errors
       console.error(err.stack);
     });
     window.zeroEx.setProvider(providerEngine, networkId);
@@ -291,6 +296,7 @@ export function* changeProvider({ payload: { provider } }): Saga<*> {
   if (provider === 'metamask') {
     window.zeroEx.setProvider(window.web3.currentProvider, networkId);
   }
+  yield put(setProfileState('balance', 0));
   yield call(loadUser);
 }
 
@@ -321,7 +327,7 @@ export function* loadUserEvents(): Saga<*> {
 
     // 180 000 blocks in month
 
-    const fromBlock = lastBlock - 180000;
+    const fromBlock = (lastBlock - 180000) >= 0 ? lastBlock - 180000 : 0;
 
     const Withdrawals = yield call([WETHContract, WETHContract.getPastEvents],
       'Withdrawal',
@@ -409,7 +415,7 @@ function* checkNewMetamaskAccount() {
   const prevAddress = yield select(getProfileState('address'));
   const provider = yield select(getProfileState('provider'));
   const accounts = yield call(web3.eth.getAccounts);
-  if (provider === 'metamask' && (prevAddress !== accounts[0])) {
+  if (provider === 'metamask' && accounts[0] && (prevAddress !== accounts[0])) {
     yield call(loadUserData, { payload: { address: accounts[0] } });
   }
 }

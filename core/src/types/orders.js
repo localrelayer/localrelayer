@@ -15,6 +15,7 @@ export type OrderAttributes = {
   completed_at?: Date,
   canceled_at?: Date,
   status: string,
+  isUser: boolean,
 } & AddedOrderAttributes;
 
 export type AddedOrderAttributes = {

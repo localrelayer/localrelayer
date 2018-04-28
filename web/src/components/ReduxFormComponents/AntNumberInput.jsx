@@ -80,7 +80,7 @@ export default class AntNumericInput extends React.Component<Props> {
           addonAfter={this.props.addonAfter}
           {...this.props.input}
           placeholder={placeholder}
-          maxLength="25"
+          maxLength="15"
         />
         {/* </Tooltip> */}
       </Form.Item>

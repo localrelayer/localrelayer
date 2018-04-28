@@ -83,9 +83,8 @@ export function* initialize(): Saga<void> {
     if (process.env.NODE_ENV === 'production') {
       yield put(
         showModal({
-          title: "We're still in beta.",
+          title: 'Max order is temporary limited to 1 ETH',
           type: 'info',
-          text: 'Max order is limited to 0.5 ETH while in beta',
         }),
       );
     }

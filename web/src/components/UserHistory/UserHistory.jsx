@@ -99,6 +99,9 @@ const UserHistory = ({
           window.open(`https://etherscan.io/tx/${order.tx_hash}`);
         }
       }}
+      pagination={{
+        pageSize: 9,
+      }}
       title={title}
       columns={getColumns()}
       data={orders}
