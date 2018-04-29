@@ -16,6 +16,7 @@
     "@0xproject/web3-wrapper": "^0.6.1",
     "@ledgerhq/hw-transport-u2f": "^4.7.3",
     "@ledgerhq/web3-subprovider": "^4.11.0",
+    "abi-decoder": "^1.1.0",
     "bignumber.js": "5.0.0",
     "es6-promisify": "^6.0.0",
     "human-standard-token-abi": "1.0.2",

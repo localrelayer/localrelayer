@@ -13,6 +13,7 @@ import {
 import {
   Modal,
 } from 'antd';
+import tokenByAddress from './assets/tokenByAddress.png';
 
 type Props = {
   shouldRunTutorial: boolean,
@@ -41,7 +42,16 @@ const steps = [
     text: (
       <div>
         <article>
-          If you can't find the desired token, ether the token address in url.
+          If you can't find the desired token, click "Token by address" button.
+          <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            padding: 10,
+          }}
+          >
+            <img style={{ height: 60 }} src={tokenByAddress} alt="Token by address" />
+          </div>
+          You can also just enter the token address in url.
           For example:
         </article>
         <br />
@@ -77,15 +87,11 @@ const steps = [
     text: (
       <div>
         <article>
-          All tokens stay in your wallet until a transaction completes, and WETH is transferred instantly to the seller's wallet upon completion.
+        You need to allow the 0x protocol to exchange the token from your wallet. All tokens stay in your wallet until a trade completes.
         </article>
         <br />
         <article>
-          You have to allow 0x protocol to exchange the token from your wallet.
-        </article>
-        <br />
-        <article>
-          For more details look <a href="https://tokenallowance.io/">here</a>
+          For more details look <a href="https://tokenallowance.io/">here.</a>
         </article>
       </div>
     ),

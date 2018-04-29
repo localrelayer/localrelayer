@@ -17,6 +17,7 @@ import {
   ledgerEthereumBrowserClientFactoryAsync as ledgerEthereumClientFactoryAsync,
   LedgerSubprovider,
 } from '@0xproject/subproviders';
+import abiDecoder from 'abi-decoder';
 import * as actionTypes from '../actions/types';
 import {
   sendNotification,
@@ -35,6 +36,9 @@ import {
   trackMixpanel,
 } from '../utils/mixpanel';
 import BigNumber from '../utils/BigNumber';
+import WETH from '../utils/WETH';
+
+const Web3 = require('web3');
 
 const sagas = {
   deposit,
@@ -43,7 +47,7 @@ const sagas = {
   unsetAllowance,
 };
 
-const Web3 = require('web3');
+abiDecoder.addABI(WETH);
 
 export const startWeb3 = (): Promise<*> =>
   new Promise((resolve): any => {
@@ -51,6 +55,13 @@ export const startWeb3 = (): Promise<*> =>
     // Creating websocket web3 version
       const wsWeb3 = new Web3(new Web3.providers.WebsocketProvider('ws://localhost:8545'));
       window.wsWeb3 = wsWeb3;
+
+      // wsWeb3.eth.subscribe('pendingTransactions', (err, txHash) => {
+      //   wsWeb3.eth.getTransaction(txHash).then((res) => {
+      //     console.log(err, res);
+      //     console.log(abiDecoder.decodeMethod(res.input));
+      //   });
+      // });
 
       await initMetamask();
       await initLedger();
@@ -182,6 +193,13 @@ function* withdraw() {
         gasLimit,
         gasPrice: BigNumber(gasPriceWei),
       });
+
+    const pendingTransactionsStringified = (yield call([localStorage, 'getItem'], 'pendingTransactions')) || '[]';
+    const pendingTransactions = JSON.parse(pendingTransactionsStringified);
+
+    pendingTransactions.push(txHash);
+
+    yield call([localStorage, 'setItem'], 'pendingTransactions', JSON.stringify(pendingTransactions));
 
     yield put(setUiState('activeModal', 'TxModal'));
     yield put(setUiState('txHash', txHash));

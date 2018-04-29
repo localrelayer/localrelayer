@@ -67,8 +67,7 @@ export function* initialize(): Saga<void> {
   yield call(setTokens);
   yield call(loadOrders);
 
-  yield put(changeProvider('metamask'));
-  yield fork(watchNewMetamaskAccount);
+  yield fork(runLoadEthPrice);
 
   if (!window.web3Instance) {
     yield put(
@@ -80,6 +79,9 @@ export function* initialize(): Saga<void> {
     );
     yield put(ProfileActions.setProfileState('connectionStatus', connectionStatuses.NOT_CONNECTED));
   } else {
+    yield put(changeProvider('metamask'));
+    yield fork(watchNewMetamaskAccount);
+
     if (process.env.NODE_ENV === 'production') {
       yield put(
         showModal({
@@ -93,7 +95,6 @@ export function* initialize(): Saga<void> {
     window.BIGGEST_AMOUNT = BigNumber(BIGGEST_AMOUNT).toFixed(8).toString();
     window.SMALLEST_AMOUNT = SMALLEST_AMOUNT;
     yield fork(listenRouteChange);
-    yield fork(runLoadEthPrice);
   }
 }
 
