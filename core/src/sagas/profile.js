@@ -62,23 +62,21 @@ export function* loadUser(): Saga<*> {
   const { web3Instance: web3 } = window;
   const provider = yield select(getProfileState('provider'));
   let accounts = [];
-  if (provider === 'ledger') {
-    try {
+  try {
+    if (provider === 'ledger') {
       const { ledgerAccounts } = yield race({
         ledgerAccounts: call([window.ledgerSubprovider, window.ledgerSubprovider.getAccountsAsync]),
         timeout: call(delay, 2000),
       });
-      if (ledgerAccounts) {
-        accounts = ledgerAccounts;
-      }
-    } catch (e) {
-      console.warn(e.toString());
+      accounts = ledgerAccounts || [];
+    } else {
+      accounts = yield call(web3.eth.getAccounts);
     }
-  } else {
-    accounts = yield call(web3.eth.getAccounts);
+  } catch (e) {
+    console.warn(e.toString());
   }
   yield put(setProfileState('addresses', accounts));
-  if (!accounts.length) {
+  if (!accounts.length || !web3) {
     yield put(setProfileState('connectionStatus', connectionStatuses.LOCKED));
     yield put(
       showModal({
@@ -196,7 +194,13 @@ export function* loadCurrentTokenAndPairBalance() {
 
 export function* loadNetwork() {
   const { web3Instance: web3 } = window;
-  const networkId = yield cps(web3.eth.net.getId);
+  let networkId = 1;
+  try {
+    networkId = yield cps(web3.eth.net.getId);
+  } catch (e) {
+    console.warn("Couldn't get a network, using mainnet", e);
+    networkId = 1;
+  }
   const network = getNetworkById(networkId);
   yield put(setProfileState('network', network));
 }
@@ -291,9 +295,15 @@ export function* changeProvider({ payload: { provider } }): Saga<*> {
     providerEngine.on('error', (err) => {
       console.error(err.stack);
     });
+
+    if (!window.zeroEx) {
+      window.zeroEx = new ZeroEx(providerEngine, {
+        networkId,
+      });
+    }
     window.zeroEx.setProvider(providerEngine, networkId);
   }
-  if (provider === 'metamask') {
+  if (provider === 'metamask' && window.web3) {
     window.zeroEx.setProvider(window.web3.currentProvider, networkId);
   }
   yield put(setProfileState('balance', 0));

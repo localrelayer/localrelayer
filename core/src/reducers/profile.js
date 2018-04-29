@@ -15,6 +15,7 @@ const initialState: ProfileState = {
   connectionStatus: '',
   network: '',
   provider: '',
+  addresses: [],
 };
 
 export default function profileReducer(
