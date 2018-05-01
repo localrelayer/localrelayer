@@ -16,6 +16,9 @@ export const Title = styled.div`
 
 export const CardContainer = styled(Card)`
   padding: 0;
+  .ant-card-body {
+    padding: 0;
+  }
   & > .ant-card-head {
     text-align: center;
   }

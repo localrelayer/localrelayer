@@ -5,6 +5,7 @@ import {
   fork,
   select,
   takeEvery,
+  all,
 } from 'redux-saga/effects';
 import {
   reset,
@@ -27,12 +28,13 @@ import {
 } from '../utils/web3';
 import {
   startWeb3,
+  getItemFromLocalStorage,
+  removeTransactionFromLocalStorage,
 } from './ethereum';
-import * as ProfileActions from '../actions/profile';
 import {
-  loadTokensBalance,
   runLoadEthPrice,
   watchNewMetamaskAccount,
+  loadTokensBalance,
 } from './profile';
 import {
   loadOrders,
@@ -41,6 +43,7 @@ import {
   changeProvider,
   showModal,
   setUiState,
+  setProfileState,
 } from '../actions';
 import {
   getResourceMappedList,
@@ -77,10 +80,11 @@ export function* initialize(): Saga<void> {
         name: 'DowloadMetamask',
       }),
     );
-    yield put(ProfileActions.setProfileState('connectionStatus', connectionStatuses.NOT_CONNECTED));
+    yield put(setProfileState('connectionStatus', connectionStatuses.NOT_CONNECTED));
   } else {
     yield put(changeProvider('metamask'));
     yield fork(watchNewMetamaskAccount);
+    yield call(setLocalStoragePendingTransactions);
 
     if (process.env.NODE_ENV === 'production') {
       yield put(
@@ -91,17 +95,15 @@ export function* initialize(): Saga<void> {
       );
     }
 
-    // using window as transport
     window.BIGGEST_AMOUNT = BigNumber(BIGGEST_AMOUNT).toFixed(8).toString();
-    window.SMALLEST_AMOUNT = SMALLEST_AMOUNT;
+    window.SMALLEST_AMOUNT = BigNumber(SMALLEST_AMOUNT).toFixed(8).toString();
+
     yield fork(listenRouteChange);
   }
 }
 
-
 export function* setTokens(): Saga<void> {
   const { zeroEx } = window;
-  // const address = yield select(getProfileState('address'));
 
   yield put(reset('BuySellForm'));
   yield put(setUiState('bannerMessage', null));
@@ -111,16 +113,21 @@ export function* setTokens(): Saga<void> {
   const reg = pathToRegexp('/:token-:pair');
   const [a, token = '', pair = ''] = reg.exec(pathname) || []; // eslint-disable-line
 
-  let selectedToken =
-    tokens.find(t => (t.symbol === token || t.id === token.toLowerCase()) && t.is_listed);
-  const pairToken =
-    tokens.find(t => (t.symbol === pair || t.id === pair.toLowerCase()) && t.is_listed);
-  const networkZrxAddress = zeroEx ?
-    yield call([zeroEx.exchange, zeroEx.exchange.getZRXTokenAddress]) : null;
-  const networkWethAddress = zeroEx ?
-    yield call([
-      zeroEx.tokenRegistry, zeroEx.tokenRegistry.getTokenAddressBySymbolIfExistsAsync,
-    ], 'WETH') : null;
+  let selectedToken = tokens.find(
+    t => (t.symbol === token || t.id === token.toLowerCase()) && t.is_listed,
+  );
+  const pairToken = tokens.find(
+    t => (t.symbol === pair || t.id === pair.toLowerCase()) && t.is_listed,
+  );
+  const networkZrxAddress = zeroEx
+    ? yield call([zeroEx.exchange, zeroEx.exchange.getZRXTokenAddress])
+    : null;
+  const networkWethAddress = zeroEx
+    ? yield call(
+      [zeroEx.tokenRegistry, zeroEx.tokenRegistry.getTokenAddressBySymbolIfExistsAsync],
+      'WETH',
+    )
+    : null;
 
   const zrxToken = tokens.find(t => t.symbol === 'ZRX' || t.id === networkZrxAddress) || {};
   const wethToken = tokens.find(t => t.symbol === 'WETH' || t.id === networkWethAddress) || {};
@@ -140,7 +147,7 @@ export function* setTokens(): Saga<void> {
             sortBy: 'symbol',
             filterCondition: {
               filter: {
-                'address': token.toLowerCase(),
+                address: token.toLowerCase(),
               },
             },
           },
@@ -148,12 +155,17 @@ export function* setTokens(): Saga<void> {
       });
       const foundToken = responseUrlToken.data.find(t => t.id === token.toLowerCase());
 
-      yield put(setUiState('bannerMessage', 'You are trading not listed token, please be aware of scam and double check the address'));
+      yield put(
+        setUiState(
+          'bannerMessage',
+          'You are trading not listed token, please be aware of scam and double check the address',
+        ),
+      );
 
       if (foundToken) {
         selectedToken = foundToken;
       } else if (name && symbol && decimals) {
-      // Create new token (not listed)
+        // Create new token (not listed)
         const resp = yield call(saveResourceRequest, {
           payload: {
             resourceName: 'tokens',
@@ -172,17 +184,38 @@ export function* setTokens(): Saga<void> {
         selectedToken = resp.data;
       }
     } catch (e) {
-      yield put(showModal({
-        title: "Couldn't find token by address",
-        name: 'NoToken',
-        type: 'warning',
-      }));
+      yield put(
+        showModal({
+          title: "Couldn't find token by address",
+          name: 'NoToken',
+          type: 'warning',
+        }),
+      );
       console.error(e);
     }
   }
 
   yield put(setUiState('currentTokenId', selectedToken ? selectedToken.id : zrxToken.id));
   yield put(setUiState('currentPairId', pairToken ? pairToken.id : wethToken.id));
+}
+
+function* setLocalStoragePendingTransactions() {
+  const pendingTransactions = (yield call(getItemFromLocalStorage, 'pendingTransactions')) || [];
+  const checkedPendingTransaction = (yield all(
+    pendingTransactions.map(function* (t) {
+      const resp = yield call(window.web3Instance.eth.getTransactionReceipt, t.txHash);
+      if (resp) {
+        yield call(removeTransactionFromLocalStorage, resp.transactionHash);
+      }
+      return resp;
+    }),
+  )).reduce((acc, t, i) => {
+    if (t) {
+      return acc;
+    }
+    return acc.concat(pendingTransactions[i]);
+  }, []);
+  yield put(setProfileState('pendingTransactions', checkedPendingTransaction));
 }
 
 function* checkNewToken({ payload: { pathname } }): Saga<void> {
@@ -194,8 +227,7 @@ function* checkNewToken({ payload: { pathname } }): Saga<void> {
     return;
   }
 
-  const tokenItem =
-    tokens.find(t => t.symbol === token || t.id === token.toLowerCase()) || {};
+  const tokenItem = tokens.find(t => t.symbol === token || t.id === token.toLowerCase()) || {};
   const pairItem =
     tokens.find(t => (t.symbol === pair || t.id === pair.toLowerCase()) && t.is_listed) || {};
 

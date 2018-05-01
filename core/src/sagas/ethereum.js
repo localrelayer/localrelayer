@@ -5,13 +5,16 @@ import {
   fork,
   put,
   call,
+  all,
 } from 'redux-saga/effects';
 import {
+  eventChannel,
   delay,
 } from 'redux-saga';
 import createActionCreators from 'redux-resource-action-creators';
 import type { Saga } from 'redux-saga';
 import { getFormValues, reset } from 'redux-form';
+import moment from 'moment';
 import { ZeroEx } from '0x.js';
 import {
   ledgerEthereumBrowserClientFactoryAsync as ledgerEthereumClientFactoryAsync,
@@ -31,12 +34,15 @@ import {
 import {
   getProfileState,
   getWethToken,
+  getCurrentToken,
+  getCurrentPair,
 } from '../selectors';
 import {
   trackMixpanel,
 } from '../utils/mixpanel';
 import BigNumber from '../utils/BigNumber';
 import WETH from '../utils/WETH';
+import { setProfileState } from '../actions';
 
 const Web3 = require('web3');
 
@@ -53,16 +59,9 @@ export const startWeb3 = (): Promise<*> =>
   new Promise((resolve): any => {
     window.addEventListener('load', async () => {
     // Creating websocket web3 version
-      const wsWeb3 = new Web3(new Web3.providers.WebsocketProvider('ws://localhost:8545'));
+      const wsUrl = process.env.NODE_ENV === 'production' ? 'wss://mainnet.infura.io/_ws' : 'ws://localhost:8545';
+      const wsWeb3 = new Web3(new Web3.providers.WebsocketProvider(wsUrl));
       window.wsWeb3 = wsWeb3;
-
-      // wsWeb3.eth.subscribe('pendingTransactions', (err, txHash) => {
-      //   wsWeb3.eth.getTransaction(txHash).then((res) => {
-      //     console.log(err, res);
-      //     console.log(abiDecoder.decodeMethod(res.input));
-      //   });
-      // });
-
       await initMetamask();
       await initLedger();
       resolve();
@@ -89,13 +88,177 @@ export const initMetamask = async () => {
 
 export const initLedger = async () => {
   const networkId = 1;
-
   const ledgerSubprovider = new LedgerSubprovider({
     networkId,
     ledgerEthereumClientFactoryAsync,
   });
   window.ledgerSubprovider = ledgerSubprovider;
 };
+
+export function* getItemFromLocalStorage(key: string): Saga<*> {
+  const itemSerialized = yield call([localStorage, localStorage.getItem], key);
+  if (!itemSerialized) return null;
+  const item = JSON.parse(itemSerialized);
+  return item;
+}
+
+export function* setItemToLocalStorage(key: string, value: any): Saga<*> {
+  yield call([localStorage, localStorage.setItem], key, value);
+}
+
+export function* addTransactionToLocalStorage(transaction: Object): Saga<*> {
+  try {
+    const pendingTransactions = (yield call(getItemFromLocalStorage, 'pendingTransactions')) || [];
+    yield put(setProfileState('pendingTransactions', [...pendingTransactions, transaction]));
+    yield call(setItemToLocalStorage, 'pendingTransactions', JSON.stringify([...pendingTransactions, transaction]));
+  } catch (e) {
+    console.error('Couldnt add pending transaction to local storage ', e);
+  }
+}
+
+export function* removeTransactionFromLocalStorage(txHash: string): Saga<*> {
+  try {
+    const pendingTransactions = (yield call(getItemFromLocalStorage, 'pendingTransactions')) || [];
+    const newPendingTransactions = pendingTransactions.filter(t => t.txHash !== txHash);
+
+    console.log(txHash, newPendingTransactions);
+
+    yield call(setItemToLocalStorage, 'pendingTransactions', JSON.stringify(newPendingTransactions));
+    yield put(setProfileState('pendingTransactions', newPendingTransactions));
+  } catch (e) {
+    console.error('Couldnt remove pending transaction from local storage ', e);
+  }
+}
+
+function subscribe(contract) {
+  return eventChannel((emit) => {
+    contract.on('data', (data) => {
+      emit(data);
+    });
+    contract.on('error', (e) => {
+      console.warn(contract, e);
+    });
+    return () => contract.unsubscribe();
+  });
+}
+
+const events = [];
+
+export function* subscribeToEvents(): Saga<*> {
+  const weth = yield select(getWethToken);
+  const address = yield select(getProfileState('address'));
+  const token = yield select(getCurrentToken);
+  const pair = yield select(getCurrentPair);
+
+  const WETHContract = new window.wsWeb3.eth.Contract(WETH, weth.id);
+  const TokenContract = new window.wsWeb3.eth.Contract(WETH, token.id);
+  const PairContract = new window.wsWeb3.eth.Contract(WETH, pair.id);
+
+  const Withdrawals = yield call(WETHContract.events.Withdrawal,
+    {
+      filter: { src: address },
+    });
+  const Deposit = yield call(WETHContract.events.Deposit,
+    {
+      filter: { dst: address },
+    });
+  const TokenApproval = yield call(TokenContract.events.Approval,
+    {
+      filter: { src: address },
+    });
+  const PairApproval = yield call(PairContract.events.Approval,
+    {
+      filter: { src: address },
+    });
+
+  yield all(events.map(event => event.unsubscribe()));
+  events.length = 0;
+  events.push(Withdrawals, Deposit, TokenApproval, PairApproval);
+
+  yield fork(readEvent, Withdrawals, 'Withdrawal');
+  yield fork(readEvent, Deposit, 'Deposit');
+  yield fork(readEvent, TokenApproval, 'TokenApproval');
+  yield fork(readEvent, PairApproval, 'PairApproval');
+}
+
+function* readEvent(event, eventName) {
+  const channel = yield call(subscribe, event);
+  while (true) {
+    const data = yield take(channel);
+    yield fork(eventProcessorMapping[eventName], data);
+  }
+}
+
+const eventProcessorMapping = {
+  'Withdrawal': processWithdrawal,
+  'Deposit': processDeposit,
+  'TokenApproval': processTokenApproval,
+  'PairApproval': processPairApporoval,
+};
+
+function* processWithdrawal({ transactionHash }) {
+  yield delay(5000);
+  yield put(sendNotification({ message: 'Withdrawal successful', type: 'success' }));
+  yield call(removeTransactionFromLocalStorage, transactionHash);
+  yield call(loadCurrentTokenAndPairBalance);
+  yield call(loadBalance);
+}
+
+function* processDeposit({ transactionHash }) {
+  yield delay(5000);
+  yield put(sendNotification({ message: 'Deposit successful', type: 'success' }));
+  yield call(removeTransactionFromLocalStorage, transactionHash);
+  yield call(loadCurrentTokenAndPairBalance);
+  yield call(loadBalance);
+}
+
+function* processTokenApproval({ returnValues, transactionHash }) {
+  yield delay(5000);
+
+  const token = yield select(getCurrentToken);
+  const isTradable = BigNumber(returnValues.wad).gt(0);
+  yield put(sendNotification({ message: `Trading for "${token.name}" ${isTradable ? 'enabled' : 'disabled'}`, type: 'success' }));
+  yield call(removeTransactionFromLocalStorage, transactionHash);
+
+  const actions = createActionCreators('update', {
+    resourceName: 'tokens',
+    request: 'allowance',
+    lists: ['allTokens', 'currentUserTokens'],
+  });
+  yield put(actions.succeeded({
+    resources: [{
+      id: token.id,
+      attributes: {
+        ...token,
+        isTradable,
+      },
+    }],
+  }));
+}
+
+function* processPairApporoval({ returnValues, transactionHash }) {
+  yield delay(5000);
+
+  const pair = yield select(getCurrentPair);
+  const isTradable = BigNumber(returnValues.wad).gt(0);
+  yield put(sendNotification({ message: `Trading for "${pair.name}" ${isTradable ? 'enabled' : 'disabled'}`, type: 'success' }));
+  yield call(removeTransactionFromLocalStorage, transactionHash);
+
+  const actions = createActionCreators('update', {
+    resourceName: 'tokens',
+    request: 'unlockToken',
+    lists: ['allTokens', 'currentUserTokens'],
+  });
+  yield put(actions.succeeded({
+    resources: [{
+      id: pair.id,
+      attributes: {
+        ...pair,
+        isTradable,
+      },
+    }],
+  }));
+}
 
 
 // Deposit WETH (wrap)
@@ -141,24 +304,19 @@ function* deposit() {
       yield put(setUiState('txHash', txHash));
 
       yield put(reset('WrapForm'));
-
-      yield put(setUiState('isTxLoading', true));
-      yield call([zeroEx, zeroEx.awaitTransactionMinedAsync], txHash);
-      // Somewhy balance isn't updated until 10 seconds will end
-      yield call(delay, 10000);
-      yield put(setUiState('isTxLoading', false));
-
+      const transaction = {
+        txHash,
+        name: 'Deposit',
+        token: weth.symbol,
+        timestamp: moment().toISOString(),
+      };
+      yield call(addTransactionToLocalStorage, transaction);
       trackMixpanel(
         'Deposit',
         { address: account },
       );
-
-      yield put(sendNotification({ message: 'Deposit successful', type: 'success' }));
-      yield call(loadCurrentTokenAndPairBalance);
-      yield call(loadBalance);
     } catch (e) {
       yield put(sendNotification({ message: e.message, type: 'error' }));
-      yield put(setUiState('isTxLoading', false));
       console.error(e);
     }
   }
@@ -194,36 +352,25 @@ function* withdraw() {
         gasPrice: BigNumber(gasPriceWei),
       });
 
-    const pendingTransactionsStringified = (yield call([localStorage, 'getItem'], 'pendingTransactions')) || '[]';
-    const pendingTransactions = JSON.parse(pendingTransactionsStringified);
-
-    pendingTransactions.push(txHash);
-
-    yield call([localStorage, 'setItem'], 'pendingTransactions', JSON.stringify(pendingTransactions));
+    const transaction = {
+      txHash,
+      name: 'Withdrawal',
+      token: weth.symbol,
+      timestamp: moment().toISOString(),
+    };
+    yield call(addTransactionToLocalStorage, transaction);
 
     yield put(setUiState('activeModal', 'TxModal'));
     yield put(setUiState('txHash', txHash));
 
     yield put(reset('WrapForm'));
 
-    yield put(setUiState('isTxLoading', true));
-    yield call([zeroEx, zeroEx.awaitTransactionMinedAsync], txHash);
-
-    // Somewhy balance isn't updated until 10 seconds will end
-    yield call(delay, 10000);
-    yield put(setUiState('isTxLoading', false));
-
     trackMixpanel(
       'Withdraw',
       { address: account },
     );
-
-    yield put(sendNotification({ message: 'Withdrawal successful', type: 'success' }));
-    yield call(loadCurrentTokenAndPairBalance);
-    yield call(loadBalance);
   } catch (e) {
     yield put(sendNotification({ message: e.message, type: 'error' }));
-    yield put(setUiState('isTxLoading', false));
     console.error(e);
   }
 }
@@ -236,12 +383,6 @@ function* setAllowance(token) {
   const { gasPrice, gasLimit } = yield select(getFormValues('GasForm'));
   const gasPriceWei = window.web3Instance.utils.toWei(gasPrice, 'gwei');
   try {
-    const actions = createActionCreators('update', {
-      resourceName: 'tokens',
-      request: 'unlockToken',
-      lists: ['allTokens', 'currentUserTokens'],
-    });
-
     if (provider === 'ledger') {
       yield put(showModal({
         title: 'Ledger action required',
@@ -260,29 +401,21 @@ function* setAllowance(token) {
     yield put(setUiState('activeModal', 'TxModal'));
     yield put(setUiState('txHash', txHash));
 
-    yield put(setUiState('isTxLoading', true));
-    yield call([zeroEx, zeroEx.awaitTransactionMinedAsync], txHash);
-    yield put(setUiState('isTxLoading', false));
+
+    const transaction = {
+      txHash,
+      name: 'Allow Trading',
+      token: token.symbol,
+      timestamp: moment().toISOString(),
+    };
+    yield call(addTransactionToLocalStorage, transaction);
 
     trackMixpanel(
       'Allowance setted',
       { address: account, token: token.id },
     );
-
-    yield put(sendNotification({ message: `Trading for "${token.name}" enabled`, type: 'success' }));
-
-    yield put(actions.succeeded({
-      resources: [{
-        id: token.id,
-        attributes: {
-          ...token,
-          isTradable: true,
-        },
-      }],
-    }));
   } catch (e) {
     yield put(sendNotification({ message: e.message, type: 'error' }));
-    yield put(setUiState('isTxLoading', false));
 
     console.error(e);
   }
@@ -295,11 +428,6 @@ function* unsetAllowance(token) {
   const { gasPrice, gasLimit } = yield select(getFormValues('GasForm'));
   const gasPriceWei = window.web3Instance.utils.toWei(gasPrice, 'gwei');
   try {
-    const actions = createActionCreators('update', {
-      resourceName: 'tokens',
-      request: 'unlockToken',
-      lists: ['allTokens', 'currentUserTokens'],
-    });
     if (provider === 'ledger') {
       yield put(showModal({
         title: 'Ledger action required',
@@ -318,30 +446,20 @@ function* unsetAllowance(token) {
     yield put(setUiState('activeModal', 'TxModal'));
     yield put(setUiState('txHash', txHash));
 
-    yield put(setUiState('isTxLoading', true));
-    yield call([zeroEx, zeroEx.awaitTransactionMinedAsync], txHash);
-    yield put(setUiState('isTxLoading', false));
+    const transaction = {
+      txHash,
+      name: 'Disable Trading',
+      token: token.symbol,
+      timestamp: moment().toISOString(),
+    };
+    yield call(addTransactionToLocalStorage, transaction);
 
     trackMixpanel(
       'Allowance unsetted',
       { address: account, token: token.id },
     );
-
-    yield put(sendNotification({ message: `Trading for "${token.name}" disabled`, type: 'success' }));
-
-
-    yield put(actions.succeeded({
-      resources: [{
-        id: token.id,
-        attributes: {
-          ...token,
-          isTradable: false,
-        },
-      }],
-    }));
   } catch (e) {
     yield put(sendNotification({ message: e.message, type: 'error' }));
-    yield put(setUiState('isTxLoading', false));
     console.error(e);
   }
 }

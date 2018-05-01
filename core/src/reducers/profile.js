@@ -16,6 +16,7 @@ const initialState: ProfileState = {
   network: '',
   provider: '',
   addresses: [],
+  pendingTransactions: [],
 };
 
 export default function profileReducer(

@@ -7,6 +7,7 @@ import {
   all,
   takeEvery,
   race,
+  cancel,
 } from 'redux-saga/effects';
 import moment from 'moment';
 import {
@@ -50,6 +51,9 @@ import {
 } from '../actions';
 import BigNumber from '../utils/BigNumber';
 import WETH from '../utils/WETH';
+import {
+  subscribeToEvents,
+} from './ethereum';
 
 const RpcSubprovider = require('web3-provider-engine/subproviders/rpc.js');
 
@@ -100,7 +104,6 @@ export function* loadUserData({ payload: { address } }): Saga<*> {
   yield all([call(loadBalance), call(loadNetwork), call(loadUserOrders)]);
   // We need to access user orders, so we wait for it
   yield call(loadTokensBalance);
-  // yield call(loadUserEvents);
   if (!socketConnected) {
     const socket = yield call(socketConnect);
     yield fork(handleSocketIO, socket);
@@ -132,6 +135,8 @@ export function* loadBalance(): Saga<*> {
 export function* loadTokensBalance() {
   const tokens = yield select(getResourceMappedList('tokens', 'allTokens'));
   const [current, pair] = yield call(loadCurrentTokenAndPairBalance);
+
+  yield call(subscribeToEvents);
 
   const addTokensBalancesAction = createActionCreators('update', {
     resourceName: 'tokens',

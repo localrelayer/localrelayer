@@ -6,6 +6,8 @@ import {
   getUserOrders,
 } from './orders';
 
+export const getProfileState = key => ({ profile }) => profile[key];
+
 export const getLockedPairBalance = createSelector([getUserOrders],
   (orders) => {
     const lockedPair = orders

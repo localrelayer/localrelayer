@@ -4,7 +4,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { change } from 'redux-form';
 import * as actions from 'instex-core/actions';
-import { getCurrentToken, getCurrentPair } from 'instex-core/selectors';
+import {
+  getCurrentToken,
+  getCurrentPair,
+  isTransactionPending,
+} from 'instex-core/selectors';
 import type { Token } from 'instex-core/types';
 import type { Dispatch } from 'redux';
 import GasModal from '../components/Modals/GasModal';
@@ -56,14 +60,32 @@ const ModalWrapper = ({
       activeModal={activeModal}
       txHash={txHash}
       isTxLoading={onTxOk && isTxLoading}
-      onCancel={() => dispatch(actions.setUiState('activeModal', ''))}
-      onOk={() => onTxOk && dispatch(actions[onTxOk.action](...onTxOk.args))}
+      onCancel={() => {
+        dispatch(actions.setUiState('activeModal', ''));
+        dispatch(actions.setUiState('onTxOk', null));
+        dispatch(actions.setUiState('txHash', null));
+      }}
+      onOk={() => {
+        if (onTxOk) {
+          dispatch(actions[onTxOk.action](...onTxOk.args));
+        }
+        dispatch(actions.setUiState('onTxOk', null));
+        dispatch(actions.setUiState('txHash', null));
+      }}
     />
     {activeModal === 'GasModal' && <GasModal
       activeModal={activeModal}
       isTxLoading={onGasOk && isTxLoading}
-      onCancel={() => dispatch(actions.setUiState('activeModal', ''))}
-      onOk={() => onGasOk && dispatch(actions[onGasOk.action](...onGasOk.args))}
+      onCancel={() => {
+        dispatch(actions.setUiState('activeModal', ''));
+        dispatch(actions.setUiState('onGasOk', null));
+      }}
+      onOk={() => {
+        if (onGasOk) {
+          dispatch(actions[onGasOk.action](...onGasOk.args));
+        }
+        dispatch(actions.setUiState('onGasOk', null));
+      }}
     />}
   </div>
 );
@@ -76,7 +98,6 @@ const mapStateToProps = (state) => {
     activeTab,
     onGasOk,
     onTxOk,
-    isTxLoading,
   } = state.ui;
 
   const token = activeTab === 'buy' ? getCurrentPair(state) : getCurrentToken(state);
@@ -87,7 +108,7 @@ const mapStateToProps = (state) => {
     token,
     onGasOk,
     onTxOk,
-    isTxLoading,
+    isTxLoading: isTransactionPending(state),
   };
 };
 
