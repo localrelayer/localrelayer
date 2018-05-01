@@ -18,6 +18,9 @@ export const CardContainer = styled(Card)`
   & > .ant-card-head {
     text-align: center;
   }
+  .ant-card-body {
+    padding: 0;
+  }
   .ant-card-grid {
     width: 100%;
     padding: 0;

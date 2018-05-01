@@ -10,4 +10,5 @@ export type User = {
   notifications: Array<*>,
   connectionStatus: string,
   network: string,
+  pendingTransactions: Array<*>,
 };

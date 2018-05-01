@@ -1,5 +1,3 @@
-export const getProfileState = key => ({ profile }) => profile[key];
-
 export * from './profile';
 export * from './resources';
 export * from './tokens';

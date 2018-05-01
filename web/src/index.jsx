@@ -8,9 +8,7 @@ import {
 import {
   Provider,
 } from 'react-redux';
-import {
-  AppContainer,
-} from 'react-hot-loader';
+import { hot } from 'react-hot-loader';
 import {
   LocaleProvider,
 } from 'antd';
@@ -33,21 +31,12 @@ const rootEl: HTMLElement = window.document.getElementById('body');
 
 const render: Function = (Component: ComponentType<*>) =>
   reactRender(
-    <AppContainer>
-      <Provider store={store}>
-        <LocaleProvider locale={enUS}>
-          <Component />
-        </LocaleProvider>
-      </Provider>
-    </AppContainer>,
+    <Provider store={store}>
+      <LocaleProvider locale={enUS}>
+        <Component />
+      </LocaleProvider>
+    </Provider>,
     rootEl,
   );
 
-render(App);
-if (module.hot) {
-  // $FlowFixMe
-  module.hot.accept('./App', () => {
-    const NewApp = require('./App').default; // eslint-disable-line
-    render(NewApp);
-  });
-}
+render(hot(module)(App));

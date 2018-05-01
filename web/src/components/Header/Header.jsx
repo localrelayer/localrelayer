@@ -41,6 +41,7 @@ import {
 } from '../SharedStyles';
 import TokensList from './TokensList';
 import UserProfile from '../UserProfile';
+import PendingTransactions from './PendingTransactions';
 import CustomTokenForm from './CustomTokenForm';
 import logo from '../../assets/logo5.png';
 
@@ -87,6 +88,7 @@ type Props = {
   onAddressSelect: Function,
   /** Called when eth provider changed */
   onProviderSelect: Function,
+  /** Current ETH/USD price */
   ethPrice: string,
 };
 
@@ -134,7 +136,7 @@ const Header = ({
   onProviderSelect,
   ethPrice,
   // eslint-disable-next-line
-  location, // we need to location to see changes
+  location, // we need the location to make react see changes in route
 }: Props): Node => (
   <div>
     <label htmlFor="show-menu" className="show-menu">
@@ -268,7 +270,20 @@ const Header = ({
               icon="question-circle"
             />
           </Badge>
-         
+          <Popover
+            placement="bottomLeft"
+            trigger={['click']}
+            content={<PendingTransactions items={user.pendingTransactions} />}
+          >
+            <Badge count={user.pendingTransactions.length}>
+              <HeaderButton
+                id="help"
+                shape="circle"
+                type="primary"
+                icon="hourglass"
+              />
+            </Badge>
+          </Popover>
         </div>
       </AlignRight>
     </HeaderContainer>
