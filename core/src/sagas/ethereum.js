@@ -36,6 +36,7 @@ import {
   getWethToken,
   getCurrentToken,
   getCurrentPair,
+  getResourceMappedList,
 } from '../selectors';
 import {
   trackMixpanel,
@@ -143,45 +144,38 @@ function subscribe(contract) {
   });
 }
 
-const events = [];
+// export function* subscribeToEvents(): Saga<*> {
+//   const weth = yield select(getWethToken);
+//   const address = yield select(getProfileState('address'));
+//   const tokens = yield select(getResourceMappedList('tokens', 'allTokens'));
+//   const WETHContract = new window.wsWeb3.eth.Contract(WETH, weth.id);
+//   const TokenApprovals = yield all(tokens.map(function* (token) {
+//     const TokenContract = new window.wsWeb3.eth.Contract(WETH, token.id);
+//     const TokenApproval = yield call(TokenContract.events.Approval,
+//       {
+//         filter: { src: address },
+//       });
+//     return TokenApproval;
+//   }));
+//   const Withdrawal = yield call(WETHContract.events.Withdrawal,
+//     {
+//       filter: { src: address },
+//     });
+//   const Deposit = yield call(WETHContract.events.Deposit,
+//     {
+//       filter: { dst: address },
+//     });
+//   yield all(events.map(event => event.unsubscribe()));
+//   events.length = 0;
 
-export function* subscribeToEvents(): Saga<*> {
-  const weth = yield select(getWethToken);
-  const address = yield select(getProfileState('address'));
-  const token = yield select(getCurrentToken);
-  const pair = yield select(getCurrentPair);
+//   events.push(Withdrawal, Deposit, ...TokenApprovals);
 
-  const WETHContract = new window.wsWeb3.eth.Contract(WETH, weth.id);
-  const TokenContract = new window.wsWeb3.eth.Contract(WETH, token.id);
-  const PairContract = new window.wsWeb3.eth.Contract(WETH, pair.id);
-
-  const Withdrawal = yield call(WETHContract.events.Withdrawal,
-    {
-      filter: { src: address },
-    });
-  const Deposit = yield call(WETHContract.events.Deposit,
-    {
-      filter: { dst: address },
-    });
-  const TokenApproval = yield call(TokenContract.events.Approval,
-    {
-      filter: { src: address },
-    });
-  const PairApproval = yield call(PairContract.events.Approval,
-    {
-      filter: { src: address },
-    });
-
-  yield all(events.map(event => event.unsubscribe()));
-  events.length = 0;
-
-  events.push(Withdrawal, Deposit, TokenApproval, PairApproval);
-
-  yield fork(readEvent, Withdrawal, 'Withdrawal');
-  yield fork(readEvent, Deposit, 'Deposit');
-  yield fork(readEvent, TokenApproval, 'TokenApproval');
-  yield fork(readEvent, PairApproval, 'PairApproval');
-}
+//   yield fork(readEvent, Withdrawal, 'Withdrawal');
+//   yield fork(readEvent, Deposit, 'Deposit');
+//   TokenApprovals.forEach(function* (event) {
+//     yield fork(readEvent, event, 'TokenApproval');
+//   });
+// }
 
 function* readEvent(event, eventName) {
   const channel = yield call(subscribe, event);

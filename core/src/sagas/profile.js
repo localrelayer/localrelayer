@@ -95,8 +95,6 @@ export function* loadUser(): Saga<*> {
 }
 
 export function* loadUserData({ payload: { address } }): Saga<*> {
-  console.warn('NEW ACCOUNT');
-
   const socketConnected = yield select(getProfileState('socketConnected'));
   yield put(setProfileState('address', address));
   yield put(setProfileState('connectionStatus', connectionStatuses.CONNECTED));
@@ -136,9 +134,6 @@ export function* loadBalance(): Saga<*> {
 export function* loadTokensBalance() {
   const tokens = yield select(getResourceMappedList('tokens', 'allTokens'));
   const [current, pair] = yield call(loadCurrentTokenAndPairBalance);
-
-  yield call(subscribeToEvents);
-
   const addTokensBalancesAction = createActionCreators('update', {
     resourceName: 'tokens',
     request: 'addTokensBalances',
