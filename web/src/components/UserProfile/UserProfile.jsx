@@ -17,6 +17,11 @@ type Props = {
   balance: string,
   address: string,
   network: string,
+  connectionStatus: string,
+  addresses: Array<*>,
+  provider: string,
+  onAddressSelect: Function,
+  onProviderSelect: Function,
 };
 
 /**

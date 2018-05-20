@@ -8,34 +8,35 @@ import type {
   Token,
 } from 'instex-core/types';
 import {
-  lifecycle,
-} from 'recompose';
-import {
   Card,
 } from 'antd';
 import {
   Title,
   CardContainer,
   PriceContainer,
-  AvatarContainer,
   LastPriceContainer,
   ChangeContainer,
-  LinkContainer,
+  AddressContainer,
+  TokenInfo,
 } from './styled';
 import {
   Colored,
-  Truncate,
 } from '../SharedStyles';
 
 const {
   Meta,
 } = Card;
 
-const getTitle = (symbol, tokenPairSymbol, change24Hour, lastPrice) => (
+const getTitle = (symbol, tokenPairSymbol, change24Hour, lastPrice, id) => (
   <Title>
-    <div>
-      {symbol} / {tokenPairSymbol}{' '}
-    </div>
+    <TokenInfo>
+      <span>
+        {symbol} / {tokenPairSymbol}
+      </span>
+      <AddressContainer target="_blank" rel="noopener" href={`https://etherscan.io/token/${id}`}>
+        {id}
+      </AddressContainer>
+    </TokenInfo>
     <LastPriceContainer>
       <span>{lastPrice || 'No trades in 24hr'}</span>
     </LastPriceContainer>
@@ -54,8 +55,6 @@ type Props = {
    * Function that is called whenever button clicked
    * */
   onClick: ?Function,
-  /** Link to token image */
-  url: string,
 };
 
 /**
@@ -71,8 +70,6 @@ const TokenCard = ({
     id,
   },
   tokenPair,
-  onClick,
-  url,
 }: Props): Node => {
   const {
     volume,
@@ -82,16 +79,11 @@ const TokenCard = ({
     lowPrice,
   } = tradingInfo || {};
   const isPositive = +change24Hour >= 0;
-
-  // <LinkContainer target="_blank" rel="noopener" href={`https://etherscan.io/token/${id}`}>
-  //   <Truncate>{id}</Truncate>
-  // </LinkContainer>
-
   return (
     <CardContainer bordered={false}>
       <Meta
         // avatar={<AvatarContainer shape="square" src={url} />}
-        title={getTitle(symbol, tokenPair.symbol, change24Hour, lastPrice)}
+        title={getTitle(symbol, tokenPair.symbol, change24Hour, lastPrice, id)}
         description={
           <PriceContainer>
             <div>
@@ -120,25 +112,4 @@ TokenCard.defaultProps = {
   onClick: () => {},
 };
 
-export default lifecycle({
-  componentWillMount() {
-    getImageSrc(this.props.token.symbol).then((url) => {
-      this.setState({ url });
-    }).catch(async () => {
-      const defaultUrl = await getImageSrc('default');
-      this.setState({ url: defaultUrl });
-    });
-  },
-  componentWillReceiveProps(nextProps) {
-    const prevSymbol = this.props.token.symbol;
-    const nextSymbol = nextProps.token.symbol;
-    if (nextSymbol !== prevSymbol) {
-      getImageSrc(nextSymbol).then((url) => {
-        this.setState({ url });
-      }).catch(async () => {
-        const defaultUrl = await getImageSrc('default');
-        this.setState({ url: defaultUrl });
-      });
-    }
-  },
-})(TokenCard);
+export default TokenCard;

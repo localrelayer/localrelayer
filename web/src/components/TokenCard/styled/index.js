@@ -5,6 +5,11 @@ import {
   Icon,
 } from 'antd';
 
+export const TokenInfo = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
 export const Title = styled.div`
   font-size: 1.3em;
   display: flex;
@@ -40,7 +45,14 @@ export const IconContainer = styled(Icon)`
   font-size: ${props => props.size || '16px'}
 `;
 
-export const LinkContainer = styled.a``;
+export const AddressContainer = styled.a`
+  font-size: 0.8rem;
+  white-space: nowrap;
+  width: 75px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-left: 10px;
+`;
 
 export const ChangeContainer = styled.div`
   display: flex;
