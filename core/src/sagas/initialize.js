@@ -233,10 +233,11 @@ function* checkNewToken({ payload: { pathname } }): Saga<void> {
 
   const currentToken = yield select(getCurrentToken);
   const currentPair = yield select(getCurrentPair);
+
   if (tokenItem.id !== currentToken.id || pairItem.id !== currentPair.id) {
     yield call(setTokens);
-    yield call(loadTokensBalance);
     yield call(loadOrders);
+    yield call(loadTokensBalance);
   }
 }
 
