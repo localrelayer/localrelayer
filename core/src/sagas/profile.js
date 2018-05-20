@@ -102,8 +102,6 @@ export function* loadUserData({ payload: { address } }): Saga<*> {
   yield put(setProfileState('connectionStatus', connectionStatuses.CONNECTED));
 
   yield all([call(loadBalance), call(loadNetwork), call(loadUserOrders)]);
-  // We need to access user orders, so we wait for it
-  yield call(loadTokensBalance);
   if (!socketConnected) {
     const socket = yield call(socketConnect);
     yield fork(handleSocketIO, socket);
@@ -115,6 +113,9 @@ export function* loadUserData({ payload: { address } }): Saga<*> {
     }),
   );
   trackMixpanel('Log in', { address });
+
+  // We need to access user orders, so we wait for it
+  yield call(loadTokensBalance);
 }
 
 export function* loadBalance(): Saga<*> {

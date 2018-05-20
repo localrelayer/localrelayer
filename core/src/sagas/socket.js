@@ -34,7 +34,7 @@ import {
 
 export function socketConnect(): Promise<*> {
   console.log('_______');
-  console.log(config.socketUrl);
+  console.log('Socket connecting', config.socketUrl);
   console.log('_______');
   const socket = io(config.socketUrl);
   return new Promise((resolve) => {
@@ -50,7 +50,7 @@ function subscribe(socket) {
       emit(data);
     });
     socket.on('disconnect', () => {
-      console.log('disconnect');
+      console.warn('disconnect');
     });
     return () => {};
   });

@@ -60,6 +60,7 @@ export default class extends Component<Props> {
   render() {
     return (
       <div
+        style={{ height: '100%', overflow: 'auto' }}
         ref={(embedContainer) => {
           this.embedContainer = embedContainer;
         }}

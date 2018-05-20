@@ -60,6 +60,7 @@ export const startWeb3 = (): Promise<*> =>
     window.addEventListener('load', async () => {
     // Creating websocket web3 version
       const wsUrl = process.env.NODE_ENV === 'production' ? 'wss://mainnet.infura.io/_ws' : 'ws://localhost:8545';
+      // const wsUrl = 'wss://mainnet.infura.io/_ws';
       const wsWeb3 = new Web3(new Web3.providers.WebsocketProvider(wsUrl));
       window.wsWeb3 = wsWeb3;
       await initMetamask();
@@ -154,7 +155,7 @@ export function* subscribeToEvents(): Saga<*> {
   const TokenContract = new window.wsWeb3.eth.Contract(WETH, token.id);
   const PairContract = new window.wsWeb3.eth.Contract(WETH, pair.id);
 
-  const Withdrawals = yield call(WETHContract.events.Withdrawal,
+  const Withdrawal = yield call(WETHContract.events.Withdrawal,
     {
       filter: { src: address },
     });
@@ -173,9 +174,10 @@ export function* subscribeToEvents(): Saga<*> {
 
   yield all(events.map(event => event.unsubscribe()));
   events.length = 0;
-  events.push(Withdrawals, Deposit, TokenApproval, PairApproval);
 
-  yield fork(readEvent, Withdrawals, 'Withdrawal');
+  events.push(Withdrawal, Deposit, TokenApproval, PairApproval);
+
+  yield fork(readEvent, Withdrawal, 'Withdrawal');
   yield fork(readEvent, Deposit, 'Deposit');
   yield fork(readEvent, TokenApproval, 'TokenApproval');
   yield fork(readEvent, PairApproval, 'PairApproval');
@@ -197,7 +199,9 @@ const eventProcessorMapping = {
 };
 
 function* processWithdrawal({ transactionHash }) {
-  yield delay(5000);
+  if (process.env.NODE_ENV === 'development') {
+    yield delay(10000);
+  }
   yield put(sendNotification({ message: 'Withdrawal successful', type: 'success' }));
   yield call(removeTransactionFromLocalStorage, transactionHash);
   yield call(loadCurrentTokenAndPairBalance);
@@ -205,7 +209,9 @@ function* processWithdrawal({ transactionHash }) {
 }
 
 function* processDeposit({ transactionHash }) {
-  yield delay(5000);
+  if (process.env.NODE_ENV === 'development') {
+    yield delay(10000);
+  }
   yield put(sendNotification({ message: 'Deposit successful', type: 'success' }));
   yield call(removeTransactionFromLocalStorage, transactionHash);
   yield call(loadCurrentTokenAndPairBalance);
@@ -213,7 +219,10 @@ function* processDeposit({ transactionHash }) {
 }
 
 function* processTokenApproval({ returnValues, transactionHash }) {
-  yield delay(5000);
+
+  if (process.env.NODE_ENV === 'development') {
+    yield delay(10000);
+  }
 
   const token = yield select(getCurrentToken);
   const isTradable = BigNumber(returnValues.wad).gt(0);
@@ -237,8 +246,9 @@ function* processTokenApproval({ returnValues, transactionHash }) {
 }
 
 function* processPairApporoval({ returnValues, transactionHash }) {
-  yield delay(5000);
-
+  if (process.env.NODE_ENV === 'development') {
+    yield delay(10000);
+  }
   const pair = yield select(getCurrentPair);
   const isTradable = BigNumber(returnValues.wad).gt(0);
   yield put(sendNotification({ message: `Trading for "${pair.name}" ${isTradable ? 'enabled' : 'disabled'}`, type: 'success' }));
@@ -306,6 +316,7 @@ function* deposit() {
       yield put(reset('WrapForm'));
       const transaction = {
         txHash,
+        label: 'Deposit',
         name: 'Deposit',
         token: weth.symbol,
         timestamp: moment().toISOString(),
@@ -354,6 +365,7 @@ function* withdraw() {
 
     const transaction = {
       txHash,
+      label: 'Withdrawal',
       name: 'Withdrawal',
       token: weth.symbol,
       timestamp: moment().toISOString(),
@@ -390,13 +402,13 @@ function* setAllowance(token) {
         text: 'Confirm transaction on your Ledger',
       }));
     }
-
     const txHash = yield call(
       [zeroEx.token, zeroEx.token.setUnlimitedProxyAllowanceAsync],
       token.id,
       account,
       { gasPrice: BigNumber(gasPriceWei), gasLimit },
     );
+
 
     yield put(setUiState('activeModal', 'TxModal'));
     yield put(setUiState('txHash', txHash));
@@ -442,6 +454,8 @@ function* unsetAllowance(token) {
       BigNumber(0),
       { gasPrice: BigNumber(gasPriceWei), gasLimit },
     );
+
+
 
     yield put(setUiState('activeModal', 'TxModal'));
     yield put(setUiState('txHash', txHash));
