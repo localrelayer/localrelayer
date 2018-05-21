@@ -30,6 +30,7 @@ import {
   startWeb3,
   getItemFromLocalStorage,
   removeTransactionFromLocalStorage,
+  eventNameSubscriptionMapping,
 } from './ethereum';
 import {
   runLoadEthPrice,
@@ -201,20 +202,29 @@ export function* setTokens(): Saga<void> {
 
 function* setLocalStoragePendingTransactions() {
   const pendingTransactions = (yield call(getItemFromLocalStorage, 'pendingTransactions')) || [];
-  const checkedPendingTransaction = (yield all(
+  const pendingTransactionResp = yield all(
     pendingTransactions.map(function* (t) {
       const resp = yield call(window.web3Instance.eth.getTransactionReceipt, t.txHash);
       if (resp) {
         yield call(removeTransactionFromLocalStorage, resp.transactionHash);
+      } else {
+        console.log(t, resp);
+        yield call(eventNameSubscriptionMapping[t.name], t.tokenId);
       }
+      console.warn(t, resp);
       return resp;
     }),
-  )).reduce((acc, t, i) => {
+  );
+  console.log(pendingTransactionResp);
+  const checkedPendingTransaction = pendingTransactionResp.reduce((acc, t, i) => {
+    console.log(t);
     if (t) {
       return acc;
     }
     return acc.concat(pendingTransactions[i]);
   }, []);
+
+  console.warn('PENDING', pendingTransactions, checkedPendingTransaction)
   yield put(setProfileState('pendingTransactions', checkedPendingTransaction));
 }
 
