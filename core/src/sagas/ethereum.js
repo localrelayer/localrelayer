@@ -5,7 +5,6 @@ import {
   fork,
   put,
   call,
-  all,
 } from 'redux-saga/effects';
 import {
   eventChannel,
@@ -20,7 +19,6 @@ import {
   ledgerEthereumBrowserClientFactoryAsync as ledgerEthereumClientFactoryAsync,
   LedgerSubprovider,
 } from '@0xproject/subproviders';
-import abiDecoder from 'abi-decoder';
 import * as actionTypes from '../actions/types';
 import {
   sendNotification,
@@ -34,9 +32,7 @@ import {
 import {
   getProfileState,
   getWethToken,
-  getCurrentToken,
-  getCurrentPair,
-  getResourceMappedList,
+  getResourceItemBydId,
 } from '../selectors';
 import {
   trackMixpanel,
@@ -47,6 +43,8 @@ import { setProfileState } from '../actions';
 
 const Web3 = require('web3');
 
+window.Web3 = Web3;
+
 const sagas = {
   deposit,
   withdraw,
@@ -54,14 +52,12 @@ const sagas = {
   unsetAllowance,
 };
 
-abiDecoder.addABI(WETH);
-
 export const startWeb3 = (): Promise<*> =>
   new Promise((resolve): any => {
     window.addEventListener('load', async () => {
     // Creating websocket web3 version
-      const wsUrl = process.env.NODE_ENV === 'production' ? 'wss://mainnet.infura.io/_ws' : 'ws://localhost:8545';
-      // const wsUrl = 'wss://mainnet.infura.io/_ws';
+      // const wsUrl = process.env.NODE_ENV === 'production' ? 'wss://mainnet.infura.io/_ws' : 'ws://localhost:8546';
+      const wsUrl = 'wss://mainnet.infura.io/_ws';
       const wsWeb3 = new Web3(new Web3.providers.WebsocketProvider(wsUrl));
       window.wsWeb3 = wsWeb3;
       await initMetamask();
@@ -144,44 +140,12 @@ function subscribe(contract) {
   });
 }
 
-// export function* subscribeToEvents(): Saga<*> {
-//   const weth = yield select(getWethToken);
-//   const address = yield select(getProfileState('address'));
-//   const tokens = yield select(getResourceMappedList('tokens', 'allTokens'));
-//   const WETHContract = new window.wsWeb3.eth.Contract(WETH, weth.id);
-//   const TokenApprovals = yield all(tokens.map(function* (token) {
-//     const TokenContract = new window.wsWeb3.eth.Contract(WETH, token.id);
-//     const TokenApproval = yield call(TokenContract.events.Approval,
-//       {
-//         filter: { src: address },
-//       });
-//     return TokenApproval;
-//   }));
-//   const Withdrawal = yield call(WETHContract.events.Withdrawal,
-//     {
-//       filter: { src: address },
-//     });
-//   const Deposit = yield call(WETHContract.events.Deposit,
-//     {
-//       filter: { dst: address },
-//     });
-//   yield all(events.map(event => event.unsubscribe()));
-//   events.length = 0;
-
-//   events.push(Withdrawal, Deposit, ...TokenApprovals);
-
-//   yield fork(readEvent, Withdrawal, 'Withdrawal');
-//   yield fork(readEvent, Deposit, 'Deposit');
-//   TokenApprovals.forEach(function* (event) {
-//     yield fork(readEvent, event, 'TokenApproval');
-//   });
-// }
-
 function* readEvent(event, eventName) {
   const channel = yield call(subscribe, event);
   while (true) {
     const data = yield take(channel);
     yield fork(eventProcessorMapping[eventName], data);
+    channel.close();
   }
 }
 
@@ -189,7 +153,6 @@ const eventProcessorMapping = {
   'Withdrawal': processWithdrawal,
   'Deposit': processDeposit,
   'TokenApproval': processTokenApproval,
-  'PairApproval': processPairApporoval,
 };
 
 function* processWithdrawal({ transactionHash }) {
@@ -212,13 +175,13 @@ function* processDeposit({ transactionHash }) {
   yield call(loadBalance);
 }
 
-function* processTokenApproval({ returnValues, transactionHash }) {
-
+function* processTokenApproval({ returnValues, transactionHash, address }) {
   if (process.env.NODE_ENV === 'development') {
     yield delay(10000);
   }
 
-  const token = yield select(getCurrentToken);
+  const { attributes: token } = yield select(getResourceItemBydId('tokens', address.toLowerCase()));
+
   const isTradable = BigNumber(returnValues.wad).gt(0);
   yield put(sendNotification({ message: `Trading for "${token.name}" ${isTradable ? 'enabled' : 'disabled'}`, type: 'success' }));
   yield call(removeTransactionFromLocalStorage, transactionHash);
@@ -239,31 +202,16 @@ function* processTokenApproval({ returnValues, transactionHash }) {
   }));
 }
 
-function* processPairApporoval({ returnValues, transactionHash }) {
-  if (process.env.NODE_ENV === 'development') {
-    yield delay(10000);
-  }
-  const pair = yield select(getCurrentPair);
-  const isTradable = BigNumber(returnValues.wad).gt(0);
-  yield put(sendNotification({ message: `Trading for "${pair.name}" ${isTradable ? 'enabled' : 'disabled'}`, type: 'success' }));
-  yield call(removeTransactionFromLocalStorage, transactionHash);
-
-  const actions = createActionCreators('update', {
-    resourceName: 'tokens',
-    request: 'unlockToken',
-    lists: ['allTokens', 'currentUserTokens'],
-  });
-  yield put(actions.succeeded({
-    resources: [{
-      id: pair.id,
-      attributes: {
-        ...pair,
-        isTradable,
-      },
-    }],
-  }));
+function* subscribeDeposit(): Saga<*> {
+  const weth = yield select(getWethToken);
+  const WETHContract = new window.wsWeb3.eth.Contract(WETH, weth.id);
+  const account = yield select(getProfileState('address'));
+  const Deposit = yield call(WETHContract.events.Deposit,
+    {
+      filter: { dst: account },
+    });
+  yield fork(readEvent, Deposit, 'Deposit');
 }
-
 
 // Deposit WETH (wrap)
 function* deposit() {
@@ -294,7 +242,6 @@ function* deposit() {
           text: 'Confirm transaction on your Ledger',
         }));
       }
-
       const txHash = yield call([zeroEx.etherToken, zeroEx.etherToken.depositAsync],
         weth.id,
         ethToConvert,
@@ -313,6 +260,7 @@ function* deposit() {
         label: 'Deposit',
         name: 'Deposit',
         token: weth.symbol,
+        tokenId: weth.id,
         timestamp: moment().toISOString(),
       };
       yield call(addTransactionToLocalStorage, transaction);
@@ -320,11 +268,23 @@ function* deposit() {
         'Deposit',
         { address: account },
       );
+      yield call(subscribeDeposit);
     } catch (e) {
       yield put(sendNotification({ message: e.message, type: 'error' }));
       console.error(e);
     }
   }
+}
+
+function* subscribeWithdraw(): Saga<*> {
+  const weth = yield select(getWethToken);
+  const WETHContract = new window.wsWeb3.eth.Contract(WETH, weth.id);
+  const account = yield select(getProfileState('address'));
+  const Withdrawal = yield call(WETHContract.events.Withdrawal,
+    {
+      filter: { src: account },
+    });
+  yield fork(readEvent, Withdrawal, 'Withdrawal');
 }
 
 // Withdraw WETH (unwrap)
@@ -361,6 +321,7 @@ function* withdraw() {
       txHash,
       label: 'Withdrawal',
       name: 'Withdrawal',
+      tokenId: weth.id,
       token: weth.symbol,
       timestamp: moment().toISOString(),
     };
@@ -375,10 +336,23 @@ function* withdraw() {
       'Withdraw',
       { address: account },
     );
+    yield call(subscribeWithdraw);
   } catch (e) {
     yield put(sendNotification({ message: e.message, type: 'error' }));
     console.error(e);
   }
+}
+
+function* subscribeAllowance(tokenId: string): Saga<*> {
+  const TokenContract = new window.wsWeb3.eth.Contract(WETH, tokenId);
+  const account = yield select(getProfileState('address'));
+
+  const TokenApproval = yield call(TokenContract.events.Approval,
+    {
+      filter: { src: account },
+    });
+
+  yield fork(readEvent, TokenApproval, 'TokenApproval');
 }
 
 function* setAllowance(token) {
@@ -388,6 +362,7 @@ function* setAllowance(token) {
 
   const { gasPrice, gasLimit } = yield select(getFormValues('GasForm'));
   const gasPriceWei = window.web3Instance.utils.toWei(gasPrice, 'gwei');
+
   try {
     if (provider === 'ledger') {
       yield put(showModal({
@@ -410,7 +385,9 @@ function* setAllowance(token) {
 
     const transaction = {
       txHash,
-      name: 'Allow Trading',
+      label: 'Allow Trading',
+      name: 'TokenApproval',
+      tokenId: token.id,
       token: token.symbol,
       timestamp: moment().toISOString(),
     };
@@ -420,6 +397,7 @@ function* setAllowance(token) {
       'Allowance setted',
       { address: account, token: token.id },
     );
+    yield call(subscribeAllowance, token.id);
   } catch (e) {
     yield put(sendNotification({ message: e.message, type: 'error' }));
 
@@ -433,6 +411,7 @@ function* unsetAllowance(token) {
   const provider = yield select(getProfileState('provider'));
   const { gasPrice, gasLimit } = yield select(getFormValues('GasForm'));
   const gasPriceWei = window.web3Instance.utils.toWei(gasPrice, 'gwei');
+  console.log('YOUFEF')
   try {
     if (provider === 'ledger') {
       yield put(showModal({
@@ -441,6 +420,7 @@ function* unsetAllowance(token) {
         text: 'Confirm transaction on your Ledger',
       }));
     }
+
     const txHash = yield call(
       [zeroEx.token, zeroEx.token.setProxyAllowanceAsync],
       token.id,
@@ -448,15 +428,14 @@ function* unsetAllowance(token) {
       BigNumber(0),
       { gasPrice: BigNumber(gasPriceWei), gasLimit },
     );
-
-
-
     yield put(setUiState('activeModal', 'TxModal'));
     yield put(setUiState('txHash', txHash));
 
     const transaction = {
       txHash,
-      name: 'Disable Trading',
+      label: 'Disable Trading',
+      name: 'TokenApproval',
+      tokenId: token.id,
       token: token.symbol,
       timestamp: moment().toISOString(),
     };
@@ -466,6 +445,7 @@ function* unsetAllowance(token) {
       'Allowance unsetted',
       { address: account, token: token.id },
     );
+    yield call(subscribeAllowance, token.id);
   } catch (e) {
     yield put(sendNotification({ message: e.message, type: 'error' }));
     console.error(e);
@@ -478,3 +458,9 @@ export function* listenCallContract(): Saga<void> {
     yield fork(sagas[action.meta.method], action.payload);
   }
 }
+
+export const eventNameSubscriptionMapping = {
+  'Withdrawal': subscribeWithdraw,
+  'Deposit': subscribeDeposit,
+  'TokenApproval': subscribeAllowance,
+};
