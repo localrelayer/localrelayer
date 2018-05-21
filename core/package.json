@@ -23,6 +23,7 @@
     "mixpanel-browser": "^2.19.0",
     "moment": "^2.20.1",
     "path-to-regexp": "^2.1.0",
+    "raven-js": "3.25.2",
     "ramda": "0.25.0",
     "react": "^16.2.0",
     "react-redux": "^5.0.6",

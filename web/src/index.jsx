@@ -13,6 +13,7 @@ import {
   LocaleProvider,
 } from 'antd';
 import enUS from 'antd/lib/locale-provider/en_US';
+import Raven from 'raven-js';
 
 import type {
   ComponentType,
@@ -26,6 +27,11 @@ import './assets/main.less';
 
 import store from './store';
 import App from './App';
+import config from './config';
+
+if (config.useSentry) {
+  Raven.config('https://60a0dae4681d47d29a4cd77703472a29@sentry.io/153064').install();
+}
 
 const rootEl: HTMLElement = window.document.getElementById('body');
 

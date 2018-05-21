@@ -54,6 +54,9 @@ import WETH from '../utils/WETH';
 import {
   subscribeToEvents,
 } from './ethereum';
+import {
+  throwError,
+} from './utils';
 
 const RpcSubprovider = require('web3-provider-engine/subproviders/rpc.js');
 
@@ -77,6 +80,7 @@ export function* loadUser(): Saga<*> {
       accounts = yield call(web3.eth.getAccounts);
     }
   } catch (e) {
+    yield call(throwError, e);
     console.warn(e.toString());
   }
   yield put(setProfileState('addresses', accounts));
@@ -156,6 +160,7 @@ export function* loadTokensBalance() {
       }),
     );
   } catch (e) {
+    yield call(throwError, e);
     console.error('Couldn load all tokens balance', e);
   }
 }
@@ -188,6 +193,7 @@ export function* loadCurrentTokenAndPairBalance() {
       pair,
     ];
   } catch (e) {
+    yield call(throwError, e);
     console.error('Couldnt load current token and pair balance', e);
     return [];
   }
@@ -199,6 +205,7 @@ export function* loadNetwork() {
   try {
     networkId = yield cps(web3.eth.net.getId);
   } catch (e) {
+    yield call(throwError, e);
     console.warn("Couldn't get a network, using mainnet", e);
     networkId = 1;
   }
@@ -280,6 +287,7 @@ export function* changeProvider({ payload: { provider } }): Saga<*> {
   try {
     networkId = yield call(window.web3Instance.eth.net.getId);
   } catch (e) {
+    yield call(throwError, e);
     console.warn("Couldn't get a network, using mainnet", e);
     networkId = 1;
   }
@@ -316,6 +324,7 @@ export function* updateEthPrice(): Saga<*> {
     const price = (yield call(loadEthPrice))[0].price_usd;
     yield put(setUiState('ethPrice', price));
   } catch (e) {
+    yield call(throwError, e);
     console.error('Cant load eth price');
   }
 }
@@ -417,6 +426,7 @@ export function* loadUserEvents(): Saga<*> {
 
     console.log(formattedEvents);
   } catch (e) {
+    yield call(throwError, e);
     console.error('Couldnt get events', e);
   }
 }
