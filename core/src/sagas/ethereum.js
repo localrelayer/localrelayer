@@ -40,6 +40,9 @@ import {
 import BigNumber from '../utils/BigNumber';
 import WETH from '../utils/WETH';
 import { setProfileState } from '../actions';
+import {
+  throwError,
+} from './utils';
 
 const Web3 = require('web3');
 
@@ -73,6 +76,7 @@ export const initMetamask = async () => {
     try {
       networkId = +await web3.eth.net.getId();
     } catch (e) {
+      yield call(throwError, e);
       console.warn("Couldn't get a network, using mainnet", e);
       networkId = 1;
     }
@@ -110,6 +114,7 @@ export function* addTransactionToLocalStorage(transaction: Object): Saga<*> {
     yield put(setProfileState('pendingTransactions', [...pendingTransactions, transaction]));
     yield call(setItemToLocalStorage, 'pendingTransactions', JSON.stringify([...pendingTransactions, transaction]));
   } catch (e) {
+    yield call(throwError, e);
     console.error('Couldnt add pending transaction to local storage ', e);
   }
 }
@@ -124,6 +129,7 @@ export function* removeTransactionFromLocalStorage(txHash: string): Saga<*> {
     yield call(setItemToLocalStorage, 'pendingTransactions', JSON.stringify(newPendingTransactions));
     yield put(setProfileState('pendingTransactions', newPendingTransactions));
   } catch (e) {
+    yield call(throwError, e);
     console.error('Couldnt remove pending transaction from local storage ', e);
   }
 }
@@ -270,6 +276,7 @@ function* deposit() {
       );
       yield call(subscribeDeposit);
     } catch (e) {
+      yield call(throwError, e);
       yield put(sendNotification({ message: e.message, type: 'error' }));
       console.error(e);
     }
@@ -338,6 +345,7 @@ function* withdraw() {
     );
     yield call(subscribeWithdraw);
   } catch (e) {
+    yield call(throwError, e);
     yield put(sendNotification({ message: e.message, type: 'error' }));
     console.error(e);
   }
@@ -399,6 +407,7 @@ function* setAllowance(token) {
     );
     yield call(subscribeAllowance, token.id);
   } catch (e) {
+    yield call(throwError, e);
     yield put(sendNotification({ message: e.message, type: 'error' }));
 
     console.error(e);
@@ -447,6 +456,7 @@ function* unsetAllowance(token) {
     );
     yield call(subscribeAllowance, token.id);
   } catch (e) {
+    yield call(throwError, e);
     yield put(sendNotification({ message: e.message, type: 'error' }));
     console.error(e);
   }

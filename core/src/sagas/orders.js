@@ -44,6 +44,9 @@ import {
   trackMixpanel,
 } from '../utils/mixpanel';
 import BigNumber from '../utils/BigNumber';
+import {
+  throwError,
+} from './utils';
 
 export function* createOrder(): Saga<*> {
   const { zeroEx } = window;
@@ -188,6 +191,7 @@ export function* createOrder(): Saga<*> {
       { address, token: currentToken.id },
     );
   } catch (e) {
+    yield call(throwError, e);
     yield put(sendNotification({ message: e.message, type: 'error' }));
     console.error(e);
   }
@@ -330,7 +334,7 @@ export function* cancelOrder({
     }));
     yield call(loadTokensBalance);
   } catch (err) {
-    console.log(err);
+    yield call(throwError, err);
     yield put(sendNotification({ message: err.message, type: 'error' }));
   }
 }

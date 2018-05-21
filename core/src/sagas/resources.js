@@ -7,6 +7,7 @@ import createActionCreators from 'redux-resource-action-creators';
 
 import {
   putData,
+  throwError,
 } from './utils';
 import {
   apiCall,
@@ -89,6 +90,7 @@ export function* saveResourceRequest({
     yield put(sendMessage({ destroy: true }));
     return response;
   } catch (err) {
+    yield call(throwError, err);
     yield put(sendNotification({
       message: `Couldn't ${data.id ? 'update' : 'create'}, try later`,
       type: 'error',
@@ -113,6 +115,7 @@ export function* deleteResourceRequest({
     yield call(apiCall, 'DELETE', { id, resourceName });
     yield put(resourcesActions.deleteResourceItem({ resourceName, id }));
   } catch (err) {
+    yield call(throwError, err);
     console.log(err);
   }
 }

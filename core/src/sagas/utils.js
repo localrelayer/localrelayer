@@ -2,6 +2,7 @@ import {
   put,
   all,
 } from 'redux-saga/effects';
+import Raven from 'raven-js';
 import {
   jsonApiNormalize,
 } from '../utils';
@@ -26,4 +27,9 @@ export function* putData(
     }),
   )));
   return normalizedData;
+}
+
+export function* throwError(err: any): Generator<*, void, *> {
+  yield call(console.error, err);
+  Raven.captureException(err);
 }

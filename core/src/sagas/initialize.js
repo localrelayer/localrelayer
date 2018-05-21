@@ -53,6 +53,9 @@ import {
 } from '../selectors';
 import BigNumber from '../utils/BigNumber';
 import WETH from '../utils/WETH';
+import {
+  throwError,
+} from './utils';
 
 export function* initialize(): Saga<void> {
   yield call(fetchResourcesRequest, {
@@ -185,6 +188,7 @@ export function* setTokens(): Saga<void> {
         selectedToken = resp.data;
       }
     } catch (e) {
+      yield call(throwError, e);
       yield put(
         showModal({
           title: "Couldn't find token by address",
