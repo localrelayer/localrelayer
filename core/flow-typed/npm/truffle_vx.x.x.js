@@ -1,4 +1,4 @@
-// flow-typed signature: b54fa37d5daa575fdf14e41df3770b9a
+// flow-typed signature: c9896c9904dedba88ff66e88c02f5262
 // flow-typed version: <<STUB>>/truffle_v^4.0.5/flow_v0.63.1
 
 /**
@@ -58,15 +58,19 @@ declare module 'truffle/test/scenarios/commandrunner' {
   declare module.exports: any;
 }
 
+declare module 'truffle/test/scenarios/commands/ethpm' {
+  declare module.exports: any;
+}
+
+declare module 'truffle/test/scenarios/commands/exec' {
+  declare module.exports: any;
+}
+
 declare module 'truffle/test/scenarios/contract_names/test_imports' {
   declare module.exports: any;
 }
 
 declare module 'truffle/test/scenarios/cyclic_dependencies/compiles' {
-  declare module.exports: any;
-}
-
-declare module 'truffle/test/scenarios/ethpm/ethpm' {
   declare module.exports: any;
 }
 
@@ -102,6 +106,14 @@ declare module 'truffle/test/sources/ethpm/truffle' {
   declare module.exports: any;
 }
 
+declare module 'truffle/test/sources/exec/script' {
+  declare module.exports: any;
+}
+
+declare module 'truffle/test/sources/exec/truffle' {
+  declare module.exports: any;
+}
+
 // Filename aliases
 declare module 'truffle/build/chain.bundled.js' {
   declare module.exports: $Exports<'truffle/build/chain.bundled'>;
@@ -130,14 +142,17 @@ declare module 'truffle/test/scenarios.js' {
 declare module 'truffle/test/scenarios/commandrunner.js' {
   declare module.exports: $Exports<'truffle/test/scenarios/commandrunner'>;
 }
+declare module 'truffle/test/scenarios/commands/ethpm.js' {
+  declare module.exports: $Exports<'truffle/test/scenarios/commands/ethpm'>;
+}
+declare module 'truffle/test/scenarios/commands/exec.js' {
+  declare module.exports: $Exports<'truffle/test/scenarios/commands/exec'>;
+}
 declare module 'truffle/test/scenarios/contract_names/test_imports.js' {
   declare module.exports: $Exports<'truffle/test/scenarios/contract_names/test_imports'>;
 }
 declare module 'truffle/test/scenarios/cyclic_dependencies/compiles.js' {
   declare module.exports: $Exports<'truffle/test/scenarios/cyclic_dependencies/compiles'>;
-}
-declare module 'truffle/test/scenarios/ethpm/ethpm.js' {
-  declare module.exports: $Exports<'truffle/test/scenarios/ethpm/ethpm'>;
 }
 declare module 'truffle/test/scenarios/happy_path/happypath.js' {
   declare module.exports: $Exports<'truffle/test/scenarios/happy_path/happypath'>;
@@ -162,4 +177,10 @@ declare module 'truffle/test/scenarios/solidity_testing/with_balances.js' {
 }
 declare module 'truffle/test/sources/ethpm/truffle.js' {
   declare module.exports: $Exports<'truffle/test/sources/ethpm/truffle'>;
+}
+declare module 'truffle/test/sources/exec/script.js' {
+  declare module.exports: $Exports<'truffle/test/sources/exec/script'>;
+}
+declare module 'truffle/test/sources/exec/truffle.js' {
+  declare module.exports: $Exports<'truffle/test/sources/exec/truffle'>;
 }

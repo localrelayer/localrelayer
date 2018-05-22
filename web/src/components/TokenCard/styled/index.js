@@ -48,7 +48,7 @@ export const IconContainer = styled(Icon)`
 export const AddressContainer = styled.a`
   font-size: 0.8rem;
   white-space: nowrap;
-  width: 70px;
+  width: 50px;
   overflow: hidden;
   text-overflow: ellipsis;
   margin-left: 10px;

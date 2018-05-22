@@ -1,6 +1,7 @@
 import {
   put,
   all,
+  call,
 } from 'redux-saga/effects';
 import Raven from 'raven-js';
 import {
@@ -9,7 +10,11 @@ import {
 import {
   fillResourceItems,
 } from '../actions/resources';
+import config from '../config';
 
+if (config.useSentry) {
+  Raven.config('https://02469b8db8c94166a7cc5e9ea82f8d0a@sentry.io/1210496').install();
+}
 
 export function* putData(
   response,

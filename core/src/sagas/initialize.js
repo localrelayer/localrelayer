@@ -30,7 +30,6 @@ import {
   startWeb3,
   getItemFromLocalStorage,
   removeTransactionFromLocalStorage,
-  eventNameSubscriptionMapping,
 } from './ethereum';
 import {
   runLoadEthPrice,
@@ -213,7 +212,7 @@ function* setLocalStoragePendingTransactions() {
         yield call(removeTransactionFromLocalStorage, resp.transactionHash);
       } else {
         console.log(t, resp);
-        yield call(eventNameSubscriptionMapping[t.name], t.tokenId);
+        // yield call(eventNameSubscriptionMapping[t.name], t.tokenId);
       }
       console.warn(t, resp);
       return resp;
