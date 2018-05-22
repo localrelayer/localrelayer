@@ -1,4 +1,4 @@
-// flow-typed signature: 8ce5a6492fee7fb6e58773610ffe9a36
+// flow-typed signature: 8add86a09a0fbc19c7e90ad6a4cd602e
 // flow-typed version: <<STUB>>/0x.js_v^0.36.0/flow_v0.63.1
 
 /**
@@ -23,6 +23,14 @@ declare module '0x.js' {
  * needed.
  */
 declare module '0x.js/lib/src/0x' {
+  declare module.exports: any;
+}
+
+declare module '0x.js/lib/src/abstract/balance_and_proxy_allowance_fetcher' {
+  declare module.exports: any;
+}
+
+declare module '0x.js/lib/src/abstract/order_filled_cancelled_fetcher' {
   declare module.exports: any;
 }
 
@@ -75,6 +83,14 @@ declare module '0x.js/lib/src/contract_wrappers/token_transfer_proxy_wrapper' {
 }
 
 declare module '0x.js/lib/src/contract_wrappers/token_wrapper' {
+  declare module.exports: any;
+}
+
+declare module '0x.js/lib/src/fetchers/simple_balance_and_proxy_allowance_fetcher' {
+  declare module.exports: any;
+}
+
+declare module '0x.js/lib/src/fetchers/simple_order_filled_cancelled_fetcher' {
   declare module.exports: any;
 }
 
@@ -162,6 +178,12 @@ declare module '0x.js/lib/src/utils/utils' {
 declare module '0x.js/lib/src/0x.js' {
   declare module.exports: $Exports<'0x.js/lib/src/0x'>;
 }
+declare module '0x.js/lib/src/abstract/balance_and_proxy_allowance_fetcher.js' {
+  declare module.exports: $Exports<'0x.js/lib/src/abstract/balance_and_proxy_allowance_fetcher'>;
+}
+declare module '0x.js/lib/src/abstract/order_filled_cancelled_fetcher.js' {
+  declare module.exports: $Exports<'0x.js/lib/src/abstract/order_filled_cancelled_fetcher'>;
+}
 declare module '0x.js/lib/src/artifacts.js' {
   declare module.exports: $Exports<'0x.js/lib/src/artifacts'>;
 }
@@ -200,6 +222,12 @@ declare module '0x.js/lib/src/contract_wrappers/token_transfer_proxy_wrapper.js'
 }
 declare module '0x.js/lib/src/contract_wrappers/token_wrapper.js' {
   declare module.exports: $Exports<'0x.js/lib/src/contract_wrappers/token_wrapper'>;
+}
+declare module '0x.js/lib/src/fetchers/simple_balance_and_proxy_allowance_fetcher.js' {
+  declare module.exports: $Exports<'0x.js/lib/src/fetchers/simple_balance_and_proxy_allowance_fetcher'>;
+}
+declare module '0x.js/lib/src/fetchers/simple_order_filled_cancelled_fetcher.js' {
+  declare module.exports: $Exports<'0x.js/lib/src/fetchers/simple_order_filled_cancelled_fetcher'>;
 }
 declare module '0x.js/lib/src/index.js' {
   declare module.exports: $Exports<'0x.js/lib/src/index'>;

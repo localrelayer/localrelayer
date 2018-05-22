@@ -4,4 +4,5 @@ module.exports = {
   socketUrl: 'http://localhost:5001',
   // socketUrl: 'https://socket.instex.io:8081',
   useMock: false,
+  useSentry: false,
 };

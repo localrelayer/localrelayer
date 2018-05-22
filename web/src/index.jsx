@@ -30,7 +30,7 @@ import App from './App';
 import config from './config';
 
 if (config.useSentry) {
-  Raven.config('https://60a0dae4681d47d29a4cd77703472a29@sentry.io/153064').install();
+  Raven.config('https://02469b8db8c94166a7cc5e9ea82f8d0a@sentry.io/1210496').install();
 }
 
 const rootEl: HTMLElement = window.document.getElementById('body');
