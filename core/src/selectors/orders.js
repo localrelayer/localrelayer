@@ -24,9 +24,9 @@ export const getBuyOrders = createSelector(
       order.type === 'buy')
     .map(order => ({
       ...order,
-      price: BigNumber(order.price).toFixed(6),
-      amount: BigNumber(order.amount).toFixed(6),
-      total: BigNumber(order.total).toFixed(6),
+      price: BigNumber(order.price).toFixed(8),
+      amount: BigNumber(order.amount).toFixed(8),
+      total: BigNumber(order.total).toFixed(8),
       isUser: address === order.maker_address,
     }))
     .sort((a, b) => b.price - a.price),
@@ -46,9 +46,9 @@ export const getSellOrders = createSelector(
       order.type === 'sell')
     .map(order => ({
       ...order,
-      price: BigNumber(order.price).toFixed(6),
-      amount: BigNumber(order.amount).toFixed(6),
-      total: BigNumber(order.total).toFixed(6),
+      price: BigNumber(order.price).toFixed(8),
+      amount: BigNumber(order.amount).toFixed(8),
+      total: BigNumber(order.total).toFixed(8),
       isUser: address === order.maker_address,
     }))
     .sort((a, b) => a.price - b.price),
@@ -67,9 +67,9 @@ export const getCompletedOrders = createSelector(
       order.is_history)
     .map(order => ({
       ...order,
-      price: BigNumber(order.price).toFixed(4),
-      amount: BigNumber(order.amount).toFixed(4),
-      total: BigNumber(order.total).toFixed(4),
+      price: BigNumber(order.price).toFixed(8),
+      amount: BigNumber(order.amount).toFixed(8),
+      total: BigNumber(order.total).toFixed(8),
       isUser: address === order.maker_address,
     })),
 );
@@ -86,9 +86,9 @@ export const getUserOrders = createSelector(
       !order.child_id)
     .map(order => ({
       ...order,
-      price: BigNumber(order.price).toFixed(6),
-      amount: BigNumber(order.amount).toFixed(6),
-      total: BigNumber(order.total).toFixed(6),
+      price: BigNumber(order.price).toFixed(8),
+      amount: BigNumber(order.amount).toFixed(8),
+      total: BigNumber(order.total).toFixed(8),
       tokenSymbol: tokens[order.token_address] ? tokens[order.token_address].attributes.symbol : '',
       pairSymbol: tokens[order.pair_address] ? tokens[order.pair_address].attributes.symbol : '',
     })),
@@ -102,9 +102,9 @@ export const getCompletedUserOrders = createSelector(
   (orders, tokens) => orders
     .map(order => ({
       ...order,
-      price: BigNumber(order.price).toFixed(6),
-      amount: BigNumber(order.amount).toFixed(6),
-      total: BigNumber(order.total).toFixed(6),
+      price: BigNumber(order.price).toFixed(8),
+      amount: BigNumber(order.amount).toFixed(8),
+      total: BigNumber(order.total).toFixed(8),
       tokenSymbol: tokens[order.token_address] ? tokens[order.token_address].attributes.symbol : '',
       pairSymbol: tokens[order.pair_address] ? tokens[order.pair_address].attributes.symbol : '',
     })),

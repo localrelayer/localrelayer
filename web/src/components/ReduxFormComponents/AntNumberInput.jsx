@@ -1,21 +1,21 @@
 import React from 'react';
 import { Input, Tooltip, Form } from 'antd';
 
-function formatNumber(value) {
-  value += '';
-  const list = value.split('.');
-  const prefix = list[0].charAt(0) === '-' ? '-' : '';
-  let num = prefix ? list[0].slice(1) : list[0];
-  let result = '';
-  while (num.length > 3) {
-    result = `,${num.slice(-3)}${result}`;
-    num = num.slice(0, num.length - 3);
-  }
-  if (num) {
-    result = num + result;
-  }
-  return `${prefix}${result}${list[1] ? `.${list[1]}` : ''}`;
-}
+// function formatNumber(value) {
+//   value += '';
+//   const list = value.split('.');
+//   const prefix = list[0].charAt(0) === '-' ? '-' : '';
+//   let num = prefix ? list[0].slice(1) : list[0];
+//   let result = '';
+//   while (num.length > 3) {
+//     result = `,${num.slice(-3)}${result}`;
+//     num = num.slice(0, num.length - 3);
+//   }
+//   if (num) {
+//     result = num + result;
+//   }
+//   return `${prefix}${result}${list[1] ? `.${list[1]}` : ''}`;
+// }
 
 type Props = {
   input: FieldProps.input,
@@ -80,7 +80,7 @@ export default class AntNumericInput extends React.Component<Props> {
           addonAfter={this.props.addonAfter}
           {...this.props.input}
           placeholder={placeholder}
-          maxLength="15"
+          maxLength="16"
         />
         {/* </Tooltip> */}
       </Form.Item>

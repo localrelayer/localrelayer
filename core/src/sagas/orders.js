@@ -34,7 +34,7 @@ import {
 } from '../utils/web3';
 import * as resourcesActions from '../actions/resources';
 import {
-  loadTokensBalance,
+  loadTokensBalance, loadCurrentTokenAndPairBalance,
 } from './profile';
 import config from '../config';
 import {
@@ -185,7 +185,8 @@ export function* createOrder(): Saga<*> {
       },
     }));
     yield put(reset('BuySellForm'));
-    yield call(loadTokensBalance);
+    // recalculate balance with new locked amount
+    yield call(loadCurrentTokenAndPairBalance);
     trackMixpanel(
       'Order created',
       { address, token: currentToken.id },

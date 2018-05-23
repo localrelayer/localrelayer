@@ -61,16 +61,31 @@ export const getColumns = (
     title: 'Price',
     dataIndex: 'price',
     key: 'price',
+    render: (text: string) => (
+      <Tooltip title={text}>
+        {Number(text).toFixed(6)}
+      </Tooltip>
+    ),
   },
   {
     title: 'Amount',
     dataIndex: 'amount',
     key: 'amount',
+    render: (text: string) => (
+      <Tooltip title={text}>
+        {Number(text).toFixed(6)}
+      </Tooltip>
+    ),
   },
   {
     title: 'Total',
     dataIndex: 'total',
     key: 'total',
+    render: (text: string) => (
+      <Tooltip title={text}>
+        {Number(text).toFixed(6)}
+      </Tooltip>
+    ),
   },
   {
     title: 'Status',
