@@ -47,21 +47,28 @@ const columns = [
     dataIndex: 'price',
     key: 'price',
     render: (text: string, record) => (
-      <Colored
-        className={record.type === 'sell' ? 'red' : 'green'}
-      >
-        {text}
-      </Colored>
+      <Tooltip title={text}>
+        <Colored
+          className={record.type === 'sell' ? 'red' : 'green'}
+        >
+          {Number(text).toFixed(6)}
+        </Colored>
+      </Tooltip>
     ),
   },
   {
     title: 'Amount',
     dataIndex: 'amount',
     key: 'amount',
+    render: (text: string) => (
+      <Tooltip title={text}>
+        {Number(text).toFixed(6)}
+      </Tooltip>
+    ),
   },
   {
     render: () => <Icon type="select" />
-  }
+  },
   // {
   //   title: 'Total',
   //   dataIndex: 'total',
