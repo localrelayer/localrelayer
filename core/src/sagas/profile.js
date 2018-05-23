@@ -209,6 +209,15 @@ export function* loadNetwork() {
     console.warn("Couldn't get a network, using mainnet", e);
     networkId = 1;
   }
+  if (networkId !== 1 && process.env.NODE_ENV === 'production') {
+    yield put(
+      showModal({
+        title: 'You are on wrong network',
+        type: 'error',
+        text: 'Choose Mainnet in your wallet',
+      }),
+    );
+  }
   const network = getNetworkById(networkId);
   yield put(setProfileState('network', network));
 }
