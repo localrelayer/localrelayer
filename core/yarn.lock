@@ -2,17 +2,17 @@
 # yarn lockfile v1
 
 
-"0x.js@^0.36.0":
-  version "0.36.3"
-  resolved "https://registry.yarnpkg.com/0x.js/-/0x.js-0.36.3.tgz#5a596ba3e546db21c6e152107ebf6ed9e3755eeb"
+"0x.js@0.36.0":
+  version "0.36.0"
+  resolved "https://registry.yarnpkg.com/0x.js/-/0x.js-0.36.0.tgz#1c14b60d8854c41780be56b732425522658c0f49"
   dependencies:
-    "@0xproject/assert" "^0.2.7"
-    "@0xproject/base-contract" "^0.2.1"
-    "@0xproject/json-schemas" "^0.7.21"
-    "@0xproject/types" "^0.6.1"
-    "@0xproject/typescript-typings" "^0.2.0"
-    "@0xproject/utils" "^0.5.2"
-    "@0xproject/web3-wrapper" "^0.6.1"
+    "@0xproject/assert" "^0.2.6"
+    "@0xproject/base-contract" "^0.2.0"
+    "@0xproject/json-schemas" "^0.7.20"
+    "@0xproject/types" "^0.6.0"
+    "@0xproject/typescript-typings" "^0.1.0"
+    "@0xproject/utils" "^0.5.1"
+    "@0xproject/web3-wrapper" "^0.6.0"
     bintrees "^1.0.2"
     bn.js "^4.11.8"
     ethereumjs-abi "^0.6.4"
@@ -24,6 +24,16 @@
     uuid "^3.1.0"
     web3 "^0.20.0"
 
+"@0xproject/assert@^0.2.6":
+  version "0.2.10"
+  resolved "https://registry.yarnpkg.com/@0xproject/assert/-/assert-0.2.10.tgz#733bcf7f9483ac65f1d68fbc6534322242c4b919"
+  dependencies:
+    "@0xproject/json-schemas" "^0.7.24"
+    "@0xproject/typescript-typings" "^0.3.2"
+    "@0xproject/utils" "^0.6.2"
+    lodash "^4.17.4"
+    valid-url "^1.0.9"
+
 "@0xproject/assert@^0.2.7":
   version "0.2.9"
   resolved "https://registry.yarnpkg.com/@0xproject/assert/-/assert-0.2.9.tgz#4ee828679bacc6ac314c83a21fcf38f65f5c625e"
@@ -34,7 +44,7 @@
     lodash "^4.17.4"
     valid-url "^1.0.9"
 
-"@0xproject/base-contract@^0.2.1":
+"@0xproject/base-contract@^0.2.0":
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/@0xproject/base-contract/-/base-contract-0.2.1.tgz#c7621154b0f0b49b9f40a99a7f0cfacbb1d7612d"
   dependencies:
@@ -45,7 +55,16 @@
     ethers-contracts "^2.2.1"
     lodash "^4.17.4"
 
-"@0xproject/json-schemas@^0.7.21", "@0xproject/json-schemas@^0.7.23":
+"@0xproject/json-schemas@^0.7.20", "@0xproject/json-schemas@^0.7.24":
+  version "0.7.24"
+  resolved "https://registry.yarnpkg.com/@0xproject/json-schemas/-/json-schemas-0.7.24.tgz#21a12b43ab0ab4aa302d02c4891668cda36b6c64"
+  dependencies:
+    "@0xproject/typescript-typings" "^0.3.2"
+    "@types/node" "^8.0.53"
+    jsonschema "^1.2.0"
+    lodash.values "^4.3.0"
+
+"@0xproject/json-schemas@^0.7.23":
   version "0.7.23"
   resolved "https://registry.yarnpkg.com/@0xproject/json-schemas/-/json-schemas-0.7.23.tgz#56feaf6f2241f2dc4a07fd31be6bc5afc043daf2"
   dependencies:
@@ -77,11 +96,25 @@
   optionalDependencies:
     "@ledgerhq/hw-transport-node-hid" "^4.3.0"
 
-"@0xproject/types@^0.6.1", "@0xproject/types@^0.6.3":
+"@0xproject/types@^0.6.0", "@0xproject/types@^0.6.1", "@0xproject/types@^0.6.3":
   version "0.6.3"
   resolved "https://registry.yarnpkg.com/@0xproject/types/-/types-0.6.3.tgz#0bc066967aad4151011b6e478bb707b1afb8504b"
   dependencies:
     "@types/node" "^8.0.53"
+    bignumber.js "~4.1.0"
+
+"@0xproject/types@^0.7.0":
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/@0xproject/types/-/types-0.7.0.tgz#fad13925ee92ad4ee1980668a5cb2bed4dcaab8f"
+  dependencies:
+    "@types/node" "^8.0.53"
+    bignumber.js "~4.1.0"
+
+"@0xproject/typescript-typings@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@0xproject/typescript-typings/-/typescript-typings-0.1.0.tgz#c8cd3e9ade7bc835638da735f8a85b06d6aa790d"
+  dependencies:
+    "@0xproject/types" "^0.6.0"
     bignumber.js "~4.1.0"
 
 "@0xproject/typescript-typings@^0.2.0":
@@ -98,7 +131,14 @@
     "@0xproject/types" "^0.6.3"
     bignumber.js "~4.1.0"
 
-"@0xproject/utils@^0.5.2":
+"@0xproject/typescript-typings@^0.3.2":
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/@0xproject/typescript-typings/-/typescript-typings-0.3.2.tgz#abc360b441afda993100450ca8369dfabf75936b"
+  dependencies:
+    "@0xproject/types" "^0.7.0"
+    bignumber.js "~4.1.0"
+
+"@0xproject/utils@^0.5.1", "@0xproject/utils@^0.5.2":
   version "0.5.2"
   resolved "https://registry.yarnpkg.com/@0xproject/utils/-/utils-0.5.2.tgz#02ce0a920437db0a15d059e8c6c70fa33e9c3860"
   dependencies:
@@ -121,6 +161,30 @@
     bignumber.js "~4.1.0"
     ethers "^3.0.15"
     js-sha3 "^0.7.0"
+    lodash "^4.17.4"
+    web3 "^0.20.0"
+
+"@0xproject/utils@^0.6.2":
+  version "0.6.2"
+  resolved "https://registry.yarnpkg.com/@0xproject/utils/-/utils-0.6.2.tgz#79056a0a7be88581bcb92bce01a0f1f1b3074397"
+  dependencies:
+    "@0xproject/types" "^0.7.0"
+    "@0xproject/typescript-typings" "^0.3.2"
+    "@types/node" "^8.0.53"
+    bignumber.js "~4.1.0"
+    ethers "^3.0.15"
+    js-sha3 "^0.7.0"
+    lodash "^4.17.4"
+    web3 "^0.20.0"
+
+"@0xproject/web3-wrapper@^0.6.0":
+  version "0.6.4"
+  resolved "https://registry.yarnpkg.com/@0xproject/web3-wrapper/-/web3-wrapper-0.6.4.tgz#fb15b71cdf4e5001c2b2e0d316b0de485a2be5f8"
+  dependencies:
+    "@0xproject/types" "^0.7.0"
+    "@0xproject/typescript-typings" "^0.3.2"
+    "@0xproject/utils" "^0.6.2"
+    ethers "^3.0.15"
     lodash "^4.17.4"
     web3 "^0.20.0"
 
@@ -514,7 +578,7 @@ async-eventemitter@^0.2.2:
   dependencies:
     async "^2.4.0"
 
-"async-eventemitter@github:ahultgren/async-eventemitter#fa06e39e56786ba541c180061dbf2c0a5bbf951c":
+async-eventemitter@ahultgren/async-eventemitter#fa06e39e56786ba541c180061dbf2c0a5bbf951c:
   version "0.2.3"
   resolved "https://codeload.github.com/ahultgren/async-eventemitter/tar.gz/fa06e39e56786ba541c180061dbf2c0a5bbf951c"
   dependencies:

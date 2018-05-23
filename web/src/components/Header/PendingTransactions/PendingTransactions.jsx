@@ -25,7 +25,7 @@ const columns = [
   {
     title: 'Event',
     dataIndex: 'name',
-    key: 'name',
+    key: 'label',
   },
   {
     title: 'Token',
@@ -60,7 +60,11 @@ const columns = [
 const PendingTransactions: StatelessFunctionalComponent<Props> = ({ items }: Props): Node => (
   <PendingTransactionsContainer>
     <Table
-      title={() => items.length ? <div>Pending Transactions</div> : <div>No pending transactions</div>}
+      title={() => items.length ?
+        <div>Pending Transactions</div>
+        :
+        <div>No pending transactions</div>
+      }
       size="small"
       showHeader={false}
       pagination={false}
