@@ -51,7 +51,7 @@ const columns = [
         <Colored
           className={record.type === 'sell' ? 'red' : 'green'}
         >
-          {Number(text).toFixed(6)}
+          {Number(text).toFixed(8)}
         </Colored>
       </Tooltip>
     ),
@@ -67,7 +67,7 @@ const columns = [
     ),
   },
   {
-    render: () => <Icon type="select" />
+    render: () => <Icon type="select" />,
   },
   // {
   //   title: 'Total',

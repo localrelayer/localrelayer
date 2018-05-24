@@ -68,15 +68,22 @@ export default enchance(({
             onClick={() => fillOrder(order)}
           >
             <div className="Table-row-item" data-header="Header1">{order.price}</div>
-            <div className="Table-row-item" data-header="Header2">{order.amount}</div>
+            <div className="Table-row-item" data-header="Header2">{Number(order.amount).toFixed(6)}</div>
             <div className="Table-row-item" data-header="Header3">
-              <Colored className={type === 'sell' ? 'red' : 'green'}>{order.total}</Colored>
+              <Colored className={type === 'sell' ? 'red' : 'green'}>{Number(order.total).toFixed(6)}</Colored>
             </div>
             <IconContainer className="Table-row-item" >
               {order.isUser ? <Icon type="user" /> : null}
             </IconContainer>
             <IconContainer className="Table-row-item" >
-              {order.status === 'pending' ? <img alt="pending" src={loader} /> : null}
+              {order.status === 'pending' ?
+                <img
+                  style={{ maxWidth: '100%' }}
+                  alt="pending"
+                  src={loader}
+                />
+              :
+              null}
             </IconContainer>
             {/* <AmountFillContainer width={calculateFill(order.total, orders)} type={type} /> */}
           </div>

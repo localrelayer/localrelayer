@@ -225,17 +225,17 @@ BuySellForm.defaultProps = {
 const mapStateToProps: MapStateToProps<*, *, *> = (state, props) => {
   const { type } = props;
   const { amount = 0, price = 0 } = getFormValues('BuySellForm')(state) || {};
-  const total = BigNumber(+amount).times(+price);
+  const total = BigNumber((+amount).toFixed(12)).times((+price).toFixed(12));
 
   let exchangeFee;
   let transactionFee;
 
   if (type === 'sell') {
-    exchangeFee = BigNumber(+total).times(EXCHANGE_FEE);
+    exchangeFee = BigNumber((+total).toFixed(12)).times(EXCHANGE_FEE);
     transactionFee = price ? TRANSACTION_FEE : 0;
   } else {
-    exchangeFee = BigNumber(+amount).times(EXCHANGE_FEE);
-    transactionFee = price ? BigNumber(TRANSACTION_FEE).div(+price) : 0;
+    exchangeFee = BigNumber((+amount).toFixed(12)).times(EXCHANGE_FEE);
+    transactionFee = price ? BigNumber(TRANSACTION_FEE).div((+price).toFixed(12)) : 0;
   }
 
   const totalFee = exchangeFee.add(transactionFee);
