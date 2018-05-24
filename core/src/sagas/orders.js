@@ -63,7 +63,7 @@ export function* createOrder(): Saga<*> {
 
   const currentToken = yield select(getCurrentToken);
   const currentPair = yield select(getCurrentPair);
-  const total = BigNumber(price).times(amount).toString();
+  const total = BigNumber(price).times(amount).toFixed(12).toString();
 
   let makerTokenAddress;
   let takerTokenAddress;
@@ -84,7 +84,7 @@ export function* createOrder(): Saga<*> {
       return;
     }
 
-    const feeAmount = BigNumber(total).times(EXCHANGE_FEE).add(TRANSACTION_FEE).toFixed(6);
+    const feeAmount = BigNumber(total).times(EXCHANGE_FEE).add(TRANSACTION_FEE).toFixed(12);
 
     makerTokenAddress = currentToken.id;
     takerTokenAddress = currentPair.id;
@@ -119,7 +119,7 @@ export function* createOrder(): Saga<*> {
     }
 
     const feeAmount = BigNumber(amount).times(EXCHANGE_FEE)
-      .add(BigNumber(TRANSACTION_FEE).div(price)).toFixed(6);
+      .add(BigNumber(TRANSACTION_FEE).div(price)).toFixed(12);
 
     makerTokenAddress = currentPair.id;
     takerTokenAddress = currentToken.id;
@@ -162,11 +162,11 @@ export function* createOrder(): Saga<*> {
     yield put(sendMessage({ content: 'Placing order', type: 'loading' }));
 
     yield zeroEx.exchange.validateOrderFillableOrThrowAsync(signedZRXOrder);
-
+    console.log(price);
     const order = {
-      price: (+price).toFixed(8),
-      amount: (+amount).toFixed(8),
-      total: (+total).toFixed(8),
+      price: (+price).toFixed(12),
+      amount: (+amount).toFixed(12),
+      total: (+total).toFixed(12),
       token_address: currentToken.id,
       pair_address: currentPair.id,
       type,

@@ -63,7 +63,7 @@ export const getColumns = (
     key: 'price',
     render: (text: string) => (
       <Tooltip title={text}>
-        {Number(text).toFixed(6)}
+        {Number(text).toFixed(8)}
       </Tooltip>
     ),
   },
@@ -73,7 +73,7 @@ export const getColumns = (
     key: 'amount',
     render: (text: string) => (
       <Tooltip title={text}>
-        {Number(text).toFixed(6)}
+        {Number(text).toFixed(8)}
       </Tooltip>
     ),
   },
@@ -83,7 +83,7 @@ export const getColumns = (
     key: 'total',
     render: (text: string) => (
       <Tooltip title={text}>
-        {Number(text).toFixed(6)}
+        {Number(text).toFixed(8)}
       </Tooltip>
     ),
   },
