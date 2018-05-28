@@ -6,6 +6,7 @@ import {
   select,
   takeEvery,
   all,
+  spawn,
 } from 'redux-saga/effects';
 import {
   reset,
@@ -30,6 +31,8 @@ import {
   startWeb3,
   getItemFromLocalStorage,
   removeTransactionFromLocalStorage,
+  eventSubscribersMapping,
+  readEvent,
 } from './ethereum';
 import {
   runLoadEthPrice,
@@ -98,8 +101,8 @@ export function* initialize(): Saga<void> {
       );
     }
 
-    window.BIGGEST_AMOUNT = BigNumber(BIGGEST_AMOUNT).toFixed(8).toString();
-    window.SMALLEST_AMOUNT = BigNumber(SMALLEST_AMOUNT).toFixed(8).toString();
+    window.BIGGEST_AMOUNT = BigNumber(BIGGEST_AMOUNT).toFixed(12).toString();
+    window.SMALLEST_AMOUNT = BigNumber(SMALLEST_AMOUNT).toFixed(12).toString();
 
     yield fork(listenRouteChange);
   }
@@ -210,15 +213,13 @@ function* setLocalStoragePendingTransactions() {
       const resp = yield call(window.web3Instance.eth.getTransactionReceipt, t.txHash);
       if (resp) {
         yield call(removeTransactionFromLocalStorage, resp.transactionHash);
-      } else {
-        console.log(t, resp);
-        // yield call(eventNameSubscriptionMapping[t.name], t.tokenId);
+        return resp;
       }
-      console.warn(t, resp);
-      return resp;
+      const event = yield call(eventSubscribersMapping[t.name], t.account, t.tokenId);
+      yield spawn(readEvent, event, t.name);
+      return null;
     }),
   );
-  console.log(pendingTransactionResp);
   const checkedPendingTransaction = pendingTransactionResp.reduce((acc, t, i) => {
     console.log(t);
     if (t) {
@@ -227,7 +228,6 @@ function* setLocalStoragePendingTransactions() {
     return acc.concat(pendingTransactions[i]);
   }, []);
 
-  console.warn('PENDING', pendingTransactions, checkedPendingTransaction)
   yield put(setProfileState('pendingTransactions', checkedPendingTransaction));
 }
 

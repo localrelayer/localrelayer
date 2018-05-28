@@ -148,7 +148,7 @@ function subscribe(contract) {
   });
 }
 
-function* readEvent(event, eventName) {
+export function* readEvent(event, eventName) {
   const channel = yield call(subscribe, event);
   while (true) {
     const data = yield take(channel);
@@ -162,6 +162,30 @@ const eventProcessorMapping = {
   'Withdrawal': processWithdrawal,
   'Deposit': processDeposit,
   'TokenApproval': processTokenApproval,
+};
+
+const subscribeDeposit = async (address: string, tokenId: string) => {
+  const Contract = new window.wsWeb3.eth.Contract(WETH, tokenId);
+  const event = await Contract.events.Deposit({ filter: { dst: address } });
+  return event;
+};
+
+const subscribeWithdrawal = async (address: string, tokenId: string) => {
+  const Contract = new window.wsWeb3.eth.Contract(WETH, tokenId);
+  const event = await Contract.events.Withdrawal({ filter: { src: address } });
+  return event;
+};
+
+const subscribeAllowance = async (address: string, tokenId: string) => {
+  const TokenContract = new window.wsWeb3.eth.Contract(WETH, tokenId);
+  const event = await TokenContract.events.Approval({ filter: { src: address } });
+  return event;
+};
+
+export const eventSubscribersMapping = {
+  'Withdrawal': subscribeWithdrawal,
+  'Deposit': subscribeDeposit,
+  'TokenApproval': subscribeAllowance,
 };
 
 function* processWithdrawal({ transactionHash }) {
@@ -239,12 +263,8 @@ function* deposit() {
           text: 'Confirm transaction on your Ledger',
         }));
       }
-      const WETHContract = new window.wsWeb3.eth.Contract(WETH, weth.id);
-      const Deposit = yield call(WETHContract.events.Deposit,
-        {
-          filter: { dst: account },
-        });
-      yield fork(readEvent, Deposit, 'Deposit');
+      const event = yield call(subscribeDeposit, account, weth.id);
+      yield fork(readEvent, event, subscribeDeposit);
       const txHash = yield call([zeroEx.etherToken, zeroEx.etherToken.depositAsync],
         weth.id,
         ethToConvert,
@@ -265,6 +285,7 @@ function* deposit() {
         token: weth.symbol,
         tokenId: weth.id,
         timestamp: moment().toISOString(),
+        account,
       };
       yield call(addTransactionToLocalStorage, transaction);
       trackMixpanel(
@@ -300,12 +321,8 @@ function* withdraw() {
         text: 'Confirm transaction on your Ledger',
       }));
     }
-    const WETHContract = new window.wsWeb3.eth.Contract(WETH, weth.id);
-    const Withdrawal = yield call(WETHContract.events.Withdrawal,
-      {
-        filter: { src: account },
-      });
-    yield fork(readEvent, Withdrawal, 'Withdrawal');
+    const event = yield call(subscribeWithdrawal, account, weth.id);
+    yield fork(readEvent, event, 'Withdrawal');
     const txHash = yield call([zeroEx.etherToken, zeroEx.etherToken.withdrawAsync],
       weth.id,
       ethToConvert,
@@ -322,6 +339,7 @@ function* withdraw() {
       tokenId: weth.id,
       token: weth.symbol,
       timestamp: moment().toISOString(),
+      account,
     };
     yield call(addTransactionToLocalStorage, transaction);
 
@@ -357,12 +375,8 @@ function* setAllowance(token) {
         text: 'Confirm transaction on your Ledger',
       }));
     }
-    const TokenContract = new window.wsWeb3.eth.Contract(WETH, token.id);
-    const TokenApproval = yield call(TokenContract.events.Approval,
-      {
-        filter: { src: account },
-      });
-    yield fork(readEvent, TokenApproval, 'TokenApproval');
+    const event = yield call(subscribeAllowance, account, token.id);
+    yield fork(readEvent, event, 'TokenApproval');
     const txHash = yield call(
       [zeroEx.token, zeroEx.token.setUnlimitedProxyAllowanceAsync],
       token.id,
@@ -381,6 +395,7 @@ function* setAllowance(token) {
       tokenId: token.id,
       token: token.symbol,
       timestamp: moment().toISOString(),
+      account,
     };
     yield call(addTransactionToLocalStorage, transaction);
 
@@ -410,13 +425,8 @@ function* unsetAllowance(token) {
         text: 'Confirm transaction on your Ledger',
       }));
     }
-    const TokenContract = new window.wsWeb3.eth.Contract(WETH, token.id);
-    console.warn('1');
-    const TokenApproval = yield call(TokenContract.events.Approval,
-      {
-        filter: { src: account },
-      });
-    yield fork(readEvent, TokenApproval, 'TokenApproval');
+    const event = yield call(subscribeAllowance, account, token.id);
+    yield fork(readEvent, event, 'TokenApproval');
 
     const txHash = yield call(
       [zeroEx.token, zeroEx.token.setProxyAllowanceAsync],
@@ -435,6 +445,7 @@ function* unsetAllowance(token) {
       tokenId: token.id,
       token: token.symbol,
       timestamp: moment().toISOString(),
+      account,
     };
     yield call(addTransactionToLocalStorage, transaction);
 
