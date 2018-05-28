@@ -46,9 +46,9 @@ type Props = {
 const getExtraContent = (type, currentToken, currentPair) => {
   if (currentPair.symbol && currentToken.symbol) {
     return type === 'sell' ?
-      `${currentToken.symbol} ${Number(currentToken.balance)}`
+      `${currentToken.symbol} ${Number(currentToken.balance || 0.00)}`
       :
-      `${currentPair.symbol} ${Number(currentPair.balance)} `;
+      `${currentPair.symbol} ${Number(currentPair.balance || 0.00)} `;
   }
   return '';
 };

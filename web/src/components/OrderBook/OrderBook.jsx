@@ -29,7 +29,7 @@ type Props = {
 
 const getSpread = (sellOrder, buyOrder) => {
   if (sellOrder && buyOrder) {
-    return (+sellOrder.price - +buyOrder.price).toFixed(8);
+    return (+sellOrder.price - +buyOrder.price).toFixed(12);
   }
   return '0.000000';
 };

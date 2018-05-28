@@ -212,7 +212,7 @@ export function* loadNetwork() {
   if (networkId !== 1 && process.env.NODE_ENV === 'production') {
     yield put(
       showModal({
-        title: 'You are on wrong network',
+        title: 'You are on the wrong network',
         type: 'error',
         text: 'Choose Mainnet in your wallet',
       }),
