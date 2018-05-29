@@ -69,7 +69,6 @@ export default () => (
     }}
   >
     <Title>Meet Instex</Title>
-    <span>(Kovan Testnet)</span>
     <br />
     <Title2>Place where you can safely trade any ERC20 token</Title2>
     <StyledButton target="_blank" rel="noopener" href="https://app.instex.io">
