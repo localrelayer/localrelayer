@@ -148,7 +148,7 @@ function subscribe(contract) {
   });
 }
 
-export function* readEvent(event, eventName) {
+export function* readEvent(event: any, eventName: string) {
   const channel = yield call(subscribe, event);
   while (true) {
     const data = yield take(channel);
@@ -158,7 +158,7 @@ export function* readEvent(event, eventName) {
   }
 }
 
-const eventProcessorMapping = {
+export const eventProcessorMapping = {
   'Withdrawal': processWithdrawal,
   'Deposit': processDeposit,
   'TokenApproval': processTokenApproval,
@@ -264,7 +264,7 @@ function* deposit() {
         }));
       }
       const event = yield call(subscribeDeposit, account, weth.id);
-      yield fork(readEvent, event, subscribeDeposit);
+      yield fork(readEvent, event, 'Deposit');
       const txHash = yield call([zeroEx.etherToken, zeroEx.etherToken.depositAsync],
         weth.id,
         ethToConvert,

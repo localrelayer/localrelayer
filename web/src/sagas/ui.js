@@ -21,6 +21,7 @@ import {
 } from 'redux-form';
 import DowloadMetamask from '../components/Modals/DowloadMetamask';
 import NoToken from '../components/Modals/NoToken';
+import InstexLogo from '../assets/instex_avatar.png';
 
 const sagas = {
   exp: fillDate,
@@ -67,9 +68,16 @@ export function* fillDate({ period }) {
 export function* sendNotification({ payload: { type, message } }) {
   // Ignore metamask errors
   if (message.includes('MetaMask')) return;
-  yield notification[type]({
-    message: upperCaseFirst(message),
-  });
+
+  if (Notification.permission === 'granted') {
+    new Notification(message, {
+      icon: InstexLogo,
+    });
+  } else {
+    yield notification[type]({
+      message: upperCaseFirst(message),
+    });
+  }
 }
 
 export function* sendMessage({ payload: { type, content, destroy } }) {
