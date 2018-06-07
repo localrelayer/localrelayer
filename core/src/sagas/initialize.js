@@ -60,6 +60,7 @@ import {
 } from './utils';
 
 export function* initialize(): Saga<void> {
+  yield call(startWeb3);
   yield call(fetchResourcesRequest, {
     payload: {
       resourceName: 'tokens',
@@ -71,11 +72,8 @@ export function* initialize(): Saga<void> {
       },
     },
   });
-  yield call(startWeb3);
-
   yield call(setTokens);
   yield call(loadOrders);
-
   yield fork(runLoadEthPrice);
 
   if (!window.web3Instance) {
