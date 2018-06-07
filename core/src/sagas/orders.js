@@ -119,7 +119,7 @@ export function* createOrder(): Saga<*> {
     }
 
     const feeAmount = BigNumber(amount).times(EXCHANGE_FEE)
-      .add(BigNumber(TRANSACTION_FEE).div(price)).toFixed(12);
+      .add(BigNumber(TRANSACTION_FEE).div(price).toFixed(8)).toFixed(8);
 
     makerTokenAddress = currentPair.id;
     takerTokenAddress = currentToken.id;
@@ -131,7 +131,7 @@ export function* createOrder(): Saga<*> {
   const zrxOrder = {
     maker: address.toLowerCase(),
     taker: NODE_ADDRESS,
-    feeRecipient: NULL_ADDRESS,
+    feeRecipient: '0x004E344251110Fa1Cb09aA31C95c6598Ed07Dce6',
     exchangeContractAddress: EXCHANGE_ADDRESS,
     salt: ZeroEx.generatePseudoRandomSalt(),
     makerFee: BigNumber(0),
@@ -160,7 +160,7 @@ export function* createOrder(): Saga<*> {
       ecSignature,
     };
     yield put(sendMessage({ content: 'Placing order', type: 'loading' }));
-
+    console.log('Before validation');
     yield zeroEx.exchange.validateOrderFillableOrThrowAsync(signedZRXOrder);
     console.log(price);
     const order = {
