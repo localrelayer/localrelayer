@@ -21,6 +21,7 @@ import config from '../config';
 import {
   sendNotification,
   setUiState,
+  fillOrKillOrders,
 } from '../actions';
 import {
   getResourceItemBydId,
@@ -90,6 +91,10 @@ function* read(socket) {
     if (data.txHash) {
       yield put(setUiState('activeModal', 'TxModal'));
       yield put(setUiState('txHash', data.txHash));
+    }
+
+    if (data.matchedOrders) {
+      yield put(fillOrKillOrders(data.matchedOrders, data.order));
     }
   }
 }

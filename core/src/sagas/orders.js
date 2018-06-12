@@ -26,11 +26,10 @@ import {
   sendMessage,
   setUiState,
   showModal,
+  sendSocketMessage,
 } from '../actions';
 import {
   NODE_ADDRESS,
-  EXCHANGE_FEE,
-  TRANSACTION_FEE,
 } from '../utils/web3';
 import * as resourcesActions from '../actions/resources';
 import {
@@ -50,7 +49,6 @@ import {
 
 export function* createOrder(): Saga<*> {
   const { zeroEx } = window;
-  const { NULL_ADDRESS } = ZeroEx;
   const EXCHANGE_ADDRESS = yield zeroEx.exchange.getContractAddress();
 
   const { amount, price } = yield select(getFormValues('BuySellForm'));
@@ -84,14 +82,12 @@ export function* createOrder(): Saga<*> {
       return;
     }
 
-    const feeAmount = BigNumber(total).times(EXCHANGE_FEE).add(TRANSACTION_FEE).toFixed(12);
-
     makerTokenAddress = currentToken.id;
     takerTokenAddress = currentPair.id;
     makerTokenAmount =
       ZeroEx.toBaseUnitAmount(BigNumber(amount), currentToken.decimals);
     takerTokenAmount =
-      ZeroEx.toBaseUnitAmount(BigNumber(total).minus(feeAmount), currentPair.decimals);
+      ZeroEx.toBaseUnitAmount(BigNumber(total), currentPair.decimals);
   } else if (type === 'buy') {
     // Check wrapped amount for WETH
 
@@ -118,20 +114,17 @@ export function* createOrder(): Saga<*> {
       return;
     }
 
-    const feeAmount = BigNumber(amount).times(EXCHANGE_FEE)
-      .add(BigNumber(TRANSACTION_FEE).div(price).toFixed(8)).toFixed(8);
-
     makerTokenAddress = currentPair.id;
     takerTokenAddress = currentToken.id;
     makerTokenAmount =
       ZeroEx.toBaseUnitAmount(BigNumber(total), currentPair.decimals);
     takerTokenAmount =
-      ZeroEx.toBaseUnitAmount(BigNumber(amount).minus(feeAmount), currentToken.decimals);
+      ZeroEx.toBaseUnitAmount(BigNumber(amount), currentToken.decimals);
   }
   const zrxOrder = {
     maker: address.toLowerCase(),
     taker: NODE_ADDRESS,
-    feeRecipient: '0x004E344251110Fa1Cb09aA31C95c6598Ed07Dce6',
+    feeRecipient: '0x004e344251110fa1cb09aa31c95c6598ed07dce6',
     exchangeContractAddress: EXCHANGE_ADDRESS,
     salt: ZeroEx.generatePseudoRandomSalt(),
     makerFee: BigNumber(0),
@@ -160,9 +153,7 @@ export function* createOrder(): Saga<*> {
       ecSignature,
     };
     yield put(sendMessage({ content: 'Placing order', type: 'loading' }));
-    console.log('Before validation');
     yield zeroEx.exchange.validateOrderFillableOrThrowAsync(signedZRXOrder);
-    console.log(price);
     const order = {
       price: (+price).toFixed(12),
       amount: (+amount).toFixed(12),
@@ -179,6 +170,7 @@ export function* createOrder(): Saga<*> {
     yield put(saveResourceRequest({
       resourceName: 'orders',
       request: 'createOrder',
+      lists: ['userOrders', type],
       data: {
         attributes: order,
         resourceName: 'orders',
@@ -340,10 +332,59 @@ export function* cancelOrder({
   }
 }
 
+export const formatZrxOrder = order => ({
+  ...order,
+  makerTokenAmount: BigNumber(order.makerTokenAmount),
+  takerTokenAmount: BigNumber(order.takerTokenAmount),
+  expirationUnixTimestampSec: BigNumber(order.expirationUnixTimestampSec),
+  makerFee: BigNumber(order.makerFee),
+  takerFee: BigNumber(order.takerFee),
+});
+
+export function* fillOrKillOrders({ payload: { order, orders } }) {
+  const address = yield select(getProfileState('address'));
+  const { zeroEx } = window;
+  const signedOrders = orders.map(o => formatZrxOrder(o.zrxOrder));
+
+  const txHash = yield call(
+    [zeroEx.exchange, zeroEx.exchange.fillOrdersUpToAsync],
+    signedOrders,
+    BigNumber(order.attributes.zrxOrder.takerTokenAmount),
+    true,
+    address,
+  );
+
+  yield put(saveResourceRequest({
+    resourceName: 'orders',
+    request: 'createOrder',
+    lists: ['userOrders', order.type],
+    data: {
+      attributes: order,
+      resourceName: 'orders',
+    },
+  }));
+
+  yield call(customApiRequest, {
+    url: `${config.apiUrl}/orders/update`,
+    method: 'POST',
+    body: JSON.stringify({
+      orders,
+      order: order.id,
+      txHash,
+    }),
+  });
+
+  console.log(txHash);
+}
+
 export function* listenNewOrder(): Saga<*> {
   yield takeEvery(types.CREATE_ORDER, action => createOrder(action.payload));
 }
 
 export function* listenCancelOrder(): Saga<*> {
   yield takeEvery(types.CANCEL_ORDER, cancelOrder);
+}
+
+export function* listenFillOrKillOrders(): Saga<*> {
+  yield takeEvery(types.FILL_OR_KILL_ORDERS, fillOrKillOrders);
 }
