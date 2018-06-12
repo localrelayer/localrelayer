@@ -20,11 +20,12 @@ import {
 import {
   listenNewOrder,
   listenCancelOrder,
+  listenFillOrKillOrders,
 } from './orders';
 
 import {
   listenChangeProvider,
-  listenSetAddress
+  listenSetAddress,
 } from './profile';
 
 const coreSagas = [
@@ -37,6 +38,7 @@ const coreSagas = [
   fork(listenCancelOrder),
   fork(listenChangeProvider),
   fork(listenSetAddress),
+  fork(listenFillOrKillOrders),
 ];
 
 export default coreSagas;

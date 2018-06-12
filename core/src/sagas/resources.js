@@ -12,11 +12,12 @@ import {
 import {
   apiCall,
 } from '../api';
-import * as resourcesActions from '../actions/resources';
 import {
   sendNotification,
   sendMessage,
-} from '../actions/ui';
+  fillOrKillOrders,
+  deleteResourceItem,
+} from '../actions';
 
 
 export function* fetchResourcesRequest({
@@ -83,11 +84,21 @@ export function* saveResourceRequest({
     }
     yield put(actions.pending());
     const response = yield call(apiCall, data.id ? 'UPDATE' : 'ADD', data);
+    yield put(sendMessage({ destroy: true }));
+
+    if (resourceName === 'orders' && response.meta && response.meta.matchedOrders) {
+      console.warn(response);
+      yield put(fillOrKillOrders(data, response.meta.order, response.meta.matchedOrders));
+      return response;
+    }
+
+    console.log(response);
+
     yield putData(response);
     yield put(actions.succeeded({
       resources: [response.data],
     }));
-    yield put(sendMessage({ destroy: true }));
+
     return response;
   } catch (err) {
     yield call(throwError, err);
@@ -96,6 +107,7 @@ export function* saveResourceRequest({
       type: 'error',
     }));
     console.log(err);
+    return null;
   }
 }
 
@@ -113,7 +125,7 @@ export function* deleteResourceRequest({
   } = payload;
   try {
     yield call(apiCall, 'DELETE', { id, resourceName });
-    yield put(resourcesActions.deleteResourceItem({ resourceName, id }));
+    yield put(deleteResourceItem({ resourceName, id }));
   } catch (err) {
     yield call(throwError, err);
     console.log(err);

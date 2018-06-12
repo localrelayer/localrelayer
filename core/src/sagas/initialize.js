@@ -103,7 +103,7 @@ export function* initialize(): Saga<void> {
       console.log('Notification permission status:', status);
     });
 
-    window.BIGGEST_AMOUNT = BigNumber(BIGGEST_AMOUNT).toFixed(12).toString();
+    // window.BIGGEST_AMOUNT = BigNumber(BIGGEST_AMOUNT).toFixed(12).toString();
     window.SMALLEST_AMOUNT = BigNumber(SMALLEST_AMOUNT).toFixed(12).toString();
 
     yield fork(listenRouteChange);
