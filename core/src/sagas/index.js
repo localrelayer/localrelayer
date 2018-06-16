@@ -20,7 +20,6 @@ import {
 import {
   listenNewOrder,
   listenCancelOrder,
-  listenFillOrKillOrders,
 } from './orders';
 
 import {
@@ -38,7 +37,6 @@ const coreSagas = [
   fork(listenCancelOrder),
   fork(listenChangeProvider),
   fork(listenSetAddress),
-  fork(listenFillOrKillOrders),
 ];
 
 export default coreSagas;

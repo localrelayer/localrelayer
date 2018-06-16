@@ -86,14 +86,6 @@ export function* saveResourceRequest({
     const response = yield call(apiCall, data.id ? 'UPDATE' : 'ADD', data);
     yield put(sendMessage({ destroy: true }));
 
-    if (resourceName === 'orders' && response.meta && response.meta.matchedOrders) {
-      console.warn(response);
-      yield put(fillOrKillOrders(data, response.meta.order, response.meta.matchedOrders));
-      return response;
-    }
-
-    console.log(response);
-
     yield putData(response);
     yield put(actions.succeeded({
       resources: [response.data],
