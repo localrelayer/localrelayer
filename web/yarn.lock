@@ -5413,6 +5413,19 @@ less-plugin-lists@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/less-plugin-lists/-/less-plugin-lists-1.1.1.tgz#6e6245bcda75b424dbfe7b49d7b2a409b9ff1c17"
 
+less-vars-loader@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/less-vars-loader/-/less-vars-loader-1.1.0.tgz#2f2245d9040225bfdf553fa5e0ddd8e47bca95b8"
+  dependencies:
+    camelcase "^3.0.0"
+    less-vars-to-js "^1.1.2"
+    loader-utils "^0.2.16"
+    object.entries "^1.0.3"
+
+less-vars-to-js@^1.1.2, less-vars-to-js@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/less-vars-to-js/-/less-vars-to-js-1.2.1.tgz#7d48f096a98f0cbad77d07a242bad2ff14f01934"
+
 less@2.7.3:
   version "2.7.3"
   resolved "https://registry.yarnpkg.com/less/-/less-2.7.3.tgz#cc1260f51c900a9ec0d91fb6998139e02507b63b"
@@ -6256,7 +6269,7 @@ object.assign@^4.0.4, object.assign@^4.1.0:
     has-symbols "^1.0.0"
     object-keys "^1.0.11"
 
-object.entries@^1.0.4:
+object.entries@^1.0.3, object.entries@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/object.entries/-/object.entries-1.0.4.tgz#1bf9a4dd2288f5b33f3a993d257661f05d161a5f"
   dependencies:
@@ -7154,6 +7167,10 @@ raw-body@2.3.2:
     http-errors "1.6.2"
     iconv-lite "0.4.19"
     unpipe "1.0.0"
+
+raw-loader@^0.5.1:
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/raw-loader/-/raw-loader-0.5.1.tgz#0c3d0beaed8a01c966d9787bf778281252a979aa"
 
 rc-align@2.x:
   version "2.3.6"

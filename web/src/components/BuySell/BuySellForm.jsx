@@ -208,7 +208,11 @@ const BuySellForm = ({
         </Popover>
       </article>
     </AdditionInfoContainer>
-    <PlaceOrderButton type={type} size="large" htmlType="submit">
+    <PlaceOrderButton
+      className={`${type === 'buy' ? 'green-button' : 'red-button'}`}
+      size="large"
+      htmlType="submit"
+    >
       {type === 'sell' ? `Sell ${currentToken.symbol || ''}` : `Buy ${currentToken.symbol || ''}`}
     </PlaceOrderButton>
   </FormContainer>

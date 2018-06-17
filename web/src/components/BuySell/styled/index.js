@@ -24,16 +24,7 @@ export const CardContainer = styled(Card)`
 export const InputLabel = styled.label``;
 
 export const PlaceOrderButton = styled(Button)`
-  background: ${props => props.type === 'sell' ? '#a03756' : '#719367'};
-  border-color: ${props => props.type === 'sell' ? '#a03756' : '#719367'};
-  color: white;
   width: 100%;
-
-  &:hover, &:focus, &:active {
-    background: ${props => props.type === 'sell' ? '#ca5252' : '#4fb564'};
-    border-color: ${props => props.type === 'sell' ? '#ca5252' : '#4fb564'};
-    color: white;
-  }
 `;
 
 export const LabelContainer = styled.div`
