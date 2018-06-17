@@ -294,6 +294,11 @@ export function* createOrder(): Saga<*> {
 
       console.log('COMPLETED ORDER', orderAttributes);
 
+      if (txHash) {
+        yield put(setUiState('activeModal', 'TxModal'));
+        yield put(setUiState('txHash', txHash));
+      }
+
       // Updating orders after transaction
       yield call(customApiRequest, {
         url: `${config.apiUrl}/orders/update`,

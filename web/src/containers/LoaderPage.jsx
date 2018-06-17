@@ -8,18 +8,19 @@ const messages = [
   'Shuffling shitcoins',
   'Bogdanov, he is buying',
   'Continuing the dump',
-  'Somebody panic sold',
-  'Pumping ETH',
+  'Panic selling',
+  'Pumping ZRX',
   'Painting a bull flags',
   'FOMO',
   'Loading the Korea FUD',
   'Dumping it again',
   'Hiding all best orders',
+  'Loading China FUD',
   'Printing tethers',
   'Loading the deep',
-  'China FUD loaded',
   'Getting Vitalik on the line',
   'Crashing it',
+  'REKT',
 ];
 
 export default class LoaderPage extends Component {

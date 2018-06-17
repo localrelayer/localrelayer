@@ -3,13 +3,19 @@ import React, { Component } from 'react';
 import type {
   Token,
 } from 'instex-core/types';
+import lessToJs from 'less-vars-to-js';
 import {
   getDatafeed,
 } from './Datafeed';
 
+const varsRaw = require('!!raw-loader!../../assets/styles/variables.less');
+
+const vars = lessToJs(varsRaw);
+
 type Props = {
   token: Token,
 };
+
 
 /**
  * Trading Chart
@@ -53,7 +59,7 @@ export default class extends Component<Props> {
       client_id: 'tradingview.com',
       user_id: 'public_user_id',
       custom_css_url: 'chart.css',
-      toolbar_bg: '#0f2335',
+      toolbar_bg: vars['@component-background'],
       overrides: {
         'paneProperties.leftAxisProperties.autoScale': false,
         'paneProperties.rightAxisProperties.autoScale': false,
@@ -64,16 +70,16 @@ export default class extends Component<Props> {
         'paneProperties.bottomMargin': 25,
         volumePaneSize: 'small',
         'scalesProperties.fontSize': 10,
-        'mainSeriesProperties.candleStyle.upColor': '#719367',
-        'mainSeriesProperties.candleStyle.downColor': '#a03756',
+        'mainSeriesProperties.candleStyle.upColor': vars['@green'],
+        'mainSeriesProperties.candleStyle.downColor': vars['@red'],
         'paneProperties.vertGridProperties.style': 1,
         'paneProperties.horzGridProperties.style': 1,
-        'paneProperties.background': '#0f2335',
+        'paneProperties.background': vars['@component-background'],
         'scalesProperties.textColor': 'white',
-        'paneProperties.horzGridProperties.color': '#0f2335',
-        'paneProperties.vertGridProperties.color': '#0f2335',
-        'scalesProperties.backgroundColor': '#0f2335',
-        'scalesProperties.lineColor': '#0f2335',
+        'paneProperties.horzGridProperties.color': vars['@component-background'],
+        'paneProperties.vertGridProperties.color': vars['@component-background'],
+        'scalesProperties.backgroundColor': vars['@component-background'],
+        'scalesProperties.lineColor': vars['@component-background'],
         'mainSeriesProperties.candleStyle.drawBorder': false,
       },
       studies_overrides: {
