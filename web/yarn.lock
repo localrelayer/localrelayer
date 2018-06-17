@@ -5409,6 +5409,10 @@ less-loader@4.0.5:
     loader-utils "^1.1.0"
     pify "^2.3.0"
 
+less-plugin-lists@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/less-plugin-lists/-/less-plugin-lists-1.1.1.tgz#6e6245bcda75b424dbfe7b49d7b2a409b9ff1c17"
+
 less@2.7.3:
   version "2.7.3"
   resolved "https://registry.yarnpkg.com/less/-/less-2.7.3.tgz#cc1260f51c900a9ec0d91fb6998139e02507b63b"

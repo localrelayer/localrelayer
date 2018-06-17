@@ -51,9 +51,6 @@ import {
 import BigNumber from '../utils/BigNumber';
 import WETH from '../utils/WETH';
 import {
-  subscribeToEvents,
-} from './ethereum';
-import {
   throwError,
 } from './utils';
 
@@ -158,9 +155,11 @@ export function* loadTokensBalance() {
         resources: [pair, current, ...allTokens].map(t => ({ id: t.id, attributes: { ...t } })),
       }),
     );
+    yield put(setUiState('isPageLoading', false));
   } catch (e) {
     yield call(throwError, e);
     console.error('Couldn load all tokens balance', e);
+    yield put(setUiState('isPageLoading', false));
   }
 }
 

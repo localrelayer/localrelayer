@@ -2,13 +2,18 @@
 import {
   createSelector,
 } from 'reselect';
+import {
+  getFormValues,
+} from 'redux-form';
 import BigNumber from '../utils/BigNumber';
 import {
   getResourceMap,
   getResourceMappedList,
 } from './resources';
 
+
 const getProfileState = key => ({ profile }) => profile[key];
+const getUiState = key => ({ ui }) => ui[key];
 
 export const getBuyOrders = createSelector(
   [
@@ -108,5 +113,35 @@ export const getCompletedUserOrders = createSelector(
       tokenSymbol: tokens[order.token_address] ? tokens[order.token_address].attributes.symbol : '',
       pairSymbol: tokens[order.pair_address] ? tokens[order.pair_address].attributes.symbol : '',
     })),
+);
+
+export const getTotal = createSelector(
+  [
+    getUiState('activeTab'),
+    getFormValues('BuySellForm'),
+    getSellOrders,
+    getBuyOrders,
+  ],
+  (orderType, formValues = {}, sellOrders, buyOrders) => {
+    const { amount = 0, price = 0 } = formValues;
+    if (orderType === 'sell') {
+      const total = buyOrders.reduce((acc, order) => {
+        if (BigNumber(order.price).gte(+price)) {
+          const requiredAmount = BigNumber(order.amount).lte(+amount) ? order.amount : BigNumber(order.amount).minus(+amount);
+          return acc.add(BigNumber(requiredAmount).times(order.price));
+        }
+        return acc;
+      }, BigNumber(0));
+      return total.toFixed(6).toString();
+    }
+    const total = sellOrders.reduce((acc, order) => {
+      if (BigNumber(order.price).lte(+price)) {
+        const requiredAmount = BigNumber(order.amount).lte(+amount) ? order.amount : BigNumber(order.amount).minus(+amount);
+        return acc.add(BigNumber(requiredAmount).times(order.price));
+      }
+      return acc;
+    }, BigNumber(0));
+    return total.toFixed(6).toString();
+  },
 );
 

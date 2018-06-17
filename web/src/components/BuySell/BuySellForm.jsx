@@ -4,6 +4,7 @@ import {
   reduxForm,
   Field,
   getFormValues,
+  isPristine,
 } from 'redux-form';
 import {
   Popover,
@@ -27,6 +28,9 @@ import type {
 import type {
   MapStateToProps,
 } from 'react-redux';
+import {
+  getTotal,
+} from 'instex-core/selectors';
 import {
   EXCHANGE_FEE,
   TRANSACTION_FEE,
@@ -54,19 +58,15 @@ const validate = (values, props) => {
   if (!values.price || values.price === 0) {
     errors.price = 'Please enter a price';
   }
-  // if (!values.exp) {
-  //   errors.exp = 'Please enter expire date';
-  // }
+  if (values.price && !/^-?\d+\.?\d*$/.test(values.price)) {
+    errors.price = 'Only numbers allowed';
+  }
+  if (values.amount && !/^-?\d+\.?\d*$/.test(values.amount)) {
+    errors.amount = 'Only numbers allowed';
+  }
   if (values.price && values.amount) {
-    if (!/^-?\d+\.?\d*$/.test(values.price)) {
-      errors.price = 'Only numbers allowed';
-    }
-    if (!/^-?\d+\.?\d*$/.test(values.amount)) {
-      errors.amount = 'Only numbers allowed';
-    }
     if (
-      BigNumber(+values.price)
-        .times(+values.amount)
+      BigNumber(props.total)
         .lt(window.SMALLEST_AMOUNT || 0)
     ) {
       errors.amount = 'Order is too small :(';
@@ -83,8 +83,7 @@ const validate = (values, props) => {
     }
     if (
       props.type === 'buy' &&
-      BigNumber(+values.price)
-        .times(+values.amount)
+      BigNumber(props.total)
         .gt(BigNumber(+props.currentPair.balance || 0).add(+props.balance || 0))
     ) {
       errors.amount = "You don't have the required amount";
@@ -225,7 +224,10 @@ BuySellForm.defaultProps = {
 const mapStateToProps: MapStateToProps<*, *, *> = (state, props) => {
   const { type } = props;
   const { amount = 0, price = 0 } = getFormValues('BuySellForm')(state) || {};
-  const total = BigNumber((+amount).toFixed(12)).times((+price).toFixed(12));
+  // const total = BigNumber((+amount).toFixed(12)).times((+price).toFixed(12));
+  const total = getTotal(state);
+  const pristine = isPristine('BuySellForm')(state);
+  const naiveTotal = BigNumber(+amount).times(+price).toFixed(6);
 
   let exchangeFee;
   let transactionFee;
@@ -241,7 +243,7 @@ const mapStateToProps: MapStateToProps<*, *, *> = (state, props) => {
   const totalFee = exchangeFee.add(transactionFee);
 
   return {
-    total: total.toFixed(6),
+    total: pristine ? total : naiveTotal,
     totalFee: totalFee.toFixed(6),
     exchangeFee: exchangeFee.toFixed(6),
     transactionFee: transactionFee.toFixed(6),
@@ -249,10 +251,10 @@ const mapStateToProps: MapStateToProps<*, *, *> = (state, props) => {
 };
 
 export default compose(
+  connect(mapStateToProps),
   reduxForm({
     form: 'BuySellForm',
     touchOnChange: true,
     validate,
   }),
-  connect(mapStateToProps),
 )(BuySellForm);

@@ -1,0 +1,148 @@
+#page {
+  overflow: hidden;
+  z-index: 10000;
+  @opacity: 90%;
+  opacity: 0.95;
+  align-items: center;
+  background: #02121f;
+  // background: linear-gradient(
+  //                 to top right,
+  //                 mix(@body-background, white, @opacity) 10%,
+  //                 mix(@component-background, white, @opacity) 65%,
+  //                 mix(@firm-color, white, @opacity) 125%);
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transition: opacity 1s;
+}
+
+
+#phrase_box {  
+  display: flex;
+  flex-flow: column;
+  height: 150px;
+  overflow: hidden;
+  width: 260px;
+}
+
+#phrases {
+  animation: slide-phrases-upward 20s;
+}
+
+#footer {
+  bottom: 30px;
+  color: white;
+  display: flex;
+  justify-content: center;
+  left: 0;
+  position: fixed;
+  right: 0;
+}
+
+@keyframes slide-phrases-upward {
+  0% {
+      transform: translateY(0px);
+  }
+  5% {
+      transform: translateY(-50px);
+  }
+  10% {
+      transform: translateY(-100px);
+  }
+  15% {
+      transform: translateY(-150px);
+  }
+  20% {
+      transform: translateY(-200px);
+  }
+  25% {
+      transform: translateY(-250px);
+  }
+  30% {
+      transform: translateY(-300px);
+  }
+  35% {
+      transform: translateY(-350px);
+  }
+  40% {
+      transform: translateY(-400px);
+  }
+  45% {
+      transform: translateY(-450px);
+  }
+  50% {
+      transform: translateY(-500px);
+  }
+  55% {
+      transform: translateY(-550px);
+  }
+  60% {
+      transform: translateY(-600px);
+  }
+  65% {
+      transform: translateY(-650px);
+  }
+  70% {
+      transform: translateY(-700px);
+  }
+  75% {
+      transform: translateY(-750px);
+  }
+  80% {
+      transform: translateY(-800px);
+  }
+  85% {
+      transform: translateY(-850px);
+  }
+  90% {
+      transform: translateY(-900px);
+  }
+  95% {
+      transform: translateY(-950px);
+  }
+  100% {
+      transform: translateY(-1000px);
+  }
+}
+
+.for(@i: 0, 20) {
+  #loadingCheckCircleSVG-@{i} {
+    animation: fill-to-white 5000ms;
+    animation-delay: (@i - 1.5) * 1s;
+    fill: white;
+    opacity: 0;
+  }
+}
+
+@keyframes fill-to-white {
+  0% {
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+.for(@i, 20) {
+  #loadingCheckSVG-@{i} {
+    animation: fill-to-coral 5000ms;
+    animation-delay: (@i - 1.5) * 1s;    
+  }
+}
+@keyframes fill-to-coral {
+  0% {
+    fill: white;
+  }
+  10% {
+    fill: @primary-color;
+  }
+  100% {
+    fill: @primary-color;
+  }
+}
