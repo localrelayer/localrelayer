@@ -3,7 +3,6 @@ import React from 'react';
 import {
   connect,
 } from 'react-redux';
-import moment from 'moment';
 import type { MapStateToProps } from 'react-redux';
 import type { Dispatch } from 'redux';
 import type {
@@ -14,7 +13,8 @@ import type {
   Orders,
 } from 'instex-core/types';
 import {
-  change,
+  initialize,
+  reset,
 } from 'redux-form';
 import {
   getBuyOrders,
@@ -24,6 +24,7 @@ import {
   setUiState,
   showModal,
 } from 'instex-core/actions';
+import BigNumber from 'instex-core/src/utils/BigNumber';
 import OrderBook from '../../components/OrderBook';
 
 
@@ -40,20 +41,31 @@ const OrderBookContainer: StatelessFunctionalComponent<Props> =
     dispatch,
   }: Props): Node =>
     <OrderBook
-      fillOrder={(order) => {
-        if (order.status === 'pending') {
+      fillOrder={(orders) => {
+        const activeOrders = orders.filter(order => order.status === 'new');
+
+        const { type } = activeOrders[0];
+
+        const totalAmount = activeOrders.reduce((acc, prev) => acc.add(prev.amount), BigNumber(0))
+          .toNumber().toFixed(6);
+        const totalPrice = BigNumber[type === 'sell' ? 'max' : 'min'](activeOrders.map(order => order.price));
+
+        if (!activeOrders.length) {
           dispatch(showModal({
             type: 'info',
             title: 'Sorry, order is already taken',
           }));
         } else {
-        dispatch(setUiState('activeTab', order.type === 'buy' ? 'sell' : 'buy'));
-        dispatch(change('BuySellForm', 'price', order.price)); // eslint-disable-line
-        dispatch(change('BuySellForm', 'amount', order.amount)); // eslint-disable-line
-        dispatch(setUiState('shouldAnimate', true));
-        setTimeout(() => {
-          dispatch(setUiState('shouldAnimate', false));
-        }, 500);
+          dispatch(reset('BuySellForm'));
+          dispatch(setUiState('activeTab', type === 'buy' ? 'sell' : 'buy'));
+          dispatch(initialize('BuySellForm', {
+            price: totalPrice,
+            amount: totalAmount,
+          }));
+          dispatch(setUiState('shouldAnimate', true));
+          setTimeout(() => {
+            dispatch(setUiState('shouldAnimate', false));
+          }, 500);
         }
       }}
       buyOrders={buyOrders}

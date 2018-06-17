@@ -60,6 +60,7 @@ import {
 } from './utils';
 
 export function* initialize(): Saga<void> {
+  yield put(setUiState('isPageLoading', true));
   yield call(startWeb3);
   yield call(fetchResourcesRequest, {
     payload: {
@@ -85,6 +86,7 @@ export function* initialize(): Saga<void> {
       }),
     );
     yield put(setProfileState('connectionStatus', connectionStatuses.NOT_CONNECTED));
+    yield put(setUiState('isPageLoading', false));
   } else {
     yield put(changeProvider('metamask'));
     yield fork(watchNewMetamaskAccount);
