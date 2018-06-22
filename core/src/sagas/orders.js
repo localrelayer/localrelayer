@@ -329,15 +329,13 @@ export function* createOrder(): Saga<*> {
       'Order created',
       { address, token: currentToken.id },
     );
-
-    yield put(reset('BuySellForm'));
-
-    // recalculate balance with new locked amount
-    yield call(loadCurrentTokenAndPairBalance);
   } catch (e) {
     yield call(throwError, e);
     yield put(sendNotification({ message: e.message, type: 'error' }));
     console.error(e);
+  } finally {
+    yield put(reset('BuySellForm'));
+    yield call(loadCurrentTokenAndPairBalance);
   }
 }
 

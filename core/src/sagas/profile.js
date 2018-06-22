@@ -82,6 +82,7 @@ export function* loadUser(): Saga<*> {
   yield put(setProfileState('addresses', accounts));
   if (!accounts.length || !web3) {
     yield put(setProfileState('connectionStatus', connectionStatuses.LOCKED));
+    yield put(setUiState('isPageLoading', false));
     yield put(
       showModal({
         title: 'Your wallet is unavailable',

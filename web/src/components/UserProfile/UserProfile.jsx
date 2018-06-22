@@ -94,7 +94,11 @@ const UserProfile: StatelessFunctionalComponent<Props> = ({
     }
   >
     <Badge>
-      <UserButton id="account" type="primary">
+      <UserButton
+        id="account"
+        type="primary"
+        className="header-button"
+      >
         <AvatarContainer shape="square" src={provider === 'ledger' ? ledger : metamask} />
         {connectionStatus === connectionStatuses.CONNECTED ? (
           <Truncate>{address}</Truncate>

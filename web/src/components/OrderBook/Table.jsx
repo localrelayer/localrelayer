@@ -76,9 +76,12 @@ export default enchanceState(enchance(({
   <Table id={`${type}-book`} className="Table">
     {
       orders.length > 0 ? orders.map((order, i) => (
-        <Tooltip key={order.id} placement="bottom" title={`Click on order to ${order.type === 'buy' ? 'sell' : 'buy'}`}>
+        // <Tooltip key={order.id} placement="bottom" title={`Click on order to ${order.type === 'buy' ? 'sell' : 'buy'}`}>
           <div
-            style={{ position: 'relative' }}
+            style={{
+              position: 'relative',
+              order: type === 'sell' ? orders.length - i : i,
+            }}
             onClick={() => fillOrder(orders.slice(0, i + 1))}
             className={classnames({
               hovered: i <= hoveredOrderIndex,
@@ -107,7 +110,7 @@ export default enchanceState(enchance(({
             </IconContainer>
             {/* <AmountFillContainer width={calculateFill(order.total, orders)} type={type} /> */}
           </div>
-        </Tooltip>
+        // </Tooltip>
       ))
       :
       <div style={{ margin: 'auto' }}>No {type} orders</div>
