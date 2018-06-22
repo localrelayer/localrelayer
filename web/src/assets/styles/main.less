@@ -247,7 +247,7 @@ img {
 
 #sell-book {
   align-content: flex-start;
-  flex-wrap: wrap-reverse;
+  align-items: flex-end;
 }
 
 #buy-book {
@@ -375,5 +375,15 @@ input[type=checkbox]{
     color: white;
     background-color: tint(@red, 20%);
     border-color: tint(@red, 20%);
+  }
+}
+
+.header-button {
+  background-color: @btn-default-bg;
+  border-color: @btn-default-bg;
+  &:hover, &:focus, &:active {
+    color: white;
+    background-color: tint(@btn-default-bg, 20%);
+    border-color: tint(@btn-default-bg, 20%);
   }
 }

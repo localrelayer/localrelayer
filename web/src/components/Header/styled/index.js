@@ -39,8 +39,6 @@ export const HeaderContainer = styled(Layout.Header)`
 
 export const HeaderButton = styled(Button)`
   margin-left: 8px;
-  border: none;
-  background: #0d2536;
 `;
 
 export const UserButton = styled(HeaderButton)`
