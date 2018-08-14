@@ -169,8 +169,6 @@ export function* createOrder(): Saga<*> {
           zeroEx.exchange.getUnavailableTakerAmountAsync(o.order_hash)),
       );
 
-      console.log('WTF', matchedOrdersFillment);
-
       txHash = yield call(
         [zeroEx.exchange, zeroEx.exchange.fillOrdersUpToAsync],
         signedOrders,
@@ -194,20 +192,12 @@ export function* createOrder(): Saga<*> {
         },
         BigNumber(0));
 
-      console.log('MATCHEDORDERSTOTAL', matchedOrdersTotalTakerAmount, matchedOrdersTotalMakerAmount);
-
-      console.log('ZRX DATA', zrxOrder.takerTokenAmount, zrxOrder.makerTokenAmount);
-
       const leftTakerAmount = BigNumber(zrxOrder.takerTokenAmount)
         .minus(matchedOrdersTotalMakerAmount);
       const leftMakerAmount = BigNumber(zrxOrder.makerTokenAmount)
         .minus(matchedOrdersTotalTakerAmount);
 
       const isFilled = BigNumber(leftTakerAmount).lte(SMALLEST_AMOUNT);
-
-      console.log('leftMakerAmount', leftMakerAmount);
-      console.log('leftTakerAmount', leftTakerAmount);
-      console.log('is Filled', isFilled);
 
       const takerDecimals = order.type === 'buy' ? currentToken.decimals : currentPair.decimals;
       const makerDecimals = order.type === 'buy' ? currentPair.decimals : currentToken.decimals;
@@ -227,12 +217,6 @@ export function* createOrder(): Saga<*> {
         // calculate new total and amount
         const newAmount = order.type === 'buy' ? leftTakerAmountUnit : leftMakerAmountUnit;
         const newTotal = BigNumber(newAmount).times(order.price);
-
-        console.warn('NEW AMOUNT', newAmount);
-        console.warn('NEW TOTAL', newTotal);
-
-        console.warn('LEFT MAKER', leftMakerAmount);
-        console.warn('LEFT TAKER', leftTakerAmount);
 
         const newOrder = {
           ...order,
@@ -291,8 +275,6 @@ export function* createOrder(): Saga<*> {
         amount: filledAmount.toFixed(12),
         total: filledTotal.toFixed(12),
       };
-
-      console.log('COMPLETED ORDER', orderAttributes);
 
       if (txHash) {
         yield put(setUiState('activeModal', 'TxModal'));
