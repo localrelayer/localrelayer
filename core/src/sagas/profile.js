@@ -51,9 +51,6 @@ import {
 import BigNumber from '../utils/BigNumber';
 import WETH from '../utils/WETH';
 import {
-  subscribeToEvents,
-} from './ethereum';
-import {
   throwError,
 } from './utils';
 
@@ -85,6 +82,7 @@ export function* loadUser(): Saga<*> {
   yield put(setProfileState('addresses', accounts));
   if (!accounts.length || !web3) {
     yield put(setProfileState('connectionStatus', connectionStatuses.LOCKED));
+    yield put(setUiState('isPageLoading', false));
     yield put(
       showModal({
         title: 'Your wallet is unavailable',
@@ -158,9 +156,11 @@ export function* loadTokensBalance() {
         resources: [pair, current, ...allTokens].map(t => ({ id: t.id, attributes: { ...t } })),
       }),
     );
+    yield put(setUiState('isPageLoading', false));
   } catch (e) {
     yield call(throwError, e);
     console.error('Couldn load all tokens balance', e);
+    yield put(setUiState('isPageLoading', false));
   }
 }
 

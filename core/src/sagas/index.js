@@ -24,7 +24,7 @@ import {
 
 import {
   listenChangeProvider,
-  listenSetAddress
+  listenSetAddress,
 } from './profile';
 
 const coreSagas = [

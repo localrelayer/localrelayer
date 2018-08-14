@@ -15,6 +15,7 @@ const initialState: UiState = {
   shouldRunTutorial: false,
   txHash: '',
   activeModal: '',
+  isPageLoading: false,
 };
 
 export default function ui(
