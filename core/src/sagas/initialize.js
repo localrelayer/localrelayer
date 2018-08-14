@@ -25,7 +25,6 @@ import {
 import {
   connectionStatuses,
   SMALLEST_AMOUNT,
-  BIGGEST_AMOUNT,
 } from '../utils/web3';
 import {
   startWeb3,
@@ -60,6 +59,7 @@ import {
 } from './utils';
 
 export function* initialize(): Saga<void> {
+  yield put(setUiState('isPageLoading', true));
   yield call(startWeb3);
   yield call(fetchResourcesRequest, {
     payload: {
@@ -85,25 +85,16 @@ export function* initialize(): Saga<void> {
       }),
     );
     yield put(setProfileState('connectionStatus', connectionStatuses.NOT_CONNECTED));
+    yield put(setUiState('isPageLoading', false));
   } else {
     yield put(changeProvider('metamask'));
     yield fork(watchNewMetamaskAccount);
     yield call(setLocalStoragePendingTransactions);
 
-    if (process.env.NODE_ENV === 'production') {
-      yield put(
-        showModal({
-          title: 'Max order is temporary limited to 1 ETH',
-          type: 'info',
-        }),
-      );
-    }
-
     Notification.requestPermission((status) => {
       console.log('Notification permission status:', status);
     });
 
-    window.BIGGEST_AMOUNT = BigNumber(BIGGEST_AMOUNT).toFixed(12).toString();
     window.SMALLEST_AMOUNT = BigNumber(SMALLEST_AMOUNT).toFixed(12).toString();
 
     yield fork(listenRouteChange);

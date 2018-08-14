@@ -38,6 +38,7 @@ import TradingPage from './containers/TradingPage';
 import JoyrideWrapper from './JoyrideWrapper';
 import ModalWrapper from './containers/ModalWrapper';
 import Footer from './containers/FooterContainer';
+import LoaderPage from './containers/LoaderPage';
 
 const getTitle = (
   token,
@@ -53,12 +54,14 @@ type Props = {
   bannerMessage: string,
   currentToken: Token,
   currentPair: Token,
+  isPageLoading: Boolean,
 };
 
 const routes = ({
   bannerMessage,
   currentToken,
   currentPair,
+  isPageLoading,
 }: Props) => (
   <ConnectedRouter
     history={history}
@@ -74,6 +77,7 @@ const routes = ({
           )}
         </title>
       </Helmet>
+      {isPageLoading && <LoaderPage />}
       <Layout>
         <Header />
         {bannerMessage &&
@@ -117,6 +121,8 @@ const mapStateToProps = state => ({
   bannerMessage: state.ui.bannerMessage,
   currentToken: getCurrentToken(state),
   currentPair: getCurrentPair(state),
+  isPageLoading: state.ui.isPageLoading,
+  // isPageLoading: true,
 });
 
 export default connect(mapStateToProps)(routes);

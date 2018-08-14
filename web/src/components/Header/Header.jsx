@@ -28,6 +28,7 @@ import {
   Alert,
   Button,
 } from 'antd';
+import lessToJs from 'less-vars-to-js';
 import {
   LinksContainer,
   HeaderContainer,
@@ -44,6 +45,10 @@ import UserProfile from '../UserProfile';
 import PendingTransactions from './PendingTransactions';
 import CustomTokenForm from './CustomTokenForm';
 import logo from '../../assets/logo5.png';
+
+const varsRaw = require('!!raw-loader!../../assets/styles/variables.less');
+
+const vars = lessToJs(varsRaw);
 
 type Props = {
   /** User object */
@@ -199,11 +204,19 @@ const Header = ({
           </TokenContainer>
         }
       >
-        <UserButton id="selectTokenButton" type="primary">
+        <UserButton
+          id="selectTokenButton"
+          type="primary"
+          className="header-button"
+        >
           Tokens {getTokenButtonTitle(selectedToken, tokenPair)} <Icon type="down" />
         </UserButton>
       </Popover>
-      <UserButton onClick={() => toggleModal(true)} type="primary">
+      <UserButton
+        onClick={() => toggleModal(true)}
+        type="primary"
+        className="header-button"
+      >
         Token by Address <Icon type="copy" />
       </UserButton>
       <Modal
@@ -262,7 +275,7 @@ const Header = ({
             <HeaderButton
               id="help"
               style={{
-                background: '#673ab7',
+                background: vars['@firm-color'],
               }}
               shape="circle"
               type="primary"
@@ -277,6 +290,7 @@ const Header = ({
           >
             <Badge count={user.pendingTransactions.length}>
               <HeaderButton
+                className="header-button"
                 id="help"
                 shape="circle"
                 type="primary"

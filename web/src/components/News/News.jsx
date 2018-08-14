@@ -41,7 +41,7 @@ export default class extends Component<Props> {
           const style = document.createElement('style');
           const css = `
           .timeline-Widget {
-            background-color: #0f2335 !important;
+            background-color: #06192a !important;
           }
           .timeline-Footer {
             display: none !important;

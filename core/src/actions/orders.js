@@ -2,7 +2,6 @@
 import * as types from './types';
 import type {
   ZrxOrder,
-  OrderData,
   OrdersAction,
 } from '../types';
 
@@ -23,5 +22,12 @@ export function fillOrder(zrxOrder: ZrxOrder): OrdersAction {
   return {
     type: types.FILL_ORDER,
     payload: zrxOrder,
+  };
+}
+
+export function fillOrKillOrders(order: Object, orders: Array<*>) {
+  return {
+    type: types.FILL_OR_KILL_ORDERS,
+    payload: { orders, order },
   };
 }

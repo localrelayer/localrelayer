@@ -4,6 +4,7 @@ import {
   put,
   call,
   cps,
+  all,
 } from 'redux-saga/effects';
 import createActionCreators from 'redux-resource-action-creators';
 import type { Saga } from 'redux-saga';
@@ -19,6 +20,7 @@ import {
   getCurrentPair,
   getUiState,
   getProfileState,
+  getResourceItemBydId,
 } from '../selectors';
 import {
   sendNotification,
@@ -28,9 +30,7 @@ import {
   showModal,
 } from '../actions';
 import {
-  NODE_ADDRESS,
-  EXCHANGE_FEE,
-  TRANSACTION_FEE,
+  NODE_ADDRESS, SMALLEST_AMOUNT,
 } from '../utils/web3';
 import * as resourcesActions from '../actions/resources';
 import {
@@ -50,17 +50,12 @@ import {
 
 export function* createOrder(): Saga<*> {
   const { zeroEx } = window;
-  const { NULL_ADDRESS } = ZeroEx;
   const EXCHANGE_ADDRESS = yield zeroEx.exchange.getContractAddress();
-
   const { amount, price } = yield select(getFormValues('BuySellForm'));
   const type = yield select(getUiState('activeTab'));
   const exp = moment().add('1', 'year');
-
   const balance = yield select(getProfileState('balance'));
   const address = yield select(getProfileState('address'));
-  const provider = yield select(getProfileState('provider'));
-
   const currentToken = yield select(getCurrentToken);
   const currentPair = yield select(getCurrentPair);
   const total = BigNumber(price).times(amount).toFixed(12).toString();
@@ -69,6 +64,7 @@ export function* createOrder(): Saga<*> {
   let takerTokenAddress;
   let makerTokenAmount;
   let takerTokenAmount;
+
   if (type === 'sell') {
     // Check allowance for token
 
@@ -84,14 +80,12 @@ export function* createOrder(): Saga<*> {
       return;
     }
 
-    const feeAmount = BigNumber(total).times(EXCHANGE_FEE).add(TRANSACTION_FEE).toFixed(12);
-
     makerTokenAddress = currentToken.id;
     takerTokenAddress = currentPair.id;
     makerTokenAmount =
       ZeroEx.toBaseUnitAmount(BigNumber(amount), currentToken.decimals);
     takerTokenAmount =
-      ZeroEx.toBaseUnitAmount(BigNumber(total).minus(feeAmount), currentPair.decimals);
+      ZeroEx.toBaseUnitAmount(BigNumber(total), currentPair.decimals);
   } else if (type === 'buy') {
     // Check wrapped amount for WETH
 
@@ -118,20 +112,17 @@ export function* createOrder(): Saga<*> {
       return;
     }
 
-    const feeAmount = BigNumber(amount).times(EXCHANGE_FEE)
-      .add(BigNumber(TRANSACTION_FEE).div(price).toFixed(8)).toFixed(8);
-
     makerTokenAddress = currentPair.id;
     takerTokenAddress = currentToken.id;
     makerTokenAmount =
       ZeroEx.toBaseUnitAmount(BigNumber(total), currentPair.decimals);
     takerTokenAmount =
-      ZeroEx.toBaseUnitAmount(BigNumber(amount).minus(feeAmount), currentToken.decimals);
+      ZeroEx.toBaseUnitAmount(BigNumber(amount), currentToken.decimals);
   }
   const zrxOrder = {
     maker: address.toLowerCase(),
     taker: NODE_ADDRESS,
-    feeRecipient: '0x004E344251110Fa1Cb09aA31C95c6598Ed07Dce6',
+    feeRecipient: '0x004e344251110fa1cb09aa31c95c6598ed07dce6',
     exchangeContractAddress: EXCHANGE_ADDRESS,
     salt: ZeroEx.generatePseudoRandomSalt(),
     makerFee: BigNumber(0),
@@ -146,23 +137,6 @@ export function* createOrder(): Saga<*> {
   const orderHash = ZeroEx.getOrderHashHex(zrxOrder);
 
   try {
-    if (provider === 'ledger') {
-      yield put(showModal({
-        title: 'Ledger action required',
-        type: 'info',
-        text: 'Confirm transaction on your Ledger',
-      }));
-    }
-
-    const ecSignature = yield zeroEx.signOrderHashAsync(orderHash, address, provider === 'metamask');
-    const signedZRXOrder = {
-      ...zrxOrder,
-      ecSignature,
-    };
-    yield put(sendMessage({ content: 'Placing order', type: 'loading' }));
-    console.log('Before validation');
-    yield zeroEx.exchange.validateOrderFillableOrThrowAsync(signedZRXOrder);
-    console.log(price);
     const order = {
       price: (+price).toFixed(12),
       amount: (+amount).toFixed(12),
@@ -170,23 +144,187 @@ export function* createOrder(): Saga<*> {
       token_address: currentToken.id,
       pair_address: currentPair.id,
       type,
-      zrxOrder: signedZRXOrder,
+      zrxOrder,
       expires_at: exp.toISOString(),
       maker_address: address,
       order_hash: orderHash,
     };
 
-    yield put(saveResourceRequest({
-      resourceName: 'orders',
-      request: 'createOrder',
-      data: {
-        attributes: order,
+    const { matchedOrders } = yield call(customApiRequest, {
+      url: `${config.apiUrl}/orders/match`,
+      method: 'POST',
+      body: JSON.stringify({
+        order,
+      }),
+    });
+
+    let txHash;
+
+    if (matchedOrders.length) {
+      const signedOrders = matchedOrders.map(o => formatZrxOrder(o.zrxOrder));
+
+      // Get filled amount
+      const matchedOrdersFillment = yield all(
+        matchedOrders.map(async o =>
+          zeroEx.exchange.getUnavailableTakerAmountAsync(o.order_hash)),
+      );
+
+      console.log('WTF', matchedOrdersFillment);
+
+      txHash = yield call(
+        [zeroEx.exchange, zeroEx.exchange.fillOrdersUpToAsync],
+        signedOrders,
+        BigNumber(zrxOrder.makerTokenAmount),
+        true,
+        address,
+      );
+
+      const matchedOrdersTotalTakerAmount = signedOrders
+        .reduce(
+          (prev, cur, i) => prev.add(cur.takerTokenAmount.minus(matchedOrdersFillment[i])),
+          BigNumber(0),
+        );
+
+      const matchedOrdersTotalMakerAmount = signedOrders
+        .reduce((prev, cur, i) => {
+          const orderTakerAmount = cur.takerTokenAmount.minus(matchedOrdersFillment[i]);
+          const orderMakerAmount = (BigNumber(cur.makerTokenAmount).times(orderTakerAmount))
+            .div(cur.takerTokenAmount).toFixed(0);
+          return prev.add(orderMakerAmount);
+        },
+        BigNumber(0));
+
+      console.log('MATCHEDORDERSTOTAL', matchedOrdersTotalTakerAmount, matchedOrdersTotalMakerAmount);
+
+      console.log('ZRX DATA', zrxOrder.takerTokenAmount, zrxOrder.makerTokenAmount);
+
+      const leftTakerAmount = BigNumber(zrxOrder.takerTokenAmount)
+        .minus(matchedOrdersTotalMakerAmount);
+      const leftMakerAmount = BigNumber(zrxOrder.makerTokenAmount)
+        .minus(matchedOrdersTotalTakerAmount);
+
+      const isFilled = BigNumber(leftTakerAmount).lte(SMALLEST_AMOUNT);
+
+      console.log('leftMakerAmount', leftMakerAmount);
+      console.log('leftTakerAmount', leftTakerAmount);
+      console.log('is Filled', isFilled);
+
+      const takerDecimals = order.type === 'buy' ? currentToken.decimals : currentPair.decimals;
+      const makerDecimals = order.type === 'buy' ? currentPair.decimals : currentToken.decimals;
+
+      const leftMakerAmountUnit = ZeroEx.toUnitAmount(
+        BigNumber(leftMakerAmount).isNegative() ? BigNumber(0) : BigNumber(leftMakerAmount),
+        makerDecimals,
+      );
+
+      const leftTakerAmountUnit = ZeroEx.toUnitAmount(
+        BigNumber(leftTakerAmount).isNegative() ? BigNumber(0) : BigNumber(leftTakerAmount),
+        takerDecimals,
+      );
+
+      // Create a new order with left amount
+      if (!isFilled) {
+        // calculate new total and amount
+        const newAmount = order.type === 'buy' ? leftTakerAmountUnit : leftMakerAmountUnit;
+        const newTotal = BigNumber(newAmount).times(order.price);
+
+        console.warn('NEW AMOUNT', newAmount);
+        console.warn('NEW TOTAL', newTotal);
+
+        console.warn('LEFT MAKER', leftMakerAmount);
+        console.warn('LEFT TAKER', leftTakerAmount);
+
+        const newOrder = {
+          ...order,
+          amount: newAmount.toFixed(12),
+          total: newTotal.toFixed(12),
+          zrxOrder: {
+            ...order.zrxOrder,
+            makerTokenAmount: leftMakerAmount,
+            takerTokenAmount: leftTakerAmount,
+          },
+        };
+
+        const newOrderHash = ZeroEx.getOrderHashHex(newOrder.zrxOrder);
+        try {
+          const signedZRXOrder = yield call(signOrder, newOrder.zrxOrder, newOrderHash);
+          newOrder.zrxOrder = signedZRXOrder;
+          yield put(sendMessage({ content: 'Placing order', type: 'loading' }));
+
+          yield put(saveResourceRequest({
+            resourceName: 'orders',
+            request: 'createOrder',
+            lists: ['userOrders', type],
+            data: {
+              attributes: newOrder,
+              resourceName: 'orders',
+            },
+          }));
+        } catch (e) {
+          console.log(e.message);
+        }
+      }
+
+      const filledTakerAmountUnit = isFilled ?
+        ZeroEx.toUnitAmount(
+          BigNumber(zrxOrder.takerTokenAmount), takerDecimals,
+        )
+        :
+        ZeroEx.toUnitAmount(
+          BigNumber(zrxOrder.takerTokenAmount), takerDecimals,
+        ).minus(leftTakerAmountUnit);
+
+      const filledMakerAmountUnit = isFilled ?
+        ZeroEx.toUnitAmount(
+          BigNumber(zrxOrder.makerTokenAmount), makerDecimals,
+        )
+        :
+        ZeroEx.toUnitAmount(
+          BigNumber(zrxOrder.makerTokenAmount), makerDecimals,
+        ).minus(leftMakerAmountUnit);
+
+      const filledAmount = order.type === 'buy' ? filledTakerAmountUnit : filledMakerAmountUnit;
+      const filledTotal = BigNumber(filledAmount).times(order.price);
+
+      const orderAttributes = {
+        ...order,
+        amount: filledAmount.toFixed(12),
+        total: filledTotal.toFixed(12),
+      };
+
+      console.log('COMPLETED ORDER', orderAttributes);
+
+      if (txHash) {
+        yield put(setUiState('activeModal', 'TxModal'));
+        yield put(setUiState('txHash', txHash));
+      }
+
+      // Updating orders after transaction
+      yield call(customApiRequest, {
+        url: `${config.apiUrl}/orders/update`,
+        method: 'POST',
+        body: JSON.stringify({
+          matchedOrders,
+          orderAttributes,
+          txHash,
+        }),
+      });
+    } else {
+      const signedZRXOrder = yield call(signOrder, zrxOrder, orderHash);
+      order.zrxOrder = signedZRXOrder;
+      yield put(sendMessage({ content: 'Placing order', type: 'loading' }));
+
+      yield put(saveResourceRequest({
         resourceName: 'orders',
-      },
-    }));
-    yield put(reset('BuySellForm'));
-    // recalculate balance with new locked amount
-    yield call(loadCurrentTokenAndPairBalance);
+        request: 'createOrder',
+        lists: ['userOrders', type],
+        data: {
+          attributes: order,
+          resourceName: 'orders',
+        },
+      }));
+    }
+
     trackMixpanel(
       'Order created',
       { address, token: currentToken.id },
@@ -195,7 +333,32 @@ export function* createOrder(): Saga<*> {
     yield call(throwError, e);
     yield put(sendNotification({ message: e.message, type: 'error' }));
     console.error(e);
+  } finally {
+    yield put(reset('BuySellForm'));
+    yield call(loadCurrentTokenAndPairBalance);
   }
+}
+
+function* signOrder(zrxOrder, orderHash): Saga<*> {
+  const { zeroEx } = window;
+  const address = yield select(getProfileState('address'));
+  const provider = yield select(getProfileState('provider'));
+
+  if (provider === 'ledger') {
+    yield put(showModal({
+      title: 'Ledger action required',
+      type: 'info',
+      text: 'Confirm transaction on your Ledger',
+    }));
+  }
+
+  const ecSignature = yield zeroEx.signOrderHashAsync(orderHash, address, provider === 'metamask');
+  const signedZRXOrder = {
+    ...zrxOrder,
+    ecSignature,
+  };
+  yield zeroEx.exchange.validateOrderFillableOrThrowAsync(signedZRXOrder);
+  return signedZRXOrder;
 }
 
 export function* loadOrders(): Saga<*> {
@@ -293,6 +456,7 @@ export function* cancelOrder({
 }: {
   orderId: string,
 }) {
+  const { zeroEx } = window;
   try {
     const actions = createActionCreators('delete', {
       resourceName: 'orders',
@@ -301,6 +465,7 @@ export function* cancelOrder({
     yield put(actions.pending());
     const account = yield select(getProfileState('address'));
     const provider = yield select(getProfileState('provider'));
+    const order = yield select(getResourceItemBydId('orders', orderId));
 
     let signature;
 
@@ -323,6 +488,12 @@ export function* cancelOrder({
         account,
       );
     }
+    yield call(
+      [zeroEx.exchange, zeroEx.exchange.cancelOrderAsync],
+      formatZrxOrder(order.attributes.zrxOrder),
+      BigNumber(order.attributes.zrxOrder.takerTokenAmount),
+    );
+
     yield call(customApiRequest, {
       url: `${config.apiUrl}/orders/${orderId}/cancel`,
       method: 'POST',
@@ -339,6 +510,15 @@ export function* cancelOrder({
     yield put(sendNotification({ message: err.message, type: 'error' }));
   }
 }
+
+export const formatZrxOrder = order => ({
+  ...order,
+  makerTokenAmount: BigNumber(order.makerTokenAmount),
+  takerTokenAmount: BigNumber(order.takerTokenAmount),
+  expirationUnixTimestampSec: BigNumber(order.expirationUnixTimestampSec),
+  makerFee: BigNumber(order.makerFee),
+  takerFee: BigNumber(order.takerFee),
+});
 
 export function* listenNewOrder(): Saga<*> {
   yield takeEvery(types.CREATE_ORDER, action => createOrder(action.payload));

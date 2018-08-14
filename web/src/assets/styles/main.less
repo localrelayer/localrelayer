@@ -1,32 +1,6 @@
 @import "~antd/dist/antd.less";
-
-@primary-color: #3782c3;
-@body-background: #1f415d;
-@layout-body-background: #1f415d;
-@component-background: #0f2335;
-@layout-header-background: @component-background;
-// @layout-footer-background: @component-background;
-@heading-color          : fade(#fff, 90%);
-@text-color             : fade(#fff, 85%);
-@text-color-secondary   : fade(#fff, 60%);
-@border-color-base      : #0f2335;  // base border outline a component
-@border-color-split     : #0f2335;  // split border inside a component
-@background-color-light: #1f415d;
-@item-hover-bg: #2a6394;
-@popover-bg: #00132f;
-@link-color: @primary-color;
-@tab-active-color: white;
-@btn-default-bg: #174263;
-@radio-button-active-color: white;
-@btn-primary-bg: #245988;
-@btn-group-border: #312549;
-@background-color-base: #02323a;
-@firm-color: #673ab7;
-
-// @green: #1ea83b;
-@green: #719367;
-// @red: #da3636;
-@red: #a03756;
+@import "./loader.less";
+@import "./variables.less";
 
 img {
   height: 100%;
@@ -238,6 +212,11 @@ img {
   }
 }
 
+.hovered {
+  background: @item-hover-bg;
+  cursor: pointer;
+}
+
 // @media (min-width: 500px) {
   .Table-row {
     display: flex;
@@ -268,7 +247,7 @@ img {
 
 #sell-book {
   align-content: flex-start;
-  flex-wrap: wrap-reverse;
+  align-items: flex-end;
 }
 
 #buy-book {
@@ -375,4 +354,36 @@ input[type=checkbox]{
 .component-container {
   height: 100%;
   background: @component-background;
+}
+
+.green-button {
+  color: white;
+  background-color: @green;
+  border-color: @green;
+  &:hover, &:focus, &:active {
+    color: white;
+    background-color: tint(@green, 20%);
+    border-color: tint(@green, 20%);
+  }
+}
+
+.red-button {
+  color: white;
+  background-color: @red;
+  border-color: @red;
+  &:hover, &:focus, &:active {
+    color: white;
+    background-color: tint(@red, 20%);
+    border-color: tint(@red, 20%);
+  }
+}
+
+.header-button {
+  background-color: @btn-default-bg;
+  border-color: @btn-default-bg;
+  &:hover, &:focus, &:active {
+    color: white;
+    background-color: tint(@btn-default-bg, 20%);
+    border-color: tint(@btn-default-bg, 20%);
+  }
 }

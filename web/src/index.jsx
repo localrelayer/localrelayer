@@ -23,7 +23,7 @@ import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import 'react-joyride/lib/react-joyride-compiled.css';
 import 'react-select/dist/react-select.css';
-import './assets/main.less';
+import './assets/styles/main.less';
 
 import store from './store';
 import App from './App';
