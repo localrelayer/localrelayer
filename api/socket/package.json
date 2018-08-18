@@ -1,0 +1,33 @@
+{
+  "name": "Instex-socket-server",
+  "version": "0.0.1",
+  "description": "socket server",
+  "scripts": {
+    "start": "cross-env NODE_ENV=production node dist/app.js",
+    "dev": "cross-env NODE_ENV=development babel-watch src/app.js",
+    "clean": "rm -rf build && mkdir build",
+    "build": "cross-env NODE_ENV=production npm run clean && babel src -d dist",
+    "lint": "eslint src *.js"
+  },
+  "dependencies": {
+    "express": "4.16.2",
+    "redis": "2.8.0",
+    "socket.io": "2.0.4",
+    "socket.io-redis": "5.2.0"
+  },
+  "devDependencies": {
+    "babel-cli": "6.26.0",
+    "babel-core": "6.26.0",
+    "babel-eslint": "8.2.1",
+    "babel-plugin-add-module-exports": "0.2.1",
+    "babel-preset-es2015": "6.24.1",
+    "babel-preset-stage-0": "6.24.1",
+    "babel-watch": "2.0.7",
+    "cross-env": "5.1.3",
+    "eslint": "4.18.0",
+    "eslint-config-airbnb": "16.1.0",
+    "eslint-plugin-import": "2.8.0",
+    "eslint-plugin-jsx-a11y": "6.0.3",
+    "eslint-plugin-react": "7.6.1"
+  }
+}

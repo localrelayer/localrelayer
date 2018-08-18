@@ -1,0 +1,16 @@
+definitions:
+  responseApiMeta:
+    type: object
+    properties:
+      rowCount:
+        type: integer
+        example: 10
+      pageCount:
+        type: integer
+        example: 1
+      limit:
+        type: integer
+        example: 100
+      offset:
+        type: integer
+        example: 0
