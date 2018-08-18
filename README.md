@@ -1,119 +1,87 @@
-# instex
+# Instex
+Instex is a dApp(decentralized application) built on top of [0x protocol](https://0xproject.com/).
+It helps traders discover counter-parties and ferry cryptographically signed orders between them.
+
+The project on an experimental stage in attempts to find their own way and take the place in
+the new decentralized world.
+At this stage, we are working on UI and API interfaces for the open orderbook node(relayer)
+which will be ready for connection in shared liquidity pool with other relayers.
+
+This document and all mentioned references are required for reading to every new Instex developer.
+
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 
+## Table of Contents
+- [Usage](#usage)
+  * [Git flow](#git-flow)
+- [Basic concepts](#basic-concepts)
+- [Glossary](#glossary)
+  * [0x protocol](#0x-protocol)
+  * [Web3](#web3)
+  * [MetaMask](#metamask)
+  * [WETH](#weth)
+  * [Order book](#order-book)
+  * [Maker and Taker](#maker-and-taker)
+  * [Relayer](#relayer)
+  * [Shared liquidity](#shared-liquidity)
 
-## GitFlow
-We use [Vincent Driessen's branching model.](http://nvie.com/posts/a-successful-git-branching-model/)  
-Read details here:  
-- http://nvie.com/posts/a-successful-git-branching-model/  
-- https://www.atlassian.com/git/tutorials/comparing-workflows#gitflow-workflow  
-- http://danielkummer.github.io/git-flow-cheatsheet/  
+# Usage
+WIP...
 
-Use [git-flow](https://github.com/petervanderdoes/gitflow-avh) package for working with branches.
+## Git flow
+WIP...
 
-#### git flow init
-Use all init settings as default, except tag prefix, it must be 'v'.
-This is the styleguide for Chronos Jira Plugin: a set of UI components which are
-used in development of the plugin
+# Basic concepts
+**Instex** is a **relayer** with **open order book strategie** built on top of **0x protocol**.
+If you're brand new to **Instex** and want to understand the basic concepts, see:
 
-Every new feature should be developed in s separate branch using
+- The **[Definition](https://en.wikipedia.org/wiki/Order_book_(trading))** of order book
+- The simple interactive **[Explanation](https://relayer.network/)** of what DEX and relayer are
+- The ERC-20 Token Allowance Function **[Explanation](https://tokenallowance.io/)**
+- **[WTF is W-ETH?](https://weth.io/)**
+- **[Getting started](https://tokenallowance.io/)** article with an overview of 0x protocol
+- **[Open Orderbook strategie](https://0xproject.com/wiki#Open-Orderbook)**
+- **[0x project white paper](https://0xproject.com/pdfs/0x_white_paper.pdf)**
 
-```sh
-  git-flow feature start <feature-name>
-```
+# Glossary
+List of basic items which you have to understand to work on the project.
 
-and then merged in develop using
+## 0x Protocol
+**[0x](https://0xproject.com/)** is an open, permissionless protocol allowing for ERC20 tokens
+to be traded on the Ethereum blockchain.
 
-```sh
-  git-flow feature finish
-```
+## Web3
+**[web3](https://github.com/ethereum/web3.js/)** This is the Ethereum compatible
+[JavaScript API](https://github.com/ethereum/wiki/wiki/JavaScript-API) which implements the
+[Generic JSON RPC](https://github.com/ethereum/wiki/wiki/JSON-RPC) spec.
 
-## Commit changes
+## Metamask
+**[Metamask](https://metamask.io/)** is a wallet, at it’s core, implemented as a browser extension.
 
-#### Conventional Commits
-We use [conventional commits specification](https://conventionalcommits.org/) for commit messages.
+## WETH
+**[WETH](https://weth.io/)** - is ETH wrapped by smart contract allows you to trade directly with alt tokens.
 
-#### Commitizen
-To ensure that all commit messages are formatted correctly, we use [Commitizen](http://commitizen.github.io/cz-cli/) in this repository.
-It provides interactive interface that creates your commit messages for you.
-Running commitizen is as simple as running yarn commit from the root of the repo.
-You can pass all the same flags you would normally use with git commit.
+## Order book
+**[Order book](https://en.wikipedia.org/wiki/Order_book_(trading))** - is the list of buy and sell orders.
+Order book can be stored as on-chain or off-chain.
 
-```
-  yarn commit
-```
+## Maker and Taker
+There are two parties involved in every trade, a **maker** and a **taker**.
+The maker creates an order for an amount of TokenA in exchange for an amount of TokenB.
+The maker then submits these to a relayer. Takers discover orders via a relayer and fill them by
+sending them directly to the 0x protocol smart contracts.
+The 0x protocol smart contracts performs an atomic swap, exchanging the maker and taker tokens.
 
-When contributing, use this exact flow:
+## Relayer
+**[A relayer](https://0xproject.com/wiki#Build-A-Relayer)** - is any party or entity which hosts
+an off-chain orderbook.  They provide a way for users to add, remove and update this orderbook
+through an API, GUI or both. In doing so, relayers help traders discover counter-parties and ferry
+cryptographically signed orders between them. Once two parties agree on the terms of an order,
+the order is settled directly on the Ethereum blockchain via the 0x protocol smart contracts.
 
-  1. `$ git-flow feature start <Jira issue key>`
-
-  2. make changes
-
-  3. `$ yarn commit`
-
-  4. when work is done, squash all commits into one with commit message: `feat(<scope>): <jira issue summary>`
-
-  5. `$ git-flow feature publish`
-
-  6. open a pull request to `develop` branch
-
-## State architecture
-This architecure based on [redux documentation](http://redux.js.org/), so for deeply understanding just read it.
-
-#### To keep clean project's architecture, use these principles:
-* [Data normalizing](http://redux.js.org/docs/recipes/reducers/NormalizingStateShape.html) is the most important thing that you have to use.
-* [Simple reducer](http://redux.js.org/docs/recipes/reducers/UpdatingNormalizedData.html) 
-* [Memorized selectors](https://github.com/reactjs/reselect)
-
-## Flow
-Don't forget to use a static type checker. Describe the types for all data used.
-
-## Naming convention
-Use airbnb naming conventions:  
-- https://github.com/airbnb/javascript/tree/master/react#naming  
-- https://github.com/airbnb/javascript#naming-conventions
-#### Variables
-Use declarative style and avoid single letter names.
-If you use abbreveature leave comment with deciphering abbreviations.
-#### Selectors
-All selectors should have a 'get' prefix.
-#### Actions
-Actions must begin with some verb - set, fetch, fill, add, delete, etc...
-
-## Containers and Components
-* [Simple article about it](https://medium.com/@learnreact/container-components-c0e67432e005)
-* [Dan Abramov about it](https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0)
-
-## Usage
-
-#### Installation
-
-##### Before you start
-  + [node](https://nodejs.org/) version should be >= 8 `node -v`
-  + [npm](https://www.npmjs.com/) version should be >= 5 `npm -v`
-  + [yarn](https://yarnpkg.com/) should be installed globally
-
-#### Installation
-
-```js
-  yarn
-  yarn bootstrap
-```
-
-#### Running dev server(web)
-
-```js
-  yarn styleguide
-```
-
-#### Testing
-
-```js
-  yarn test
-```
-
-#### Linting
-
-```js
-  yarn lint
-```
+## Shared liquidity
+Because all relayers represent orders using the 0x protocol order format, an order created on one
+relayer can be filled by users on another relayer. What this means is that rather than each
+relayer having a siloed liquidity pool, they can share orders to create a shared liquidity pool.
+New relayers can bootstrap their liquidity off of existing relayers, immediately becoming an
+interesting place to trade.
