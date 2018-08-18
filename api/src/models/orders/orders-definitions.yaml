@@ -1,0 +1,25 @@
+definitions:
+  OrderAttributes:
+    type: object
+    properties:
+      price:
+        type: string
+        example: "0.0003"
+      amount:
+        type: string
+        example: "4200"
+      type:
+        type: string
+        example: "sell"
+      zrxOrder:
+        type: string
+        example: "{}"
+      expires_at:
+        type: string
+        example: "2018-02-08T14:05:15.639Z"
+      token_address:
+        type: string
+        example: "0x871dd7c2b4b25e1aa18728e9d5f2af4c4e431f5c"
+      tx_hash:
+        type: string
+        example: "0x7ebde48f4cc67b26e7a9373fd85dc625e979aeca41443de0bc7aba14f997552c"

@@ -1,0 +1,47 @@
+parameters:
+  tokens-create-new:
+      in: body
+      name: body
+      required: true
+      schema:
+        type: object
+        properties:
+          data:
+            type: object
+            required:
+              - type
+            properties:
+              type:
+                type: string
+                example: 'tokens'
+              attributes:
+                $ref: '#definitions/TokenAttributes'
+  tokens-filter:
+    in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      properties:
+        page:
+          type: object
+          properties:
+            limit:
+              type: integer
+              example: 100
+            offset:
+              type: integer
+              example: 0
+        fields:
+          type: object
+          properties:
+            tokens:
+              type: array
+              items:
+                type: array
+              example: ['address', 'symbol', 'name', 'decimals']
+        sort:
+          type: array
+          items:
+            type: array
+          example: ['-symbol']
