@@ -136,7 +136,7 @@ adding new (historical) commits or creating a new pull request.
 WIP...
 
 # Basic concepts
-**Instex** is a **relayer** with **open order book strategie** built on top of **0x protocol**.
+**Instex** is a **relayer** utilizing **open order book strategy** built on top of **0x protocol**.
 If you're brand new to **Instex** and want to understand the basic concepts, see:
 
 - The **[Definition](https://en.wikipedia.org/wiki/Order_book_(trading))** of order book
@@ -172,20 +172,20 @@ Order book can be stored as on-chain or off-chain.
 ## Maker and Taker
 There are two parties involved in every trade, a **maker** and a **taker**.
 The maker creates an order for an amount of TokenA in exchange for an amount of TokenB.
-The maker then submits these to a relayer. Takers discover orders via a relayer and fill them by
+The maker then submits these to a relayer. The taker discovers orders via a relayer and fill them by
 sending them directly to the 0x protocol smart contracts.
-The 0x protocol smart contracts performs an atomic swap, exchanging the maker and taker tokens.
+The 0x protocol smart contracts performs a swap, exchanging the maker and taker tokens.
 
 ## Relayer
 **[A relayer](https://0xproject.com/wiki#Build-A-Relayer)** - is any party or entity which hosts
-an off-chain orderbook.  They provide a way for users to add, remove and update this orderbook
+an off-chain orderbook. They provide a way for users to add, remove and update this orderbook
 through an API, GUI or both. In doing so, relayers help traders discover counter-parties and ferry
 cryptographically signed orders between them. Once two parties agree on the terms of an order,
 the order is settled directly on the Ethereum blockchain via the 0x protocol smart contracts.
 
 ## Shared liquidity
 Because all relayers represent orders using the 0x protocol order format, an order created on one
-relayer can be filled by users on another relayer. What this means is that rather than each
-relayer having a siloed liquidity pool, they can share orders to create a shared liquidity pool.
+relayer can be filled by users on another relayer. That means - rather than each
+relayer would have own liquidity pool, all relayers can share orders to create a shared liquidity pool.
 New relayers can bootstrap their liquidity off of existing relayers, immediately becoming an
-interesting place to trade.
+interesting place to trade and big relayers can get additional fee income from those new relayers.
