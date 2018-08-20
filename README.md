@@ -65,6 +65,8 @@ npm install -g commitizen
 
 From now on, instead of `git commit` you type `git cz` and let the tool do the work for you.
 
+Before you start make commits you have to install npm devDependencies for `api` or `ui` packages,
+
 Helpful hint: You can always edit your last commit message, before pushing, by using:
 ```sh
 git commit --amend
