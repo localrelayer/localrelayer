@@ -30,7 +30,21 @@ This document and all mentioned references are required for reading to every new
   * [Shared liquidity](#shared-liquidity)
 
 # Usage
-WIP...
+The repo consist of 3 parts - **api**, **ui** and **landing**.
+Each of this part is a separated module with own **Usage** documentation which described how to run it.
+
+At this moment modules not connect with each other by yarn workspaces or lerna packages, so
+they don't have hoisted or shared dependencies.
+We store it in one repository for the consistent version control.
+It means all these packages have the same version number.
+Therefore when we schedule a new version, the milestone may have issues for any part of the project.
+
+We use [SemVer](http://semver.org/) specification whuch dictate how version numbers are assigned and incremented.
+
+Each new **Major** and **Minor** version changes is scheduled in
+**[github milestones](https://github.com/web-pal/instex/milestones)** so you can track the progress
+right on the github.
+**Patch** versions is for hotfixes or features which we need to deploy for some reason right now.
 
 ## Git flow
 We use [Vincent Driessen's branching model.](http://nvie.com/posts/a-successful-git-branching-model/)
