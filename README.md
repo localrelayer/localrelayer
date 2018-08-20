@@ -65,12 +65,26 @@ sudo npm install -g commitizen cz-customizable
 
 From now on, instead of `git commit` you type `git cz` and let the tool do the work for you.
 
-Helpful hint: You can always edit your last commit message, before pushing, by using:
+The following commit types are used on the project:
+- **feat** - A new feature
+- **fix**- A bug fix
+- **improvement** - Improve a current implementation without adding a new feature or fixing a bug
+- **docs** - Documentation only changes
+- **style** - Changes that do not affect the meaning of the code(white-space, formatting, missing semi-colons, etc)
+- **refactor** - A code change that neither fixes a bug nor adds a feature
+- **perf** - A code change that improves performance
+- **test** - Adding missing tests
+- **chore** - Changes to the build process or auxiliary tools and libraries such as documentation generation
+- **revert** - Revert to a commit
+- **WIP** - Work in progress
+
+You should strive for a clear informative commit message.
+Read **[How to Write a Git Commit Message](https://chris.beams.io/posts/git-commit/)**.
+
+**Helpful hint**: You can always edit your last commit message, before pushing, by using:
 ```sh
 git commit --amend
 ```
-You should strive for a clear informative commit message.
-Read **[How to Write a Git Commit Message](https://chris.beams.io/posts/git-commit/)**.
 
 ## Contributing
 After cloning the repo, initialize the local repository with gitflow(if you use it):
@@ -84,7 +98,7 @@ git checkout -b feature/<feature> develop
 # git-flow:
 git flow feature start <feature>
 ```
-If your feature/bug/whatever have an github issue then use issue id as feature name.
+If your feature/bug/whatever have an **github issue** then use issue id as feature name.
 For instance:
 ```sh
 git checkout -b feature/1 develop
