@@ -60,12 +60,10 @@ To ensure that all commit messages are formatted correctly, you can use
 It provides interactive interface that creates your commit messages for you.
 
 ```sh
-npm install -g commitizen
+npm install -g commitizen cz-customizable
 ```
 
 From now on, instead of `git commit` you type `git cz` and let the tool do the work for you.
-
-Before you start make commits you have to install npm devDependencies for `api` or `ui` packages,
 
 Helpful hint: You can always edit your last commit message, before pushing, by using:
 ```sh
