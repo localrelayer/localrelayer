@@ -9,12 +9,14 @@
   },
   "config": {
     "commitizen": {
-      "path": "./node_modules/cz-customizable"
+      "path": "./ui/node_modules/cz-customizable"
+    },
+    "cz-customizable": {
+      "config": "../cz-config.js"
     }
   },
   "dependencies": {
     "concurrently": "3.5.1",
-    "commitizen": "2.9.6",
     "cz-customizable": "5.2.0",
     "moment": "^2.20.1"
   }
