@@ -2,22 +2,12 @@
   "name": "instex",
   "private": true,
   "scripts": {
-    "commit": "git-cz",
     "bootstrap": "cd ./core && yarn && cd ../web && yarn",
     "lint": "concurrently --prefix-colors \"magenta,cyan\" --prefix \"{name}\" --names \"CORE -> ,WEB -> \" \"cd ./core && yarn lint\" \"cd ./web && yarn lint\"",
     "test": "concurrently --prefix-colors \"magenta,cyan\" --prefix \"{name}\" --names \"CORE -> ,WEB -> \" \"cd ./core && yarn test\" \"cd ./web && yarn test\""
   },
-  "config": {
-    "commitizen": {
-      "path": "./ui/node_modules/cz-customizable"
-    },
-    "cz-customizable": {
-      "config": "../cz-config.js"
-    }
-  },
   "dependencies": {
     "concurrently": "3.5.1",
-    "cz-customizable": "5.2.0",
     "moment": "^2.20.1"
   }
 }
