@@ -136,7 +136,7 @@ export function* loadTokensBalance() {
   const tokens = yield select(getResourceMappedList('tokens', 'allTokens'));
   const [current, pair] = yield call(loadCurrentTokenAndPairBalance);
   const addTokensBalancesAction = createActionCreators('update', {
-    resourceName: 'tokens',
+    resourceType: 'tokens',
     request: 'addTokensBalances',
     list: 'allTokens',
   });
@@ -172,7 +172,7 @@ export function* loadCurrentTokenAndPairBalance() {
   const lockedPair = yield select(getLockedPairBalance);
 
   const addActiveUserTokensAction = createActionCreators('update', {
-    resourceName: 'tokens',
+    resourceType: 'tokens',
     request: 'addActiveUserTokens',
     list: 'currentUserTokens',
     mergeListIds: false,

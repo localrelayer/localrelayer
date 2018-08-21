@@ -43,9 +43,6 @@ const getTitle = (symbol, tokenPairSymbol, change24Hour, lastPrice, id) => (
   </Title>
 );
 
-// eslint-disable-next-line
-const getImageSrc = symbol => import(`../../assets/images/${symbol}.png`);
-
 type Props = {
   /** Token object */
   token: Token,

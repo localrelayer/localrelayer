@@ -1,7 +1,9 @@
-import { createStore, applyMiddleware, compose } from 'redux';
-import { persistState } from 'redux-devtools';
+import {
+  createStore,
+  applyMiddleware,
+  compose,
+} from 'redux';
 import createSagaMiddleware, { END } from 'redux-saga';
-import { composeWithDevTools } from 'redux-devtools-extension';
 import { routerMiddleware } from 'react-router-redux';
 
 import history from '../history';
@@ -14,9 +16,7 @@ const middleware = [
   reduxRouterMiddleware,
 ].filter(Boolean);
 
-const composeEnhancers = composeWithDevTools({
-
-});
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 function configureStore(initialState) {
   const store = createStore(
@@ -24,7 +24,6 @@ function configureStore(initialState) {
     initialState,
     composeEnhancers(
       applyMiddleware(...middleware),
-      persistState(window.location.href.match(/[?&]debug_session=([^&]+)\b/)),
     ),
   );
 
