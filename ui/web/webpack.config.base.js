@@ -1,5 +1,5 @@
 const path = require('path');
-const lessPluginLists = require('less-plugin-lists');
+const LessPluginLists = require('less-plugin-lists');
 
 module.exports = env => ({
   entry: {
@@ -108,7 +108,7 @@ module.exports = env => ({
             options: {
               javascriptEnabled: true,
               plugins: [
-                new lessPluginLists(),
+                new LessPluginLists(),
               ],
             },
           },
