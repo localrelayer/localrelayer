@@ -1,0 +1,13 @@
+.chart-page .chart-container {
+  border: none !important;
+}
+
+.apply-common-tooltip {
+  background: #0f2335 !important;
+  border: none !important;
+  color: white !important;
+}
+
+span.tv-close-panel {
+  display: none !important;
+}
