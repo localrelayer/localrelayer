@@ -1,15 +1,8 @@
 {
   "name": "instex-core",
-  "version": "0.0.1",
   "private": true,
+  "version": "0.0.1",
   "main": "./src",
-  "scripts": {
-    "lint": "eslint ./src --ext .js,.jsx --ignore-pattern '/dist/' --ignore-pattern '*.prod.js' --ignore-pattern '*.test.js' --ignore-pattern '**/node_modules/*'",
-    "flow": "flow",
-    "start": "webpack --config webpack.config.prod.js --watch",
-    "postinstall": "flow-typed install --overwrite && yarn link",
-    "testnet:deploy": "node scripts/deployTokens.js"
-  },
   "dependencies": {
     "0x.js": "0.38.3",
     "@0xproject/subproviders": "^0.9.0",
@@ -23,41 +16,10 @@
     "mixpanel-browser": "^2.19.0",
     "moment": "^2.20.1",
     "path-to-regexp": "^2.1.0",
-    "raven-js": "3.25.2",
-    "ramda": "0.25.0",
-    "react": "^16.2.0",
-    "react-redux": "^5.0.6",
     "react-router-redux": "^5.0.0-alpha.9",
-    "recompose": "^0.26.0",
-    "redux": "3.7.2",
     "redux-form": "^7.2.1",
-    "redux-resource": "2.4.0",
-    "redux-resource-action-creators": "1.0.0",
-    "redux-resource-plugins": "2.1.0",
-    "redux-saga": "0.16.0",
-    "reselect": "3.0.1",
     "socket.io-client": "2.0.4",
     "web3": "1.0.0-beta.33",
     "web3-provider-engine": "^14.0.4"
-  },
-  "devDependencies": {
-    "babel-core": "6.26.0",
-    "babel-eslint": "8.2.1",
-    "babel-loader": "7.1.2",
-    "babel-preset-env": "^1.6.1",
-    "babel-preset-react": "6.24.1",
-    "babel-preset-stage-0": "6.24.1",
-    "eslint": "4.15.0",
-    "eslint-config-airbnb": "16.1.0",
-    "eslint-plugin-flowtype": "2.41.0",
-    "eslint-plugin-flowtype-errors": "3.3.7",
-    "eslint-plugin-import": "2.8.0",
-    "eslint-plugin-jest": "21.6.0",
-    "eslint-plugin-jsx-a11y": "6.0.3",
-    "eslint-plugin-react": "7.5.1",
-    "flow-bin": "0.63.1",
-    "flow-typed": "2.4.0",
-    "truffle": "^4.0.5",
-    "truffle-contract": "^3.0.2"
   }
 }
