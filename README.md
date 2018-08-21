@@ -11,7 +11,8 @@ This document and all mentioned references are required for reading to every new
 
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 
-## Table of Contents
+Jump to:
+
 - [Usage](#usage)
   * [Git flow](#git-flow)
   * [Commit message](#commit-message)
