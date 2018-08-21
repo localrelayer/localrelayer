@@ -1,18 +1,16 @@
+[version]
+0.79.1
+
 [ignore]
-.*/node_modules/fbjs/.*
+.*/node_modules/.*
 .*/git/.*
 
-[libs]
-./core/flow-typed/
-./web/flow-typed/
-./libdefs.js
-
 [options]
-module.file_ext=.js
-module.file_ext=.jsx
-module.file_ext=.json
-module.file_ext=.css
-module.file_ext=.less
-module.name_mapper.extension='css' -> 'empty/object'
-module.name_mapper.extension='less' -> 'empty/object'
-module.name_mapper='^components$' -> '<PROJECT_ROOT>/web/src/components/'
+emoji=true
+# https://flow.org/en/docs/config/options/#toc-experimental-const-params-boolean
+experimental.const_params=true
+esproposal.export_star_as=enable
+suppress_type=$FlowFixMe
+suppress_type=$FlowTODO
+module.name_mapper='^web\-components\/\(.*\)$' -> '<PROJECT_ROOT>/web/src/components/\1'
+module.name_mapper='^web\-containers\/\(.*\)$' -> '<PROJECT_ROOT>/web/src/containers/\1'
