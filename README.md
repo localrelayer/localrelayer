@@ -133,9 +133,9 @@ If you have a permit to close the feature yourself:
 ```sh
 git checkout develop
 # Switched to branch 'develop'
-git merge --no-ff features/<feature>
+git merge --no-ff feature/<feature>
 # Use --no-ff to avoid losing information about the historical existence of a feature branch
-git branch -d features<fature>
+git branch -d feature<fature>
 # Deleted branch
 git push origin develop
 ```
