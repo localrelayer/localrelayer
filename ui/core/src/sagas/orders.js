@@ -441,7 +441,7 @@ export function* cancelOrder({
   const { zeroEx } = window;
   try {
     const actions = createActionCreators('delete', {
-      resourceName: 'orders',
+      resourceType: 'orders',
       request: 'cancelOrder',
     });
     yield put(actions.pending());

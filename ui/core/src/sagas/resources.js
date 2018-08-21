@@ -15,7 +15,6 @@ import {
 import {
   sendNotification,
   sendMessage,
-  fillOrKillOrders,
   deleteResourceItem,
 } from '../actions';
 
@@ -34,7 +33,7 @@ export function* fetchResourcesRequest({
   },
 }) {
   const actions = createActionCreators('read', {
-    resourceName,
+    resourceType: resourceName,
     request,
     list,
     lists,
@@ -72,7 +71,7 @@ export function* saveResourceRequest({
 }) {
   try {
     const actions = createActionCreators(data.id ? 'update' : 'create', {
-      resourceName,
+      resourceType: resourceName,
       request,
       list,
       lists,

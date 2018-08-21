@@ -219,7 +219,7 @@ function* processTokenApproval({ returnValues, transactionHash, address }) {
   yield call(removeTransactionFromLocalStorage, transactionHash);
 
   const actions = createActionCreators('update', {
-    resourceName: 'tokens',
+    resourceType: 'tokens',
     request: 'allowance',
     lists: ['allTokens', 'currentUserTokens'],
   });
