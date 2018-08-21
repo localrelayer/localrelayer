@@ -1,14 +1,19 @@
 const path = require('path');
-const ListPlugin = require('less-plugin-lists');
+const lessPluginLists = require('less-plugin-lists');
 
-module.exports = {
+module.exports = env => ({
+  entry: {
+    app: [
+      path.join(__dirname, 'src/index.jsx'),
+    ],
+  },
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'bundle.js',
     publicPath: '/',
   },
   resolve: {
-    extensions: ['.js', '.jsx', '.json'],
+    extensions: ['.js', '.jsx', '.mjs', '.wasm', '.json'],
     alias: {
       components: path.resolve(__dirname, 'src/components'),
     },
@@ -18,18 +23,92 @@ module.exports = {
       {
         test: /\.jsx?$/,
         exclude: /node_modules/,
-        use: ['babel-loader?cacheDirectory=true'],
+        use: {
+          loader: 'babel-loader',
+          options: {
+            cacheDirectory: true,
+            presets: [
+              [
+                '@babel/preset-env',
+                {
+                  targets: {
+                    // Actually we don't need to support so much browser
+                    // TODO: figure out which exactly browser we have to support
+                    browsers: [
+                      'last 2 versions',
+                    ],
+                  },
+                  modules: false,
+                  useBuiltIns: 'entry',
+                },
+              ],
+              [
+                '@babel/preset-react',
+                {
+                  development: env === 'development',
+                },
+              ],
+              '@babel/preset-flow',
+            ],
+            plugins: [
+              '@babel/plugin-proposal-export-namespace-from',
+              '@babel/plugin-proposal-export-default-from',
+              '@babel/plugin-proposal-class-properties',
+              '@babel/plugin-proposal-optional-chaining',
+              '@babel/plugin-proposal-do-expressions',
+              [
+                // used only for babel helpers
+                '@babel/plugin-transform-runtime',
+                {
+                  // regenerator runtime should be used from global polyfill
+                  regenerator: false,
+                  // define babel helpers as es modules
+                  useESModules: true,
+                },
+              ],
+              [
+                'babel-plugin-styled-components',
+                {
+                  displayName: true,
+                },
+              ],
+              [
+                'import',
+                {
+                  libraryName: 'antd',
+                  libraryDirectory: 'es',
+                  style: 'less',
+                },
+              ],
+            ],
+            env: {
+              development: {
+                plugins: [
+                  'react-hot-loader/babel',
+                ],
+              },
+            },
+          },
+        },
       },
       {
-        test: /\.(less|css)$/,
+        test: /\.(css)$/,
+        use: [
+          'style-loader',
+          'css-loader',
+        ],
+      },
+      {
+        test: /\.(less)$/,
         use: [
           'style-loader',
           'css-loader',
           {
             loader: 'less-loader',
             options: {
+              javascriptEnabled: true,
               plugins: [
-                new ListPlugin(),
+                new lessPluginLists(),
               ],
             },
           },
@@ -78,4 +157,4 @@ module.exports = {
       },
     ],
   },
-};
+});

@@ -6,24 +6,14 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const config = require('./webpack.config.base');
 
 
-module.exports = merge(config, {
+module.exports = env => merge(config(env), {
+  mode: 'development',
   devtool: 'eval-source-map',
-  entry: {
-    app: [
-      'react-hot-loader/patch',
-      path.join(__dirname, 'src/index.jsx'),
-    ],
-  },
   plugins: [
     new HtmlWebpackPlugin({
       template: 'src/index.tpl.html',
       inject: 'body',
       filename: 'index.html',
-    }),
-    new webpack.DefinePlugin({
-      __DEV__: true,
-      'process.env.NODE_ENV': JSON.stringify('development'),
-      'process.env.BROWSER': true,
     }),
     new webpack.ProvidePlugin({
       React: 'react',
@@ -39,9 +29,9 @@ module.exports = merge(config, {
     hot: true,
     lazy: false,
     compress: true,
-    stats: 'errors-only',
+    stats: 'minimal',
     watchOptions: {
-      aggregateTimeout: 300,
+      aggregateTimeout: 1000,
       ignored: /node_modules/,
       poll: 100,
     },

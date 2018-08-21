@@ -1,4 +1,3 @@
-const path = require('path');
 const webpack = require('webpack');
 const merge = require('webpack-merge');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -11,12 +10,8 @@ const config = require('./webpack.config.base');
 
 
 module.exports = merge(config, {
+  mode: 'production',
   devtool: 'source-map',
-  entry: {
-    app: [
-      path.join(__dirname, 'src/index.jsx'),
-    ],
-  },
   plugins: [
     new HtmlWebpackPlugin({
       hash: true,
