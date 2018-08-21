@@ -1,13 +1,38 @@
 {
-  "name": "instex",
+  "name": "instex-ui",
   "private": true,
   "scripts": {
-    "bootstrap": "cd ./core && yarn && cd ../web && yarn",
-    "lint": "concurrently --prefix-colors \"magenta,cyan\" --prefix \"{name}\" --names \"CORE -> ,WEB -> \" \"cd ./core && yarn lint\" \"cd ./web && yarn lint\"",
-    "test": "concurrently --prefix-colors \"magenta,cyan\" --prefix \"{name}\" --names \"CORE -> ,WEB -> \" \"cd ./core && yarn test\" \"cd ./web && yarn test\""
+    "flow:all": "flow check",
+    "flow:core": "flow check core",
+    "flow:web": "flow check web",
+    "lint": "eslint --ext .js,.jsx --ignore-pattern '**/node_modules/*' --ignore-pattern '*.min.js' --ignore-pattern '/dist/' --ignore-pattern '*.prod.js'",
+    "lint:all": "yarn lint ./core ./web",
+    "lint:core": "yarn lint ./core",
+    "lint:web": "yarn lint ./web"
+  },
+  "workspaces": [
+    "core",
+    "web"
+  ],
+  "devDependencies": {
+    "eslint": "5.4.0",
+    "babel-eslint": "8.2.6",
+    "eslint-config-airbnb": "17.1.0",
+    "eslint-plugin-flowtype": "2.50.0",
+    "eslint-plugin-import": "2.14.0",
+    "eslint-plugin-jsx-a11y": "6.1.1",
+    "eslint-plugin-react": "7.11.1",
+    "flow-bin": "0.79.1",
+    "flow-typed": "2.5.1"
   },
   "dependencies": {
-    "concurrently": "3.5.1",
-    "moment": "^2.20.1"
+    "ramda": "0.25.0",
+    "redux": "4.0.0",
+    "redux-resource": "3.0.4",
+    "redux-resource-action-creators": "2.0.1",
+    "redux-resource-plugins": "3.1.0",
+    "redux-saga": "0.16.0",
+    "reselect": "3.0.1",
+    "raven-js": "3.26.4"
   }
 }
