@@ -1,6 +1,5 @@
 // @flow
-import 'regenerator-runtime/runtime';
-
+import '@babel/polyfill';
 import React from 'react';
 import {
   render as reactRender,
@@ -8,7 +7,9 @@ import {
 import {
   Provider,
 } from 'react-redux';
-import { hot } from 'react-hot-loader';
+import {
+  hot,
+} from 'react-hot-loader';
 import {
   LocaleProvider,
 } from 'antd';
