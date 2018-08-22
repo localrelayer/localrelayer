@@ -1,16 +1,14 @@
 // @flow
-import React, { Component } from 'react';
+import React, {
+  Component,
+} from 'react';
 import type {
   Token,
 } from 'instex-core/types';
-import lessToJs from 'less-vars-to-js';
 import {
   getDatafeed,
 } from './Datafeed';
-
-const varsRaw = require('!!raw-loader!../../assets/styles/variables.less');
-
-const vars = lessToJs(varsRaw);
+import colors from '../../assets/styles/colors';
 
 type Props = {
   token: Token,
@@ -59,7 +57,7 @@ export default class extends Component<Props> {
       client_id: 'tradingview.com',
       user_id: 'public_user_id',
       custom_css_url: 'chart.css',
-      toolbar_bg: vars['@component-background'],
+      toolbar_bg: colors['component-background'],
       overrides: {
         'paneProperties.leftAxisProperties.autoScale': false,
         'paneProperties.rightAxisProperties.autoScale': false,
@@ -70,16 +68,16 @@ export default class extends Component<Props> {
         'paneProperties.bottomMargin': 25,
         volumePaneSize: 'small',
         'scalesProperties.fontSize': 10,
-        'mainSeriesProperties.candleStyle.upColor': vars['@green'],
-        'mainSeriesProperties.candleStyle.downColor': vars['@red'],
+        'mainSeriesProperties.candleStyle.upColor': colors.green,
+        'mainSeriesProperties.candleStyle.downColor': colors.red,
         'paneProperties.vertGridProperties.style': 1,
         'paneProperties.horzGridProperties.style': 1,
-        'paneProperties.background': vars['@component-background'],
+        'paneProperties.background': colors['component-background'],
         'scalesProperties.textColor': 'white',
-        'paneProperties.horzGridProperties.color': vars['@component-background'],
-        'paneProperties.vertGridProperties.color': vars['@component-background'],
-        'scalesProperties.backgroundColor': vars['@component-background'],
-        'scalesProperties.lineColor': vars['@component-background'],
+        'paneProperties.horzGridProperties.color': colors['component-background'],
+        'paneProperties.vertGridProperties.color': colors['component-background'],
+        'scalesProperties.backgroundColor': colors['component-background'],
+        'scalesProperties.lineColor': colors['component-background'],
         'mainSeriesProperties.candleStyle.drawBorder': false,
       },
       studies_overrides: {

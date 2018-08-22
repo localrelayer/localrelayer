@@ -112,6 +112,7 @@ module.exports = env => ({
               ],
             },
           },
+          'js-to-styles-var-loader',
         ],
       },
       // WOFF/WOFF2 Fonts
