@@ -28,7 +28,6 @@ import {
   Alert,
   Button,
 } from 'antd';
-import lessToJs from 'less-vars-to-js';
 import {
   LinksContainer,
   HeaderContainer,
@@ -45,10 +44,7 @@ import UserProfile from '../UserProfile';
 import PendingTransactions from './PendingTransactions';
 import CustomTokenForm from './CustomTokenForm';
 import logo from '../../assets/logo5.png';
-
-const varsRaw = require('!!raw-loader!../../assets/styles/variables.less');
-
-const vars = lessToJs(varsRaw);
+import colors from '../../assets/styles/colors';
 
 type Props = {
   /** User object */
@@ -172,14 +168,16 @@ const Header = ({
           activeStyle={{ color: 'white' }}
           to="/ZRX-WETH"
         >
-          <Icon type="swap" />Trade
+          <Icon type="swap" />
+Trade
         </NavLink>
         <NavLink
           isActive={match => checkIsActiveAccount(match, location)}
           activeStyle={{ color: 'white' }}
           to="/account"
         >
-          <Icon type="home" />Account
+          <Icon type="home" />
+Account
         </NavLink>
       </LinksContainer>
       <Popover
@@ -187,7 +185,7 @@ const Header = ({
         placement="bottom"
         visible={popoverVisible}
         onVisibleChange={togglePopover}
-        content={
+        content={(
           <TokenContainer>
             <TokensList
               id="tokensList"
@@ -202,14 +200,18 @@ const Header = ({
               onPairSelect={onPairSelect}
             />
           </TokenContainer>
-        }
+)}
       >
         <UserButton
           id="selectTokenButton"
           type="primary"
           className="header-button"
         >
-          Tokens {getTokenButtonTitle(selectedToken, tokenPair)} <Icon type="down" />
+          Tokens
+          {' '}
+          {getTokenButtonTitle(selectedToken, tokenPair)}
+          {' '}
+          <Icon type="down" />
         </UserButton>
       </Popover>
       <UserButton
@@ -217,7 +219,9 @@ const Header = ({
         type="primary"
         className="header-button"
       >
-        Token by Address <Icon type="copy" />
+        Token by Address
+        {' '}
+        <Icon type="copy" />
       </UserButton>
       <Modal
         title="Trade not listed token"
@@ -232,8 +236,8 @@ const Header = ({
             key="submit"
             type="primary"
             onClick={
-              isCustomTokenFormValid &&
-              (() => {
+              isCustomTokenFormValid
+              && (() => {
                 setTokenAddress();
                 toggleModal(false);
               })
@@ -252,7 +256,8 @@ const Header = ({
       </Modal>
       <AlignRight id="right-menu">
         <PriceContainer>
-          ETH/USD: ${ethPrice || '0.00'}
+          ETH/USD: $
+          {ethPrice || '0.00'}
         </PriceContainer>
         <UserProfile
           {...user}
@@ -275,7 +280,7 @@ const Header = ({
             <HeaderButton
               id="help"
               style={{
-                background: vars['@firm-color'],
+                background: colors['firm-color'],
               }}
               shape="circle"
               type="primary"
