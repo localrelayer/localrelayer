@@ -6,6 +6,7 @@
   "settings": {
     "import/resolver": {
       "webpack": {
+        "env": "development",
         "config": "./webpack.config.base.js"
       }
     }
