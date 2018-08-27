@@ -1,108 +1,139 @@
-import config from '../config';
-import {
-  apiFetch,
-} from './apiFetch';
-import {
-  defaultResourcesInclude,
-} from '../constants';
+import fetch from './enhancedFetch';
 
 
-export function saveResource({
-  id,
-  relationships,
-  attributes,
-  resourceName,
-}) {
-  const isCreation = id === undefined;
-  const idData = isCreation ? {} : { id };
-  const requestData = {
-    data: {
-      ...idData,
-      type: resourceName,
-      attributes,
-      relationships,
-    },
-  };
-  return apiFetch({
-    url: `${config.apiUrl}/${resourceName}${isCreation ? '' : `/${id}`}`,
-    meta: {
-      method: isCreation ? 'POST' : 'PATCH',
-      body: JSON.stringify(requestData),
-    },
-  });
-}
+function apiFactory() {
+  // GET methods with query parameters only
+  const apiCommonMethods = [
+    ['getAssetPairs', '/asset_pairs'],
+    ['getOrders', '/orders'],
+    ['getOrderbook', '/orderbook'],
+    ['getOrderConfig', '/order-config'],
+  ];
+  let apiUrl = '';
+  let mockMethods = {};
 
-export function removeResource({ id, resourceName }) {
-  return fetch({
-    url: `${config.apiUrl}/${resourceName}/${id}`,
-    meta: { method: 'DELETE' },
-  });
-}
-
-export function fetchResources({
-  sortBy = 'id',
-  sortDirection = '',
-  withDeleted = false,
-  limitCondition = {},
-  offsetCondition = {},
-  filterCondition = {},
-  additionalInclude,
-  resourceName,
-}) {
-  const pageConditionObject = {
-    page: {
-      ...limitCondition,
-      ...offsetCondition,
-    },
-  };
-  const includeCondition = additionalInclude
-    ? { include: defaultResourcesInclude[resourceName].concat(additionalInclude) }
-    : {};
-
-  const pageCondition = pageConditionObject.page ? pageConditionObject : {};
-  const requestData = {
-    withDeleted,
-    ...pageCondition,
-    ...filterCondition,
-    ...includeCondition,
-    sort: [
-      `${sortDirection}${sortBy}`,
-    ],
-  };
-  return apiFetch({
-    url: `${config.apiUrl}/${resourceName}/filter`,
-    meta: {
-      method: 'POST',
-      requestData,
-      body: JSON.stringify(requestData),
-    },
-  });
-}
-
-export function apiCall(action, data) {
-  switch (action) {
-    case 'ADD':
-    case 'UPDATE':
-      return saveResource(data, config.apiUrl);
-    case 'DELETE':
-      return removeResource(data);
-    case 'FILTER':
-      return fetchResources(data);
-    default:
-      return null;
+  function buildQueryUrl(
+    baseUrl,
+    queryParameters = {},
+  ) {
+    if (!apiUrl) {
+      throw new Error('No apiUrl!');
+    }
+    const url = new URL(`${apiUrl}/${baseUrl}`);
+    url.search = new URLSearchParams(queryParameters);
+    return url;
   }
-}
 
-export function customApiRequest({
-  url,
-  method,
-  body,
-}) {
-  return apiFetch({
-    url,
-    meta: {
-      method,
-      body,
+  function performFetch({
+    endpointUrl,
+    method,
+    methodName,
+    queryParameters,
+    bodyParameters,
+  }) {
+    const url = buildQueryUrl(
+      endpointUrl,
+      queryParameters,
+    );
+
+    if (mockMethods[methodName]) {
+      return mockMethods[methodName]({
+        url,
+        endpointUrl,
+        queryParameters,
+        bodyParameters,
+      });
+    }
+
+    return fetch(
+      url,
+      {
+        method,
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        ...(bodyParameters ? {
+          body: JSON.stringify(bodyParameters),
+        } : {}),
+      },
+    );
+  }
+
+  return ({
+    getApiUrl() {
+      return apiUrl;
     },
+
+    setApiUrl(url) {
+      apiUrl = url;
+      return apiUrl;
+    },
+
+    setMockMethods(
+      mockObject,
+      merge = true,
+    ) {
+      if (merge) {
+        mockMethods = {
+          ...mockMethods,
+          ...mockObject,
+        };
+      } else {
+        mockMethods = mockObject;
+      }
+    },
+
+    clearMockMethods() {
+      mockMethods = {};
+      return mockMethods;
+    },
+
+    getOrder(
+      orderHash,
+      queryParameters = {},
+    ) {
+      return performFetch({
+        endpointUrl: `/order/${orderHash}`,
+        method: 'GET',
+        methodName: 'getOrder',
+        queryParameters,
+      });
+    },
+
+    postOrder(
+      bodyParameters,
+      queryParameters = {},
+    ) {
+      return performFetch({
+        endpointUrl: '/order',
+        method: 'POST',
+        methodName: 'postOrder',
+        bodyParameters,
+        queryParameters,
+      });
+    },
+
+    ...(apiCommonMethods.reduce((
+      acc,
+      [
+        methodName,
+        endpointUrl,
+      ],
+    ) => ({
+      ...acc,
+      [methodName](queryParameters) {
+        return performFetch({
+          method: 'GET',
+          methodName,
+          endpointUrl,
+          queryParameters,
+        });
+      },
+    }), {})),
   });
 }
+
+const api = apiFactory();
+
+export default api;

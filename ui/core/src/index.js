@@ -1,6 +1,3 @@
-export * as reducers from './reducers';
+export * as coreReducers from './reducers';
+export * as coreMocks from './mocks';
 export coreSagas from './sagas';
-export {
-  tokens as tokensMock,
-  generateTestOrders,
-} from './api/apiFetch';
