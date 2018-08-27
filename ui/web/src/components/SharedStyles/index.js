@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const Colored = styled.span`
+export const ColoredSpan = styled.span`
   color: ${props => props.color};
 `;
 

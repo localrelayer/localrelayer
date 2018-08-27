@@ -4,6 +4,6 @@ Examples:
   const { getTestToken } = require('../../utils/mocks');
 
   <div>
-    <TokenCard token={getTestToken()} onClick={() => console.log('test')} />
+    <AssetPairCard token={getTestToken()} />
   </div>
 ```

@@ -35,7 +35,7 @@ if (config.useSentry) {
 
 const rootEl: HTMLElement = window.document.getElementById('body');
 
-const render: Function = (Component: ComponentType<*>) =>
+const render: Function = (Component: ComponentType<*>) => (
   reactRender(
     <Provider store={store}>
       <LocaleProvider locale={enUS}>
@@ -43,6 +43,7 @@ const render: Function = (Component: ComponentType<*>) =>
       </LocaleProvider>
     </Provider>,
     rootEl,
-  );
+  )
+);
 
 render(hot(module)(App));

@@ -15,6 +15,7 @@ module.exports = env => ({
   resolve: {
     extensions: ['.js', '.jsx', '.mjs', '.wasm', '.json'],
     alias: {
+      'web-components': path.resolve(__dirname, 'src/components'),
       components: path.resolve(__dirname, 'src/components'),
     },
   },
@@ -45,7 +46,9 @@ module.exports = env => ({
               [
                 '@babel/preset-react',
                 {
-                  development: env === 'development',
+                  development: (!env || !env.NODE_ENV)
+                    ? 'development'
+                    : env.NODE_ENV.toLowerCase() === 'development',
                 },
               ],
               '@babel/preset-flow',
@@ -77,7 +80,7 @@ module.exports = env => ({
                 {
                   libraryName: 'antd',
                   libraryDirectory: 'es',
-                  style: 'less',
+                  style: true,
                 },
               ],
             ],
