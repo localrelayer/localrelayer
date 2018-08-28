@@ -15,6 +15,7 @@ import store from '../src/store';
 
 function loadStories() {
   require('../src/components/AssetPairCard/stories/index.jsx');
+  require('../src/components/MocksStories/stories/index.js');
   // You can require as many stories as you need.
 }
 
