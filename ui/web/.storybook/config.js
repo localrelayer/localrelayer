@@ -10,6 +10,7 @@ import {
 } from '@storybook/react';
 
 import store from '../src/store';
+import '../src/web3Init';
 
 function loadStories() {
   require('../src/components/AssetPairCard/stories/index.jsx');

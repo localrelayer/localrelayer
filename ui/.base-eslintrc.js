@@ -5,6 +5,9 @@ module.exports = {
   },
   globals: {
     fetch: true,
+    web3: true,
+    Web3: true,
+    ethereum: true,
   },
   extends: [
     'airbnb',
