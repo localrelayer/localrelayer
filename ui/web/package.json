@@ -31,7 +31,6 @@
     "history": "4.7.2",
     "instex-core": "0.0.1",
     "moment": "2.20.1",
-    "ramda": "0.25.0",
     "raven-js": "3.26.4",
     "react": "16.4.2",
     "react-animations": "1.0.0",

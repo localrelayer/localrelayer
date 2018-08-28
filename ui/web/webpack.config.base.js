@@ -16,6 +16,7 @@ module.exports = env => ({
     extensions: ['.js', '.jsx', '.mjs', '.wasm', '.json'],
     alias: {
       'web-components': path.resolve(__dirname, 'src/components'),
+      'web-config': path.resolve(__dirname, 'src/config'),
       components: path.resolve(__dirname, 'src/components'),
     },
   },

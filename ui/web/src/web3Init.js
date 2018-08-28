@@ -4,11 +4,11 @@ import {
   actionTypes,
 } from 'instex-core/actions';
 import store from './store';
-
 /**
  * ETHEREUM_PROVIDER_SUCCESS will be dispatched when web3 instance appear in global scope
  * which mean the app conntected to the ethereum net.
  *
+ * https://github.com/MetaMask/metamask-extension/issues/4998
  * https://medium.com/metamask/https-medium-com-metamask-breaking-change-injecting-web3-7722797916a8
  */
 window.addEventListener('load', () => {
