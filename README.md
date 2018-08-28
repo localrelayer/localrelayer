@@ -1,13 +1,13 @@
 # Instex
 Instex is a dApp(decentralized application) built on top of [0x protocol](https://0xproject.com/).
-It helps traders discover counter-parties and ferry cryptographically signed orders between them.
+It helps traders to discover counter-parties and ferry cryptographically signed orders between them.
 
-The project on an experimental stage in attempts to find their own way and take the place in
+The project on an experimental stage in attempts to find the way and to take the place in
 the new decentralized world.
 At this stage, we are working on UI and API interfaces for the open orderbook node(relayer)
 which will be ready for connection in shared liquidity pool with other relayers.
 
-This document and all mentioned references are required for reading to every new Instex developer.
+This document and all mentioned references are required for reading by every developer who wants to contibute to Instex.
 
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 
