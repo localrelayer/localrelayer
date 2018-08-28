@@ -10,7 +10,7 @@ import type {
 
 
 const initialState: UiState = {
-  showMessage: false,
+  showEthMissProvider: false,
 };
 
 const mergeUiValues = (
