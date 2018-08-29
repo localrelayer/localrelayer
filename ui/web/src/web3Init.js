@@ -1,5 +1,7 @@
 import 'web3';
-import ethApi from 'instex-core';
+import {
+  ethApi,
+} from 'instex-core';
 import {
   actionTypes,
 } from 'instex-core/actions';
