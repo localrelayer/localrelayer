@@ -11,7 +11,7 @@ import {
 import api from '../api';
 
 
-export function* fetchAssetPairs(query) {
+export function* fetchAssetPairs({ query }) {
   const actions = createActionCreators('read', {
     resourceType: 'assetPairs',
     requestKey: 'assetPairs',
@@ -20,10 +20,15 @@ export function* fetchAssetPairs(query) {
   });
   try {
     yield put(actions.pending());
+    // TODO: fetch all pages using all
     const response = yield call(
       api.getAssetPairs,
       query,
     );
+    console.log('=====');
+    console.log(query);
+    console.log(response);
+    console.log('=====');
 
     yield put(actions.succeeded({
       resources: response.records,
