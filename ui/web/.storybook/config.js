@@ -9,8 +9,9 @@ import {
   addDecorator,
 } from '@storybook/react';
 
-import store from '../src/store';
+import '../src/mockInit';
 import '../src/web3Init';
+import store from '../src/store';
 
 function loadStories() {
   require('../src/components/AssetPairCard/stories/index.jsx');

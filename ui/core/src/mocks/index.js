@@ -1,5 +1,5 @@
 export const getAssetPairs = () => ({
-  toral: 1,
+  total: 1,
   page: 1,
   perPage: 100,
   records: [{
