@@ -28,9 +28,10 @@
   },
   "dependencies": {
     "web3": "1.0.0-beta.35",
+    "0x.js": "1.0.1-rc.6",
     "ramda": "0.25.0",
     "redux": "4.0.0",
-    "redux-resource": "3.1.0",
+    "redux-resource": "3.0.4",
     "redux-resource-action-creators": "2.0.1",
     "redux-resource-plugins": "3.1.0",
     "redux-saga": "0.16.0",
