@@ -25,13 +25,28 @@ export function* fetchAssetPairs({ query }) {
       api.getAssetPairs,
       query,
     );
-    console.log('=====');
-    console.log(query);
-    console.log(response);
-    console.log('=====');
 
+    // Create id field by meging assetData fields
+    const assetPairs = response.records.map(
+      pair => ({
+        id: `${pair.assetDataA.assetData}_${pair.assetDataB.assetData}`,
+        ...pair,
+      }),
+    );
+
+    // TODO: Collect all assets(tokens) from pairs, get additional info
+    // about this tokens and place it to the reducers as assets resource
+    // using includeResources
     yield put(actions.succeeded({
-      resources: response.records,
+      resources: assetPairs,
+      includedResources: {
+        assets: {
+          '0xe41d2489571d322189246dafa5ebde1f4699f498': {
+            address: '0xe41d2489571d322189246dafa5ebde1f4699f498',
+            symbol: 'ZRX',
+          },
+        },
+      },
     }));
   } catch (err) {
     console.log(err);

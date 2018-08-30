@@ -4,10 +4,10 @@ import {
 } from 'instex-core';
 import {
   actionTypes,
-} from 'instex-core/actions';
+} from 'web-actions';
 import store from './store';
 /**
- * ETHEREUM_PROVIDER_SUCCESS will be dispatched when web3 instance appear in global scope
+ * INITIALIZE_WEB_APP will be dispatched when web3 instance appear in global scope
  * which mean the app conntected to the ethereum net.
  *
  * https://github.com/MetaMask/metamask-extension/issues/4998
@@ -23,7 +23,7 @@ window.addEventListener('load', () => {
         web3 = new Web3(ethereum);
         ethApi.setWeb3(web3);
         store.dispatch({
-          type: actionTypes.ETHEREUM_PROVIDER_SUCCESS,
+          type: actionTypes.INITIALIZE_WEB_APP,
         });
       }
     });
@@ -35,7 +35,7 @@ window.addEventListener('load', () => {
     web3 = new Web3(web3.currentProvider);
     ethApi.setWeb3(web3);
     store.dispatch({
-      type: actionTypes.ETHEREUM_PROVIDER_SUCCESS,
+      type: actionTypes.INITIALIZE_WEB_APP,
     });
   }
 });
