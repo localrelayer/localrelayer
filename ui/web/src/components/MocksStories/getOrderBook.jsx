@@ -29,13 +29,10 @@ export default class GetOrderBook extends Component {
         <ul>
           {this.state.show
             ? (
-              <ReactJson src={coreMocks.getOrderBook({
-                  quoteAssetData: '0x0257179264389b814a946f3e92105513705ca6b990',
-                },
-                {
-                  page: 1,
-                  perPage: 4,
-                })}
+              <ReactJson src={coreMocks.mocksOrdersFactory({}).getOrderBook({
+                page: 10,
+                perPage: 150,
+              })}
               />
             )
             : null}
