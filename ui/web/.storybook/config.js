@@ -14,8 +14,8 @@ import '../src/web3Init';
 import store from '../src/store';
 
 function loadStories() {
-  require('../src/components/AssetPairCard/stories/index.jsx');
-  require('../src/components/MocksStories/stories/index.js');
+  require('../src/components/AssetPairCard/stories');
+  require('../src/components/MocksStories/stories');
   // You can require as many stories as you need.
 }
 
