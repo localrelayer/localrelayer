@@ -7,7 +7,7 @@
     "flow:web": "flow check web",
     "lint": "eslint --ext .js,.jsx --ignore-pattern '**/node_modules/*' --ignore-pattern '*.min.js' --ignore-pattern '/dist/' --ignore-pattern '*.prod.js'",
     "lint:all": "yarn lint ./core ./web",
-    "lint:core": "yarn lint ./core",
+    "lint:core": "yarn lint ./core/src/mocks",
     "lint:web": "yarn lint ./web"
   },
   "workspaces": [
