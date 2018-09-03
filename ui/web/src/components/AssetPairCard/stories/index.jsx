@@ -2,9 +2,6 @@ import React from 'react';
 import {
   storiesOf,
 } from '@storybook/react';
-import {
-  host,
-} from 'storybook-host';
 
 import AssetPairCard from '..';
 
@@ -40,14 +37,6 @@ const assetPair = {
 };
 
 storiesOf('AssetPairCard', module)
-  .addDecorator(
-    host({
-      title: 'A host container for components under test.',
-      align: 'center bottom',
-      height: '80%',
-      width: 400,
-    }),
-  )
   .add('with assetPair', () => (
     <AssetPairCard
       assetPair={assetPair}
