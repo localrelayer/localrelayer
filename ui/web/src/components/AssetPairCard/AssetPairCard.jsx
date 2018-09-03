@@ -10,7 +10,7 @@ import type {
 
 import {
   ColoredSpan,
-} from 'web-components/SharedStyles';
+} from 'web-components/SharedStyledComponents';
 import * as S from './styled';
 
 type Props = {
