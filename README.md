@@ -147,7 +147,6 @@ git flow feature finish
 ```
 
 ## Preparing a good PR
-
 - A pull request should have a specific goal and have a descriptive title.
 Do not put multiple unrelated changes in a single pull request
 - Do not include any changes that are irrelevant to the goal of the pull request.
