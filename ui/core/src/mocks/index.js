@@ -38,6 +38,7 @@ export function getAssetPairs({
 
   return {
     network: networkId,
+    total: assetPairsJson.length,
     page,
     perPage,
     records,
