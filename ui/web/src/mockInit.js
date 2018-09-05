@@ -7,7 +7,7 @@ import config from 'web-config';
 
 api.setApiUrl(config.apiUrl);
 api.setMockMethods({
-  getAssetPairs() {
-    return new Promise(r => r(coreMocks.getAssetPairs()));
+  getAssetPairs(args) {
+    return new Promise(r => r(coreMocks.getAssetPairs(args.queryParameters)));
   },
 });
