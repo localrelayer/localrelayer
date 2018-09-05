@@ -1,6 +1,7 @@
 import {
   takeEvery,
   call,
+  all,
   put,
 } from 'redux-saga/effects';
 import createActionCreators from 'redux-resource-action-creators';
@@ -11,7 +12,7 @@ import {
 import api from '../api';
 
 
-export function* fetchAssetPairs({ query }) {
+export function* fetchAssetPairs() {
   const actions = createActionCreators('read', {
     resourceType: 'assetPairs',
     requestKey: 'assetPairs',
@@ -20,14 +21,36 @@ export function* fetchAssetPairs({ query }) {
   });
   try {
     yield put(actions.pending());
-    // TODO: fetch all pages using all
-    const response = yield call(
-      api.getAssetPairs,
-      query,
-    );
 
-    // Create id field by meging assetData fields
-    const assetPairs = response.records.map(
+    const firsPageResponse = yield call(
+      api.getAssetPairs,
+      {
+        perPage: 1000,
+      },
+    );
+    const perPage = firsPageResponse.records.length;
+    const restPagesResponses = yield all(
+      Array(
+        Math.ceil(firsPageResponse.total / perPage),
+      )
+        .fill(null)
+        .map(
+          (item, index) => (
+            call(api.getAssetPairs, {
+              page: index + 1,
+              perPage,
+            })
+          ),
+        )
+        .slice(1),
+    );
+    const records = [
+      ...firsPageResponse.records,
+    ].concat(
+      ...restPagesResponses.map(r => r.records),
+    );
+    // Create id field by merging assetData fields
+    const assetPairs = records.map(
       pair => ({
         id: `${pair.assetDataA.assetData}_${pair.assetDataB.assetData}`,
         ...pair,
