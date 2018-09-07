@@ -3,7 +3,6 @@
  */
 function ethApiFactory() {
   let web3 = null;
-
   return ({
     setWeb3(web3Instance) {
       web3 = web3Instance;

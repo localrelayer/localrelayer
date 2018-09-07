@@ -97,6 +97,7 @@ function loadStories() {
   require('../src/containers/AssetPairCardContainer/stories');
   require('../src/components/TradingPageLayout/stories');
   require('../src/containers/AppContainer/stories');
+  require('../src/components/ConnectingToEthProvider/stories');
 }
 
 configure(loadStories, module);
