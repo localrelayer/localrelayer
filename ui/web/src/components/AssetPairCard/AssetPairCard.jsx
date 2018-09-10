@@ -29,7 +29,7 @@ const AssetPairCard = ({
   const assetDataA = assetPair?.assetDataA;
   const assetDataB = assetPair?.assetDataB;
   const tradingInfo = assetPair?.tradingInfo || {};
-  const isPositive = (tradingInfo.change24Hour || 0) >= 0;
+  const isPositive = (tradingInfo.change24 || 0) >= 0;
   return (
     <S.AssetPairCard loading={loading}>
       <Card.Meta
@@ -57,11 +57,11 @@ const AssetPairCard = ({
             <div>
               <div>
                 High:
-                {tradingInfo.highPrice || '--'}
+                {tradingInfo.maxPrice || '--'}
               </div>
               <div>
                 Low:
-                {tradingInfo.lowPrice || '--'}
+                {tradingInfo.minPrice || '--'}
               </div>
             </div>
             <div>
@@ -69,18 +69,18 @@ const AssetPairCard = ({
                 {isPositive
                   ? (
                     <ColoredSpan color="green">
-                      {`+${tradingInfo.change24Hour || '0.00'}%`}
+                      {`+${tradingInfo.change24 || '0.00'}%`}
                     </ColoredSpan>
                   )
                   : (
                     <ColoredSpan color="red">
-                      {`${tradingInfo.change24Hour || '0.00'}%`}
+                      {`${tradingInfo.change24 || '0.00'}%`}
                     </ColoredSpan>
                   )}
               </S.PriceChange>
               <div>
                 Volume:
-                {tradingInfo.volume ? Number(tradingInfo.volume).toFixed(4) : 0}
+                {tradingInfo.assetAVolume ? tradingInfo.assetAVolume : 0}
               </div>
             </div>
           </S.AssetPrice>

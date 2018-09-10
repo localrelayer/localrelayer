@@ -5,7 +5,6 @@ import {
 
 import config from 'web-config';
 
-
 api.setApiUrl(config.apiUrl);
 api.setMockMethods({
   getAssetPairs(args) {
