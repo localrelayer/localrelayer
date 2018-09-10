@@ -24,10 +24,12 @@ export type AssetPair = {
     assetData: Asset,
   },
   tradingInfo: {
-    volume: string,
-    change24Hour: number,
     lastPrice: string,
-    highPrice: string,
-    lowPrice: string,
+    minPrice: number,
+    maxPrice: string,
+    assetAVolume: string,
+    assetBVolume: string,
+    change24: string,
+    firstOrderPrice: string,
   },
 };

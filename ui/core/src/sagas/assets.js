@@ -5,9 +5,6 @@ import {
 } from '@0xproject/utils';
 
 import {
-  actionTypes,
-} from '../actions';
-import {
   getAssetByIdField,
   getResourceById,
 } from '../selectors';
@@ -263,11 +260,4 @@ export function* checkAssetPair({
     ...(!quoteAssetResource ? { quoteAssetResource: 'Wrong asset' } : {}),
   };
   throw errors;
-}
-
-export function* takeFetchAssetPairsRequest() {
-  yield eff.takeEvery(
-    actionTypes.FETCH_ASSET_PAIRS_REQUEST,
-    fetchAssetPairs,
-  );
 }

@@ -11,6 +11,7 @@
     "dev": "cross-env NODE_ENV=development babel-watch src/index.js",
     "clean": "rm -rf build && mkdir build",
     "start": "node ./dist/index.js",
+    "ti": "babel-watch src/api/tradingInfo",
     "dev-test-queue": "cross-env NODE_ENV=development babel-watch src/queue/example.js",
     "matcher-queue": "cross-env NODE_ENV=development babel-watch src/queue/matcherQueue.js",
     "build-matcher-queue": "cross-env NODE_ENV=production npm run clean && ./node_modules/babel-cli/bin/babel.js src/queue/matcherQueue.js -d matcherQueueDist",
