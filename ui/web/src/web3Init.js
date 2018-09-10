@@ -1,4 +1,4 @@
-import 'web3';
+import Web3 from 'web3';
 import {
   ethApi,
 } from 'instex-core';
