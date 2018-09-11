@@ -1,0 +1,6 @@
+{
+  "extends": ["../.base-eslintrc.js"],
+  "env": {
+    "jest": true
+  }
+}

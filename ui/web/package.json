@@ -11,17 +11,8 @@
     "flow": "flow",
     "storybook": "start-storybook -p 9001 -c .storybook"
   },
-  "jest": {
-    "transform": {
-      "^.+\\.jsx?$": "babel-jest",
-      "^.+\\.less$": "<rootDir>/config/jest/cssTransform.js"
-    },
-    "transformIgnorePatterns": [
-      "[/\\\\]node_modules(?!/instex-core)[/\\\\].+\\.(js|jsx|mjs)$"
-    ],
-    "setupTestFrameworkScriptFile": "<rootDir>/src/setupTests.js"
-  },
   "dependencies": {
+    "instex-core": "0.0.1",
     "@babel/polyfill": "7.0.0",
     "@babel/runtime": "7.0.0",
     "antd": "3.9.1",
@@ -29,8 +20,6 @@
     "change-case": "3.0.2",
     "classnames": "2.2.6",
     "history": "4.7.2",
-    "instex-core": "0.0.1",
-    "moment": "2.22.2",
     "raven-js": "3.26.4",
     "react": "16.4.2",
     "react-animations": "1.0.0",
@@ -70,13 +59,13 @@
     "babel-plugin-styled-components": "1.6.0",
     "css-loader": "1.0.0",
     "file-loader": "2.0.0",
+    "style-loader": "0.23.0",
     "html-webpack-plugin": "3.2.0",
     "js-to-styles-var-loader": "^1.1.0",
     "less": "3.8.1",
     "less-loader": "4.1.0",
     "less-plugin-lists": "1.1.2",
     "react-json-view": "1.19.1",
-    "style-loader": "0.23.0",
     "webpack": "4.17.1",
     "webpack-cli": "3.1.0",
     "webpack-dev-server": "3.1.7",

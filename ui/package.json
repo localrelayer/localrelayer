@@ -12,6 +12,7 @@
   },
   "workspaces": [
     "core",
+    "coreTests",
     "web"
   ],
   "devDependencies": {
@@ -27,8 +28,8 @@
     "flow-typed": "2.5.1"
   },
   "dependencies": {
-    "web3": "1.0.0-beta.35",
-    "0x.js": "1.0.1-rc.6",
+    "web3": "1.0.0-beta.36",
+    "0x.js": "1.0.1",
     "ramda": "0.25.0",
     "redux": "4.0.0",
     "redux-resource": "3.0.4",
