@@ -10,9 +10,9 @@ import {
 } from '../actions';
 import api from '../api';
 import cachedTokens from '../cache/tokens';
-import abiZRX from '../contracts/EtherToken';
+import abiZRX from '../contracts/abiZRX';
 // https://etherscan.io/address/0x86fa049857e0209aa7d9e616f7eb3b3b78ecfdb0#code
-import abiEOS from '../contracts/EtherTokenAlt';
+import abiEOS from '../contracts/abiEOS';
 
 function* extractInfo(tokenContract) {
   return yield all({
@@ -21,24 +21,26 @@ function* extractInfo(tokenContract) {
     decimals: call(tokenContract.methods.decimals().call),
   });
 }
-
-function* getAssetAdditionalInfo(asset) {
+export function* getAssetAdditionalInfo(asset) {
   if (cachedTokens[asset]) {
     return {
-      ...cachedTokens[asset],
       id: asset,
+      ...cachedTokens[asset],
     };
-  }
-  /*
+  }/*
     we cannot decode some specific types of assets using ZRX ABI,
     so in this case we have to use EOS ABI
+    https://ethereum.stackexchange.com/questions/37165/web3js-1-0-0-beta-24-the-returned-value-is-not-a-convertible-string
    */
   try {
     const tokenContract = new web3.eth.Contract(abiZRX, asset);
     const additionalInfo = yield call(extractInfo, tokenContract);
     return {
+      id: asset,
       address: asset,
-      ...additionalInfo,
+      name: additionalInfo.name,
+      symbol: additionalInfo.symbol,
+      decimals: parseInt(additionalInfo.decimals, 10),
     };
   } catch (error) {
     const tokenContract = new web3.eth.Contract(abiEOS, asset);
@@ -50,8 +52,9 @@ function* getAssetAdditionalInfo(asset) {
     return {
       id: asset,
       address: asset,
-      decimals: additionalInfo.decimals,
-      ...decodedInfo,
+      name: decodedInfo.name,
+      symbol: decodedInfo.symbol,
+      decimals: parseInt(additionalInfo.decimals, 10),
     };
   }
 }
@@ -65,17 +68,16 @@ export function* fetchAssetPairs() {
   });
   try {
     yield put(actions.pending());
-
-    const firsPageResponse = yield call(
+    const firstPageResponse = yield call(
       api.getAssetPairs,
       {
         perPage: 1000,
       },
     );
-    const perPage = firsPageResponse.records.length;
+    const perPage = firstPageResponse.records.length;
     const restPagesResponses = yield all(
       Array(
-        Math.ceil(firsPageResponse.total / perPage),
+        Math.ceil(firstPageResponse.total / perPage),
       )
         .fill(null)
         .map(
@@ -89,7 +91,7 @@ export function* fetchAssetPairs() {
         .slice(1),
     );
     const records = [
-      ...firsPageResponse.records,
+      ...firstPageResponse.records,
     ].concat(
       ...restPagesResponses.map(r => r.records),
     );
