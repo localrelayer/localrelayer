@@ -96,8 +96,8 @@ export function* fetchAssetPairs() {
     // Create id field by merging assetData fields
     const assetPairs = records.map(
       pair => ({
-        id: `${pair.assetDataA.assetData}_${pair.assetDataB.assetData}`,
         ...pair,
+        id: `${pair.assetDataA.assetData}_${pair.assetDataB.assetData}`,
       }),
     );
     /*
