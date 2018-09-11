@@ -30,8 +30,8 @@ export default class GetOrderBook extends Component {
           {this.state.show
             ? (
               <ReactJson src={coreMocks.mocksOrdersFactory({}).getOrderBook({
-                page: 10,
-                perPage: 150,
+                page: 1,
+                perPage: 100,
               })}
               />
             )

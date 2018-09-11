@@ -29,7 +29,7 @@ export default class GetOrders extends Component {
         {this.state.show
           ? (
             <ReactJson src={coreMocks.mocksOrdersFactory({}).getOrders({
-              page: 10,
+              page: 1,
               perPage: 150,
             })}
             />
