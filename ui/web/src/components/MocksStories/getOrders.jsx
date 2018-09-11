@@ -28,12 +28,10 @@ export default class GetOrders extends Component {
         <Button onClick={this.toggle}>getOrders</Button>
         {this.state.show
           ? (
-            <ReactJson src={coreMocks.mocksOrdersFactory({
-              qty: {
-                bids: 5,
-                asks: 5,
-              },
-            }).getOrders()}
+            <ReactJson src={coreMocks.mocksOrdersFactory({}).getOrders({
+              page: 10,
+              perPage: 150,
+            })}
             />
           )
           : null}

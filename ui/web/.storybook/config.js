@@ -66,10 +66,9 @@ configureViewport({
 
 
 function loadStories() {
-  require('../src/components/AssetPairCard/stories/index.jsx');
-  require('../src/components/MocksStories/stories/index.js');
+  require('../src/components/AssetPairCard/stories');
+  require('../src/components/MocksStories/stories');
   require('../src/components/TradingPageLayout/stories');
-  // You can require as many stories as you need.
 }
 
 addDecorator(render => (
