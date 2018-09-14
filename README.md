@@ -217,3 +217,19 @@ relayer can be filled by users on another relayer. That means - rather than each
 relayer would have own liquidity pool, all relayers can share orders to create a shared liquidity pool.
 New relayers can bootstrap their liquidity off of existing relayers, immediately becoming an
 interesting place to trade and big relayers can get additional fee income from those new relayers.
+
+## Base and Quote token explanation
+
+There are 3 conventional ways to name tokens in pair:
+
+- baseToken/quoteToken
+- makerTokenAddress/takerTokenAddress
+- assetA/assetB
+
+Example:
+
+10 zrx - 1 weth
+*Give 10 zrx - receive 1 weth (sell)*
+
+1 weth - 10 zrx
+*Take 10 zrx - give 1 weth (buy)*
