@@ -229,7 +229,7 @@ There are 3 conventional ways to name tokens in pair:
 Example:
 
 10 zrx - 1 weth
-*Give 10 zrx - receive 1 weth (sell)*
+*Give 10 zrx - receive 1 weth (ask/sell)*
 
 1 weth - 10 zrx
-*Take 10 zrx - give 1 weth (buy)*
+*Take 10 zrx - give 1 weth (bid/buy)*
