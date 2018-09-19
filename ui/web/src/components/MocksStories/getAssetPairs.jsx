@@ -34,7 +34,7 @@ export default class GetAssetPairs extends Component {
                   {
                     network: 10,
                     page: 1,
-                    perPage: 35,
+                    perPage: 100,
                   },
                 )}
                 />
