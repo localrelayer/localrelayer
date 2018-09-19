@@ -1,3 +1,7 @@
+import {
+  generatePseudoRandomSalt,
+} from '@0xproject/order-utils';
+import * as R from 'ramda';
 import assetPairsJson from './assetPairs.json';
 
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
@@ -24,9 +28,8 @@ export function getAssetPairs({
   page: 1,
   perPage: 100,
 }) {
+  const offset = (page - 1) * perPage;
   const records = assetPairsJson
-    .slice((page - 1) * perPage)
-    .slice(0, perPage)
     .filter(
       r => (
         (
@@ -40,10 +43,13 @@ export function getAssetPairs({
             : true
         )
       ),
+    )
+    .slice(
+      offset,
+      offset + perPage,
     );
 
   return {
-    total: assetPairsJson.length,
     network: networkId,
     total: assetPairsJson.length,
     page,
@@ -52,22 +58,53 @@ export function getAssetPairs({
   };
 }
 
-export function mocksOrdersFactory({
+function filterOrders({
+  orders,
   makerAssetData,
   takerAssetData,
+}) {
+  return (
+    orders
+      .filter(
+        r => (
+          (
+            makerAssetData
+              ? r.order.makerAssetData === makerAssetData
+              : true
+          )
+          && (
+            takerAssetData
+              ? r.order.takerAssetData === takerAssetData
+              : true
+          )
+        ),
+      )
+  );
+}
+
+/*
+ * The bid price represents the maximum price that a buyer is willing to pay for an asset
+ * The ask price represents the minimum price that a seller is willing to receive
+ * predefinedOrders is meant to facilitate tests
+ */
+export function mocksOrdersFactory({
+  assetDataA,
+  assetDataB,
+  orders: predefinedOrders,
   qty = {
     bids: 100,
     asks: 100,
   },
 } = {
+  orders: null,
   qty: {
     bids: 100,
     asks: 100,
   },
 }) {
   const assetPairs = getAssetPairs({
-    assetDataA: makerAssetData,
-    assetDataB: takerAssetData,
+    assetDataA,
+    assetDataB,
     // Just in case, to get all
     perPage: 10000,
   });
@@ -77,29 +114,40 @@ export function mocksOrdersFactory({
       asks,
     } = qty;
     return {
-      next: () => {
+      next: (order = {}) => {
         const pair = assetPairs.records[Math.floor(Math.random() * assetPairs.records.length)];
-        const type = bids ? 'bid' : 'ask';
-        if (bids) {
+        const {
+          type: orderType,
+          ...predefinedOrder
+        } = order;
+        const type = (
+          orderType
+          || (bids ? 'bid' : 'ask')
+        );
+        if (type === 'bid') {
           bids -= 1;
         } else {
           asks -= 1;
         }
         return {
           value: {
-            makerAddress: randomEthereumAddress(),
-            takerAddress: NULL_ADDRESS,
-            feeRecipientAddress: randomEthereumAddress(),
-            senderAddress: randomEthereumAddress(),
-            makerAssetAmount: '10000000000000000',
-            takerAssetAmount: '20000000000000000',
-            makerFee: '10000000000000000',
-            takerFee: '20000000000000000',
-            expirationTimeSeconds: '1532560590',
-            salt: '1532559225',
-            makerAssetData: type === 'bid' ? pair.assetDataA.assetData : pair.assetDataB.assetData,
-            takerAssetData: type === 'bid' ? pair.assetDataB.assetData : pair.assetDataA.assetData,
-            exchangeAddress: randomEthereumAddress(),
+            type,
+            order: {
+              makerAddress: randomEthereumAddress(),
+              takerAddress: NULL_ADDRESS,
+              feeRecipientAddress: randomEthereumAddress(),
+              senderAddress: randomEthereumAddress(),
+              makerAssetAmount: '10000000000000000',
+              takerAssetAmount: '20000000000000000',
+              makerFee: '10000000000000000',
+              takerFee: '20000000000000000',
+              expirationTimeSeconds: '1532560590',
+              salt: generatePseudoRandomSalt().toString(),
+              makerAssetData: type === 'bid' ? pair.assetDataB.assetData : pair.assetDataA.assetData,
+              takerAssetData: type === 'bid' ? pair.assetDataA.assetData : pair.assetDataB.assetData,
+              exchangeAddress: randomEthereumAddress(),
+              ...predefinedOrder,
+            },
           },
           done: !bids && !asks,
         };
@@ -108,11 +156,34 @@ export function mocksOrdersFactory({
   }
 
   const ordersProvider = ordersIterator();
-  const orders = Array(qty.bids + qty.asks).fill().map(() => ordersProvider.next().value);
-  const bidsDescendingOrder = orders.map(item => item)
-    .sort((a, b) => b.takerFee - a.takerFee);
-  const asksAscendingOrder = orders.map(item => item)
-    .sort((a, b) => a.takerFee - b.takerFee);
+  const orders = (
+    predefinedOrders
+    || Array(qty.bids + qty.asks).fill()
+  ).map(order => ordersProvider.next(order).value);
+  const allBidsOrders = (
+    orders
+      .filter(
+        order => (
+          order.type === 'bid'
+        ),
+      )
+      .map(o => ({
+        order: o.order,
+        metaData: {},
+      }))
+  );
+  const allAsksOrders = (
+    orders
+      .filter(
+        order => (
+          order.type === 'ask'
+        ),
+      )
+      .map(o => ({
+        order: o.order,
+        metaData: {},
+      }))
+  );
 
   return {
     getOrderBook({
@@ -124,106 +195,116 @@ export function mocksOrdersFactory({
       page: 1,
       perPage: 100,
     }) {
+      if (!baseAssetData || !quoteAssetData) {
+        throw Error('baseAssetData and quoteAssetData are required');
+      }
+      const sort = R.sortWith([
+        (a, b) => {
+          const aPrice = (
+            parseInt(a.order.takerAssetAmount, 10)
+            / parseInt(a.order.makerAssetAmount, 10)
+          );
+          const aTakerFeePrice = (
+            parseInt(a.order.takerFee, 10)
+            / parseInt(a.order.takerAssetAmount, 10)
+          );
+          const bPrice = (
+            parseInt(b.order.takerAssetAmount, 10)
+            / parseInt(b.order.makerAssetAmount, 10)
+          );
+          const bTakerFeePrice = (
+            parseInt(b.order.takerFee, 10)
+            / parseInt(b.order.takerAssetAmount, 10)
+          );
+          const aExpirationTimeSeconds = parseInt(a.expirationTimeSeconds, 10);
+          const bExpirationTimeSeconds = parseInt(b.expirationTimeSeconds, 10);
+
+          if (aTakerFeePrice === bTakerFeePrice) {
+            return aExpirationTimeSeconds - bExpirationTimeSeconds;
+          }
+          if (aPrice === bPrice) {
+            return aTakerFeePrice - bTakerFeePrice;
+          }
+          return aPrice - bPrice;
+        },
+      ]);
+      const bidsOrders = sort(filterOrders({
+        orders: allBidsOrders,
+        makerAssetData: quoteAssetData,
+        takerAssetData: baseAssetData,
+      }));
+      const asksOrders = sort(filterOrders({
+        orders: allAsksOrders,
+        makerAssetData: baseAssetData,
+        takerAssetData: quoteAssetData,
+      }));
+      const offset = (page - 1) * perPage;
       return {
         bids: {
-          total: qty.bids,
+          total: bidsOrders.length,
           page,
           perPage,
-          records: bidsDescendingOrder
-            .slice(0, qty.bids)
-            .map(order => ({
-              order,
-              metaData: {},
-            }))
-            .filter(
-              r => (
-                (
-                  baseAssetData
-                    ? r.order.makerAssetData === baseAssetData
-                    : true
-                )
-                && (
-                  quoteAssetData
-                    ? r.order.takerAssetData === quoteAssetData
-                    : true
-                )
-              ),
-            ),
+          records: (
+            bidsOrders
+              .slice(
+                offset,
+                offset + perPage,
+              )
+          ),
         },
         asks: {
-          total: qty.asks,
+          total: asksOrders.length,
           page,
           perPage,
-          records: asksAscendingOrder
-            .slice(0, qty.asks)
-            .map(order => ({
-              order,
-              metaData: {},
-            }))
-            .filter(
-              r => (
-                (
-                  baseAssetData
-                    ? r.order.makerAssetData === baseAssetData
-                    : true
-                )
-                && (
-                  quoteAssetData
-                    ? r.order.takerAssetData === quoteAssetData
-                    : true
-                )
-              ),
-            ),
+          records: (
+            asksOrders
+              .slice(
+                offset,
+                offset + perPage,
+              )
+          ),
         },
       };
     },
+
     getOrders({
-      makerAssetProxyId,
-      takerAssetProxyId,
-      makerAssetAddress,
-      takerAssetAddress,
-      exchangeAddress,
-      senderAddress,
       makerAssetData,
       takerAssetData,
-      traderAssetData,
-      makerAddress = '0x9e56625509c2f60af937f23b7b532600390e8c8b',
-      takerAddress = '0x9e56625509c2f60af937f23b7b532600390e8c8b',
-      traderAddress,
-      feeRecipientAddress,
-      networkId,
-      page,
-      perPage,
+      page = 1,
+      perPage = 1000,
+    } = {
+      page: 1,
+      perPage: 100,
     }) {
-      let ordersAscendingOrder = orders;
-      if (makerAssetData && takerAssetData) {
-        ordersAscendingOrder = orders.map(item => item)
-          .sort((a, b) => a.takerFee - b.takerFee);
-      }
-
+      const offset = (page - 1) * perPage;
+      const sort = R.sortWith([
+        (a, b) => {
+          const aPrice = (
+            parseInt(a.order.takerAssetAmount, 10)
+            / parseInt(a.order.makerAssetAmount, 10)
+          );
+          const bPrice = (
+            parseInt(b.order.takerAssetAmount, 10)
+            / parseInt(b.order.makerAssetAmount, 10)
+          );
+          return bPrice - aPrice;
+        },
+      ]);
       return {
         total: orders.length,
         page,
         perPage,
-        records: ordersAscendingOrder
-          .slice(page, page + perPage)
-          .map(order => ({
-            order,
-            metaData: {},
-          }))
-          .filter(
-            r => (
-              (
-                makerAssetData
-                  ? r.order.makerAssetData === makerAssetData
-                  : true
-              )
-              && (
-                takerAssetData
-                  ? r.order.takerAssetData === takerAssetData
-                  : true
-              )
-            ),
+        records:
+          sort(filterOrders({
+            makerAssetData,
+            takerAssetData,
+            orders: orders.map(o => ({
+              order: o.order,
+              metaData: {},
+            })),
+          })).slice(
+            offset,
+            offset + perPage,
           ),
       };
     },
