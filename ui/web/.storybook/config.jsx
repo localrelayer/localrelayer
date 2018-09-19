@@ -67,7 +67,6 @@ configureViewport({
 
 function loadStories() {
   require('../src/components/AssetPairCard/stories');
-  require('../src/components/MocksStories/stories');
   require('../src/components/TradingPageLayout/stories');
 }
 
