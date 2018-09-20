@@ -51,10 +51,10 @@ export function getAssetPairs({
 
   return {
     network: networkId,
+    total: records.length,
     page,
     perPage,
     records,
-    total: assetPairsJson.length,
   };
 }
 

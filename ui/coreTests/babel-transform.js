@@ -15,6 +15,7 @@ module.exports = {
               },
             },
           ],
+          '@babel/preset-flow',
         ],
         plugins: [
           '@babel/plugin-proposal-export-namespace-from',
