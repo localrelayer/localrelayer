@@ -5,42 +5,42 @@ import {
 
 import TradingPageLayout from '..';
 import {
-  StyledDiv,
+  DottedBorder,
 } from '../styled';
 
 storiesOf('TradingPageLayout', module)
   .add('trading-page-layout-default', () => (
     <TradingPageLayout>
-      <StyledDiv key="assetPairCard">
+      <DottedBorder key="assetPairCard">
         AssetPairs
-      </StyledDiv>
+      </DottedBorder>
 
-      <StyledDiv key="balance">
+      <DottedBorder key="balance">
         Balance
-      </StyledDiv>
+      </DottedBorder>
 
-      <StyledDiv key="userOrders">
+      <DottedBorder key="userOrders">
         OpenedOrders
-      </StyledDiv>
+      </DottedBorder>
 
-      <StyledDiv key="chart">
+      <DottedBorder key="chart">
         Charts
-      </StyledDiv>
+      </DottedBorder>
 
-      <StyledDiv key="orderBook">
+      <DottedBorder key="orderBook">
         OrderBook
-      </StyledDiv>
+      </DottedBorder>
 
-      <StyledDiv key="buySell">
+      <DottedBorder key="buySell">
         Buy/Sell
-      </StyledDiv>
+      </DottedBorder>
 
-      <StyledDiv key="history">
+      <DottedBorder key="history">
         TradingHistory
-      </StyledDiv>
+      </DottedBorder>
 
-      <StyledDiv key="news">
+      <DottedBorder key="news">
           News
-      </StyledDiv>
+      </DottedBorder>
     </TradingPageLayout>
   ));

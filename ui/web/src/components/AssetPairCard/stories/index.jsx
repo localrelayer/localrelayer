@@ -3,6 +3,7 @@ import {
   storiesOf,
 } from '@storybook/react';
 
+import TradingPageLayout from 'web-components/TradingPageLayout';
 import AssetPairCard from '..';
 
 const assetPair = {
@@ -37,8 +38,22 @@ const assetPair = {
 };
 
 storiesOf('AssetPairCard', module)
-  .add('with assetPair', () => (
-    <AssetPairCard
-      assetPair={assetPair}
+  .add('with Layout', () => (
+    <TradingPageLayout.Preview
+      assetPairCard={(
+        <AssetPairCard
+          assetPair={assetPair}
+        />
+      )}
+    />
+  ))
+  .add('hide rest components', () => (
+    <TradingPageLayout.Preview
+      hideRest
+      assetPairCard={(
+        <AssetPairCard
+          assetPair={assetPair}
+        />
+      )}
     />
   ));

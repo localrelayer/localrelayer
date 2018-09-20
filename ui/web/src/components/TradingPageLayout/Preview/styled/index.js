@@ -6,4 +6,4 @@ export const DottedBorder = styled.div`
   text-align : center;
   font-size: 24px;
   background-color: #fafafa;
-`;
+`
