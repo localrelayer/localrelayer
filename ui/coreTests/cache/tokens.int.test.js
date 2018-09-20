@@ -1,17 +1,15 @@
+import {
+  cachedTokens,
+  contracts,
+} from 'instex-core';
+import '../web3InitTests';
+
 /*
 this is integration test
 we need this test only once, if cache file was changed
 in order to check if everything is correct
 */
-import {
-  cachedTokens,
-} from 'instex-core';
-import {
-  contracts,
-} from 'instex-core';
-import '../web3InitTests';
-
-describe('tokensCache', () => {
+describe('tokens.json', () => {
   it('should check if additional info about tokens was calculated correctly', async () => {
     const addresses = Object.keys(cachedTokens.default);
     const extractInfo = async (contract) => {
@@ -29,20 +27,24 @@ describe('tokensCache', () => {
         // abiZRX
         const contract = new web3.eth.Contract(contracts.abiZRX, address);
         const additionalInfo = await extractInfo(contract);
-        return { name: additionalInfo.name,
+        return {
+          name: additionalInfo.name,
           symbol: additionalInfo.symbol,
           decimals: parseInt(additionalInfo.decimals, 10),
-          address };
+          address,
+        };
       } catch (error) {
         // abiEOS
         const contract = new web3.eth.Contract(contracts.abiEOS, address);
         const additionalInfo = await extractInfo(contract);
         const nameDecoded = await web3.utils.hexToAscii(additionalInfo.name).replace(/\u0000*$/, '');
         const symbolDecoded = await web3.utils.hexToAscii(additionalInfo.symbol).replace(/\u0000*$/, '');
-        return { name: nameDecoded,
+        return {
+          name: nameDecoded,
           symbol: symbolDecoded,
           decimals: parseInt(additionalInfo.decimals, 10),
-          address };
+          address,
+        };
       }
     };
     const tokensArray = await Promise.all(addresses.map(item => getAdditionalInfo(item)));

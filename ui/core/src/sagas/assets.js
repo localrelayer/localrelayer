@@ -1,26 +1,31 @@
-import {
-  takeEvery,
-  call,
-  all,
-  put,
-} from 'redux-saga/effects';
+import * as eff from 'redux-saga/effects';
 import createActionCreators from 'redux-resource-action-creators';
+import {
+  addressUtils,
+} from '@0xproject/utils';
+
 import {
   actionTypes,
 } from '../actions';
+import {
+  getAssetByIdField,
+  getResourceById,
+} from '../selectors';
 import api from '../api';
 import cachedTokens from '../cache/tokens';
 import abiZRX from '../contracts/abiZRX';
 // https://etherscan.io/address/0x86fa049857e0209aa7d9e616f7eb3b3b78ecfdb0#code
 import abiEOS from '../contracts/abiEOS';
 
+
 function* extractInfo(tokenContract) {
-  return yield all({
-    name: call(tokenContract.methods.name().call),
-    symbol: call(tokenContract.methods.symbol().call),
-    decimals: call(tokenContract.methods.decimals().call),
+  return yield eff.all({
+    name: eff.call(tokenContract.methods.name().call),
+    symbol: eff.call(tokenContract.methods.symbol().call),
+    decimals: eff.call(tokenContract.methods.decimals().call),
   });
 }
+
 export function* getAssetAdditionalInfo(asset) {
   if (cachedTokens[asset]) {
     return {
@@ -33,8 +38,12 @@ export function* getAssetAdditionalInfo(asset) {
     https://ethereum.stackexchange.com/questions/37165/web3js-1-0-0-beta-24-the-returned-value-is-not-a-convertible-string
    */
   try {
-    const tokenContract = new web3.eth.Contract(abiZRX, asset);
-    const additionalInfo = yield call(extractInfo, tokenContract);
+    /*
+     * If call new web3 using call effect we will have an issue because of new context,
+     * issue appears only with redux-saga-test-plan
+     */
+    const zrxContract = new web3.eth.Contract(abiZRX, asset);
+    const additionalInfo = yield eff.call(extractInfo, zrxContract);
     return {
       id: asset,
       address: asset,
@@ -43,11 +52,11 @@ export function* getAssetAdditionalInfo(asset) {
       decimals: parseInt(additionalInfo.decimals, 10),
     };
   } catch (error) {
-    const tokenContract = new web3.eth.Contract(abiEOS, asset);
-    const additionalInfo = yield call(extractInfo, tokenContract);
-    const decodedInfo = yield all({
-      name: call(web3.utils.hexToAscii, additionalInfo.name),
-      symbol: call(web3.utils.hexToAscii, additionalInfo.symbol),
+    const eosContract = new web3.eth.Contract(abiEOS, asset);
+    const additionalInfo = yield eff.call(extractInfo, eosContract);
+    const decodedInfo = yield eff.all({
+      name: eff.call(web3.utils.hexToAscii, additionalInfo.name),
+      symbol: eff.call(web3.utils.hexToAscii, additionalInfo.symbol),
     });
     return {
       id: asset,
@@ -59,30 +68,32 @@ export function* getAssetAdditionalInfo(asset) {
   }
 }
 
-export function* fetchAssetPairs() {
+export function* fetchAssetPairs(opts = {}) {
   const actions = createActionCreators('read', {
     resourceType: 'assetPairs',
     requestKey: 'assetPairs',
-    list: 'assetPairs',
+    list: 'listed',
     mergeListIds: true,
   });
   try {
-    yield put(actions.pending());
-    const firstPageResponse = yield call(
+    yield eff.put(actions.pending());
+    const firstPageResponse = yield eff.call(
       api.getAssetPairs,
       {
         perPage: 1000,
+        ...opts,
       },
     );
     const perPage = firstPageResponse.records.length;
-    const restPagesResponses = yield all(
+    const restPagesResponses = yield eff.all(
       Array(
         Math.ceil(firstPageResponse.total / perPage),
       )
         .fill(null)
         .map(
           (item, index) => (
-            call(api.getAssetPairs, {
+            eff.call(api.getAssetPairs, {
+              ...opts,
               page: index + 1,
               perPage,
             })
@@ -113,17 +124,13 @@ export function* fetchAssetPairs() {
         acc[curr.assetDataB.assetData] = null;
         return acc;
       }, {}),
-    )
-    /*
-     in order to split up asset's address and contract address we use slice() here, which convert
-     0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2 to
-     0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2 so we able to extract an addition info
-     */
-      .map(item => `0x${item.slice(34)}`);
-    const assets = yield all(assetsRaw.map(
-      item => call(getAssetAdditionalInfo, item),
-    ));
-    yield put(actions.succeeded({
+    );
+    const assets = yield eff.all(
+      assetsRaw.map(
+        item => eff.call(getAssetAdditionalInfo, item),
+      ),
+    );
+    yield eff.put(actions.succeeded({
       resources: assetPairs,
       includedResources: {
         assets,
@@ -131,14 +138,120 @@ export function* fetchAssetPairs() {
     }));
   } catch (err) {
     console.log(err);
-    yield put(actions.succeeded({
+    yield eff.put(actions.succeeded({
       resources: [],
     }));
   }
 }
 
+function determineAssetIdType(asset) {
+  try {
+    if (addressUtils.isAddress(asset)) {
+      return 'address';
+    }
+
+    const maxLength = 30;
+    if (
+      /^[a-z0-9 ]+$/i.test(asset)
+      && asset.length <= maxLength
+    ) {
+      return 'symbol';
+    }
+  } catch (err) {
+    console.log(err);
+  }
+  return null;
+}
+
+export function* checkAssetPair({
+  baseAsset,
+  quoteAsset,
+}) {
+  const assetsTypes = {
+    /* return type of null which means an format error */
+    baseAsset: determineAssetIdType(baseAsset),
+    quoteAsset: determineAssetIdType(quoteAsset),
+  };
+
+  const baseAssetResource = (
+    (
+      assetsTypes.baseAsset
+      && (
+        yield eff.select(s => getAssetByIdField({
+          fieldName: assetsTypes.baseAsset,
+          value: baseAsset,
+        })(s.assets.resources))
+      )
+    ) || (
+      assetsTypes.baseAsset === 'address' && (
+        yield eff.call(getAssetAdditionalInfo, baseAsset)
+      )
+    )
+  );
+  const quoteAssetResource = (
+    (
+      assetsTypes.quoteAsset
+      && (
+        yield eff.select(s => getAssetByIdField({
+          fieldName: assetsTypes.quoteAsset,
+          value: quoteAsset,
+        })(s.assets.resources))
+      )
+    ) || (
+      assetsTypes.quoteAsset === 'address' && (
+        yield eff.call(getAssetAdditionalInfo, quoteAsset)
+      )
+    )
+  );
+
+  if (baseAssetResource && quoteAssetResource) {
+    const assetPair = yield eff.select(getResourceById(
+      'assetPairs',
+      `${baseAssetResource.id}_${quoteAssetResource.id}`,
+    ));
+    if (assetPair) {
+      return {
+        assetPair,
+        isListed: yield eff.select(s => s.assetPairs.lists.listed.includes(assetPair.id)),
+      };
+    }
+    const actions = createActionCreators('create', {
+      resourceType: 'assetPairs',
+      requestKey: 'assetPais',
+      list: 'notListed',
+      mergeListIds: true,
+    });
+
+    const notListedAssetPair = {
+      id: `${baseAssetResource.id}_${quoteAssetResource.id}`,
+      assetDataA: baseAssetResource,
+      assetDataB: quoteAssetResource,
+    };
+    yield eff.put(actions.succeeded({
+      resources: [notListedAssetPair],
+      includedResources: {
+        assets: [
+          baseAssetResource,
+          quoteAssetResource,
+        ],
+      },
+    }));
+
+    return {
+      assetPair: notListedAssetPair,
+      isListed: false,
+    };
+  }
+
+  const errors = {
+    ...(!baseAssetResource ? { baseAssetResource: 'Wrong asset' } : {}),
+    ...(!quoteAssetResource ? { quoteAssetResource: 'Wrong asset' } : {}),
+  };
+  throw errors;
+}
+
 export function* takeFetchAssetPairsRequest() {
-  yield takeEvery(
+  yield eff.takeEvery(
     actionTypes.FETCH_ASSET_PAIRS_REQUEST,
     fetchAssetPairs,
   );
