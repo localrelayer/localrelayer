@@ -68,6 +68,7 @@ configureViewport({
 function loadStories() {
   require('../src/components/AssetPairCard/stories');
   require('../src/components/TradingPageLayout/stories');
+  require('../src/containers/AppContainer/stories');
 }
 
 addDecorator(render => (
