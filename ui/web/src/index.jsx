@@ -2,6 +2,9 @@
 import '@babel/polyfill';
 import React from 'react';
 import {
+  BrowserRouter,
+} from 'react-router-dom';
+import {
   render as reactRender,
 } from 'react-dom';
 import {
@@ -20,8 +23,8 @@ import type {
   ComponentType,
 } from 'react';
 
+import App from 'web-containers/AppContainer';
 import store from './store';
-import App from './App';
 import config from './config';
 import './web3Init';
 
@@ -37,7 +40,9 @@ const render: Function = (Component: ComponentType<*>) => (
   reactRender(
     <Provider store={store}>
       <LocaleProvider locale={enUS}>
-        <Component />
+        <BrowserRouter>
+          <Component />
+        </BrowserRouter>
       </LocaleProvider>
     </Provider>,
     rootEl,
