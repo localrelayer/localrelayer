@@ -54,6 +54,7 @@ export function getAssetPairs({
     page,
     perPage,
     records,
+    total: assetPairsJson.length,
   };
 }
 
