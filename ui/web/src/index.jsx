@@ -2,7 +2,7 @@
 import '@babel/polyfill';
 import React from 'react';
 import {
-  BrowserRouter,
+  Route,
 } from 'react-router-dom';
 import {
   render as reactRender,
@@ -24,6 +24,10 @@ import type {
 } from 'react';
 
 import App from 'web-containers/AppContainer';
+/* Import browserHistory only bfore the store import,
+ * it gives a guarantee that initialize saga will use initialized history object
+*/
+import browserHistory from './history/browser';
 import store from './store';
 import config from './config';
 import './web3Init';
@@ -40,9 +44,9 @@ const render: Function = (Component: ComponentType<*>) => (
   reactRender(
     <Provider store={store}>
       <LocaleProvider locale={enUS}>
-        <BrowserRouter>
+        <Route history={browserHistory}>
           <Component />
-        </BrowserRouter>
+        </Route>
       </LocaleProvider>
     </Provider>,
     rootEl,
