@@ -1,21 +1,26 @@
 import React from 'react';
 import {
-  MemoryRouter,
+  Router,
 } from 'react-router';
 import {
   storiesOf,
 } from '@storybook/react';
 
+import {
+  getHistory,
+} from 'web-history';
 import AppContainer from 'web-containers/AppContainer';
 
 storiesOf('AppContainer', module)
   .add('/ - index route', () => (
-    <MemoryRouter
-      initialEntries={[
-        '/',
-      ]}
-      initialIndex={1}
+    <Router
+      history={getHistory('memory', {
+        initialEntries: [
+          '/',
+        ],
+        initialIndex: 1,
+      })}
     >
       <AppContainer />
-    </MemoryRouter>
+    </Router>
   ));
