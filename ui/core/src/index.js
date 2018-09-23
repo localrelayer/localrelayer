@@ -1,4 +1,5 @@
 export * as coreReducers from './reducers';
+export * as coreSelectors from './selectors';
 export * as coreMocks from './mocks';
 export * as coreSagas from './sagas';
 export ethApi from './ethApi';

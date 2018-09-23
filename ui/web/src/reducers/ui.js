@@ -10,7 +10,11 @@ import type {
 
 
 const initialState: UiState = {
-  showEthMissProvider: false,
+  isAppInitializing: true,
+
+  currentPairId: null,
+  isCurrentPairListed: true,
+  isCurrentPairIssue: false,
 };
 
 const mergeUiValues = (
@@ -41,7 +45,7 @@ const ui = (
       return {
         ...state,
         ...(
-          key
+          values !== undefined
             ? ({
               [key]: {
                 ...state[key],
@@ -54,7 +58,7 @@ const ui = (
             })
             : (
               mergeUiValues(
-                values,
+                key,
                 deepMergeKeys,
                 state,
               )
