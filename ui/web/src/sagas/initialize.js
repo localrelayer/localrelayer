@@ -2,11 +2,16 @@
 import {
   put,
   takeEvery,
+  call
 } from 'redux-saga/effects';
 
 import type {
   Saga,
 } from 'redux-saga';
+
+import {
+  coreSagas,
+} from 'instex-core';
 
 import * as coreActions from 'instex-core/actions';
 import {
@@ -16,7 +21,9 @@ import {
 
 export function* initialize(): Saga<void> {
   console.log('initialize saga');
-  yield put(coreActions.fetchAssetPairsRequest());
+  yield call(coreSagas.fetchAssetPairs);
+  yield put(coreActions.checkPairRequest());
+  console.log('done init');
 }
 
 export function* takeInitializeWebApp() {

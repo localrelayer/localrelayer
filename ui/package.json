@@ -36,7 +36,7 @@
     "redux-resource": "3.0.4",
     "redux-resource-action-creators": "2.0.1",
     "redux-resource-plugins": "3.1.0",
-    "redux-saga": "0.16.0",
+    "redux-saga": "1.0.0-beta.1",
     "reselect": "3.0.1",
     "raven-js": "3.26.4"
   }
