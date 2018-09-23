@@ -10,12 +10,19 @@ import {
   addDecorator,
 } from '@storybook/react';
 
-import '../src/mockInit';
-import '../src/web3Init';
+import {
+  themes,
+} from '@storybook/components';
+import {
+  withOptions,
+} from '@storybook/addon-options';
 import {
   configureViewport,
   INITIAL_VIEWPORTS,
 } from '@storybook/addon-viewport';
+
+import '../src/mockInit';
+import '../src/web3Init';
 import store from '../src/store';
 
 
@@ -57,6 +64,14 @@ const newViewports = {
   },
 };
 
+addDecorator(
+  withOptions({
+    hierarchySeparator: /\/|\./,
+    hierarchyRootSeparator: /\|/,
+    theme: themes.dark,
+  }),
+);
+
 configureViewport({
   viewports: {
     ...INITIAL_VIEWPORTS,
@@ -64,17 +79,18 @@ configureViewport({
   },
 });
 
-
-function loadStories() {
-  require('../src/components/AssetPairCard/stories');
-  require('../src/components/TradingPageLayout/stories');
-  require('../src/containers/AppContainer/stories');
-}
-
 addDecorator(render => (
   <Provider store={store}>
     {render()}
   </Provider>
 ));
+
+
+function loadStories() {
+  require('../src/components/AssetPairCard/stories');
+  require('../src/containers/AssetPairCardContainer/stories');
+  require('../src/components/TradingPageLayout/stories');
+  require('../src/containers/AppContainer/stories');
+}
 
 configure(loadStories, module);

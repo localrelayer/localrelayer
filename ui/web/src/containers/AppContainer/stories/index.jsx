@@ -11,7 +11,7 @@ import {
 } from 'web-history';
 import AppContainer from 'web-containers/AppContainer';
 
-storiesOf('AppContainer', module)
+storiesOf('Containers|AppContainer', module)
   .add('/ - index route', () => (
     <Router
       history={getHistory('memory', {
@@ -23,4 +23,13 @@ storiesOf('AppContainer', module)
     >
       <AppContainer />
     </Router>
-  ));
+  ))
+  .add('full screen', () => (
+    <Router history={getHistory('memory')}>
+      <AppContainer />
+    </Router>
+  ), {
+    options: {
+      goFullScreen: true,
+    },
+  });

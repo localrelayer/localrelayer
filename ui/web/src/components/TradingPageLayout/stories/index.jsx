@@ -5,7 +5,14 @@ import {
 
 import TradingPageLayout from '..';
 
-storiesOf('TradingPageLayout', module)
-  .add('trading-page-layout-default', () => (
+storiesOf('Components|TradingPageLayout', module)
+  .add('preview', () => (
     <TradingPageLayout.Preview />
-  ));
+  ))
+  .add('full screen', () => (
+    <TradingPageLayout.Preview />
+  ), {
+    options: {
+      goFullScreen: true,
+    },
+  });

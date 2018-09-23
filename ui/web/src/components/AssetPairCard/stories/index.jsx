@@ -2,9 +2,15 @@ import React from 'react';
 import {
   storiesOf,
 } from '@storybook/react';
+import {
+  withKnobs,
+  boolean,
+  object,
+} from '@storybook/addon-knobs';
 
 import TradingPageLayout from 'web-components/TradingPageLayout';
 import AssetPairCard from '..';
+
 
 const assetPair = {
   id: '0xe41d2489571d322189246dafa5ebde1f4699f498_0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
@@ -37,23 +43,32 @@ const assetPair = {
   },
 };
 
-storiesOf('AssetPairCard', module)
-  .add('with Layout', () => (
-    <TradingPageLayout.Preview
-      assetPairCard={(
-        <AssetPairCard
-          assetPair={assetPair}
-        />
-      )}
-    />
-  ))
-  .add('hide rest components', () => (
-    <TradingPageLayout.Preview
-      hideRest
-      assetPairCard={(
-        <AssetPairCard
-          assetPair={assetPair}
-        />
-      )}
-    />
-  ));
+const AssetPairCardStory = () => (
+  <TradingPageLayout.Preview
+    hideRest={boolean('Hide preview layout', false)}
+    assetPairCard={(
+      <AssetPairCard
+        loading={boolean('Loading', false)}
+        assetPair={object('assetPair', assetPair)}
+      />
+    )}
+  />
+);
+
+
+/* Add note - loading should not be seen at all on th real app */
+storiesOf('Components|AssetPairCardComponent', module)
+  .addDecorator(withKnobs)
+  .add(
+    'default',
+    AssetPairCardStory,
+  )
+  .add(
+    'full screen',
+    AssetPairCardStory,
+    {
+      options: {
+        goFullScreen: true,
+      },
+    },
+  );

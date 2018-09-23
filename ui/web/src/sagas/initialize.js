@@ -45,7 +45,7 @@ function* setCurrentPair(location) {
         quoteAsset: match.params.quoteAsset,
       });
       yield eff.put(uiActions.setUiState({
-        currentPairId: assetPair.id,
+        currentAssetPairId: assetPair.id,
         isCurrentPairListed: isListed,
         isCurrentPairIssue: false,
       }));
