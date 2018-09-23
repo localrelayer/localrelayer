@@ -18,6 +18,7 @@ module.exports = env => ({
       'web-components': path.resolve(__dirname, 'src/components'),
       'web-containers': path.resolve(__dirname, 'src/containers'),
       'web-actions': path.resolve(__dirname, 'src/actions'),
+      'web-selectors': path.resolve(__dirname, 'src/selectors'),
       'web-config': path.resolve(__dirname, 'src/config'),
       'web-history': path.resolve(__dirname, 'src/history'),
       components: path.resolve(__dirname, 'src/components'),

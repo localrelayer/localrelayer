@@ -14,6 +14,7 @@ import {
 import * as S from './styled';
 
 type Props = {
+  loading: boolean,
   assetPair: {
     id: string,
     assetDataA: {
@@ -46,36 +47,34 @@ type Props = {
   },
 };
 
-// To understand naming inside the component,
-// read https://www.wikiwand.com/en/Currency_pair
+
 const AssetPairCard = ({
-  assetPair: {
-    assetDataA,
-    assetDataB,
-    meta,
-  },
+  assetPair,
+  loading = false,
 }: Props): Node => {
-  const tradingInfo = meta?.tradingInfo || {};
+  const assetDataA = assetPair?.assetDataA;
+  const assetDataB = assetPair?.assetDataB;
+  const tradingInfo = assetPair?.meta?.tradingInfo || {};
   const isPositive = (tradingInfo.change24Hour || 0) >= 0;
   return (
-    <S.AssetPairCard>
+    <S.AssetPairCard loading={loading}>
       <Card.Meta
         title={(
           <S.CardTitle>
             <S.AssetPairInfo>
-              {assetDataA.assetData.symbol}
+              {assetDataA?.assetData?.symbol}
               /
-              {assetDataB.assetData.symbol}
+              {assetDataB?.assetData?.symbol}
               <S.BaseAssetAddress
                 target="_blank"
                 rel="noopener"
-                href={`https://etherscan.io/token/${assetDataA.assetData.address}`}
+                href={`https://etherscan.io/token/${assetDataA?.assetData?.address}`}
               >
-                {assetDataA.assetData.address}
+                {assetDataA?.assetData?.address}
               </S.BaseAssetAddress>
             </S.AssetPairInfo>
             <S.LastPrice>
-              {tradingInfo.lastPrice || 'No info about trades in 24hr'}
+              {tradingInfo?.lastPrice || 'No info about trades in 24hr'}
             </S.LastPrice>
           </S.CardTitle>
         )}

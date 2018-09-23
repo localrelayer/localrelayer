@@ -39,6 +39,11 @@
     "styled-components": "3.4.5"
   },
   "devDependencies": {
+    "@storybook/addon-actions": "4.0.0-alpha.22",
+    "@storybook/addon-options": "4.0.0-alpha.22",
+    "@storybook/addon-knobs": "4.0.0-alpha.22",
+    "@storybook/addon-viewport": "4.0.0-alpha.22",
+    "@storybook/react": "4.0.0-alpha.22",
     "@babel/core": "7.0.0",
     "@babel/plugin-external-helpers": "7.0.0",
     "@babel/plugin-proposal-class-properties": "7.0.0",
@@ -50,8 +55,6 @@
     "@babel/preset-env": "7.0.0",
     "@babel/preset-flow": "7.0.0",
     "@babel/preset-react": "7.0.0",
-    "@storybook/addon-viewport": "4.0.0-alpha.20",
-    "@storybook/react": "4.0.0-alpha.20",
     "babel-loader": "8.0.2",
     "babel-plugin-import": "1.8.0",
     "babel-plugin-styled-components": "1.6.0",

@@ -12,7 +12,7 @@ import type {
 const initialState: UiState = {
   isAppInitializing: true,
 
-  currentPairId: null,
+  currentAssetPairId: null,
   isCurrentPairListed: true,
   isCurrentPairIssue: false,
 };
