@@ -5,6 +5,8 @@ import type {
 } from '../types';
 
 const initialState: UiState = {
+  isAppInitializing: true,
+
   currentPairId: null,
   currentTokenId: null,
   searchQuery: '',
