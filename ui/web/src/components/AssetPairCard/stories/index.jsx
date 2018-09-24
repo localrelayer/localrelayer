@@ -59,6 +59,11 @@ const AssetPairCardStory = () => (
 /* Add note - loading should not be seen at all on th real app */
 storiesOf('Components|AssetPairCardComponent', module)
   .addDecorator(withKnobs)
+  .addParameters({
+    info: {
+      propTables: [AssetPairCard],
+    },
+  })
   .add(
     'default',
     AssetPairCardStory,

@@ -42,6 +42,7 @@
     "@storybook/addon-actions": "4.0.0-alpha.22",
     "@storybook/addon-options": "4.0.0-alpha.22",
     "@storybook/addon-knobs": "4.0.0-alpha.22",
+    "@storybook/addon-info": "4.0.0-alpha.22",
     "@storybook/addon-viewport": "4.0.0-alpha.22",
     "@storybook/react": "4.0.0-alpha.22",
     "@babel/core": "7.0.0",
