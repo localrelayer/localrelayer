@@ -9,13 +9,29 @@ module.exports = (storybookBaseConfig, configType) => {
   });
   const localPresets = projectConfig.module.rules[0].use.options.presets;
   const localPlugins = projectConfig.module.rules[0].use.options.plugins;
+  const storyBookPlugins = storybookBaseConfig.module.rules[0].use[0].options.plugins;
   // babel7 support
   storybookBaseConfig.module.rules[0].include = [
     ...storybookBaseConfig.module.rules[0].include,
     path.resolve(__dirname, '../../core'),
   ];
   storybookBaseConfig.module.rules[0].use[0].options.presets = localPresets;
-  storybookBaseConfig.module.rules[0].use[0].options.plugins = localPlugins;
+  storybookBaseConfig.module.rules[0].use[0].options.plugins = [
+    ...storyBookPlugins.filter(
+      p => !(
+        [
+          'plugin-transform-regenerator',
+          'plugin-transform-runtime',
+          'plugin-proposal-class-properties',
+        ].some(
+          ep => (
+            Array.isArray(p) ? p[0].includes(ep) : p.includes(ep)
+          ),
+        )
+      ),
+    ),
+    ...localPlugins,
+  ];
   storybookBaseConfig.module.rules.push({
     test: /\.(less)$/,
     use: [

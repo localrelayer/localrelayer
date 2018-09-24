@@ -9,13 +9,15 @@ import {
   configure,
   addDecorator,
 } from '@storybook/react';
-
 import {
   themes,
 } from '@storybook/components';
 import {
   withOptions,
 } from '@storybook/addon-options';
+import {
+  withInfo,
+} from '@storybook/addon-info';
 import {
   configureViewport,
   INITIAL_VIEWPORTS,
@@ -63,6 +65,10 @@ const newViewports = {
     },
   },
 };
+
+addDecorator(
+  withInfo,
+);
 
 addDecorator(
   withOptions({
