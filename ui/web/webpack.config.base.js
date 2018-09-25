@@ -52,8 +52,7 @@ module.exports = env => ({
                 '@babel/preset-react',
                 {
                   development: (!env || !env.NODE_ENV)
-                    ? 'development'
-                    : env.NODE_ENV.toLowerCase() === 'development',
+                  || env.NODE_ENV.toLowerCase() === 'development',
                 },
               ],
               '@babel/preset-flow',

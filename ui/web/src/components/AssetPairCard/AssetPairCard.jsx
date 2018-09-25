@@ -7,46 +7,20 @@ import {
 import type {
   Node,
 } from 'react';
+import type {
+  AssetPair,
+} from 'instex-core/types';
 
 import {
   ColoredSpan,
 } from 'web-components/SharedStyledComponents';
 import * as S from './styled';
 
+
 type Props = {
   loading: boolean,
-  assetPair: {
-    id: string,
-    assetDataA: {
-      minAmount: string,
-      maxAmount: string,
-      precision: number,
-      assetData: {
-        symbol: string,
-        address: string,
-      },
-    },
-    assetDataB: {
-      minAmount: string,
-      maxAmount: string,
-      precision: number,
-      assetData: {
-        symbol: string,
-        address: string,
-      },
-    },
-    meta: {
-      tradingInfo: {
-        volume: string,
-        change24Hour: number,
-        lastPrice: string,
-        highPrice: string,
-        lowPrice: string,
-      },
-    },
-  },
+  assetPair: AssetPair,
 };
-
 
 const AssetPairCard = ({
   assetPair,
@@ -54,7 +28,7 @@ const AssetPairCard = ({
 }: Props): Node => {
   const assetDataA = assetPair?.assetDataA;
   const assetDataB = assetPair?.assetDataB;
-  const tradingInfo = assetPair?.meta?.tradingInfo || {};
+  const tradingInfo = assetPair?.tradingInfo || {};
   const isPositive = (tradingInfo.change24Hour || 0) >= 0;
   return (
     <S.AssetPairCard loading={loading}>

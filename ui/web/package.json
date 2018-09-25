@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.1",
   "scripts": {
-    "test": "NODE_ENV=testing jest --env=jsdom -u",
+    "test": "jest --no-cache",
     "test:watch": "yarn test --watchAll",
     "lint": "eslint ./src --ext .js,.jsx --ignore-pattern '/dist/' --ignore-pattern '*.prod.js' --ignore-pattern '*.test.js' --ignore-pattern '**/node_modules/*'",
     "start": "webpack-dev-server --open --color --env.NODE_ENV=development --config webpack.config.development.js",
@@ -11,21 +11,30 @@
     "flow": "flow",
     "storybook": "start-storybook -p 9001 -c .storybook"
   },
+  "jest": {
+    "transform": {
+      "^.+\\.jsx?$": "<rootDir>/babel-jest-transform.js"
+    },
+    "moduleNameMapper":{
+      "web-components(.*)$": "<rootDir>/src/components/$1"
+    }
+  },
   "dependencies": {
     "instex-core": "0.0.1",
     "@babel/polyfill": "7.0.0",
     "@babel/runtime": "7.0.0",
-    "antd": "3.9.1",
+    "antd": "3.9.3",
     "change-case": "3.0.2",
     "classnames": "2.2.6",
     "history": "4.7.2",
     "raven-js": "3.26.4",
     "react": "16.4.2",
+    "react-test-renderer": "16.4.2",
     "react-animations": "1.0.0",
     "react-dom": "16.4.2",
     "react-grid-layout": "0.16.6",
     "react-helmet": "5.2.0",
-    "react-hot-loader": "4.3.5",
+    "react-hot-loader": "4.3.11",
     "react-joyride": "1.11.4",
     "react-redux": "5.0.7",
     "react-responsive": "5.0.0",
@@ -39,23 +48,15 @@
     "styled-components": "3.4.5"
   },
   "devDependencies": {
+    "@emotion/core": "0.13.0",
+    "@emotion/provider": "0.11.1",
+    "@emotion/styled": "0.10.5",
     "@storybook/addon-actions": "4.0.0-alpha.22",
-    "@storybook/addon-options": "4.0.0-alpha.22",
-    "@storybook/addon-knobs": "4.0.0-alpha.22",
     "@storybook/addon-info": "4.0.0-alpha.22",
+    "@storybook/addon-knobs": "4.0.0-alpha.22",
+    "@storybook/addon-options": "4.0.0-alpha.22",
     "@storybook/addon-viewport": "4.0.0-alpha.22",
     "@storybook/react": "4.0.0-alpha.22",
-    "@babel/core": "7.0.0",
-    "@babel/plugin-external-helpers": "7.0.0",
-    "@babel/plugin-proposal-class-properties": "7.0.0",
-    "@babel/plugin-proposal-do-expressions": "7.0.0",
-    "@babel/plugin-proposal-export-default-from": "7.0.0",
-    "@babel/plugin-proposal-export-namespace-from": "7.0.0",
-    "@babel/plugin-proposal-optional-chaining": "7.0.0",
-    "@babel/plugin-transform-runtime": "7.0.0",
-    "@babel/preset-env": "7.0.0",
-    "@babel/preset-flow": "7.0.0",
-    "@babel/preset-react": "7.0.0",
     "babel-loader": "8.0.2",
     "babel-plugin-import": "1.8.0",
     "babel-plugin-styled-components": "1.6.0",

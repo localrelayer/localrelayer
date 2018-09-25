@@ -12,15 +12,17 @@ import TradingPageLayout from 'web-components/TradingPageLayout';
 import AssetPairCard from '..';
 
 
-const assetPair = {
+export const assetPair = {
   id: '0xe41d2489571d322189246dafa5ebde1f4699f498_0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
   assetDataA: {
     minAmount: '0',
     maxAmount: '10000000000000000000',
     precision: 5,
     assetData: {
-      symbol: 'ZRX',
       address: '0xe41d2489571d322189246dafa5ebde1f4699f498',
+      name: '0x Protocol Token',
+      symbol: 'ZRX',
+      decimals: 18,
     },
   },
   assetDataB: {
@@ -28,18 +30,18 @@ const assetPair = {
     maxAmount: '50000000000000000000',
     precision: 5,
     assetData: {
-      symbol: 'WETH',
       address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+      name: 'Wrapped Ether',
+      symbol: 'WETH',
+      decimals: 18,
     },
   },
-  meta: {
-    tradingInfo: {
-      volume: '10001',
-      change24Hour: -50,
-      lastPrice: '5',
-      highPrice: '10',
-      lowPrice: '5',
-    },
+  tradingInfo: {
+    volume: '10001',
+    change24Hour: -50,
+    lastPrice: '5',
+    highPrice: '10',
+    lowPrice: '5',
   },
 };
 
@@ -56,7 +58,6 @@ const AssetPairCardStory = () => (
 );
 
 
-/* Add note - loading should not be seen at all on th real app */
 storiesOf('Components|AssetPairCardComponent', module)
   .addDecorator(withKnobs)
   .addParameters({
@@ -67,6 +68,13 @@ storiesOf('Components|AssetPairCardComponent', module)
   .add(
     'default',
     AssetPairCardStory,
+    {
+      info: {
+        text: `
+          AssetPairCard component meant to display current asset pair with last trading info.
+        `,
+      },
+    },
   )
   .add(
     'full screen',

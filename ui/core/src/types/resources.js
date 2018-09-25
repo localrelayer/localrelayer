@@ -2,7 +2,7 @@
 
 import type {
   ID,
-} from '../types';
+} from '..';
 import type {
   OrdersResourcesReducer,
   OrderAttributes,
