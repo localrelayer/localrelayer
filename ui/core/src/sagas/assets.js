@@ -7,7 +7,6 @@ import {
   addressUtils,
   BigNumber,
 } from '@0xproject/utils';
-
 import {
   Web3Wrapper,
 } from '@0xproject/web3-wrapper';
@@ -285,7 +284,7 @@ export function* checkAssetPair({
     }
     const actions = createActionCreators('create', {
       resourceType: 'assetPairs',
-      requestKey: 'assetPais',
+      requestKey: 'assetPairs',
       list: 'notListed',
       mergeListIds: true,
     });
