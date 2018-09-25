@@ -41,4 +41,7 @@ module.exports = {
         ExportDeclaration: 'always'
     }],
   },
+  env: {
+    jest: true,
+  },
 };

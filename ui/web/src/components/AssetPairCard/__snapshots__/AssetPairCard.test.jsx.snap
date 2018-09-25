@@ -1,0 +1,161 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AssetPairCard component 1`] = `
+<div
+  className="ant-card styled__AssetPairCard-fxyu4t-0 jjwmsN ant-card-bordered"
+>
+  <div
+    className="ant-card-body"
+    style={Object {}}
+  >
+    <div
+      className="ant-card-meta"
+    >
+      <div
+        className="ant-card-meta-detail"
+      >
+        <div
+          className="ant-card-meta-title"
+        >
+          <div
+            className="styled__CardTitle-fxyu4t-2 bzjkvR"
+          >
+            <div
+              className="styled__AssetPairInfo-fxyu4t-1 iDTomX"
+            >
+              ZRX
+              /
+              WETH
+              <a
+                className="styled__BaseAssetAddress-fxyu4t-4 kPMFls"
+                href="https://etherscan.io/token/0xe41d2489571d322189246dafa5ebde1f4699f498"
+                rel="noopener"
+                target="_blank"
+              >
+                0xe41d2489571d322189246dafa5ebde1f4699f498
+              </a>
+            </div>
+            <div
+              className="styled__LastPrice-fxyu4t-5 gpkfrA"
+            >
+              5
+            </div>
+          </div>
+        </div>
+        <div
+          className="ant-card-meta-description"
+        >
+          <div
+            className="styled__AssetPrice-fxyu4t-3 dYCxdi"
+          >
+            <div>
+              <div>
+                High:
+                10
+              </div>
+              <div>
+                Low:
+                5
+              </div>
+            </div>
+            <div>
+              <div
+                className="styled__PriceChange-fxyu4t-6 exsUWK"
+              >
+                <span
+                  className="SharedStyledComponents__ColoredSpan-sc-1a8fz3a-0 btnrhe"
+                  color="red"
+                >
+                  -50%
+                </span>
+              </div>
+              <div>
+                Volume:
+                10001.0000
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`AssetPairCard component 2`] = `
+<div
+  className="ant-card styled__AssetPairCard-fxyu4t-0 jjwmsN ant-card-bordered"
+>
+  <div
+    className="ant-card-body"
+    style={Object {}}
+  >
+    <div
+      className="ant-card-meta"
+    >
+      <div
+        className="ant-card-meta-detail"
+      >
+        <div
+          className="ant-card-meta-title"
+        >
+          <div
+            className="styled__CardTitle-fxyu4t-2 bzjkvR"
+          >
+            <div
+              className="styled__AssetPairInfo-fxyu4t-1 iDTomX"
+            >
+              /
+              <a
+                className="styled__BaseAssetAddress-fxyu4t-4 kPMFls"
+                href="https://etherscan.io/token/undefined"
+                rel="noopener"
+                target="_blank"
+              />
+            </div>
+            <div
+              className="styled__LastPrice-fxyu4t-5 gpkfrA"
+            >
+              No info about trades in 24hr
+            </div>
+          </div>
+        </div>
+        <div
+          className="ant-card-meta-description"
+        >
+          <div
+            className="styled__AssetPrice-fxyu4t-3 dYCxdi"
+          >
+            <div>
+              <div>
+                High:
+                --
+              </div>
+              <div>
+                Low:
+                --
+              </div>
+            </div>
+            <div>
+              <div
+                className="styled__PriceChange-fxyu4t-6 exsUWK"
+              >
+                <span
+                  className="SharedStyledComponents__ColoredSpan-sc-1a8fz3a-0 kSvotj"
+                  color="green"
+                >
+                  +0.00%
+                </span>
+              </div>
+              <div>
+                Volume:
+                0
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
