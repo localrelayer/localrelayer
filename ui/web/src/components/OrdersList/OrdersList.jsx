@@ -40,11 +40,6 @@ type Props = {
   onClick: Function,
 };
 
-/**
- * List of all orders
- * @version 1.0.0
- * @author [Tim Reznich](https://github.com/imbaniac)
- */
 
 const OrdersList = ({
   data,
@@ -54,9 +49,16 @@ const OrdersList = ({
   pagination,
   onClick,
   ...otherProps
-}: Props): Node =>
+}: Props): Node => (
   <OrdersListContainer>
-    {title && <ComponentTitle>{title}</ComponentTitle>}
+    {
+      title
+      && (
+        <ComponentTitle>
+          {title}
+        </ComponentTitle>
+      )
+    }
     <Table
       size="small"
       rowKey="id"
@@ -69,7 +71,8 @@ const OrdersList = ({
       })}
       {...otherProps}
     />
-  </OrdersListContainer>;
+  </OrdersListContainer>
+);
 
 OrdersList.defaultProps = {
   title: '',

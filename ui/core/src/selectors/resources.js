@@ -1,4 +1,9 @@
 // @flow
+import {
+  createSelector,
+} from 'reselect';
+
+
 export const getResourceIds = (
   resourceName: string,
   listName: string,
@@ -31,3 +36,24 @@ export const getResourceMeta = (
     state[resourceName].meta[metaKey]
   )
 );
+
+const resourceSelectors = {};
+
+export const getResourceMappedList = (
+  resourceName: string,
+  listName: string,
+) => {
+  if (resourceSelectors[resourceName]) {
+    return resourceSelectors[`${resourceName}${listName}`];
+  }
+  resourceSelectors[`${resourceName}${listName}`] = (
+    createSelector(
+      [
+        getResourceIds(resourceName, listName),
+        getResourceMap(resourceName),
+      ],
+      (ids = [], map) => ids.map(id => map[id]),
+    )
+  );
+  return resourceSelectors[`${resourceName}${listName}`];
+};
