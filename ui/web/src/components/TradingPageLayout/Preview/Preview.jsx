@@ -17,12 +17,12 @@ type Props = {
 
 const components = [
   'assetPairCard',
+  'tradingHistory',
   'balance',
   'userOrders',
   'chart',
   'orderBook',
   'buySell',
-  'history',
   'news',
 ];
 

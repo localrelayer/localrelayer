@@ -59,7 +59,7 @@ const AssetPairCardStory = () => (
 );
 
 
-storiesOf('Components|AssetPairCardComponent', module)
+storiesOf('Components|AssetPairCard', module)
   .addDecorator(withKnobs)
   .addParameters({
     info: {
