@@ -9,6 +9,7 @@ import {
 } from '@storybook/addon-knobs';
 
 import TradingPageLayout from 'web-components/TradingPageLayout';
+import 'web-styles/main.less';
 import AssetPairCard from '..';
 
 
