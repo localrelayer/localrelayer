@@ -1,26 +1,23 @@
 // @flow
 import React from 'react';
-
-import type {
-  Node,
-  StatelessFunctionalComponent,
-} from 'react';
-import type {
-  Order,
-} from 'instex-core/types';
 import {
+  Table,
   Tooltip,
   Icon,
 } from 'antd';
 import moment from 'moment';
 
+import type {
+  Node,
+} from 'react';
+import type {
+  Order,
+} from 'instex-core/types';
+
 import {
-  TradingHistoryContainer,
-} from './styled';
-import {
-  Colored,
-} from '../SharedStyles';
-import OrdersList from '../OrdersList';
+  ComponentTitle,
+  ColoredSpan,
+} from 'web-components/SharedStyledComponents';
 
 
 type Props = {
@@ -48,11 +45,11 @@ const columns = [
     key: 'price',
     render: (text: string, record) => (
       <Tooltip title={text}>
-        <Colored
+        <ColoredSpan
           className={record.type === 'sell' ? 'red' : 'green'}
         >
           {Number(text).toFixed(8)}
-        </Colored>
+        </ColoredSpan>
       </Tooltip>
     ),
   },
@@ -69,43 +66,31 @@ const columns = [
   {
     render: () => <Icon type="select" />,
   },
-  // {
-  //   title: 'Total',
-  //   dataIndex: 'total',
-  //   key: 'total',
-  //   render: (text: string, record) => (
-  //     <Colored
-  //       className={record.type === 'sell' ? 'red' : 'green'}
-  //     >
-  //       {text}
-  //     </Colored>
-  //   ),
-  // },
 ];
 
-/**
- * Trading History
- * @version 1.0.0
- * @author [Tim Reznich](https://github.com/imbaniac)
- */
-
-const TradingHistory: StatelessFunctionalComponent<Props> =
-  ({
-    orders,
-    pagination,
-  }: Props): Node =>
-    <TradingHistoryContainer className="component-container">
-      <OrdersList
-        title="Trading History"
-        columns={columns}
-        data={orders}
-        onClick={(order) => {
-          if (order.tx_hash) {
-            window.open(`https://etherscan.io/tx/${order.tx_hash}`);
+const TradingHistory = ({
+  orders,
+  pagination,
+}: Props): Node => (
+  <div>
+    <ComponentTitle>
+      Trading history
+    </ComponentTitle>
+    <Table
+      size="small"
+      rowKey="id"
+      columns={columns}
+      dataSource={orders}
+      pagination={pagination}
+      onRow={record => ({
+        onClick: () => {
+          if (record.tx_hash) {
+            window.open(`https://etherscan.io/tx/${record.tx_hash}`);
           }
-        }}
-        pagination={pagination}
-      />
-    </TradingHistoryContainer>;
+        },
+      })}
+    />
+  </div>
+);
 
 export default TradingHistory;
