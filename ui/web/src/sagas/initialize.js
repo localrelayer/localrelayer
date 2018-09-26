@@ -49,6 +49,14 @@ function* setCurrentPair(location) {
         isCurrentPairListed: isListed,
         isCurrentPairIssue: false,
       }));
+      yield eff.fork(
+        coreSagas.fetchOrderBook,
+        {
+          baseAssetData: assetPair.assetDataA.assetData,
+          quoteAssetData: assetPair.assetDataB.assetData,
+        },
+      );
+      /* fetch orderbook */
     } catch (errors) {
       yield eff.put(uiActions.setUiState({
         isCurrentPairIssue: true,

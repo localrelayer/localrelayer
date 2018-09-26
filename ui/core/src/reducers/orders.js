@@ -1,8 +1,11 @@
 import {
   resourceReducer,
 } from 'redux-resource';
-import { multipleLists } from './plugins';
+import {
+  includedResources,
+} from 'redux-resource-plugins';
+
 
 export default resourceReducer('orders', {
-  plugins: [multipleLists],
+  plugins: [includedResources],
 });

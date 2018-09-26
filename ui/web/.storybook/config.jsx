@@ -93,12 +93,14 @@ addDecorator(render => (
 
 
 function loadStories() {
-  require('../src/components/TradingHistory/stories');
   require('../src/components/AssetPairCard/stories');
   require('../src/containers/AssetPairCardContainer/stories');
+  require('../src/components/TradingHistory/stories');
   require('../src/components/TradingPageLayout/stories');
   require('../src/containers/AppContainer/stories');
   require('../src/components/ConnectingToEthProvider/stories');
+  require('../src/components/OrderBook/stories');
+  require('../src/containers/OrderBookContainer/stories');
 }
 
 configure(loadStories, module);
