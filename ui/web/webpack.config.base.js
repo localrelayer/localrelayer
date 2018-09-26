@@ -22,6 +22,7 @@ module.exports = env => ({
       'web-config': path.resolve(__dirname, 'src/config'),
       'web-history': path.resolve(__dirname, 'src/history'),
       'web-store': path.resolve(__dirname, 'src/store'),
+      'web-styles': path.resolve(__dirname, 'src/assets/styles'),
       components: path.resolve(__dirname, 'src/components'),
     },
   },

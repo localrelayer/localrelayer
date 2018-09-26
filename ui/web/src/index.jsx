@@ -24,9 +24,6 @@ import type {
 } from 'react';
 
 import App from 'web-containers/AppContainer';
-/* Import browserHistory only bfore the store import,
- * it gives a guarantee that initialize saga will use initialized history object
-*/
 import browserHistory from './history/browser';
 import store from './store';
 import config from './config';
