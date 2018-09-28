@@ -1,81 +1,20 @@
 // @flow
-import type BigNumber from 'bignumber.js';
-import * as actionTypes from '../actions/types';
 
-import type {
-  ID,
-} from '../types';
-
-export type OrderAttributes = {
-  price: string,
-  amount: string,
-  total: string,
-  type: string,
-  expires: Date,
-  completed_at?: Date,
-  canceled_at?: Date,
-  status: string,
-  isUser: boolean,
-} & AddedOrderAttributes;
-
-export type AddedOrderAttributes = {
-  tokenSymbol: string,
-  pairSymbol: string,
-}
-
-export type OrderRelationships = {
-};
-
-export type OrdersById = {
-  id: ID,
-  attributes: OrderAttributes,
-  relationships: OrderRelationships,
-};
-
-export type OrdersResourcesReducer = {
-  byId: {
-    [ID]: OrdersById,
-  },
-  allIds: Array<string>,
-};
 
 export type Order = {
-  id: ID,
-} & OrderAttributes;
-
-export type Orders = Array<Order>;
-
-export type ZrxOrder = {
-  maker: string,
-  taker: string,
-  feeRecipient: string,
-  exchangeContractAddress: string,
+  id: string,
+  makerAddress: string,
+  takerAddress: string,
+  feeRecipientAddress: string,
+  senderAddress: string,
+  makerAssetAmount: string,
+  takerAssetAmount: string,
+  makerFee: string,
+  takerFee: string,
+  expirationTimeSeconds: string,
   salt: string,
-  makerFee: BigNumber,
-  takerFee: BigNumber,
-  makerTokenAddress: string,
-  takerTokenAddress: string,
-  makerTokenAmount: string,
-  takerTokenAmount: string,
-  expirationUnixTimestampSec: string,
-}
-
-export type OrderData = {
-  amount: number,
-  exp: Date,
-  price: number,
-  type: string,
-}
-
-export type OrdersAction =
-{|
-  type: typeof actionTypes.CANCEL_ORDER,
-  orderId: string,
-|} |
-{|
-  type: typeof actionTypes.CREATE_ORDER,
-|} |
-{|
-  type: typeof actionTypes.FILL_ORDER,
-  payload: ZrxOrder,
-|}
+  makerAssetData: string,
+  takerAssetData: string,
+  exchangeAddress: string,
+  signature: string,
+};
