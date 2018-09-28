@@ -1,5 +1,6 @@
 import {
   generatePseudoRandomSalt,
+  orderHashUtils,
 } from '@0xproject/order-utils';
 import * as R from 'ramda';
 import assetPairsJson from './assetPairs.json';
@@ -15,6 +16,14 @@ function randomEthereumAddress() {
     ),
   );
   return `0x${randomHex.join('')}`;
+}
+
+function generateRandomMakerAssetAmount() {
+  return ((Math.random() * 100) + 10).toFixed(6);
+}
+
+function generateRandomTakerAssetAmount() {
+  return ((Math.random() * 0.3) + 0.03).toFixed(6);
 }
 
 export function getAssetPairs({
@@ -129,24 +138,30 @@ export function mocksOrdersFactory({
         } else {
           asks -= 1;
         }
+        const randomOrder = {
+          makerAddress: randomEthereumAddress(),
+          takerAddress: NULL_ADDRESS,
+          feeRecipientAddress: randomEthereumAddress(),
+          senderAddress: randomEthereumAddress(),
+          makerAssetAmount: generateRandomMakerAssetAmount(),
+          takerAssetAmount: generateRandomTakerAssetAmount(),
+          makerFee: '10000000000000000',
+          takerFee: '20000000000000000',
+          expirationTimeSeconds: '1532560590',
+          salt: generatePseudoRandomSalt().toString(),
+          makerAssetData: type === 'bid' ? pair.assetDataB.assetData : pair.assetDataA.assetData,
+          takerAssetData: type === 'bid' ? pair.assetDataA.assetData : pair.assetDataB.assetData,
+          exchangeAddress: randomEthereumAddress(),
+          ...predefinedOrder,
+        };
+        /* It's a hash of the order but we will use at as signature in mock */
+        const orderHashHex = orderHashUtils.getOrderHashHex(randomOrder);
         return {
           value: {
             type,
             order: {
-              makerAddress: randomEthereumAddress(),
-              takerAddress: NULL_ADDRESS,
-              feeRecipientAddress: randomEthereumAddress(),
-              senderAddress: randomEthereumAddress(),
-              makerAssetAmount: '10000000000000000',
-              takerAssetAmount: '20000000000000000',
-              makerFee: '10000000000000000',
-              takerFee: '20000000000000000',
-              expirationTimeSeconds: '1532560590',
-              salt: generatePseudoRandomSalt().toString(),
-              makerAssetData: type === 'bid' ? pair.assetDataB.assetData : pair.assetDataA.assetData,
-              takerAssetData: type === 'bid' ? pair.assetDataA.assetData : pair.assetDataB.assetData,
-              exchangeAddress: randomEthereumAddress(),
-              ...predefinedOrder,
+              signature: orderHashHex,
+              ...randomOrder,
             },
           },
           done: !bids && !asks,

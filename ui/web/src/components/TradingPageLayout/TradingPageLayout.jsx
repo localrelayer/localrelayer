@@ -11,17 +11,18 @@ import {
 import {
   layout as tradingHistoryLayout,
 } from 'web-components/TradingHistory';
+import {
+  layout as orderBookLayout,
+} from 'web-components/OrderBook';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
 const layoutXs = [
   assetPairCardLayout.xs,
   tradingHistoryLayout.xs,
+  orderBookLayout.xs,
   {
     i: 'buySell', x: 1, y: 3, w: 1, h: 9, static: false,
-  },
-  {
-    i: 'orderBook', x: 0, y: 12, w: 1, h: 16, static: false,
   },
   {
     i: 'balance', x: 1, y: 28, w: 1, h: 6, static: false,
@@ -41,9 +42,7 @@ const layoutXs = [
 const layoutSm = [
   assetPairCardLayout.sm,
   tradingHistoryLayout.sm,
-  {
-    i: 'orderBook', x: 1, y: 0, w: 1, h: 18, static: false,
-  },
+  orderBookLayout.sm,
   {
     i: 'balance', x: 0, y: 3, w: 1, h: 6, static: false,
   },
@@ -64,9 +63,7 @@ const layoutSm = [
 const layoutMd = [
   assetPairCardLayout.md,
   tradingHistoryLayout.md,
-  {
-    i: 'orderBook', x: 7, y: 0, w: 3, h: 19, static: false,
-  },
+  orderBookLayout.md,
   {
     i: 'balance', x: 0, y: 13, w: 3.5, h: 6, static: false,
   },
@@ -89,9 +86,7 @@ const layoutMd = [
 const layoutLg = [
   assetPairCardLayout.lg,
   tradingHistoryLayout.lg,
-  {
-    i: 'orderBook', x: 9, y: 0, w: 3, h: 14, static: false,
-  },
+  orderBookLayout.lg,
   {
     i: 'balance', x: 0, y: 12, w: 3, h: 6, static: false,
   },
@@ -112,9 +107,7 @@ const layoutLg = [
 const layoutLg2 = [
   assetPairCardLayout.lg2,
   tradingHistoryLayout.lg2,
-  {
-    i: 'orderBook', x: 19, y: 0, w: 5, h: 14, static: false,
-  },
+  orderBookLayout.lg2,
   {
     i: 'balance', x: 0, y: 12, w: 5, h: 7, static: false,
   },
@@ -135,9 +128,7 @@ const layoutLg2 = [
 const layoutLg3 = [
   assetPairCardLayout.lg3,
   tradingHistoryLayout.lg3,
-  {
-    i: 'orderBook', x: 10, y: 0, w: 2, h: 20, static: false,
-  },
+  orderBookLayout.lg3,
   {
     i: 'balance', x: 0, y: 12, w: 2, h: 7, static: false,
   },

@@ -6,7 +6,7 @@ function apiFactory() {
   const apiCommonMethods = [
     ['getAssetPairs', '/asset_pairs'],
     ['getOrders', '/orders'],
-    ['getOrderbook', '/orderbook'],
+    ['getOrderBook', '/orderbook'],
     ['getOrderConfig', '/order-config'],
   ];
   let apiUrl = '';
