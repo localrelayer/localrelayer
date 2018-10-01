@@ -29,6 +29,7 @@ Jump to:
   * [Maker and Taker](#maker-and-taker)
   * [Relayer](#relayer)
   * [Shared liquidity](#shared-liquidity)
+- [Test Ethereum accounts](#test-ethereum-accounts)
 
 # Usage
 The repo consist of 3 parts - **api**, **ui** and **landing**.
@@ -233,3 +234,36 @@ Example:
 
 1 weth - 10 zrx
 *Take 10 zrx - give 1 weth (bid/buy)*
+
+# Test Ethereum accounts
+Use this accounts during development.
+
+Wallet backup phrase:
+```
+stereo cheese harsh ordinary scrub media chair beauty artist poet ranch attack
+```
+
+Password(you can create your own or use this one just for the convention):
+```
+instexMetamask
+```
+
+Wilder and Joshua - account names for the simplicity.
+
+**Wilder(Account 1)**
+```
+0x8449D9bC71BF910c8D22a3443953Ec303E73759D
+```
+Key
+```
+90CD05587A4940CF090FE35600EF35B9F962D25BB86D55CB804C6165628FE9DF
+```
+
+**Joshua(Account 2)**
+```
+0xFEF5930dD4f9dfb74f667f2dA4F47B665C6af5f5
+```
+Key
+```
+4F6B18AF7C44ED58C29EF93857CEE839EAB6559FD8164554C3368E6858B159BD
+```
