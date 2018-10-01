@@ -5,7 +5,6 @@ import {
 } from 'redux';
 import createSagaMiddleware, { END } from 'redux-saga';
 
-import history from '../history';
 import rootReducer from '../reducers';
 
 const sagaMiddleware = createSagaMiddleware();
