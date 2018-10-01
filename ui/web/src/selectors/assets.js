@@ -1,4 +1,4 @@
-// @flow
+
 import {
   createSelector,
 } from 'reselect';
@@ -17,9 +17,9 @@ export const getCurrentAssetPair = createSelector(
   (
     assets,
     assetPairs,
-    pairId,
+    currentAssetPairId,
   ) => {
-    const pair = assetPairs[pairId];
+    const pair = assetPairs[currentAssetPairId];
     return pair ? {
       ...pair,
       assetDataA: {
@@ -27,7 +27,7 @@ export const getCurrentAssetPair = createSelector(
         assetData: assets[pair.assetDataA.assetData],
       },
       assetDataB: {
-        ...pair.assetDataA,
+        ...pair.assetDataB,
         assetData: assets[pair.assetDataB.assetData],
       },
     } : null;
