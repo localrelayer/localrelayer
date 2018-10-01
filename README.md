@@ -29,6 +29,7 @@ Jump to:
   * [Maker and Taker](#maker-and-taker)
   * [Relayer](#relayer)
   * [Shared liquidity](#shared-liquidity)
+- [Base/Quote pair and Bid/Ask price explanation](#base/quote-pair-and-bid/ask-price-explanation)
 - [Test Ethereum accounts](#test-ethereum-accounts)
 
 # Usage
@@ -219,21 +220,9 @@ relayer would have own liquidity pool, all relayers can share orders to create a
 New relayers can bootstrap their liquidity off of existing relayers, immediately becoming an
 interesting place to trade and big relayers can get additional fee income from those new relayers.
 
-## Base and Quote token explanation
+# Base/Quote pair and Bid/Ask price explanation
 
-There are 3 conventional ways to name tokens in pair:
-
-- baseToken/quoteToken
-- makerTokenAddress/takerTokenAddress
-- assetA/assetB
-
-Example:
-
-10 zrx - 1 weth
-*Give 10 zrx - receive 1 weth (ask/sell)*
-
-1 weth - 10 zrx
-*Take 10 zrx - give 1 weth (bid/buy)*
+![bid/ask mindmap](https://user-images.githubusercontent.com/555405/46295019-c6c3e900-c59f-11e8-9655-076ee97f736d.png)
 
 # Test Ethereum accounts
 Use this accounts during development.
