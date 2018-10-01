@@ -29,7 +29,7 @@ Jump to:
   * [Maker and Taker](#maker-and-taker)
   * [Relayer](#relayer)
   * [Shared liquidity](#shared-liquidity)
-- [Base/Quote pair and Bid/Ask price explanation](#base/quote-pair-and-bid/ask-price-explanation)
+- [Base/Quote pair and Bid/Ask price explanation](#basequote-pair-and-bidask-price-explanation)
 - [Test Ethereum accounts](#test-ethereum-accounts)
 
 # Usage
