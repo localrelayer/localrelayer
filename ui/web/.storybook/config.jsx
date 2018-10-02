@@ -104,6 +104,8 @@ function loadStories() {
   require('../src/components/TradingHistory/stories');
   require('../src/containers/TradingHistoryContainer/stories');
   require('../src/labStories/uiWalletViewer/index');
+  require('../src/components/UserOrders/stories');
+  require('../src/containers/UserOrdersContainer/stories');
 }
 
 configure(loadStories, module);
