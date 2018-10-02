@@ -15,6 +15,13 @@ const initialState: UiState = {
   currentAssetPairId: null,
   isCurrentPairListed: true,
   isCurrentPairIssue: false,
+
+  wallet: {
+    networkId: null,
+    networkName: '',
+    selectedAccount: null,
+    accounts: [],
+  },
 };
 
 const mergeUiValues = (

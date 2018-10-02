@@ -17,8 +17,12 @@ import {
   uiActions,
 } from 'web-actions';
 import {
+  getUiState,
+} from 'web-selectors';
+import {
   getHistory,
 } from 'web-history';
+import store from 'web-store';
 
 
 function* setCurrentPair(location) {
@@ -56,7 +60,6 @@ function* setCurrentPair(location) {
           quoteAssetData: assetPair.assetDataB.assetData,
         },
       );
-      /* fetch orderbook */
     } catch (errors) {
       yield eff.put(uiActions.setUiState({
         isCurrentPairIssue: true,
@@ -67,14 +70,97 @@ function* setCurrentPair(location) {
 }
 
 
-function* onChangeRoute(channel) {
+function* takeChangeRoute(channel) {
   while (true) {
     const { location } = yield eff.take(channel);
     yield eff.fork(setCurrentPair, location);
   }
 }
 
+function* takeChangeMetamaskWalletData(channel) {
+  const ethNetworks = {
+    1: 'Main Ethereum Network',
+    42: 'Kovan Test Network',
+  };
+
+  while (true) {
+    const {
+      networkId,
+      accounts,
+    } = yield eff.take(channel);
+
+    yield eff.put(
+      uiActions.setUiState(
+        'wallet', {
+          ...(accounts ? {
+            accounts,
+            selectedAccount: accounts[0],
+          } : {}),
+          ...(networkId ? {
+            networkId,
+            networkName: ethNetworks[networkId] || 'Unknown',
+          } : {}),
+        },
+        [
+          'wallet',
+        ],
+      ),
+    );
+  }
+}
+
+function createWalletChannel() {
+  let timeout;
+
+  function checkFunc(emitter) {
+    timeout = setTimeout(() => {
+      web3.eth.net.getId().then((networkId) => {
+        web3.eth.getAccounts().then((accounts) => {
+          const changedData = [];
+          const wallet = getUiState('wallet')(store.getState());
+
+          if (wallet.networkId !== networkId) {
+            changedData.push({
+              networkId,
+            });
+          }
+          if (accounts.some((w, i) => wallet.accounts[i] !== w)) {
+            changedData.push({
+              accounts,
+            });
+          }
+
+          if (changedData.length) {
+            emitter({
+              ...(changedData.reduce(
+                (acc, data) => ({
+                  ...acc,
+                  ...data,
+                }),
+                {},
+              )),
+            });
+          }
+
+          checkFunc(emitter);
+        });
+      });
+    }, 2000);
+  }
+
+  return eventChannel(
+    (emitter) => {
+      checkFunc(emitter);
+      return (
+        () => clearTimeout(timeout)
+      );
+    },
+  );
+}
+
 export function* initialize(): Saga<void> {
+  yield eff.take(actionTypes.INITIALIZE_WEB_APP);
+
   console.log('Web initialize saga');
   const fetchPairsTask = yield eff.fork(coreSagas.fetchAssetPairs);
 
@@ -89,18 +175,14 @@ export function* initialize(): Saga<void> {
       })
     ),
   );
-  yield eff.fork(onChangeRoute, historyChannel);
+  yield eff.fork(takeChangeRoute, historyChannel);
+
+  const walletChannel = createWalletChannel();
+  yield eff.fork(takeChangeMetamaskWalletData, walletChannel);
 
   yield eff.put(uiActions.setUiState({
     isAppInitializing: false,
   }));
   yield eff.join(fetchPairsTask);
   yield eff.fork(setCurrentPair, history.location);
-}
-
-export function* takeInitializeWebApp() {
-  yield eff.takeEvery(
-    actionTypes.INITIALIZE_WEB_APP,
-    initialize,
-  );
 }

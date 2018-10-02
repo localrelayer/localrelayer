@@ -4,11 +4,11 @@ import {
 } from 'redux-saga/effects';
 
 import {
-  takeInitializeWebApp,
+  initialize,
 } from './initialize';
 
 export default function* rootSaga() {
   yield all([
-    fork(takeInitializeWebApp),
+    fork(initialize),
   ]);
 }

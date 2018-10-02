@@ -103,6 +103,7 @@ function loadStories() {
   require('../src/containers/OrderBookContainer/stories');
   require('../src/components/TradingHistory/stories');
   require('../src/containers/TradingHistoryContainer/stories');
+  require('../src/labStories/uiWalletViewer/index');
 }
 
 configure(loadStories, module);
