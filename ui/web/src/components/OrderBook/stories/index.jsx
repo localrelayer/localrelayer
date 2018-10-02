@@ -65,4 +65,12 @@ storiesOf('Components|OrderBook', module)
   .add(
     'default',
     OrderBookStory,
+  ).add(
+    'full screen',
+    OrderBookStory,
+    {
+      options: {
+        goFullScreen: true,
+      },
+    },
   );
