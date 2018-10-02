@@ -8,27 +8,27 @@ import {
 } from '@storybook/addon-knobs';
 
 import TradingPageLayout from 'web-components/TradingPageLayout';
-import OrderBookContainer from '..';
+import TradingHistoryContainer from '..';
 
 
-const OrderBookContainerStory = () => (
+const TradingHistoryContainerStory = () => (
   <TradingPageLayout.Preview
     hideRest={boolean('Hide preview layout', false)}
-    orderBook={(
-      <OrderBookContainer />
+    tradingHistory={(
+      <TradingHistoryContainer />
     )}
   />
 );
 
-storiesOf('Containers|OrderBookContainer', module)
+storiesOf('Containers|TradingHistoryContainer', module)
   .addDecorator(withKnobs)
   .add(
     'default',
-    OrderBookContainerStory,
+    TradingHistoryContainerStory,
   )
   .add(
     'full screen',
-    OrderBookContainerStory,
+    TradingHistoryContainerStory,
     {
       options: {
         goFullScreen: true,

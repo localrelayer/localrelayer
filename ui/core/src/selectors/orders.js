@@ -7,6 +7,24 @@ import {
   getResourceMappedList,
 } from './resources';
 
+export const getOrdersHistoryMock = createSelector(
+  [
+    getResourceMappedList('orders', 'asks'),
+  ],
+  orders => (
+    orders.map(order => ({
+      ...order,
+      price: (
+        BigNumber(order.takerAssetAmount)
+        / BigNumber(order.makerAssetAmount)
+      ).toFixed(8),
+      amount: order.makerAssetAmount,
+      total: order.takerAssetAmount,
+      key: order.id,
+      date: new Date().toLocaleDateString('en-US'),
+    }))
+  ),
+);
 
 export const getBidOrders = createSelector(
   [

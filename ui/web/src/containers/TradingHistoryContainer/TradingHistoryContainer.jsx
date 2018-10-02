@@ -1,37 +1,29 @@
 // @flow
 import React from 'react';
-import {
-  connect,
-} from 'react-redux';
-import type { MapStateToProps } from 'react-redux';
+
 import type {
   Node,
-  StatelessFunctionalComponent,
 } from 'react';
-import type {
-  Orders,
-} from 'instex-core/types';
 
 import {
-  getCompletedOrders,
-} from 'instex-core/selectors';
-import TradingHistory from '../../components/TradingHistory';
+  coreSelectors as cs,
+} from 'instex-core';
+import Component from 'web-components/ConnectComponent';
+import TradingHistory from 'web-components/TradingHistory';
 
 
-type Props = {
-  orders: Orders,
-};
+const TradingHistoryContainer = (): Node => (
+  <Component
+    mapStateToProps={state => ({
+      orders: cs.getOrdersHistoryMock(state),
+    })}
+  >
+    {({ orders }) => (
+      <TradingHistory
+        orders={orders}
+      />
+    )}
+  </Component>
+);
 
-const TradingHistoryContainer: StatelessFunctionalComponent<Props> = ({
-  orders,
-}: Props): Node =>
-  <TradingHistory
-    orders={orders}
-    pagination={{ pageSize: 10 }}
-  />;
-
-const mapStateToProps: MapStateToProps<*, *, *> = state => ({
-  orders: getCompletedOrders(state),
-});
-
-export default connect(mapStateToProps)(TradingHistoryContainer);
+export default TradingHistoryContainer;

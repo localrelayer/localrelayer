@@ -1,41 +1,25 @@
 // @flow
 import React from 'react';
 import {
-  Table,
   Tooltip,
   Icon,
 } from 'antd';
-import moment from 'moment';
-
-import type {
-  Node,
-} from 'react';
-import type {
-  Order,
-} from 'instex-core/types';
-
 import {
-  ComponentTitle,
   ColoredSpan,
 } from 'web-components/SharedStyledComponents';
-
+import * as S from './styled';
 
 type Props = {
-  /** List of all orders */
-  orders: Array<Order>,
-  /** Pagination config */
-  pagination: {
-    pageSize: number,
-  }
-};
+  orders: Array<any>,
+}
 
 const columns = [
   {
     title: 'Date',
-    dataIndex: 'completed_at',
+    dataIndex: 'date',
     render: (text: string) => (
-      <Tooltip title={moment(text).format('ddd, MMM DD, YYYY hh:mm:ss A')}>
-        {moment(text).format('DD/MM HH:mm')}
+      <Tooltip title={text}>
+        {text}
       </Tooltip>
     ),
   },
@@ -68,29 +52,21 @@ const columns = [
   },
 ];
 
-const TradingHistory = ({
-  orders,
-  pagination,
-}: Props): Node => (
-  <div>
-    <ComponentTitle>
-      Trading history
-    </ComponentTitle>
-    <Table
+const TradingHistory = ({ orders }: Props) => (
+  <S.TradingHistory>
+    <S.Title>
+      <div>
+        Trading history
+      </div>
+    </S.Title>
+    <S.TradingHistoryTable
       size="small"
-      rowKey="id"
       columns={columns}
+      pagination={false}
       dataSource={orders}
-      pagination={pagination}
-      onRow={record => ({
-        onClick: () => {
-          if (record.tx_hash) {
-            window.open(`https://etherscan.io/tx/${record.tx_hash}`);
-          }
-        },
-      })}
+      scroll={{ y: 340 }}
     />
-  </div>
+  </S.TradingHistory>
 );
 
 export default TradingHistory;
