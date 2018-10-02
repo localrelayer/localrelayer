@@ -17,6 +17,11 @@ export const TradingHistoryTable = styled(Table)`
   border-bottom: 1px solid ${colors['component-background']} !important;
   color: white;
   text-align: left;
+  width: 30%;
+}
+
+.ant-table-thead > tr > th:nth-child(4) {
+  width: 10%;
 }
 
 .ant-table-tbody > tr > td {
@@ -25,6 +30,11 @@ export const TradingHistoryTable = styled(Table)`
   font-size: 12px;
   text-align: left;
   cursor: pointer;
+  width: 30%;
+}
+
+.ant-table-tbody > tr > td:nth-child(4) {
+  width: 10%;
 }
 
 .ant-table-tbody > tr > td:nth-child(2) {
