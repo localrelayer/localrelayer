@@ -1,50 +1,28 @@
 // @flow
 import React from 'react';
-import {
-  connect,
-} from 'react-redux';
-import type { Dispatch } from 'redux';
-import type { MapStateToProps } from 'react-redux';
+
 import type {
   Node,
-  StatelessFunctionalComponent,
 } from 'react';
-import type {
-  Orders,
-} from 'instex-core/types';
 
 import {
-  getUserOrders,
-} from 'instex-core/selectors';
-import {
-  cancelOrder,
-} from 'instex-core/actions';
+  coreSelectors as cs,
+} from 'instex-core';
+import Component from 'web-components/ConnectComponent';
+import UserOrders from 'web-components/UserOrders';
 
-import UserOrders from '../../components/UserOrders';
+const UserOrdersContainer = (): Node => (
+  <Component
+    mapStateToProps={state => ({
+      orders: cs.getOpenOrders(state),
+    })}
+  >
+    {({ orders }) => (
+      <UserOrders
+        orders={orders}
+      />
+    )}
+  </Component>
+);
 
-
-type Props = {
-  orders: Orders,
-  dispatch: Dispatch<*>,
-};
-
-const UserOrdersContainer: StatelessFunctionalComponent<Props> = ({
-  orders,
-  dispatch,
-}: Props): Node =>
-  <UserOrders
-    title="Opened orders"
-    orders={orders}
-    pagination={{
-      pageSize: 10,
-    }}
-    onCancel={(orderId: string) => {
-      dispatch(cancelOrder(orderId));
-    }}
-  />;
-
-const mapStateToProps: MapStateToProps<*, *, *> = state => ({
-  orders: getUserOrders(state),
-});
-
-export default connect(mapStateToProps)(UserOrdersContainer);
+export default UserOrdersContainer;
