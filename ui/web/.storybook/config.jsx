@@ -101,6 +101,8 @@ function loadStories() {
   require('../src/components/ConnectingToEthProvider/stories');
   require('../src/components/OrderBook/stories');
   require('../src/containers/OrderBookContainer/stories');
+  require('../src/components/TradingHistory/stories');
+  require('../src/containers/TradingHistoryContainer/stories');
 }
 
 configure(loadStories, module);
