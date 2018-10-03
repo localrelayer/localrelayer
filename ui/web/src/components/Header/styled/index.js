@@ -1,95 +1,127 @@
 import styled from 'styled-components';
-import { Layout, Button, Avatar } from 'antd';
+import {
+  Icon,
+  Popover,
+  Button,
+  Table,
+} from 'antd';
+import * as colors from 'web-styles/colors.js';
 
-export const LogoContainer = styled.div`
-  width: 120px;
-  height: 30px;
-  float: left;
-  justify-content: center;
-  align-items: center;
+export const HeaderIcon = styled(Icon)`
+  padding-right: 10px;
+`;
+
+export const Header = styled.div`
   display: flex;
+  align-items: center;
+  text-align: center;
+  background-color: ${colors['layout-header-background']};
+  height: 7%;
+`;
+
+export const InstexLogo = styled.img`
+  width: 12%;
+  height: 100%;
+  cursor: pointer;
+`;
+
+export const Trade = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 8%;
+  height: 100%;
+  cursor: pointer;
+`;
+
+export const Account = styled.div`
+  display: flex;
+  width: 10%;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  cursor: pointer;
+`;
+
+export const TokensButton = styled(Button)`
+   .ant-btn-primary {
+  color: red !important;
+  background-color: red !important;
+  border-color: red !important;
+}
+`;
+
+export const TokensPopover = styled(Popover)`
+ .ant-popover-inner {
+  background-color: red !important;
+}
+ .ant-popover-arrow {
+  background-color: red !important;
+}
+`;
+
+export const TokensTable = styled(Table)`
+.ant-table {
+  border-bottom: 1px solid ${colors['component-background']};
+  border-top: 1px solid ${colors['component-background']};
+}
+
+.ant-table-thead > tr > th {
+  background: ${colors['component-background']};
+  border-bottom: 1px solid ${colors['component-background']} !important;
   color: white;
-  font-size: 1.7rem;
-`;
+  text-align: left;
+  width: 22%;
+}
 
-export const LinksContainer = styled.div`
-  & a{
-    color: rgba(255, 255, 255, 0.65);
-    margin: 0 10px;
-  }
-  & a:focus {
-    text-decoration: none;
-  }
-  & .anticon {
-    margin-right: 10px;
-  }
-  margin: 0 10px;
-`;
+.ant-table-thead > tr > th:nth-child(1) {
+  width: 12%;
+}
 
-export const HeaderContainer = styled(Layout.Header)`
-  display: flex;
-  align-items: center;
-  height: 55px;
-  line-height: 55px;
-
-  img {
-    height: 42px;
-  }
-`;
-
-export const HeaderButton = styled(Button)`
-  margin-left: 8px;
-`;
-
-export const UserButton = styled(HeaderButton)`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 190px;
-  margin: 10px;
-`;
-
-export const TokenContainer = styled.div`
-  // background-color: white;
-  // border: 1px solid #e8e8e8;
-  .ant-table-small {
-    border: none;
-  }
-`;
-
-export const HelpButton = styled.a`
-  margin: 0 10px;
+.ant-table-tbody > tr > td {
   color: white;
-  text-decoration: underline;
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+  width: 22%;
+}
+
+.ant-table-tbody > tr > td:nth-child(1) {
+  width: 12%;
+}
+
+.ant-table-tbody > tr:hover > td {
+  background: ${colors['item-hover-bg']};
+  }
+  .ant-table-tbody > tr > td {
+    padding: 5px 5px;
+  } 
 `;
 
-export const HelpContainer = styled.div`
+export const PopoverContent = styled.div`
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   justify-content: center;
-  a {
-    text-align: center;
-    padding: 10px;
-    color: #ffffffc4;
-    display: flex;
-    align-items: center;
+  & .ant-input {
+    background-color: ${colors['background-color-light']};
+    width: 70%;
+  border-radius: 4px 0 0 4px;
   }
-  & img {
-    max-height: 40px;
-    margin: 0 5px;
+  
+  & .ant-select {
+    background-color: ${colors['background-color-light']};
+    width: 30%;
   }
-`;
-
-export const AvatarContainer = styled(Avatar)`
-  padding: 5px;
-  background: none;
-
-  & img {
-    height: 100%;
-    width: 100%;
+  
+  & .ant-select-selection {
+    background-color: ${colors['background-color-light']};
+  }
+  
+  & .ant-select-arrow {
+    color: white;
   }
 `;
 
-export const PriceContainer = styled.div`
-  margin-right: 10px;
+export const SearchBar = styled.div`
+  display: flex;
 `;
