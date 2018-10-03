@@ -1,320 +1,90 @@
 // @flow
 import React from 'react';
 import {
-  withState,
-  compose,
-} from 'recompose';
-
-import type {
-  Node,
-} from 'react';
-import type {
-  User,
-  Tokens,
-  Token,
-} from 'instex-core/types';
-import {
-  Link,
-  NavLink,
-} from 'react-router-dom';
-import pathToRegexp from 'path-to-regexp';
-
-import {
-  // Menu,
-  Popover,
-  Icon,
-  Badge,
-  Modal,
-  Alert,
-  Button,
+  Input,
+  Select,
 } from 'antd';
-import {
-  LinksContainer,
-  HeaderContainer,
-  HeaderButton,
-  UserButton,
-  TokenContainer,
-  PriceContainer,
-} from './styled';
-import {
-  AlignRight,
-} from '../SharedStyles';
-import TokensList from './TokensList';
-import UserProfile from '../UserProfile';
-import PendingTransactions from './PendingTransactions';
-import CustomTokenForm from './CustomTokenForm';
+import * as S from './styled';
 import logo from '../../assets/logo5.png';
-import colors from '../../assets/styles/colors';
 
 type Props = {
-  /** User object */
-  user: User,
-  /** Function called on address click */
-  onUserClick: Function,
-  /** Array of tokens */
-  tokens: Tokens,
-  /** Selected token */
-  selectedToken: Token,
-  /**
-   * Function that is called whenever token select
-   * */
-  onTokenSelect: Function,
-  /** Function that is called whenever pair select */
-  onPairSelect: Function,
-  /**
-   * Function that is called whenever token is searched in table
-   * */
-  onTokenSearch: Function,
-  /** Selected trading pair */
-  tokenPair: Token,
-  /** Is popover visible */
-  popoverVisible: boolean,
-  /** Toggle popover visibility */
-  togglePopover: Function,
-  /** Change active link */
-  setActiveLink?: Function,
-  /** List of active strings */
-  activeLink: string,
-  /** Trigger help */
-  onHelpClick?: Function,
-  /** Is modal visible */
-  modalVisible: boolean,
-  /** Toggle modal visibility */
-  toggleModal: Function,
-  /** Set custom token address */
-  setTokenAddress: Function,
-  /** Check if we can submit form in modal */
-  isCustomTokenFormValid: Boolean,
-  /** Called when eth address changed */
-  onAddressSelect: Function,
-  /** Called when eth provider changed */
-  onProviderSelect: Function,
-  /** Current ETH/USD price */
-  ethPrice: string,
-};
+  tokensInfo: Array<any>,
+}
+const columns = [
+  {
+    title: 'Coin',
+    dataIndex: 'coin',
+    key: 'coin',
+    render: text => text || '--',
+  },
+  {
+    title: 'Price',
+    dataIndex: 'price',
+    key: 'price',
+    render: text => text || '--',
+  },
+  {
+    title: 'Volume',
+    dataIndex: 'volume',
+    key: 'volume',
+    sorter: (a, b) => a - b,
+    render: text => text || '--',
+  },
+  {
+    title: 'Volume (ETH)',
+    dataIndex: 'volumeEth',
+    key: 'volumeEth',
+    sorter: (a, b) => a - b,
+    render: text => text || '--',
+  },
+  {
+    title: 'Change',
+    dataIndex: 'change',
+    key: 'change',
+    render: text => text || '--',
+  },
+];
 
-/**
- * Header
- * @version 1.0.0
- * @author [Tim Reznich](https://github.com/imbaniac)
- */
-
-const checkIsActiveToken = (match, location) => {
-  const { pathname } = location;
-  const reg = pathToRegexp('/:token-:pair');
-  const [a, token, pair] = reg.exec(pathname) || []; // eslint-disable-line
-  return token && pair;
-};
-
-const checkIsActiveAccount = (match, location) => location.pathname === '/account';
-
-const enhancePopover = withState('popoverVisible', 'togglePopover', false);
-const enhanceModal = withState('modalVisible', 'toggleModal', false);
-
-const getTokenButtonTitle = (selectedToken: Token, tokenPair: Token) => {
-  if (selectedToken.symbol && tokenPair.symbol) {
-    return `(${selectedToken.symbol}/${tokenPair.symbol})`;
-  }
-  return '';
-};
-
-const Header = ({
-  user,
-  tokens,
-  selectedToken,
-  tokenPair,
-  onTokenSearch,
-  onTokenSelect,
-  onPairSelect,
-  popoverVisible,
-  togglePopover,
-  onHelpClick,
-  modalVisible,
-  toggleModal,
-  setTokenAddress,
-  isCustomTokenFormValid,
-  onAddressSelect,
-  onProviderSelect,
-  ethPrice,
-  // eslint-disable-next-line
-  location, // we need the location to make react see changes in route
-}: Props): Node => (
-  <div>
-    <label htmlFor="show-menu" className="show-menu">
-      <Link
-        to="/ZRX-WETH"
-        style={{
-          height: '50px',
-        }}
-      >
-        <img alt="logo" src={logo} />
-      </Link>
-      <Icon style={{ fontSize: '2rem' }} type="bars" />
-    </label>
-    <input type="checkbox" id="show-menu" role="button" />
-    <HeaderContainer id="menu">
-      <Link
-        id="main-header-logo"
-        style={{
-          height: '100%',
-        }}
-        to="/ZRX-WETH"
-      >
-        <img alt="logo" src={logo} />
-      </Link>
-      <LinksContainer>
-        <NavLink
-          isActive={match => checkIsActiveToken(match, location)}
-          activeStyle={{ color: 'white' }}
-          to="/ZRX-WETH"
-        >
-          <Icon type="swap" />
-Trade
-        </NavLink>
-        <NavLink
-          isActive={match => checkIsActiveAccount(match, location)}
-          activeStyle={{ color: 'white' }}
-          to="/account"
-        >
-          <Icon type="home" />
-Account
-        </NavLink>
-      </LinksContainer>
-      <Popover
-        trigger={['click']}
-        placement="bottom"
-        visible={popoverVisible}
-        onVisibleChange={togglePopover}
-        content={(
-          <TokenContainer>
-            <TokensList
-              id="tokensList"
-              onSearch={onTokenSearch}
-              tokens={tokens}
-              onSelect={(token) => {
-                togglePopover(false);
-                onTokenSelect(token.symbol);
-              }}
-              selectedToken={selectedToken}
-              tokenPair={tokenPair}
-              onPairSelect={onPairSelect}
-            />
-          </TokenContainer>
+const Header = ({ tokensInfo }: Props) => (
+  <S.Header>
+    <S.InstexLogo src={logo} alt="logo" />
+    <S.Trade>
+      <S.HeaderIcon type="swap" />
+      Trade
+    </S.Trade>
+    <S.Account>
+      <S.HeaderIcon type="home" />
+      Account
+    </S.Account>
+    <S.TokensPopover
+      trigger="click"
+      placement="bottom"
+      content={(
+        <S.PopoverContent>
+          <S.SearchBar>
+            <Input placeholder="Search token name, symbol or address" />
+            <Select defaultValue="WETH">
+              <Select.Option value="WETH">
+              WETH
+              </Select.Option>
+            </Select>
+          </S.SearchBar>
+          <S.TokensTable
+            size="middle"
+            columns={columns}
+            dataSource={tokensInfo}
+          />
+        </S.PopoverContent>
 )}
-      >
-        <UserButton
-          id="selectTokenButton"
-          type="primary"
-          className="header-button"
-        >
-          Tokens
-          {' '}
-          {getTokenButtonTitle(selectedToken, tokenPair)}
-          {' '}
-          <Icon type="down" />
-        </UserButton>
-      </Popover>
-      <UserButton
-        onClick={() => toggleModal(true)}
+    >
+      <S.TokensButton
         type="primary"
-        className="header-button"
       >
-        Token by Address
-        {' '}
-        <Icon type="copy" />
-      </UserButton>
-      <Modal
-        title="Trade not listed token"
-        visible={modalVisible}
-        destroyOnClose
-        onCancel={() => toggleModal(false)}
-        footer={[
-          <Button type="default" key="back" onClick={() => toggleModal(false)}>
-            Cancel
-          </Button>,
-          <Button
-            key="submit"
-            type="primary"
-            onClick={
-              isCustomTokenFormValid
-              && (() => {
-                setTokenAddress();
-                toggleModal(false);
-              })
-            }
-          >
-            Submit
-          </Button>,
-        ]}
-      >
-        <Alert
-          message="Double check that you want to trade precisely this address"
-          description="There are a lot of scam tokens. Difference even in 1 symbol can cost you money."
-          type="info"
-        />
-        <CustomTokenForm />
-      </Modal>
-      <AlignRight id="right-menu">
-        <PriceContainer>
-          ETH/USD: $
-          {ethPrice || '0.00'}
-        </PriceContainer>
-        <UserProfile
-          {...user}
-          onAddressSelect={onAddressSelect}
-          onProviderSelect={onProviderSelect}
-        />
-        <div>
-          { /*
-          <Popover
-            placement="bottom"
-            trigger={['click']}
-            content={<div style={{ padding: '12px 16px' }}>No notifications</div>}
-          >
-            <Badge count={user.notifications ? user.notifications.length : 0}>
-              <HeaderButton icon="bell" shape="circle" type="primary" />
-            </Badge>
-          </Popover>
-          */ }
-          <Badge>
-            <HeaderButton
-              id="help"
-              style={{
-                background: colors['firm-color'],
-              }}
-              shape="circle"
-              type="primary"
-              onClick={onHelpClick}
-              icon="question-circle"
-            />
-          </Badge>
-          <Popover
-            placement="bottomLeft"
-            trigger={['click']}
-            content={<PendingTransactions items={user.pendingTransactions} />}
-          >
-            <Badge count={user.pendingTransactions.length}>
-              <HeaderButton
-                className="header-button"
-                id="help"
-                shape="circle"
-                type="primary"
-                icon="hourglass"
-              />
-            </Badge>
-          </Popover>
-        </div>
-      </AlignRight>
-    </HeaderContainer>
-  </div>
+        Tokens(ZRX/WETH)
+        <S.HeaderIcon type="down" />
+      </S.TokensButton>
+    </S.TokensPopover>
+  </S.Header>
 );
 
-Header.defaultProps = {
-  user: {},
-  onUserClick: () => {},
-  onTokenSearch: () => {},
-  onHelpClick: () => {},
-  setActiveLink: () => {},
-};
-
-export default compose(enhancePopover, enhanceModal)(Header);
+export default Header;
