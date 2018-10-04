@@ -1,0 +1,72 @@
+{
+  "0x7c3badf4608380d9da34cc03a966e42fc1c7457a": {
+    "id": "0x7c3badf4608380d9da34cc03a966e42fc1c7457a",
+    "address": "0x7c3badf4608380d9da34cc03a966e42fc1c7457a",
+    "name": "MakerDAO",
+    "symbol": "MKR",
+    "decimals": 18
+  },
+  "0xd0a1e359811322d97991e03f863a0c30c2cf029c": {
+    "id": "0xd0a1e359811322d97991e03f863a0c30c2cf029c",
+    "address": "0xd0a1e359811322d97991e03f863a0c30c2cf029c",
+    "name": "Wrapped Ether",
+    "symbol": "WETH",
+    "decimals": 18
+  },
+  "0x09b9dfa83d424ab67b959bd17d46f7b30b277387": {
+    "id": "0x09b9dfa83d424ab67b959bd17d46f7b30b277387",
+    "address": "0x09b9dfa83d424ab67b959bd17d46f7b30b277387",
+    "name": "0x Protocol Token",
+    "symbol": "ZRX",
+    "decimals": 18
+  },
+  "0xb18845c260f680d5b9d84649638813e342e4f8c9": {
+    "id": "0xb18845c260f680d5b9d84649638813e342e4f8c9",
+    "address": "0xb18845c260f680d5b9d84649638813e342e4f8c9",
+    "name": "Augur Reputation Token",
+    "symbol": "REP",
+    "decimals": 18
+  },
+  "0x581ad4507454cd571c083130e95dd1741bbcae1c": {
+    "id": "0x581ad4507454cd571c083130e95dd1741bbcae1c",
+    "address": "0x581ad4507454cd571c083130e95dd1741bbcae1c",
+    "name": "Loan Token",
+    "symbol": "LOAN",
+    "decimals": 18
+  },
+  "0x6e61b13ff4b931f0bcb45547e4a8715cf187320d": {
+    "id": "0x6e61b13ff4b931f0bcb45547e4a8715cf187320d",
+    "address": "0x6e61b13ff4b931f0bcb45547e4a8715cf187320d",
+    "name": "Golem Network Token",
+    "symbol": "GNT",
+    "decimals": 18
+  },
+  "0x9b33f7bc01872572f7436ecd57555d8dad492a4c": {
+    "id": "0x9b33f7bc01872572f7436ecd57555d8dad492a4c",
+    "address": "0x9b33f7bc01872572f7436ecd57555d8dad492a4c",
+    "name": "Melon Token",
+    "symbol": "MLN",
+    "decimals": 18
+  },
+  "0xe8b6a7fa1976ba6c2d3dd81f063eb25d521186bb": {
+    "id": "0xe8b6a7fa1976ba6c2d3dd81f063eb25d521186bb",
+    "address": "0xe8b6a7fa1976ba6c2d3dd81f063eb25d521186bb",
+    "name": "b0x Protocol Token",
+    "symbol": "B0X",
+    "decimals": 18
+  },
+  "0x9f121afbc98a7a133fbb31fe975205f39e8f08d2": {
+    "id": "0x9f121afbc98a7a133fbb31fe975205f39e8f08d2",
+    "address": "0x9f121afbc98a7a133fbb31fe975205f39e8f08d2",
+    "name": "Rigo Token",
+    "symbol": "GRG",
+    "decimals": 18
+  },
+  "0xeee3870657e4716670f185df08652dd848fe8f7e": {
+    "id": "0xeee3870657e4716670f185df08652dd848fe8f7e",
+    "address": "0xeee3870657e4716670f185df08652dd848fe8f7e",
+    "name": "Digix DAO Token",
+    "symbol": "DGD",
+    "decimals": 18
+  }
+}
