@@ -5,12 +5,15 @@ import {
 import {
   coreSagas,
   contracts,
-  cachedTokens,
+  coreCache,
 } from 'instex-core';
+
 import '../../web3InitTests';
 
+
 const UNEXIST_IN_CACHE_ASSET = '0x1234567890123456789012345678901234567890';
-const tokens = Object.values(cachedTokens.default).map(item => ({
+const networkId = 1;
+const tokens = Object.values(coreCache.cachedTokens[networkId]).map(item => ({
   id: item.address,
   ...item,
 }));
@@ -36,7 +39,10 @@ describe('getAssetAdditionalInfo saga', () => {
   it('should return asset info from cache file', () => {
     const testAsset = tokens[0];
 
-    const gen = coreSagas.getAssetAdditionalInfo(testAsset.address);
+    const gen = coreSagas.getAssetAdditionalInfo({
+      asset: testAsset.address,
+      networkId,
+    });
     const result = gen.next();
 
     expect(result.done).toBe(true);
@@ -68,7 +74,10 @@ describe('getAssetAdditionalInfo saga', () => {
         getState: () => ({}),
       },
       coreSagas.getAssetAdditionalInfo,
-      UNEXIST_IN_CACHE_ASSET,
+      {
+        asset: UNEXIST_IN_CACHE_ASSET,
+        networkId,
+      },
     ).toPromise();
 
     expect(stubWeb3ContractApi.calledOnce).toBe(true);
@@ -122,7 +131,10 @@ describe('getAssetAdditionalInfo saga', () => {
         getState: () => ({}),
       },
       coreSagas.getAssetAdditionalInfo,
-      UNEXIST_IN_CACHE_ASSET,
+      {
+        asset: UNEXIST_IN_CACHE_ASSET,
+        networkId,
+      },
     ).toPromise();
 
     expect(stubWeb3ContractApi.calledTwice).toBe(true);

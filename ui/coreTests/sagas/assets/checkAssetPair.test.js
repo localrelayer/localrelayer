@@ -14,6 +14,7 @@ import {
 import '../../web3InitTests';
 
 
+const networkId = 1;
 const baseAssetAddress = '0xe41d2489571d322189246dafa5ebde1f4699f498'; /* ZRX */
 const quoteAssetAddress = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'; /* WETH */
 const assetPairId = `${baseAssetAddress}_${quoteAssetAddress}`;
@@ -40,6 +41,7 @@ describe('checkAssetPair saga', () => {
         {
           assetDataA: baseAssetAddress,
           assetDataB: quoteAssetAddress,
+          networkId,
         },
       )
         .withReducer(reducer)
@@ -56,6 +58,7 @@ describe('checkAssetPair saga', () => {
         {
           baseAsset: baseAssetAddress,
           quoteAsset: quoteAssetAddress,
+          networkId,
         },
       )
         .withReducer(reducer)
@@ -77,6 +80,7 @@ describe('checkAssetPair saga', () => {
         {
           baseAsset: 'ZRX',
           quoteAsset: 'WETH',
+          networkId,
         },
       )
         .withReducer(reducer)
@@ -98,6 +102,7 @@ describe('checkAssetPair saga', () => {
         {
           baseAsset: baseAssetAddress,
           quoteAsset: 'WETH',
+          networkId,
         },
       )
         .withReducer(reducer)
@@ -122,6 +127,7 @@ describe('checkAssetPair saga', () => {
         {
           baseAsset: baseAssetAddress,
           quoteAsset: quoteAssetAddress,
+          networkId,
         },
       )
         .withReducer(reducer)
@@ -148,6 +154,7 @@ describe('checkAssetPair saga', () => {
           {
             baseAsset: 'ZRX',
             quoteAsset: 'WETH',
+            networkId,
           },
         )
           .withReducer(reducer)
@@ -167,6 +174,7 @@ describe('checkAssetPair saga', () => {
           {
             baseAsset: baseAssetAddress,
             quoteAsset: 'WETH',
+            networkId,
           },
         )
           .withReducer(reducer)
@@ -186,6 +194,7 @@ describe('checkAssetPair saga', () => {
           {
             baseAsset: '0xkasaksajdasjdaksdjkajdakj123131321321WRONG',
             quoteAsset: 'WETHWRONGWRONG',
+            networkId,
           },
         )
           .withReducer(reducer)

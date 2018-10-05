@@ -5,10 +5,6 @@ import {
 } from '@storybook/react';
 import ReactJson from 'react-json-view';
 
-import {
-  getUiState,
-} from 'web-selectors';
-
 import Component from 'web-components/ConnectComponent';
 
 
@@ -18,14 +14,14 @@ storiesOf('Lab|wallet', module)
     () => (
       <Component
         mapStateToProps={state => ({
-          uiWallet: getUiState('wallet')(state),
+          wallet: state.wallet,
         })}
       >
-        {({ uiWallet }) => (
+        {({ wallet }) => (
           <ReactJson
             collapsed={false}
             theme="ocean"
-            src={uiWallet}
+            src={wallet}
           />
         )}
       </Component>

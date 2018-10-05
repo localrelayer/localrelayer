@@ -12,6 +12,7 @@ const rootReducer = combineReducers({
   assets: coreReducers.assets,
   assetPairs: coreReducers.assetPairs,
   orders: coreReducers.orders,
+  wallet: coreReducers.wallet,
   ui,
 });
 

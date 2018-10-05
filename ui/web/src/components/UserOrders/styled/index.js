@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import {
   Table,
 } from 'antd';
-import * as colors from 'web-styles/colors.js';
+import * as colors from 'web-styles/colors';
 
 export const UserOrders = styled.div`
   display: absolute;

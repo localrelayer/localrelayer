@@ -12,7 +12,9 @@ import {
   getResourceById,
 } from '../selectors';
 import api from '../api';
-import cachedTokens from '../cache/tokens';
+import {
+  cachedTokens,
+} from '../cache';
 import abiZRX from '../contracts/abiZRX';
 // https://etherscan.io/address/0x86fa049857e0209aa7d9e616f7eb3b3b78ecfdb0#code
 import abiEOS from '../contracts/abiEOS';
@@ -26,11 +28,14 @@ function* extractInfo(tokenContract) {
   });
 }
 
-export function* getAssetAdditionalInfo(asset) {
-  if (cachedTokens[asset]) {
+export function* getAssetAdditionalInfo({
+  asset,
+  networkId,
+}) {
+  if (cachedTokens[networkId][asset]) {
     return {
       id: asset,
-      ...cachedTokens[asset],
+      ...cachedTokens[networkId][asset],
     };
   }/*
     we cannot decode some specific types of assets using ZRX ABI,
@@ -68,7 +73,7 @@ export function* getAssetAdditionalInfo(asset) {
   }
 }
 
-export function* fetchAssetPairs(opts = {}) {
+export function* fetchAssetPairs(opts = { networkId: 1 }) {
   const actions = createActionCreators('read', {
     resourceType: 'assetPairs',
     requestKey: 'assetPairs',
@@ -127,7 +132,10 @@ export function* fetchAssetPairs(opts = {}) {
     );
     const assets = yield eff.all(
       assetsRaw.map(
-        item => eff.call(getAssetAdditionalInfo, item),
+        asset => eff.call(getAssetAdditionalInfo, {
+          asset,
+          networkId: opts.networkId,
+        }),
       ),
     );
     yield eff.put(actions.succeeded({
@@ -166,6 +174,7 @@ function determineAssetIdType(asset) {
 export function* checkAssetPair({
   baseAsset,
   quoteAsset,
+  networkId,
 }) {
   const assetsTypes = {
     /* return type of null which means an format error */
@@ -184,7 +193,10 @@ export function* checkAssetPair({
       )
     ) || (
       assetsTypes.baseAsset === 'address' && (
-        yield eff.call(getAssetAdditionalInfo, baseAsset)
+        yield eff.call(getAssetAdditionalInfo, {
+          asset: baseAsset,
+          networkId,
+        })
       )
     )
   );
@@ -199,7 +211,10 @@ export function* checkAssetPair({
       )
     ) || (
       assetsTypes.quoteAsset === 'address' && (
-        yield eff.call(getAssetAdditionalInfo, quoteAsset)
+        yield eff.call(getAssetAdditionalInfo, {
+          asset: quoteAsset,
+          networkId,
+        })
       )
     )
   );
