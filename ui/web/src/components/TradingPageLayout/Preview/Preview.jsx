@@ -18,7 +18,7 @@ type Props = {
 const components = [
   'assetPairCard',
   'tradingHistory',
-  'balance',
+  'userBalance',
   'userOrders',
   'chart',
   'orderBook',

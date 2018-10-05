@@ -3,7 +3,14 @@ import {
   orderHashUtils,
 } from '@0xproject/order-utils';
 import * as R from 'ramda';
-import assetPairsJson from './assetPairs.json';
+import assetPairsMainJson from './assetPairs.main.json';
+import assetPairsKovanJson from './assetPairs.kovan.json';
+
+
+const assetPairsJson = {
+  1: assetPairsMainJson,
+  42: assetPairsKovanJson,
+};
 
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 
@@ -38,7 +45,7 @@ export function getAssetPairs({
   perPage: 100,
 }) {
   const offset = (page - 1) * perPage;
-  const records = assetPairsJson
+  const records = assetPairsJson[networkId]
     .filter(
       r => (
         (

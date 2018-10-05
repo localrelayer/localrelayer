@@ -3,6 +3,7 @@ import * as eff from 'redux-saga/effects';
 
 import {
   eventChannel,
+  channel,
 } from 'redux-saga';
 import {
   matchPath,
@@ -17,15 +18,15 @@ import {
   uiActions,
 } from 'web-actions';
 import {
-  getUiState,
-} from 'web-selectors';
-import {
   getHistory,
 } from 'web-history';
-import store from 'web-store';
 
 
-function* setCurrentPair(location) {
+function* setCurrentPair({
+  location,
+  webRadioChannel,
+  networkId,
+}) {
   const match = matchPath(location.pathname, {
     path: '/:baseAsset-:quoteAsset',
     exact: true,
@@ -47,6 +48,7 @@ function* setCurrentPair(location) {
       } = yield eff.call(coreSagas.checkAssetPair, {
         baseAsset: match.params.baseAsset,
         quoteAsset: match.params.quoteAsset,
+        networkId,
       });
       yield eff.put(uiActions.setUiState({
         currentAssetPairId: assetPair.id,
@@ -60,6 +62,15 @@ function* setCurrentPair(location) {
           quoteAssetData: assetPair.assetDataB.assetData,
         },
       );
+      yield eff.put(
+        webRadioChannel,
+        {
+          sagaName: 'setCurrentPair',
+          message: {
+            assetPair,
+          },
+        },
+      );
     } catch (errors) {
       yield eff.put(uiActions.setUiState({
         isCurrentPairIssue: true,
@@ -69,100 +80,36 @@ function* setCurrentPair(location) {
   }
 }
 
-
-function* takeChangeRoute(channel) {
+function* takeChangeRoute({
+  historyChannel,
+  webRadioChannel,
+  networkId,
+}) {
   while (true) {
-    const { location } = yield eff.take(channel);
-    yield eff.fork(setCurrentPair, location);
-  }
-}
-
-function* takeChangeMetamaskWalletData(channel) {
-  const ethNetworks = {
-    1: 'Main Ethereum Network',
-    42: 'Kovan Test Network',
-  };
-
-  while (true) {
-    const {
-      networkId,
-      accounts,
-    } = yield eff.take(channel);
-
-    yield eff.put(
-      uiActions.setUiState(
-        'wallet', {
-          ...(accounts ? {
-            accounts,
-            selectedAccount: accounts[0],
-          } : {}),
-          ...(networkId ? {
-            networkId,
-            networkName: ethNetworks[networkId] || 'Unknown',
-          } : {}),
-        },
-        [
-          'wallet',
-        ],
-      ),
+    const { location } = yield eff.take(historyChannel);
+    yield eff.fork(
+      setCurrentPair,
+      {
+        location,
+        webRadioChannel,
+        networkId,
+      },
     );
   }
 }
 
-function createWalletChannel() {
-  let timeout;
-
-  function checkFunc(emitter) {
-    timeout = setTimeout(() => {
-      web3.eth.net.getId().then((networkId) => {
-        web3.eth.getAccounts().then((accounts) => {
-          const changedData = [];
-          const wallet = getUiState('wallet')(store.getState());
-
-          if (wallet.networkId !== networkId) {
-            changedData.push({
-              networkId,
-            });
-          }
-          if (accounts.some((w, i) => wallet.accounts[i] !== w)) {
-            changedData.push({
-              accounts,
-            });
-          }
-
-          if (changedData.length) {
-            emitter({
-              ...(changedData.reduce(
-                (acc, data) => ({
-                  ...acc,
-                  ...data,
-                }),
-                {},
-              )),
-            });
-          }
-
-          checkFunc(emitter);
-        });
-      });
-    }, 2000);
-  }
-
-  return eventChannel(
-    (emitter) => {
-      checkFunc(emitter);
-      return (
-        () => clearTimeout(timeout)
-      );
-    },
-  );
-}
-
 export function* initialize(): Saga<void> {
   yield eff.take(actionTypes.INITIALIZE_WEB_APP);
-
   console.log('Web initialize saga');
-  const fetchPairsTask = yield eff.fork(coreSagas.fetchAssetPairs);
+
+  const networkId = yield eff.call(web3.eth.net.getId);
+  const webRadioChannel = yield eff.call(channel);
+  const fetchPairsTask = yield eff.fork(
+    coreSagas.fetchAssetPairs,
+    {
+      networkId,
+    },
+  );
 
   const history = getHistory();
   const historyChannel = eventChannel(
@@ -175,14 +122,54 @@ export function* initialize(): Saga<void> {
       })
     ),
   );
-  yield eff.fork(takeChangeRoute, historyChannel);
-
-  const walletChannel = createWalletChannel();
-  yield eff.fork(takeChangeMetamaskWalletData, walletChannel);
+  yield eff.fork(
+    takeChangeRoute,
+    {
+      historyChannel,
+      webRadioChannel,
+      networkId,
+    },
+  );
 
   yield eff.put(uiActions.setUiState({
     isAppInitializing: false,
   }));
   yield eff.join(fetchPairsTask);
-  yield eff.fork(setCurrentPair, history.location);
+  yield eff.fork(
+    setCurrentPair,
+    {
+      location: history.location,
+      webRadioChannel,
+      networkId,
+    },
+  );
+
+  /* Web radio center */
+  while (true) {
+    const {
+      sagaName,
+      message,
+    } = yield eff.take(webRadioChannel);
+    let watchWalletTask;
+
+    switch (sagaName) {
+      case 'setCurrentPair':
+        if (watchWalletTask) {
+          yield eff.cancel(watchWalletTask);
+        }
+        watchWalletTask = yield eff.fork(
+          coreSagas.watchWallet,
+          {
+            delay: 2000,
+            tokens: [
+              message.assetPair.assetDataA.assetData,
+              message.assetPair.assetDataB.assetData,
+            ],
+          },
+        );
+        break;
+      default:
+        break;
+    }
+  }
 }
