@@ -1,123 +1,53 @@
 // @flow
-
 import React from 'react';
 import {
-  Modal,
-  Button,
-  Form,
   Alert,
+  Input,
+  Modal,
 } from 'antd';
-import { AntNumberInput } from 'components/ReduxFormComponents';
-import {
-  Field,
-  reduxForm,
-} from 'redux-form';
-import {
-  connect,
-} from 'react-redux';
-import {
-  compose,
-} from 'redux';
-import {
-  lifecycle,
-} from 'recompose';
 
-const enchance = lifecycle({
-  componentDidMount() {
-    window.web3Instance.eth.getGasPrice().then((gasPriceWei) => {
-      const gasPrice = window.web3Instance.utils.fromWei(gasPriceWei, 'gwei');
-      this.setState({ gasPrice });
-    });
-  },
-});
+import * as S from './styled';
 
-type Props = {
-  activeModal: string,
-  onOk: Function,
-  onCancel: Function,
-  isTxLoading: boolean,
-};
-
-const GasModal = ({
-  activeModal,
-  onOk,
-  onCancel,
-  isTxLoading,
-}: Props) => (
+const GasModal = () => (
   <Modal
-    destroyOnClose
-    title="Gas settings"
-    visible={activeModal === 'GasModal'}
-    onCancel={onCancel}
-    onOk={onOk}
-    footer={[
-      <Button key="cancel" onClick={onCancel} type="default">
-        Cancel
-      </Button>,
-      <Button
-        key="ok"
-        onClick={() => {
-          onOk();
-          onCancel();
-        }}
-        loading={isTxLoading}
-        type="primary"
-      >
-        Continue
-      </Button>,
-    ]}
+    title="Gas Settings"
+    visible
+    okText="Continue"
   >
     <Alert
+      type="info"
       message="You can increase gas price for faster confirmation"
-      description={
-        <article>
-          Find best gas price on {' '}
-          <a
-            style={{ wordWrap: 'break-word', color: '#00bcd4' }}
-            rel="noopener noreferrer"
-            target="_blank"
+      description={(
+        <S.AlertDescription>
+            Find best gas price on
+          {' '}
+          <S.AlertLink
             href="https://ethgasstation.info"
           >
-          ethgasstation.info
-          </a>
-        </article>}
-      type="info"
+              ethgasstation.info
+          </S.AlertLink>
+        </S.AlertDescription>
+)}
     />
-    <Form style={{ marginTop: 25 }}>
-      <Field
-        id="gasPrice"
-        name="gasPrice"
-        component={AntNumberInput}
-        label="Gas Price"
-        addonAfter="Gwei"
-      />
-      <Field
-        id="gasLimit"
-        name="gasLimit"
-        component={AntNumberInput}
-        label="Gas Limit"
-        addonAfter="Gwei"
-      />
-    </Form>
+    <S.GasForm>
+      <S.GasForm.Item
+        label="Gas Price:"
+      >
+        <Input
+          placeholder="30"
+          addonAfter={<div>Gwei</div>}
+        />
+      </S.GasForm.Item>
+      <S.GasForm.Item
+        label="Gas Limit:"
+      >
+        <Input
+          placeholder="100000"
+          addonAfter={<div>Gwei</div>}
+        />
+      </S.GasForm.Item>
+    </S.GasForm>
   </Modal>
 );
 
-const mapStateToProps = (state, props) => ({
-  initialValues: {
-    gasPrice: props.gasPrice,
-    gasLimit: '100000',
-  },
-});
-
-export default compose(
-  enchance,
-  connect(
-    mapStateToProps,
-  ),
-  reduxForm({
-    form: 'GasForm',
-    touchOnChange: true,
-    enableReinitialize: true,
-    destroyOnUnmount: true,
-  }),
-)(GasModal);
+export default GasModal;

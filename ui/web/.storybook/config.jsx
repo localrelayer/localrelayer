@@ -107,6 +107,7 @@ function loadStories() {
   require('../src/components/UserOrders/stories');
   require('../src/containers/UserOrdersContainer/stories');
   require('../src/components/UserBalance/stories');
+  require('../src/components/Modals/stories');
 }
 
 configure(loadStories, module);
