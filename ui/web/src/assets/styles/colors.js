@@ -22,6 +22,8 @@ const colors = {
   'firm-color': '#673ab7',
   green: '#279467',
   red: '#a03756',
+  // same as fade(#fff, 85%)
+  white: '#DADDDF',
 };
 
 module.exports = colors;

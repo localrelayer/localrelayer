@@ -5,6 +5,8 @@ import {
   Tooltip,
   Popover,
   Switch,
+  Button,
+  Input,
 } from 'antd';
 
 import type {
@@ -95,16 +97,34 @@ const UserBalance = ({
   assets,
   onToggle,
 }: Props): Node => (
-  <div>
+  <S.UserBalance>
     <S.Title>
-      Balance 3.00000000 ETH
+      <div>Balance 3.00000000 ETH</div>
     </S.Title>
+    <S.WrappingBar>
+      <S.Amount>
+        <Input
+          addonAfter={<div>ETH</div>}
+          placeholder="Amount"
+        />
+      </S.Amount>
+      <S.UnwrapWrapBar>
+        <Button.Group>
+          <S.UnwrapButton type="primary">
+          Unwrap
+          </S.UnwrapButton>
+          <S.WrapButton type="primary">
+          Wrap
+          </S.WrapButton>
+        </Button.Group>
+      </S.UnwrapWrapBar>
+    </S.WrappingBar>
     <S.Table
       rowKey="symbol"
       dataSource={assets}
       columns={getColumns(onToggle)}
     />
-  </div>
+  </S.UserBalance>
 );
 
 export default UserBalance;
