@@ -4,9 +4,6 @@ import {
 import * as eff from 'redux-saga/effects';
 import createActionCreators from 'redux-resource-action-creators';
 
-import {
-  actionTypes,
-} from '../actions';
 import api from '../api';
 
 
@@ -51,9 +48,42 @@ export function* fetchOrderBook(opts = {}) {
   }
 }
 
-export function* takeFetchOrderBook() {
-  yield eff.takeEvery(
-    actionTypes.FETCH_ORDER_BOOK_REQUEST,
-    fetchOrderBook,
-  );
+export function* fetchTradingHistory({
+  makerAssetData,
+  takerAssetData,
+}) {
+  const actions = createActionCreators('read', {
+    resourceType: 'orders',
+    requestKey: 'tradingHistory',
+    list: 'tradingHistory',
+    mergeListIds: false,
+  });
+  try {
+    yield eff.put(actions.pending());
+    const response = yield eff.call(
+      api.getTradingHistory,
+      {
+        makerAssetData,
+        takerAssetData,
+      },
+    );
+    const orders = response.records.map(({
+      order,
+      metaData,
+    }) => ({
+      id: orderHashUtils.getOrderHashHex(order),
+      ...order,
+      completedAt: metaData.completedAt,
+    }));
+
+    yield eff.put(actions.succeeded({
+      resources: orders,
+      list: 'tradingHistory',
+    }));
+  } catch (err) {
+    console.log(err);
+    yield eff.put(actions.succeeded({
+      resources: [],
+    }));
+  }
 }

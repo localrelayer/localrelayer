@@ -13,17 +13,17 @@ import TradingHistory from '..';
 
 const defaultOrders = [{
   key: '1',
-  date: '02/29/2018',
+  completedAt: '02/29/2018',
   price: 0.003124214,
   amount: 400.242144,
 }, {
   key: '2',
-  date: '02/30/2018',
+  completedAt: '02/30/2018',
   price: 0.033453455,
   amount: 43.1245551,
 }, {
   key: '3',
-  date: '02/30/2018',
+  completedAt: '02/30/2018',
   price: 0.033123444,
   amount: 89.43245661,
 }];

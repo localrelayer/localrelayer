@@ -18,7 +18,7 @@ type Props = {
 const columns = [
   {
     title: 'Date',
-    dataIndex: 'date',
+    dataIndex: 'completedAt',
     render: (text: string) => (
       <Tooltip title={moment(text).format('ddd, MMM DD, YYYY hh:mm:ss A')}>
         {moment(text).format('DD/MM/YYYY HH:mm')}

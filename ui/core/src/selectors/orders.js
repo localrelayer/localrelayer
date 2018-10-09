@@ -32,7 +32,7 @@ export const getOpenOrders = createSelector(
   ),
 );
 
-export const getOrdersHistory = createSelector(
+export const getTradingHistory = createSelector(
   [
     getResourceMappedList('orders', 'tradingHistory'),
   ],

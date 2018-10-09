@@ -40,7 +40,7 @@ describe('getAssetAdditionalInfo saga', () => {
     const testAsset = tokens[0];
 
     const gen = coreSagas.getAssetAdditionalInfo({
-      asset: testAsset.address,
+      assetData: testAsset.address,
       networkId,
     });
     const result = gen.next();
@@ -75,7 +75,7 @@ describe('getAssetAdditionalInfo saga', () => {
       },
       coreSagas.getAssetAdditionalInfo,
       {
-        asset: UNEXIST_IN_CACHE_ASSET,
+        assetData: UNEXIST_IN_CACHE_ASSET,
         networkId,
       },
     ).toPromise();
@@ -132,7 +132,7 @@ describe('getAssetAdditionalInfo saga', () => {
       },
       coreSagas.getAssetAdditionalInfo,
       {
-        asset: UNEXIST_IN_CACHE_ASSET,
+        assetData: UNEXIST_IN_CACHE_ASSET,
         networkId,
       },
     ).toPromise();
