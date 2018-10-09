@@ -11,12 +11,18 @@ import {
 
 import {
   coreSagas,
+  coreActions,
 } from 'instex-core';
+
+import config from 'web-config';
 
 import {
   actionTypes,
   uiActions,
 } from 'web-actions';
+import {
+  getUiState,
+} from 'web-selectors';
 import {
   getHistory,
 } from 'web-history';
@@ -50,6 +56,32 @@ function* setCurrentPair({
         quoteAsset: match.params.quoteAsset,
         networkId,
       });
+      const currentAssetPairId = yield eff.select(getUiState('currentAssetPairId'));
+      yield eff.put(uiActions.setUiState({
+        currentAssetPairId: assetPair.id,
+        isCurrentPairListed: isListed,
+        isCurrentPairIssue: false,
+      }));
+
+      // Unsubscribe after pair change
+      if (currentAssetPairId) {
+        yield eff.put(coreActions.sendSocketMessage(
+          'unsubscribe',
+          {
+            pair: currentAssetPairId,
+          },
+        ));
+      }
+      yield eff.put(coreActions.sendSocketMessage(
+        'subscribe',
+        {
+          pairs: [
+            assetPair.id,
+          ],
+        },
+      ));
+
+
       yield eff.put(uiActions.setUiState({
         currentAssetPairId: assetPair.id,
         isCurrentPairListed: isListed,
@@ -110,6 +142,9 @@ export function* initialize(): Saga<void> {
       networkId,
     },
   );
+
+  const sputnikSocket = yield eff.call(coreSagas.sputnikConnect, config.sputnikUrl);
+  yield eff.fork(coreSagas.handleSputnikSocketIO, sputnikSocket);
 
   const history = getHistory();
   const historyChannel = eventChannel(

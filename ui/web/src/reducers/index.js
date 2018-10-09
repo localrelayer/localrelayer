@@ -13,6 +13,7 @@ const rootReducer = combineReducers({
   assetPairs: coreReducers.assetPairs,
   orders: coreReducers.orders,
   wallet: coreReducers.wallet,
+  tradingInfo: coreReducers.tradingInfo,
   ui,
 });
 
