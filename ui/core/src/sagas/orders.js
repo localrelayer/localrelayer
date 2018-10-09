@@ -1,3 +1,6 @@
+import {
+  orderHashUtils,
+} from '0x.js';
 import * as eff from 'redux-saga/effects';
 import createActionCreators from 'redux-resource-action-creators';
 
@@ -24,11 +27,11 @@ export function* fetchOrderBook(opts = {}) {
       },
     );
     const asks = response.asks.records.map(({ order }) => ({
-      id: order.signature,
+      id: orderHashUtils.getOrderHashHex(order),
       ...order,
     }));
     const bids = response.bids.records.map(({ order }) => ({
-      id: order.signature,
+      id: orderHashUtils.getOrderHashHex(order),
       ...order,
     }));
 

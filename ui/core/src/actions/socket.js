@@ -1,6 +1,6 @@
 // @flow
 
-import * as actionTypes from './types';
+import * as actionTypes from './actionTypes';
 import type {
   SocketAction,
 } from '../types';
@@ -8,8 +8,11 @@ import type {
 export const sendSocketMessage = (
   message: string,
   data: any,
-): SocketAction => ({
-  type: actionTypes.SEND_SOCKET_MESSAGE,
-  message,
-  data,
-});
+): SocketAction => {
+  console.log(message, data);
+  return {
+    type: actionTypes.SEND_SOCKET_MESSAGE,
+    message,
+    data,
+  };
+};

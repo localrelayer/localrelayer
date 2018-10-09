@@ -1,4 +1,3 @@
-
 import {
   createSelector,
 } from 'reselect';
@@ -12,14 +11,17 @@ export const getCurrentAssetPair = createSelector(
   [
     cs.getResourceMap('assets'),
     cs.getResourceMap('assetPairs'),
+    cs.getResourceMap('tradingInfo'),
     s => s.ui.currentAssetPairId,
   ],
   (
     assets,
     assetPairs,
-    currentAssetPairId,
+    tradingInfo,
+    currentPairId,
   ) => {
-    const pair = assetPairs[currentAssetPairId];
+    const pair = assetPairs[currentPairId];
+    const pairTradingInfo = tradingInfo[currentPairId];
     return pair ? {
       ...pair,
       assetDataA: {
@@ -30,6 +32,7 @@ export const getCurrentAssetPair = createSelector(
         ...pair.assetDataB,
         assetData: assets[pair.assetDataB.assetData],
       },
+      tradingInfo: pairTradingInfo,
     } : null;
   },
 );
