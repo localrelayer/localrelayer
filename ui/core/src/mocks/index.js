@@ -333,5 +333,28 @@ export function mocksOrdersFactory({
           ),
       };
     },
+
+    getTradingHistory({
+      baseAssetData,
+      quoteAssetData,
+    }) {
+      if (!baseAssetData || !quoteAssetData) {
+        throw Error('baseAssetData and quoteAssetData are required');
+      }
+      const now = new Date();
+      return {
+        records: (
+          orders.map((o, i) => ({
+            order: {
+              takerAddress: randomEthereumAddress(),
+              ...o.order,
+            },
+            metaData: {
+              completedAt: new Date(now - i * 60000).toString(),
+            },
+          }))
+        ),
+      };
+    },
   };
 }

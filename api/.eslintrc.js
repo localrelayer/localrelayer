@@ -3,27 +3,15 @@ module.exports = {
   parserOptions: {
     allowImportExportEverywhere: true,
   },
-  globals: {
-    fetch: true,
-    web3: true,
-    Web3: true,
-    WebSocket: true,
-  },
   extends: [
-    'airbnb',
-    'plugin:flowtype/recommended',
-  ],
-  plugins: [
-    'flowtype',
+    'airbnb/base',
   ],
   rules: {
     'flowtype/generic-spacing': 'off',
     'import/no-extraneous-dependencies': 'off',
     'import/prefer-default-export': 'off',
-    'jsx-a11y/no-static-element-interactions': 'off',
-    'jsx-a11y/click-events-have-key-events': 'off',
-    'jsx-a11y/anchor-is-valid': 'off',
     'no-console': 'off',
+    'no-param-reassign': 'off',
     'function-paren-newline': [
       'error',
       'consistent',
@@ -42,6 +30,6 @@ module.exports = {
     }],
   },
   env: {
-    jest: true,
+    node: true,
   },
 };

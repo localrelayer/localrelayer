@@ -1,3 +1,4 @@
+/* Only ERC20 tokens here at this moment */
 import kovanTokens from './tokens.kovan.json';
 import mainTokens from './tokens.main.json';
 import testTokens from './tokens.test.json';

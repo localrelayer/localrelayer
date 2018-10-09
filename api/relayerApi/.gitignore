@@ -1,9 +1,0 @@
-node_modules/
-swagger/
-logs/
-dist/
-logfile
-*.log
-testrpc_snapshot/
-dump.rdb
-.vscode/

@@ -12,6 +12,7 @@ export function* watchWallet({
   const ethNetworks = {
     1: 'Main Ethereum Network',
     42: 'Kovan Test Network',
+    50: 'Test Network',
   };
 
   while (true) {

@@ -12,9 +12,10 @@ import {
   getCurrentAssetPair,
 } from '.';
 
+
 export const getTradingHistory = createSelector(
   [
-    cs.getOrdersHistory,
+    cs.getTradingHistory,
     getCurrentAssetPair,
   ],
   (
@@ -27,12 +28,18 @@ export const getTradingHistory = createSelector(
 
     const baseAsset = currentAssetPair.assetDataA.assetData.address;
 
-    return orders.map((order) => {
-      const makerAsset = assetDataUtils.decodeAssetDataOrThrow(order.makerAssetData);
-      return {
-        ...order,
-        type: makerAsset === baseAsset ? 'ask' : 'bid',
-      };
-    });
+    return (
+      orders
+        .map(
+          (order) => {
+            // const makerAsset = assetDataUtils.decodeAssetDataOrThrow(order.makerAssetData);
+            const makerAsset = order.makerAssetData;
+            return {
+              ...order,
+              type: makerAsset === baseAsset ? 'ask' : 'bid',
+            };
+          },
+        )
+    );
   },
 );
