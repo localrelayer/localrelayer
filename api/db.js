@@ -29,7 +29,7 @@ const orderSchema = mongoose.Schema({
   makerAssetData: { type: String, index: true },
   takerAssetData: { type: String, index: true },
   orderHash: { type: String, index: true, unique: true, dropDups: true },
-  completedAt: { type: Date },
+  expirationTimeSeconds: { type: String },
   networkId: { type: Number, index: true },
 }, { versionKey: false });
 

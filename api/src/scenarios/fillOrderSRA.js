@@ -96,7 +96,7 @@ export async function scenarioAsync() {
   ]);
 
   // Initialize the Standard Relayer API client
-  const httpClient = new HttpClient('http://localhost:3000/v2/');
+  const httpClient = new HttpClient('http://localhost:5001/v2/');
 
   // Generate and expiration time and find the exchange smart contract address
   const randomExpiration = getRandomFutureDateInSeconds();
@@ -123,7 +123,7 @@ export async function scenarioAsync() {
     ...orderConfigRequest,
     ...orderConfig,
   };
-
+  await printUtils.fetchAndPrintContractBalancesAsync();
   // Generate the order hash and sign it
   const orderHashHex = orderHashUtils.getOrderHashHex(order);
   const signature = await signatureUtils.ecSignOrderHashAsync(
@@ -151,16 +151,16 @@ export async function scenarioAsync() {
   if (response.asks.total === 0) {
     throw new Error('No orders found on the SRA Endpoint');
   }
-  const sraOrder = response.asks.records[0].order;
+  // if we don't remove full filled order from global scope,
+  // we should get last added order here not 1st every time
+  const sraOrder = response.asks.records[response.asks.records.length - 1].order;
   printUtils.printOrder(sraOrder);
-
   // Validate the order is Fillable given the maker and taker balances
   await contractWrappers.exchange.validateFillOrderThrowIfInvalidAsync(
     sraOrder,
     takerAssetAmount,
     taker,
   );
-
   // Fill the Order via 0x Exchange contract
   const txHash = await contractWrappers.exchange.fillOrderAsync(sraOrder, takerAssetAmount, taker, {
     gasLimit: GAS_DEFAULT,
