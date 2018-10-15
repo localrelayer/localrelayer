@@ -17,6 +17,7 @@
     "socketClientExample": "nodemon --exec babel-node socketClientExample.js",
     "clean": "rm -rf dist && mkdir dist",
     "build": "npm run clean && babel src -d dist",
+    "scenario:allowances": "NODE_ENV=development nodemon --exec babel-node src/scenarios/allowances.js",
     "fakeSraServer": "NODE_ENV=development nodemon --exec babel-node src/scenarios/utils/fakeSraServer.js",
     "scenario:fillOrderERC20": "NODE_ENV=development nodemon --exec babel-node src/scenarios/fillOrderERC20.js",
     "scenario:fillOrderFees": "NODE_ENV=development nodemon --exec babel-node src/scenarios/fillOrderFees.js",
