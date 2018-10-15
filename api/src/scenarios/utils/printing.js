@@ -4,25 +4,12 @@ import {
 import {
   Web3Wrapper,
 } from '@0xproject/web3-wrapper';
-import * as _ from 'lodash';
 
 import {
   DECIMALS, UNLIMITED_ALLOWANCE_IN_BASE_UNITS,
 } from './constants';
 
 const Table = require('cli-table');
-
-const erc721IconRaw = [
-  '    ____  ',
-  '  .X +.    .',
-  '.Xx + -.     .',
-  'XXx++ -..      ',
-  'XXxx++--..    ',
-  ' XXXxx+++--  ',
-  "  XXXxxx'     ",
-  '     ""     ',
-];
-const erc721Icon = erc721IconRaw.join('\n');
 
 const EMPTY_DATA = [];
 const DEFAULT_EVENTS = ['Fill', 'Transfer', 'CancelUpTo', 'Cancel'];
@@ -88,14 +75,14 @@ export class PrintUtils {
   }
 
   static pushAndPrint(table, tableData) {
-    for (const col of tableData) {
-      for (const i in col) {
-        if (col[i] === UNLIMITED_ALLOWANCE_IN_BASE_UNITS.toString()) {
-          col[i] = 'MAX_UINT';
+    tableData.forEach((col) => {
+      col.forEach((item, index) => {
+        if (col[index] === UNLIMITED_ALLOWANCE_IN_BASE_UNITS.toString()) {
+          col[index] = 'MAX_UINT';
         }
-      }
+      });
       table.push(col);
-    }
+    });
     console.log(table.toString());
   }
 
@@ -116,9 +103,9 @@ export class PrintUtils {
 
   printAccounts() {
     const data = [];
-    _.forOwn(this.accounts, (address, name) => {
-      const accountName = name.charAt(0).toUpperCase() + name.slice(1);
-      data.push([accountName, address]);
+    Object.entries(this.accounts).forEach((nameAddress) => {
+      const accountName = nameAddress[0].charAt(0).toUpperCase() + nameAddress[0].slice(1);
+      data.push([accountName, nameAddress[1]]);
     });
     PrintUtils.printData('Accounts', data);
   }
@@ -191,66 +178,36 @@ export class PrintUtils {
       head: [header, txReceipt.transactionHash],
       style: { ...defaultSchema.style, head: [headerColor] },
     });
-    // HACK gasUsed is actually a hex string sometimes
-    // tslint:disable:custom-no-magic-numbers
     const gasUsed = txReceipt.gasUsed.toString().startsWith('0x')
       ? parseInt(txReceipt.gasUsed.toString(), 16).toString()
       : txReceipt.gasUsed;
-    // tslint:enable:custom-no-magic-numbers
     const status = txReceipt.status === 1 ? 'Success' : 'Failure';
     const tableData = [...data, ['gasUsed', gasUsed.toString()], ['status', status]];
     PrintUtils.pushAndPrint(table, tableData);
 
     if (txReceipt.logs.length > 0) {
       PrintUtils.printHeader('Logs');
-      for (const log of txReceipt.logs) {
+      txReceipt.logs.forEach((log) => {
         const decodedLog = this.web3Wrapper.abiDecoder.tryToDecodeLogOrNoop(log);
-        // tslint:disable:no-unnecessary-type-assertion
         const { event } = log;
         if (event && eventNames.includes(event)) {
-          // tslint:disable:no-unnecessary-type-assertion
           const { args } = decodedLog;
           const logData = [['contract', log.address], ...Object.entries(args)];
           PrintUtils.printData(`${event}`, logData);
         }
-      }
+      });
     }
   }
 
-  // tslint:disable-next-line:prefer-function-over-method
   printOrderInfos(orderInfos) {
     const data = [];
-    _.forOwn(orderInfos, (value, key) => data.push([key, OrderStatus[value.orderStatus]]));
+    Object.entries(orderInfos).forEach((keyValue) => {
+      data.push([keyValue[0], OrderStatus[keyValue[1].orderStatus]]);
+    });
     PrintUtils.printData('Order Info', data);
   }
 
-  // tslint:disable-next-line:prefer-function-over-method
   printOrder(order) {
     PrintUtils.printData('Order', Object.entries(order));
-  }
-
-  async fetchAndPrintERC721OwnerAsync(erc721TokenAddress, tokenId) {
-    const flattenedBalances = [];
-    const flattenedAccounts = Object.keys(this.accounts).map(
-      account => account.charAt(0).toUpperCase() + account.slice(1),
-    );
-    const tokenSymbol = 'ERC721';
-    const balances = [tokenSymbol];
-    const owner = await this.contractWrappers.erc721Token.getOwnerOfAsync(
-      erc721TokenAddress,
-      tokenId,
-    );
-    for (const account in this.accounts) {
-      const address = this.accounts[account];
-      const balance = owner === address ? erc721Icon : '';
-      balances.push(balance);
-    }
-    flattenedBalances.push(balances);
-    const table = new Table({
-      ...dataSchema,
-      head: ['Token', ...flattenedAccounts],
-    });
-    PrintUtils.printHeader('ERC721 Owner');
-    PrintUtils.pushAndPrint(table, flattenedBalances);
   }
 }
