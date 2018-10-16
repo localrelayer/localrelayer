@@ -14,3 +14,5 @@ export const UNLIMITED_ALLOWANCE_IN_BASE_UNITS = new BigNumber(2).pow(256).minus
 export const ONE_SECOND_MS = 1000;
 export const ONE_MINUTE_MS = ONE_SECOND_MS * 60;
 export const TEN_MINUTES_MS = ONE_MINUTE_MS * 10;
+
+export const FEE_RECIPIENT = '0xc6c3d375b62d66fe0a796ed4ac30bd09ff2d1be5';

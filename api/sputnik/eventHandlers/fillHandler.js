@@ -14,6 +14,9 @@ import {
   collectOrder,
   collectTradingInfo,
 } from '../collect';
+import {
+  Order,
+} from 'db';
 
 
 const logger = createLogger(
@@ -58,12 +61,29 @@ const fillHandler = async (event, done) => {
       takerFee: takerFeePaid,
       makerAssetData,
       takerAssetData,
-      completedAt: new Date(),
       orderHash,
       networkId: event.networkId,
+      completedAt: new Date(),
     };
 
-    const order = await collectOrder(orderFields);
+    let order = await Order.findOneAndUpdate({ orderHash },
+      {
+        completedAt: new Date(),
+      },
+      {
+        returnNewDocument: true,
+      });
+
+    logger.debug('FOUND');
+    logger.debug(order);
+
+    if (!order) {
+      order = await Order.create(orderFields);
+    }
+
+    logger.debug('SDADASDAS ORDER');
+    logger.debug(order);
+
     const { tradingInfoRedisKey } = await collectTradingInfo(order, logger);
 
     redisClient.publish('tradingInfo', tradingInfoRedisKey);

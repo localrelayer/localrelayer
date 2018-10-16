@@ -9,6 +9,7 @@ function apiFactory() {
     ['getOrderBook', '/v2/orderbook'],
     ['getOrderConfig', '/v2/order-config'],
     ['getTradingHistory', '/sputnik/tradingHistory'],
+    ['getBars', '/sputnik/bars'],
   ];
   let apiUrl = '';
   let mockMethods = {};
