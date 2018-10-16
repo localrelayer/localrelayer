@@ -34,7 +34,7 @@ const columns = [
         <ColoredSpan
           color={record.type === 'ask' ? colors.red : colors.green}
         >
-          {Number(text).toFixed(8)}
+          {text}
         </ColoredSpan>
       </Tooltip>
     ),
@@ -45,7 +45,7 @@ const columns = [
     key: 'amount',
     render: (text: string) => (
       <Tooltip title={text}>
-        {Number(text).toFixed(6)}
+        {text}
       </Tooltip>
     ),
   },

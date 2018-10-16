@@ -112,6 +112,8 @@ function loadStories() {
   require('../src/components/Modals/stories');
   require('../src/components/Header/stories');
   require('../src/containers/HeaderContainer/stories');
+  require('../src/components/TradingChart/stories');
+  require('../src/containers/TradingChartContainer/stories');
 }
 
 configure(loadStories, module);

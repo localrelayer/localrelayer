@@ -19,6 +19,9 @@ import {
   logger,
 } from 'apiLogger';
 import {
+  FEE_RECIPIENT,
+} from '../../scenarios/utils/constants';
+import {
   Order,
   AssetPair,
 } from 'db';
@@ -38,14 +41,20 @@ const standardRelayerApi = new Router({
   prefix: '/v2',
 });
 const validator = new SchemaValidator();
+
+export const metaFields = [
+  'networkId',
+  'completedAt',
+];
+
 export const fieldsToSkip = [
   '_id',
   'orderHash',
-  'networkId',
   'makerAssetAddress',
   'takerAssetAddress',
   'makerAssetProxyId',
   'takerAssetProxyId',
+  ...metaFields,
 ];
 
 const getValidationErrors = (instance, schema) => {
@@ -285,6 +294,8 @@ standardRelayerApi.get('/orderbook', async (ctx) => {
   const bidOrders = await Order.find({
     takerAssetData: baseAssetData,
     makerAssetData: quoteAssetData,
+    signature: { $exists: true },
+    completedAt: { $exists: false },
     networkId,
   })
     .select(`-${fieldsToSkip.join(' -')}`)
@@ -294,6 +305,8 @@ standardRelayerApi.get('/orderbook', async (ctx) => {
   const askOrders = await Order.find({
     takerAssetData: quoteAssetData,
     makerAssetData: baseAssetData,
+    signature: { $exists: true },
+    completedAt: { $exists: false },
     networkId,
   })
     .select(`-${fieldsToSkip.join(' -')}`)
@@ -391,7 +404,7 @@ standardRelayerApi.get('/fee_recipients', async (ctx) => {
     page,
     perPage,
     records: [
-      NULL_ADDRESS,
+      FEE_RECIPIENT,
     ],
   };
 });

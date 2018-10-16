@@ -1,33 +1,19 @@
 // @flow
 import React from 'react';
+import Component from 'web-components/ConnectComponent';
+import TradingChart from 'web-components/TradingChart';
 import {
-  connect,
-} from 'react-redux';
-import type {
-  MapStateToProps,
-} from 'react-redux';
-import {
-  getCurrentToken,
-} from 'instex-core/selectors';
-import type {
-  Token,
-} from 'instex-core/types';
-import TradingChart from '../../components/TradingChart';
-import { StyleContainer } from './styled';
+  getCurrentAssetPair,
+} from 'web-selectors';
 
-
-type Props = {
-  token: Token,
-}
-
-const TradingChartContainer = ({ token }: Props) => (
-  <StyleContainer>
-    <TradingChart token={token} />
-  </StyleContainer>
+const TradingChartContainer = () => (
+  <Component
+    mapStateToProps={state => ({
+      assetPair: getCurrentAssetPair(state),
+    })}
+  >
+    {({ assetPair }) => <TradingChart assetPair={assetPair} />}
+  </Component>
 );
 
-const mapStateToProps: MapStateToProps<*, *, *> = state => ({
-  token: getCurrentToken(state),
-});
-
-export default connect(mapStateToProps)(TradingChartContainer);
+export default TradingChartContainer;
