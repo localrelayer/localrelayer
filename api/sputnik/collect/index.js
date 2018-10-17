@@ -15,7 +15,7 @@ export async function collectOrder(data) {
   return savedOrder;
 }
 
-export async function collectTradingInfo(order) {
+export async function collectTradingInfo(order, logger) {
   const {
     networkId,
     makerAssetData: assetDataA,
@@ -42,7 +42,7 @@ export async function collectTradingInfo(order) {
     ].join('_')),
   }];
   if (existingPairs.filter(d => d.data).length === 2) {
-    console.log(existingPairs);
+    logger.debug(existingPairs);
     throw Error('Duplicate pair key!');
   }
 
@@ -54,7 +54,7 @@ export async function collectTradingInfo(order) {
     data: null,
   };
   const tradingInfoRedisKey = `${pair}_${networkId}_tradingInfo`;
-  console.log('Previous data', data ? JSON.parse(data) : data);
+  logger.info('Previous data', data ? JSON.parse(data) : data);
 
   const tradingInfo = calculateTradingInfo({
     makerAssetAmount,
