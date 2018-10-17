@@ -31,10 +31,11 @@
   },
   "dependencies": {
     "0x.js": "1.0.8",
+    "kue": "0.11.6",
+    "ethers": "3.0.1",
     "@0xproject/connect": "3.0.0",
     "cli-table": "0.3.1",
     "lodash": "4.17.5",
-    "@0xproject/subproviders": "2.0.7",
     "bignumber.js": "7.2.1",
     "co-redis": "2.1.1",
     "koa": "2.5.3",
@@ -45,6 +46,7 @@
     "koa-mount": "4.0.0",
     "mongoose": "5.3.1",
     "redis": "2.8.0",
+    "ramda": "0.25.0",
     "ws": "6.1.0"
   },
   "devDependencies": {

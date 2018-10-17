@@ -4,9 +4,13 @@ import {
 import {
   subscribeExchangeEvents,
 } from './subscribe';
+import {
+  runFillQueueHandler,
+} from './eventHandlers';
 
 
 function runSputnik() {
+  runFillQueueHandler();
   subscribeExchangeEvents([
     ...(process.env.NODE_ENV === 'development' ? ['test'] : []),
     /*
