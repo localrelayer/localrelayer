@@ -3,19 +3,13 @@ const config = require('./config');
 
 mongoose.Promise = global.Promise;
 
-mongoose.connect(config.mongo);
-
-mongoose.connection.on('connected', () => {
-  console.log('database connection established');
-});
-
-mongoose.connection.on('error', (err) => {
-  console.log(err);
-});
-
-mongoose.connection.on('disconnected', () => {
-  console.log('database connection terminated');
-});
+mongoose.connect(
+  config.mongo,
+  {
+    useCreateIndex: true,
+    useNewUrlParser: true,
+  },
+);
 
 const orderSchema = mongoose.Schema({
   makerAddress: { type: String, index: true },
@@ -31,8 +25,27 @@ const orderSchema = mongoose.Schema({
   orderHash: { type: String, index: true, unique: true, dropDups: true },
   expirationTimeSeconds: { type: String },
   networkId: { type: Number, index: true },
+  salt: { type: String },
+  exchangeAddress: { type: String },
+  signature: { type: String },
+  makerAssetProxyId: { type: String, index: true },
+  takerAssetProxyId: { type: String, index: true },
+  makerAssetAddress: { type: String, index: true },
+  takerAssetAddress: { type: String, index: true },
 }, { versionKey: false });
 
+const assetDataSchema = mongoose.Schema({
+  minAmount: { type: String, index: true },
+  maxAmount: { type: String, index: true },
+  precision: { type: Number },
+  assetData: { type: String, index: true },
+});
+const assetPairsSchema = mongoose.Schema({
+  assetDataA: assetDataSchema,
+  assetDataB: assetDataSchema,
+  networkId: { type: Number },
+}, { versionKey: false });
 // orderSchema.index({ logIndex: 1, transactionHash: 1 }, { unique: true });
 
 export const Order = mongoose.model('Order', orderSchema);
+export const AssetPair = mongoose.model('AssetPair', assetPairsSchema);

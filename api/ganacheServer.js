@@ -1,4 +1,13 @@
 import ganache from 'ganache-core';
+import {
+  createLogger,
+} from './logger';
+
+export const logger = createLogger(
+  'ganacheServer',
+//  'info',
+);
+logger.debug('ganacheServer logger was created');
 
 
 export function runGanacheServer(cb) {
@@ -12,51 +21,45 @@ export function runGanacheServer(cb) {
     gasLimit: 6721975,
     network_id: 50,
     db_path: './0x_ganache_snapshot',
-    // logger: console,
   };
+
+  logger.info('Ganache server options');
+  logger.info(options);
 
   const server = ganache.server(options);
   server.listen(8545, '127.0.0.1', (err, result) => {
     if (err) {
-      console.log(err);
+      logger.error(err);
       return;
     }
 
     const state = result || server.provider.manager.state;
-
-    console.log('');
-    console.log('Available Accounts');
-    console.log('==================');
-
     const { accounts } = state;
     const addresses = Object.keys(accounts);
+    logger.info('Available Accounts');
+    logger.info('==================');
+    logger.info(addresses);
 
-    console.log('');
-    console.log('Private Keys');
-    console.log('==================');
-
+    logger.info('Private Keys');
+    logger.info('==================');
     addresses.forEach((address, index) => {
-      console.log(`(${index}) 0x${accounts[address].secretKey.toString('hex')}`);
+      logger.info(`(${index}) 0x${accounts[address].secretKey.toString('hex')}`);
     });
 
-    console.log('');
-    console.log('HD Wallet');
-    console.log('==================');
-    console.log(`Mnemonic:      ${state.mnemonic}`);
-    console.log(`Base HD Path:  ${state.wallet_hdpath}{account_index}`);
+    logger.info('HD Wallet');
+    logger.info('==================');
+    logger.info(`Mnemonic:      ${state.mnemonic}`);
+    logger.info(`Base HD Path:  ${state.wallet_hdpath}{account_index}`);
 
-    console.log('');
-    console.log('Gas Price');
-    console.log('==================');
-    console.log(options.gasPrice);
+    logger.info('Gas Price');
+    logger.info('==================');
+    logger.info(options.gasPrice);
 
-    console.log('');
-    console.log('Gas Limit');
-    console.log('==================');
-    console.log(options.gasLimit);
+    logger.info('Gas Limit');
+    logger.info('==================');
+    logger.info(options.gasLimit);
 
-    console.log('');
-    console.log(`Listening on ${options.hostname}:${options.port}`);
+    logger.info(`Listening on {#0fe1ab-fg}${options.hostname}:${options.port}{/}`);
     if (cb) cb(server);
   });
 

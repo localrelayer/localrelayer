@@ -1,0 +1,145 @@
+{"message":"ganacheServer logger was created","level":"debug","timestamp":"2018-10-22T11:19:38.197Z"}
+{"message":"Ganache server options","level":"info","timestamp":"2018-10-22T11:19:41.821Z"}
+{"message":{"port":8545,"hostname":"127.0.0.1","mnemonic":"concert load couple harbor equip island argue ramp clarify fence smart topic","total_accounts":10,"default_balance_ether":100,"gasPrice":20000000000,"gasLimit":6721975,"network_id":50,"db_path":"./0x_ganache_snapshot"},"level":"info","timestamp":"2018-10-22T11:19:41.821Z"}
+{"message":"Available Accounts","level":"info","timestamp":"2018-10-22T11:19:41.918Z"}
+{"message":"==================","level":"info","timestamp":"2018-10-22T11:19:41.918Z"}
+{"message":["0x5409ed021d9299bf6814279a6a1411a7e866a631","0x6ecbe1db9ef729cbe972c83fb886247691fb6beb","0xe36ea790bc9d7ab70c55260c66d52b1eca985f84","0xe834ec434daba538cd1b9fe1582052b880bd7e63","0x78dc5d2d739606d31509c31d654056a45185ecb6","0xa8dda8d7f5310e4a9e24f8eba77e091ac264f872","0x06cef8e666768cc40cc78cf93d9611019ddcb628","0x4404ac8bd8f9618d27ad2f1485aa1b2cfd82482d","0x7457d5e02197480db681d3fdf256c7aca21bdc12","0x91c987bf62d25945db517bdaa840a6c661374402"],"level":"info","timestamp":"2018-10-22T11:19:41.918Z"}
+{"message":"Private Keys","level":"info","timestamp":"2018-10-22T11:19:41.918Z"}
+{"message":"==================","level":"info","timestamp":"2018-10-22T11:19:41.918Z"}
+{"message":"(0) 0xf2f48ee19680706196e2e339e5da3491186e0c4c5030670656b0e0164837257d","level":"info","timestamp":"2018-10-22T11:19:41.919Z"}
+{"message":"(1) 0x5d862464fe9303452126c8bc94274b8c5f9874cbd219789b3eb2128075a76f72","level":"info","timestamp":"2018-10-22T11:19:41.919Z"}
+{"message":"(2) 0xdf02719c4df8b9b8ac7f551fcb5d9ef48fa27eef7a66453879f4d8fdc6e78fb1","level":"info","timestamp":"2018-10-22T11:19:41.919Z"}
+{"message":"(3) 0xff12e391b79415e941a94de3bf3a9aee577aed0731e297d5cfa0b8a1e02fa1d0","level":"info","timestamp":"2018-10-22T11:19:41.919Z"}
+{"message":"(4) 0x752dd9cf65e68cfaba7d60225cbdbc1f4729dd5e5507def72815ed0d8abc6249","level":"info","timestamp":"2018-10-22T11:19:41.919Z"}
+{"message":"(5) 0xefb595a0178eb79a8df953f87c5148402a224cdf725e88c0146727c6aceadccd","level":"info","timestamp":"2018-10-22T11:19:41.919Z"}
+{"message":"(6) 0x83c6d2cc5ddcf9711a6d59b417dc20eb48afd58d45290099e5987e3d768f328f","level":"info","timestamp":"2018-10-22T11:19:41.919Z"}
+{"message":"(7) 0xbb2d3f7c9583780a7d3904a2f55d792707c345f21de1bacb2d389934d82796b2","level":"info","timestamp":"2018-10-22T11:19:41.919Z"}
+{"message":"(8) 0xb2fd4d29c1390b71b8795ae81196bfd60293adf99f9d32a0aff06288fcdac55f","level":"info","timestamp":"2018-10-22T11:19:41.919Z"}
+{"message":"(9) 0x23cb7121166b9a2f93ae0b7c05bde02eae50d64449b2cbb42bc84e9d38d6cc89","level":"info","timestamp":"2018-10-22T11:19:41.919Z"}
+{"message":"HD Wallet","level":"info","timestamp":"2018-10-22T11:19:41.919Z"}
+{"message":"==================","level":"info","timestamp":"2018-10-22T11:19:41.919Z"}
+{"message":"Mnemonic:      concert load couple harbor equip island argue ramp clarify fence smart topic","level":"info","timestamp":"2018-10-22T11:19:41.919Z"}
+{"message":"Base HD Path:  m/44'/60'/0'/0/{account_index}","level":"info","timestamp":"2018-10-22T11:19:41.919Z"}
+{"message":"Gas Price","level":"info","timestamp":"2018-10-22T11:19:41.919Z"}
+{"message":"==================","level":"info","timestamp":"2018-10-22T11:19:41.919Z"}
+{"message":20000000000,"level":"info","timestamp":"2018-10-22T11:19:41.919Z"}
+{"message":"Gas Limit","level":"info","timestamp":"2018-10-22T11:19:41.919Z"}
+{"message":"==================","level":"info","timestamp":"2018-10-22T11:19:41.919Z"}
+{"message":6721975,"level":"info","timestamp":"2018-10-22T11:19:41.920Z"}
+{"message":"Listening on {#0fe1ab-fg}127.0.0.1:8545{/}","level":"info","timestamp":"2018-10-22T11:19:41.920Z"}
+{"message":"ganacheServer logger was created","level":"debug","timestamp":"2018-10-22T11:20:46.356Z"}
+{"message":"Ganache server options","level":"info","timestamp":"2018-10-22T11:20:49.603Z"}
+{"message":{"port":8545,"hostname":"127.0.0.1","mnemonic":"concert load couple harbor equip island argue ramp clarify fence smart topic","total_accounts":10,"default_balance_ether":100,"gasPrice":20000000000,"gasLimit":6721975,"network_id":50,"db_path":"./0x_ganache_snapshot"},"level":"info","timestamp":"2018-10-22T11:20:49.603Z"}
+{"message":"Available Accounts","level":"info","timestamp":"2018-10-22T11:20:50.080Z"}
+{"message":"==================","level":"info","timestamp":"2018-10-22T11:20:50.081Z"}
+{"message":["0x5409ed021d9299bf6814279a6a1411a7e866a631","0x6ecbe1db9ef729cbe972c83fb886247691fb6beb","0xe36ea790bc9d7ab70c55260c66d52b1eca985f84","0xe834ec434daba538cd1b9fe1582052b880bd7e63","0x78dc5d2d739606d31509c31d654056a45185ecb6","0xa8dda8d7f5310e4a9e24f8eba77e091ac264f872","0x06cef8e666768cc40cc78cf93d9611019ddcb628","0x4404ac8bd8f9618d27ad2f1485aa1b2cfd82482d","0x7457d5e02197480db681d3fdf256c7aca21bdc12","0x91c987bf62d25945db517bdaa840a6c661374402"],"level":"info","timestamp":"2018-10-22T11:20:50.081Z"}
+{"message":"Private Keys","level":"info","timestamp":"2018-10-22T11:20:50.081Z"}
+{"message":"==================","level":"info","timestamp":"2018-10-22T11:20:50.081Z"}
+{"message":"(0) 0xf2f48ee19680706196e2e339e5da3491186e0c4c5030670656b0e0164837257d","level":"info","timestamp":"2018-10-22T11:20:50.081Z"}
+{"message":"(1) 0x5d862464fe9303452126c8bc94274b8c5f9874cbd219789b3eb2128075a76f72","level":"info","timestamp":"2018-10-22T11:20:50.081Z"}
+{"message":"(2) 0xdf02719c4df8b9b8ac7f551fcb5d9ef48fa27eef7a66453879f4d8fdc6e78fb1","level":"info","timestamp":"2018-10-22T11:20:50.081Z"}
+{"message":"(3) 0xff12e391b79415e941a94de3bf3a9aee577aed0731e297d5cfa0b8a1e02fa1d0","level":"info","timestamp":"2018-10-22T11:20:50.081Z"}
+{"message":"(4) 0x752dd9cf65e68cfaba7d60225cbdbc1f4729dd5e5507def72815ed0d8abc6249","level":"info","timestamp":"2018-10-22T11:20:50.081Z"}
+{"message":"(5) 0xefb595a0178eb79a8df953f87c5148402a224cdf725e88c0146727c6aceadccd","level":"info","timestamp":"2018-10-22T11:20:50.082Z"}
+{"message":"(6) 0x83c6d2cc5ddcf9711a6d59b417dc20eb48afd58d45290099e5987e3d768f328f","level":"info","timestamp":"2018-10-22T11:20:50.082Z"}
+{"message":"(7) 0xbb2d3f7c9583780a7d3904a2f55d792707c345f21de1bacb2d389934d82796b2","level":"info","timestamp":"2018-10-22T11:20:50.082Z"}
+{"message":"(8) 0xb2fd4d29c1390b71b8795ae81196bfd60293adf99f9d32a0aff06288fcdac55f","level":"info","timestamp":"2018-10-22T11:20:50.082Z"}
+{"message":"(9) 0x23cb7121166b9a2f93ae0b7c05bde02eae50d64449b2cbb42bc84e9d38d6cc89","level":"info","timestamp":"2018-10-22T11:20:50.082Z"}
+{"message":"HD Wallet","level":"info","timestamp":"2018-10-22T11:20:50.082Z"}
+{"message":"==================","level":"info","timestamp":"2018-10-22T11:20:50.082Z"}
+{"message":"Mnemonic:      concert load couple harbor equip island argue ramp clarify fence smart topic","level":"info","timestamp":"2018-10-22T11:20:50.082Z"}
+{"message":"Base HD Path:  m/44'/60'/0'/0/{account_index}","level":"info","timestamp":"2018-10-22T11:20:50.082Z"}
+{"message":"Gas Price","level":"info","timestamp":"2018-10-22T11:20:50.082Z"}
+{"message":"==================","level":"info","timestamp":"2018-10-22T11:20:50.082Z"}
+{"message":20000000000,"level":"info","timestamp":"2018-10-22T11:20:50.082Z"}
+{"message":"Gas Limit","level":"info","timestamp":"2018-10-22T11:20:50.082Z"}
+{"message":"==================","level":"info","timestamp":"2018-10-22T11:20:50.082Z"}
+{"message":6721975,"level":"info","timestamp":"2018-10-22T11:20:50.082Z"}
+{"message":"Listening on {#0fe1ab-fg}127.0.0.1:8545{/}","level":"info","timestamp":"2018-10-22T11:20:50.082Z"}
+{"message":"ganacheServer logger was created","level":"debug","timestamp":"2018-10-22T11:21:01.399Z"}
+{"message":"Ganache server options","level":"info","timestamp":"2018-10-22T11:21:04.384Z"}
+{"message":{"port":8545,"hostname":"127.0.0.1","mnemonic":"concert load couple harbor equip island argue ramp clarify fence smart topic","total_accounts":10,"default_balance_ether":100,"gasPrice":20000000000,"gasLimit":6721975,"network_id":50,"db_path":"./0x_ganache_snapshot"},"level":"info","timestamp":"2018-10-22T11:21:04.385Z"}
+{"message":"Available Accounts","level":"info","timestamp":"2018-10-22T11:21:05.257Z"}
+{"message":"==================","level":"info","timestamp":"2018-10-22T11:21:05.257Z"}
+{"message":["0x5409ed021d9299bf6814279a6a1411a7e866a631","0x6ecbe1db9ef729cbe972c83fb886247691fb6beb","0xe36ea790bc9d7ab70c55260c66d52b1eca985f84","0xe834ec434daba538cd1b9fe1582052b880bd7e63","0x78dc5d2d739606d31509c31d654056a45185ecb6","0xa8dda8d7f5310e4a9e24f8eba77e091ac264f872","0x06cef8e666768cc40cc78cf93d9611019ddcb628","0x4404ac8bd8f9618d27ad2f1485aa1b2cfd82482d","0x7457d5e02197480db681d3fdf256c7aca21bdc12","0x91c987bf62d25945db517bdaa840a6c661374402"],"level":"info","timestamp":"2018-10-22T11:21:05.258Z"}
+{"message":"Private Keys","level":"info","timestamp":"2018-10-22T11:21:05.258Z"}
+{"message":"==================","level":"info","timestamp":"2018-10-22T11:21:05.258Z"}
+{"message":"(0) 0xf2f48ee19680706196e2e339e5da3491186e0c4c5030670656b0e0164837257d","level":"info","timestamp":"2018-10-22T11:21:05.258Z"}
+{"message":"(1) 0x5d862464fe9303452126c8bc94274b8c5f9874cbd219789b3eb2128075a76f72","level":"info","timestamp":"2018-10-22T11:21:05.258Z"}
+{"message":"(2) 0xdf02719c4df8b9b8ac7f551fcb5d9ef48fa27eef7a66453879f4d8fdc6e78fb1","level":"info","timestamp":"2018-10-22T11:21:05.258Z"}
+{"message":"(3) 0xff12e391b79415e941a94de3bf3a9aee577aed0731e297d5cfa0b8a1e02fa1d0","level":"info","timestamp":"2018-10-22T11:21:05.258Z"}
+{"message":"(4) 0x752dd9cf65e68cfaba7d60225cbdbc1f4729dd5e5507def72815ed0d8abc6249","level":"info","timestamp":"2018-10-22T11:21:05.258Z"}
+{"message":"(5) 0xefb595a0178eb79a8df953f87c5148402a224cdf725e88c0146727c6aceadccd","level":"info","timestamp":"2018-10-22T11:21:05.258Z"}
+{"message":"(6) 0x83c6d2cc5ddcf9711a6d59b417dc20eb48afd58d45290099e5987e3d768f328f","level":"info","timestamp":"2018-10-22T11:21:05.258Z"}
+{"message":"(7) 0xbb2d3f7c9583780a7d3904a2f55d792707c345f21de1bacb2d389934d82796b2","level":"info","timestamp":"2018-10-22T11:21:05.258Z"}
+{"message":"(8) 0xb2fd4d29c1390b71b8795ae81196bfd60293adf99f9d32a0aff06288fcdac55f","level":"info","timestamp":"2018-10-22T11:21:05.258Z"}
+{"message":"(9) 0x23cb7121166b9a2f93ae0b7c05bde02eae50d64449b2cbb42bc84e9d38d6cc89","level":"info","timestamp":"2018-10-22T11:21:05.258Z"}
+{"message":"HD Wallet","level":"info","timestamp":"2018-10-22T11:21:05.259Z"}
+{"message":"==================","level":"info","timestamp":"2018-10-22T11:21:05.259Z"}
+{"message":"Mnemonic:      concert load couple harbor equip island argue ramp clarify fence smart topic","level":"info","timestamp":"2018-10-22T11:21:05.259Z"}
+{"message":"Base HD Path:  m/44'/60'/0'/0/{account_index}","level":"info","timestamp":"2018-10-22T11:21:05.259Z"}
+{"message":"Gas Price","level":"info","timestamp":"2018-10-22T11:21:05.259Z"}
+{"message":"==================","level":"info","timestamp":"2018-10-22T11:21:05.259Z"}
+{"message":20000000000,"level":"info","timestamp":"2018-10-22T11:21:05.259Z"}
+{"message":"Gas Limit","level":"info","timestamp":"2018-10-22T11:21:05.259Z"}
+{"message":"==================","level":"info","timestamp":"2018-10-22T11:21:05.259Z"}
+{"message":6721975,"level":"info","timestamp":"2018-10-22T11:21:05.259Z"}
+{"message":"Listening on {#0fe1ab-fg}127.0.0.1:8545{/}","level":"info","timestamp":"2018-10-22T11:21:05.259Z"}
+{"message":"ganacheServer logger was created","level":"debug","timestamp":"2018-10-22T11:22:32.489Z"}
+{"message":"Ganache server options","level":"info","timestamp":"2018-10-22T11:22:35.430Z"}
+{"message":{"port":8545,"hostname":"127.0.0.1","mnemonic":"concert load couple harbor equip island argue ramp clarify fence smart topic","total_accounts":10,"default_balance_ether":100,"gasPrice":20000000000,"gasLimit":6721975,"network_id":50,"db_path":"./0x_ganache_snapshot"},"level":"info","timestamp":"2018-10-22T11:22:35.430Z"}
+{"message":"Available Accounts","level":"info","timestamp":"2018-10-22T11:22:35.770Z"}
+{"message":"==================","level":"info","timestamp":"2018-10-22T11:22:35.770Z"}
+{"message":["0x5409ed021d9299bf6814279a6a1411a7e866a631","0x6ecbe1db9ef729cbe972c83fb886247691fb6beb","0xe36ea790bc9d7ab70c55260c66d52b1eca985f84","0xe834ec434daba538cd1b9fe1582052b880bd7e63","0x78dc5d2d739606d31509c31d654056a45185ecb6","0xa8dda8d7f5310e4a9e24f8eba77e091ac264f872","0x06cef8e666768cc40cc78cf93d9611019ddcb628","0x4404ac8bd8f9618d27ad2f1485aa1b2cfd82482d","0x7457d5e02197480db681d3fdf256c7aca21bdc12","0x91c987bf62d25945db517bdaa840a6c661374402"],"level":"info","timestamp":"2018-10-22T11:22:35.770Z"}
+{"message":"Private Keys","level":"info","timestamp":"2018-10-22T11:22:35.770Z"}
+{"message":"==================","level":"info","timestamp":"2018-10-22T11:22:35.770Z"}
+{"message":"(0) 0xf2f48ee19680706196e2e339e5da3491186e0c4c5030670656b0e0164837257d","level":"info","timestamp":"2018-10-22T11:22:35.770Z"}
+{"message":"(1) 0x5d862464fe9303452126c8bc94274b8c5f9874cbd219789b3eb2128075a76f72","level":"info","timestamp":"2018-10-22T11:22:35.770Z"}
+{"message":"(2) 0xdf02719c4df8b9b8ac7f551fcb5d9ef48fa27eef7a66453879f4d8fdc6e78fb1","level":"info","timestamp":"2018-10-22T11:22:35.771Z"}
+{"message":"(3) 0xff12e391b79415e941a94de3bf3a9aee577aed0731e297d5cfa0b8a1e02fa1d0","level":"info","timestamp":"2018-10-22T11:22:35.771Z"}
+{"message":"(4) 0x752dd9cf65e68cfaba7d60225cbdbc1f4729dd5e5507def72815ed0d8abc6249","level":"info","timestamp":"2018-10-22T11:22:35.771Z"}
+{"message":"(5) 0xefb595a0178eb79a8df953f87c5148402a224cdf725e88c0146727c6aceadccd","level":"info","timestamp":"2018-10-22T11:22:35.771Z"}
+{"message":"(6) 0x83c6d2cc5ddcf9711a6d59b417dc20eb48afd58d45290099e5987e3d768f328f","level":"info","timestamp":"2018-10-22T11:22:35.771Z"}
+{"message":"(7) 0xbb2d3f7c9583780a7d3904a2f55d792707c345f21de1bacb2d389934d82796b2","level":"info","timestamp":"2018-10-22T11:22:35.771Z"}
+{"message":"(8) 0xb2fd4d29c1390b71b8795ae81196bfd60293adf99f9d32a0aff06288fcdac55f","level":"info","timestamp":"2018-10-22T11:22:35.771Z"}
+{"message":"(9) 0x23cb7121166b9a2f93ae0b7c05bde02eae50d64449b2cbb42bc84e9d38d6cc89","level":"info","timestamp":"2018-10-22T11:22:35.771Z"}
+{"message":"HD Wallet","level":"info","timestamp":"2018-10-22T11:22:35.771Z"}
+{"message":"==================","level":"info","timestamp":"2018-10-22T11:22:35.771Z"}
+{"message":"Mnemonic:      concert load couple harbor equip island argue ramp clarify fence smart topic","level":"info","timestamp":"2018-10-22T11:22:35.771Z"}
+{"message":"Base HD Path:  m/44'/60'/0'/0/{account_index}","level":"info","timestamp":"2018-10-22T11:22:35.771Z"}
+{"message":"Gas Price","level":"info","timestamp":"2018-10-22T11:22:35.771Z"}
+{"message":"==================","level":"info","timestamp":"2018-10-22T11:22:35.771Z"}
+{"message":20000000000,"level":"info","timestamp":"2018-10-22T11:22:35.771Z"}
+{"message":"Gas Limit","level":"info","timestamp":"2018-10-22T11:22:35.771Z"}
+{"message":"==================","level":"info","timestamp":"2018-10-22T11:22:35.771Z"}
+{"message":6721975,"level":"info","timestamp":"2018-10-22T11:22:35.771Z"}
+{"message":"Listening on {#0fe1ab-fg}127.0.0.1:8545{/}","level":"info","timestamp":"2018-10-22T11:22:35.771Z"}
+{"message":"ganacheServer logger was created","level":"debug","timestamp":"2018-10-22T11:22:59.476Z"}
+{"message":"Ganache server options","level":"info","timestamp":"2018-10-22T11:23:02.221Z"}
+{"message":{"port":8545,"hostname":"127.0.0.1","mnemonic":"concert load couple harbor equip island argue ramp clarify fence smart topic","total_accounts":10,"default_balance_ether":100,"gasPrice":20000000000,"gasLimit":6721975,"network_id":50,"db_path":"./0x_ganache_snapshot"},"level":"info","timestamp":"2018-10-22T11:23:02.221Z"}
+{"message":"Available Accounts","level":"info","timestamp":"2018-10-22T11:23:02.322Z"}
+{"message":"==================","level":"info","timestamp":"2018-10-22T11:23:02.323Z"}
+{"message":["0x5409ed021d9299bf6814279a6a1411a7e866a631","0x6ecbe1db9ef729cbe972c83fb886247691fb6beb","0xe36ea790bc9d7ab70c55260c66d52b1eca985f84","0xe834ec434daba538cd1b9fe1582052b880bd7e63","0x78dc5d2d739606d31509c31d654056a45185ecb6","0xa8dda8d7f5310e4a9e24f8eba77e091ac264f872","0x06cef8e666768cc40cc78cf93d9611019ddcb628","0x4404ac8bd8f9618d27ad2f1485aa1b2cfd82482d","0x7457d5e02197480db681d3fdf256c7aca21bdc12","0x91c987bf62d25945db517bdaa840a6c661374402"],"level":"info","timestamp":"2018-10-22T11:23:02.323Z"}
+{"message":"Private Keys","level":"info","timestamp":"2018-10-22T11:23:02.323Z"}
+{"message":"==================","level":"info","timestamp":"2018-10-22T11:23:02.323Z"}
+{"message":"(0) 0xf2f48ee19680706196e2e339e5da3491186e0c4c5030670656b0e0164837257d","level":"info","timestamp":"2018-10-22T11:23:02.323Z"}
+{"message":"(1) 0x5d862464fe9303452126c8bc94274b8c5f9874cbd219789b3eb2128075a76f72","level":"info","timestamp":"2018-10-22T11:23:02.323Z"}
+{"message":"(2) 0xdf02719c4df8b9b8ac7f551fcb5d9ef48fa27eef7a66453879f4d8fdc6e78fb1","level":"info","timestamp":"2018-10-22T11:23:02.324Z"}
+{"message":"(3) 0xff12e391b79415e941a94de3bf3a9aee577aed0731e297d5cfa0b8a1e02fa1d0","level":"info","timestamp":"2018-10-22T11:23:02.324Z"}
+{"message":"(4) 0x752dd9cf65e68cfaba7d60225cbdbc1f4729dd5e5507def72815ed0d8abc6249","level":"info","timestamp":"2018-10-22T11:23:02.324Z"}
+{"message":"(5) 0xefb595a0178eb79a8df953f87c5148402a224cdf725e88c0146727c6aceadccd","level":"info","timestamp":"2018-10-22T11:23:02.324Z"}
+{"message":"(6) 0x83c6d2cc5ddcf9711a6d59b417dc20eb48afd58d45290099e5987e3d768f328f","level":"info","timestamp":"2018-10-22T11:23:02.324Z"}
+{"message":"(7) 0xbb2d3f7c9583780a7d3904a2f55d792707c345f21de1bacb2d389934d82796b2","level":"info","timestamp":"2018-10-22T11:23:02.324Z"}
+{"message":"(8) 0xb2fd4d29c1390b71b8795ae81196bfd60293adf99f9d32a0aff06288fcdac55f","level":"info","timestamp":"2018-10-22T11:23:02.324Z"}
+{"message":"(9) 0x23cb7121166b9a2f93ae0b7c05bde02eae50d64449b2cbb42bc84e9d38d6cc89","level":"info","timestamp":"2018-10-22T11:23:02.324Z"}
+{"message":"HD Wallet","level":"info","timestamp":"2018-10-22T11:23:02.324Z"}
+{"message":"==================","level":"info","timestamp":"2018-10-22T11:23:02.325Z"}
+{"message":"Mnemonic:      concert load couple harbor equip island argue ramp clarify fence smart topic","level":"info","timestamp":"2018-10-22T11:23:02.325Z"}
+{"message":"Base HD Path:  m/44'/60'/0'/0/{account_index}","level":"info","timestamp":"2018-10-22T11:23:02.325Z"}
+{"message":"Gas Price","level":"info","timestamp":"2018-10-22T11:23:02.325Z"}
+{"message":"==================","level":"info","timestamp":"2018-10-22T11:23:02.325Z"}
+{"message":20000000000,"level":"info","timestamp":"2018-10-22T11:23:02.325Z"}
+{"message":"Gas Limit","level":"info","timestamp":"2018-10-22T11:23:02.325Z"}
+{"message":"==================","level":"info","timestamp":"2018-10-22T11:23:02.325Z"}
+{"message":6721975,"level":"info","timestamp":"2018-10-22T11:23:02.325Z"}
+{"message":"Listening on {#0fe1ab-fg}127.0.0.1:8545{/}","level":"info","timestamp":"2018-10-22T11:23:02.325Z"}
