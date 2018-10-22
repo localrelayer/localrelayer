@@ -11,22 +11,27 @@ import {
 } from './apiLogger';
 import config from '../config';
 
+const app = new Koa();
+const router = new Router();
+
+if (config.showLogs) {
+  app.use(logger);
+}
+app
+  .use(cors())
+  .use(bodyParser())
+  .use(router.routes())
+  .use(mount(sputnikEndpoints))
+  .use(mount(endpoints));
+
+
+export {
+  app,
+};
 
 export function runApiServer() {
-  const app = new Koa();
-  const router = new Router();
-
-  if (config.showLogs) {
-    app.use(logger);
-  }
-  app
-    .use(cors())
-    .use(bodyParser())
-    .use(router.routes())
-    .use(mount(sputnikEndpoints))
-    .use(mount(endpoints));
-
-  return app.listen(config.apiPort, () => {
+  app.listen(config.apiPort, () => {
     logger.info(`App started on port ${config.apiPort}`);
   });
+  return app;
 }

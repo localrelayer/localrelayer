@@ -4,6 +4,6 @@ export default {
     'sputnikSubscribe',
     'socketServer',
     'apiServer',
-    'fillHandlerQueue',
+    
   ],
 };

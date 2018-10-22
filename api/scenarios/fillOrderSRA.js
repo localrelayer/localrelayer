@@ -149,6 +149,7 @@ export async function scenarioAsync() {
       networkId: GANACHE_NETWORK_ID,
     },
   );
+  console.log(response);
   if (response.asks.total === 0) {
     throw new Error('No orders found on the SRA Endpoint');
   }
