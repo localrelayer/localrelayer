@@ -3,6 +3,8 @@ import Router from 'koa-router';
 import {
   orderHashUtils,
   BigNumber,
+  assetDataUtils,
+  ContractWrappers,
 } from '0x.js';
 import {
   SchemaValidator,
@@ -13,21 +15,33 @@ import {
   NULL_ADDRESS,
 } from '../../scenarios/utils/constants';
 import {
+  initProvider,
+} from '../../scenarios/utils/provider';
+import {
   Order,
   AssetPair,
 } from '../../db';
-// should be removed! Only for inserting testing data to db
-// ************************************************
-import * as mainAssetPairs from '../../../ui/core/src/mocks/assetPairs.main';
-import * as kovanAssetPairs from '../../../ui/core/src/mocks/assetPairs.kovan';
-import * as testAssetPairs from '../../../ui/core/src/mocks/assetPairs.test';
-// ************************************************
+import {
+  logger,
+} from '../apiLogger';
+import {
+  redisClient,
+} from '../../redis';
 
 const app = new Koa();
 const standardRelayerApi = new Router({
   prefix: '/v2',
 });
 const validator = new SchemaValidator();
+export const fieldsToSkip = [
+  '_id',
+  'orderHash',
+  'networkId',
+  'makerAssetAddress',
+  'takerAssetAddress',
+  'makerAssetProxyId',
+  'takerAssetProxyId',
+];
 
 const getValidationErrors = (instance, schema) => {
   const validationInfo = validator.validate(instance, schema);
@@ -35,7 +49,7 @@ const getValidationErrors = (instance, schema) => {
     error => (
       {
         field: error.property,
-        code: 1006,
+        code: 1000,
         reason: error.message,
       }
     ),
@@ -47,31 +61,48 @@ const getValidationErrors = (instance, schema) => {
   };
 };
 
+export const sortOrderbook = (a, b) => {
+  const aPrice = new BigNumber(a.takerAssetAmount).div(a.makerAssetAmount);
+  const aTakerFeePrice = new BigNumber(a.takerFee).div(a.takerAssetAmount);
+  const bPrice = new BigNumber(b.takerAssetAmount).div(b.makerAssetAmount);
+  const bTakerFeePrice = new BigNumber(b.takerFee).div(b.takerAssetAmount);
+  const aExpirationTimeSeconds = parseInt(a.expirationTimeSeconds, 10);
+  const bExpirationTimeSeconds = parseInt(b.expirationTimeSeconds, 10);
+  return aPrice - bPrice
+    || aTakerFeePrice - bTakerFeePrice
+    || aExpirationTimeSeconds - bExpirationTimeSeconds;
+};
+
 standardRelayerApi.post('/order_config', (ctx) => {
-  console.log('HTTP: POST order config');
+  logger.debug('HTTP: POST order config');
   const orderConfigResponse = {
     senderAddress: NULL_ADDRESS,
     feeRecipientAddress: NULL_ADDRESS,
     makerFee: ZERO,
     takerFee: '1000',
   };
-  if (validator.isValid(orderConfigResponse, schemas.relayerApiOrderConfigResponseSchema)) {
-    ctx.status = 200;
-    ctx.message = 'The additional fields necessary in order to submit an order to the relayer.';
-    ctx.body = orderConfigResponse;
-  } else {
+  const orderConfigRequest = ctx.request.body;
+  if (!validator.isValid(orderConfigRequest, schemas.relayerApiOrderConfigPayloadSchema)) {
     ctx.status = 400;
     ctx.message = 'Validation error';
     ctx.body = getValidationErrors(
-      orderConfigResponse,
-      schemas.relayerApiOrderConfigResponseSchema,
+      orderConfigRequest,
+      schemas.relayerApiOrderConfigPayloadSchema,
     );
+  } else {
+    ctx.status = 200;
+    ctx.message = 'The additional fields necessary in order to submit an order to the relayer.';
+    ctx.body = orderConfigResponse;
   }
 });
 
 standardRelayerApi.post('/order', async (ctx) => {
-  console.log('HTTP: POST order');
+  logger.debug('HTTP: POST order');
   const submittedOrder = ctx.request.body;
+
+  const encMakerAssetData = assetDataUtils.decodeERC20AssetData(submittedOrder.makerAssetData);
+  const encTakerAssetData = assetDataUtils.decodeERC20AssetData(submittedOrder.takerAssetData);
+  const networkId = ctx.query.networkId || 1;
   const signedOrder = {
     ...submittedOrder,
     salt: new BigNumber(submittedOrder.salt),
@@ -80,24 +111,39 @@ standardRelayerApi.post('/order', async (ctx) => {
     makerFee: new BigNumber(submittedOrder.makerFee),
     takerFee: new BigNumber(submittedOrder.takerFee),
     expirationTimeSeconds: new BigNumber(submittedOrder.expirationTimeSeconds),
-    makerAssetAddress: `0x${submittedOrder.makerAssetData.slice(34)}`,
-    makerAssetProxyId: submittedOrder.makerAssetData.slice(0, 10),
-    takerAssetAddress: `0x${submittedOrder.takerAssetData.slice(34)}`,
-    takerAssetProxyId: submittedOrder.takerAssetData.slice(0, 10),
+    makerAssetAddress: encMakerAssetData.tokenAddress,
+    makerAssetProxyId: encMakerAssetData.assetProxyId,
+    takerAssetAddress: encTakerAssetData.tokenAddress,
+    takerAssetProxyId: encTakerAssetData.assetProxyId,
   };
   const orderHash = orderHashUtils.getOrderHashHex(signedOrder);
   const order = new Order({
     ...signedOrder,
     orderHash,
-    networkId: ctx.query.networkId,
+    networkId,
   });
   if (validator.isValid(order, schemas.signedOrderSchema)) {
+    const contractWrappers = new ContractWrappers(
+      initProvider(networkId).engine,
+      {
+        networkId: +networkId,
+      },
+    );
     try {
-      await order.save();
+      if (process.env.NODE_ENV !== 'test') {
+        await contractWrappers.exchange.validateOrderFillableOrThrowAsync(signedOrder);
+      }
+      try {
+        await order.save();
+      } catch (e) {
+        logger.debug('CANT SAVE', e);
+        ctx.status = 400;
+      }
+      redisClient.publish('orders', JSON.stringify(order));
     } catch (e) {
-      console.log('CANT SAVE', e);
+      logger.debug('Order not valid', e);
     }
-    ctx.status = 200;
+    ctx.status = 201;
     ctx.message = 'OK';
     ctx.body = {};
   } else {
@@ -108,44 +154,33 @@ standardRelayerApi.post('/order', async (ctx) => {
 });
 
 standardRelayerApi.get('/orderbook', async (ctx) => {
-  console.log('HTTP: GET orderbook');
+  logger.debug('HTTP: GET orderbook');
   const {
     baseAssetData,
     quoteAssetData,
     page = 1,
     perPage = 100,
-    networkId = 50,
+    networkId = 1,
   } = ctx.query;
-  const sort = (a, b) => {
-    const aPrice = new BigNumber(a.takerAssetAmount).div(a.makerAssetAmount);
-    const aTakerFeePrice = new BigNumber(a.takerFee).div(a.takerAssetAmount);
-    const bPrice = new BigNumber(b.takerAssetAmount).div(b.makerAssetAmount);
-    const bTakerFeePrice = new BigNumber(b.takerFee).div(b.takerAssetAmount);
-    const aExpirationTimeSeconds = parseInt(a.expirationTimeSeconds, 10);
-    const bExpirationTimeSeconds = parseInt(b.expirationTimeSeconds, 10);
-    return aPrice - bPrice
-      || aTakerFeePrice - bTakerFeePrice
-      || aExpirationTimeSeconds - bExpirationTimeSeconds;
-  };
+
   const bidOrders = await Order.find({
-    takerAssetAddress: baseAssetData,
-    makerAssetAddress: quoteAssetData,
+    takerAssetData: baseAssetData,
+    makerAssetData: quoteAssetData,
     networkId,
   })
-    .select('-_id -orderHash -networkId -makerAssetAddress -takerAssetAddress -makerAssetProxyId -takerAssetProxyId')
+    .select(`-${fieldsToSkip.join(' -')}`)
     .skip(perPage * (page - 1))
     .limit(parseInt(perPage, 10));
   const askOrders = await Order.find({
-    takerAssetAddress: quoteAssetData,
-    makerAssetAddress: baseAssetData,
+    takerAssetData: quoteAssetData,
+    makerAssetData: baseAssetData,
     networkId,
   })
-    .select('-_id -orderHash -networkId -makerAssetAddress -takerAssetAddress -makerAssetProxyId -takerAssetProxyId')
+    .select(`-${fieldsToSkip.join(' -')}`)
     .skip(perPage * (page - 1))
     .limit(parseInt(perPage, 10));
-  const askOrdersSorted = askOrders.sort(sort);
-  const bidOrdersSorted = bidOrders.sort(sort);
-
+  const askOrdersSorted = askOrders.sort(sortOrderbook);
+  const bidOrdersSorted = bidOrders.sort(sortOrderbook);
   const bidApiOrders = bidOrdersSorted.map(order => ({ metaData: {}, order }));
   const askApiOrders = askOrdersSorted.map(order => ({ metaData: {}, order }));
   const response = {
@@ -162,43 +197,32 @@ standardRelayerApi.get('/orderbook', async (ctx) => {
       total: askOrders.length,
     },
   };
-  if (validator.isValid(response, schemas.relayerApiOrderbookResponseSchema)) {
-    ctx.status = 200;
-    ctx.message = 'The sorted order book for the specified asset pair.';
-    ctx.body = response;
-  } else {
-    ctx.status = 400;
-    ctx.message = 'Validation error';
-    ctx.body = getValidationErrors(response, schemas.relayerApiOrderbookResponseSchema);
-  }
+  ctx.status = 200;
+  ctx.message = 'The sorted order book for the specified asset pair.';
+  ctx.body = response;
 });
 
 standardRelayerApi.get('/order/:orderHash', async (ctx) => {
-  console.log('HTTP: GET ORDER BY HASH');
-  const { networkId = 50 } = ctx.query;
+  logger.debug('HTTP: GET ORDER BY HASH');
+  const { networkId = 1 } = ctx.query;
   const order = await Order.findOne({
     orderHash: ctx.params.orderHash,
     networkId,
   })
-    .select('-_id -orderHash -networkId -makerAssetAddress -takerAssetAddress -makerAssetProxyId -takerAssetProxyId');
+    .select(`-${fieldsToSkip.join(' -')}`);
   const response = {
     order,
     metaData: {},
   };
-  if (validator.isValid(order, schemas.orderSchema)) {
-    ctx.status = 200;
-    ctx.message = 'The order and meta info associated with the orderHash';
-    ctx.body = response;
-  } else {
-    ctx.status = 400;
-    ctx.message = 'Validation error';
-    ctx.body = getValidationErrors(order, schemas.orderSchema);
-  }
+  ctx.status = 200;
+  ctx.message = 'The order and meta info associated with the orderHash';
+  ctx.body = response;
 });
 
+// TODO: decide what to do with this endpoint
 standardRelayerApi.get('/fee_recipients', async (ctx) => {
   const {
-    networkId = 50,
+    networkId = 1,
     page = 1,
     perPage = 100,
   } = ctx.query;
@@ -215,6 +239,7 @@ standardRelayerApi.get('/fee_recipients', async (ctx) => {
 });
 
 standardRelayerApi.get('/asset_pairs', async (ctx) => {
+  logger.debug('HTTP: GET ASSET PAIRS');
   const {
     assetDataA = { $exists: true },
     assetDataB = { $exists: true },
@@ -227,27 +252,22 @@ standardRelayerApi.get('/asset_pairs', async (ctx) => {
     'assetDataB.assetData': assetDataB,
     networkId,
   }, { 'assetDataA._id': 0, 'assetDataB._id': 0 })
-    .select('-_id -networkId -makerAssetAddress -takerAssetAddress -makerAssetProxyId -takerAssetProxyId')
+    .select('-_id -networkId')
     .skip(perPage * (page - 1))
     .limit(parseInt(perPage, 10));
   const response = {
     total: assetPairs.length,
-    page,
+    page: parseInt(page, 10),
     perPage,
     records: assetPairs,
   };
-  if (validator.isValid(response, schemas.relayerApiAssetDataPairsResponseSchema)) {
-    ctx.status = 200;
-    ctx.message = 'Returns a collection of available asset pairs with some meta info';
-    ctx.body = response;
-  } else {
-    ctx.status = 400;
-    ctx.message = 'Validation error';
-    ctx.body = getValidationErrors(response, schemas.relayerApiAssetDataPairsResponseSchema);
-  }
+  ctx.status = 200;
+  ctx.message = 'Returns a collection of available asset pairs with some meta info';
+  ctx.body = response;
 });
 
 standardRelayerApi.get('/orders', async (ctx) => {
+  logger.debug('HTTP: GET ORDERS');
   const sort = (a, b) => {
     const aPrice = new BigNumber(a.takerAssetAmount).div(a.makerAssetAmount);
     const bPrice = new BigNumber(b.takerAssetAmount).div(b.makerAssetAmount);
@@ -267,7 +287,7 @@ standardRelayerApi.get('/orders', async (ctx) => {
     takerAddress = { $exists: true },
     traderAddress = { $exists: true },
     feeRecipientAddress = { $exists: true },
-    networkId = 50,
+    networkId = 1,
     page = 1,
     perPage = 100,
   } = ctx.query;
@@ -289,7 +309,7 @@ standardRelayerApi.get('/orders', async (ctx) => {
       { $or: [{ makerAssetData: traderAssetData }, { takerAssetData: traderAssetData }] },
     ],
   })
-    .select('-_id -networkId -makerAssetAddress -takerAssetAddress -makerAssetProxyId -takerAssetProxyId')
+    .select(`-${fieldsToSkip.join(' -')}`)
     .skip(perPage * (page - 1))
     .limit(parseInt(perPage, 10));
   if (!takerAssetData.$exists && !makerAssetData.$exists) {
@@ -301,42 +321,14 @@ standardRelayerApi.get('/orders', async (ctx) => {
   }));
   const response = {
     total: orders.length,
-    page,
+    page: parseInt(page, 10),
     perPage,
     records,
   };
-  if (validator.isValid(response, schemas.relayerApiOrdersResponseSchema)) {
-    ctx.status = 200;
-    ctx.message = 'A collection of 0x orders with meta-data as specified by query params';
-    ctx.body = response;
-  } else {
-    ctx.status = 400;
-    ctx.message = 'Validation error';
-    ctx.body = getValidationErrors(response, schemas.relayerApiOrdersResponseSchema);
-  }
+  ctx.status = 200;
+  ctx.message = 'A collection of 0x orders with meta-data as specified by query params';
+  ctx.body = response;
 });
-
-// should be removed! Only for inserting testing data to db
-// ************************************************
-standardRelayerApi.get('/INSERT_ASSET_PAIRS', async (ctx) => {
-  const mainPairs = mainAssetPairs.default.map((pair) => {
-    pair.networkId = 1;
-    return pair;
-  });
-  await AssetPair.insertMany(mainPairs);
-  const kovanPairs = kovanAssetPairs.default.map((pair) => {
-    pair.networkId = 42;
-    return pair;
-  });
-  await AssetPair.insertMany(kovanPairs);
-  const testPairs = testAssetPairs.default.map((pair) => {
-    pair.networkId = 50;
-    return pair;
-  });
-  await AssetPair.insertMany(testPairs);
-  ctx.body = 'Should insert asset pairs';
-});
-// ************************************************
 
 app.use(standardRelayerApi.routes());
 
