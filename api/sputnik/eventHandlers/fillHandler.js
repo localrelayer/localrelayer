@@ -10,15 +10,24 @@ import {
   collectOrder,
   collectTradingInfo,
 } from '../collect';
+import {
+  createLogger,
+} from '../../logger';
+
+
+const logger = createLogger(
+  'fillHandlerQueue',
+//  'info',
+);
+logger.debug('fillHandlerQueue logger was created');
 
 const fillHandler = async (event, done) => {
   const t0 = performance.now();
   try {
-    console.log('=============================================');
-    console.log(event);
-    console.log('Network ID', event.networkId);
-    console.log('New 0x Fill Event');
-    console.log(event.log.args);
+    logger.debug('==================fillHandler===========================');
+    logger.debug(event);
+    logger.info('New 0x Fill Event');
+    logger.info('Network ID', event.networkId);
     const {
       makerAssetData,
       takerAssetData,
@@ -53,25 +62,28 @@ const fillHandler = async (event, done) => {
     const { tradingInfoRedisKey } = await collectTradingInfo(order);
 
     redisClient.publish('tradingInfo', tradingInfoRedisKey);
-    console.log('=============================================');
+    logger.debug('/==================fillHandler===========================');
   } catch (error) {
     if (
       error.name === 'MongoError'
       && error.code === 11000
     ) {
-      console.log('Duplicate key');
+      logger.error('Duplicate key');
     } else {
-      console.log(error);
+      logger.error(error);
     }
   }
   const t1 = performance.now();
-  console.log(`Fill handler perf measure - ${t1 - t0} ml`);
+  logger.verbose(`Fill handler perf measure - ${t1 - t0} ml`);
   done();
 };
 
 /* Process this queue sequentially using only 1 job process */
-export function runFillQueueHandler() {
+export function runFillQueueHandler(cb) {
   jobs.process('ExchangeFillEvent', 1, (job, done) => {
+    logger.info('ExchangeFillEvent queue started');
     fillHandler(job.data, done);
+    if (cb) cb();
   });
+  return jobs;
 }

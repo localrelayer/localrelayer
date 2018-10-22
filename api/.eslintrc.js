@@ -11,6 +11,7 @@ module.exports = {
     'import/no-extraneous-dependencies': 'off',
     'import/prefer-default-export': 'off',
     'no-console': 'off',
+    'no-underscore-dangle': 'off',
     'no-param-reassign': 'off',
     'function-paren-newline': [
       'error',

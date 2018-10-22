@@ -1,0 +1,5 @@
+import {
+  runApiServer,
+} from '.';
+
+runApiServer();
