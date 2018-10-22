@@ -59,7 +59,7 @@ const fillHandler = async (event, done) => {
     };
 
     const order = await collectOrder(orderFields);
-    const { tradingInfoRedisKey } = await collectTradingInfo(order);
+    const { tradingInfoRedisKey } = await collectTradingInfo(order, logger);
 
     redisClient.publish('tradingInfo', tradingInfoRedisKey);
     logger.debug('/==================fillHandler===========================');
