@@ -2,7 +2,7 @@ import {
   runGanacheServer,
 } from '../ganacheServer';
 import {
-  subscribeExchangeEvents,
+  subscribeEthEvents,
 } from './subscribe';
 import {
   runFillQueueHandler,
@@ -11,12 +11,10 @@ import {
 
 function runSputnik() {
   runFillQueueHandler();
-  subscribeExchangeEvents([
+  subscribeEthEvents([
     ...(process.env.NODE_ENV === 'development' ? ['test'] : []),
-    /*
     'main',
     'kovan',
-    */
   ]);
 }
 

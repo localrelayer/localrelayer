@@ -8,7 +8,8 @@
     "start": "pm2 start process.yml --env production",
     "stop": "pm2 stop collector-listener collector-socket",
     "delete": "pm2 delete collector-listener collector-socket",
-    "devApi": "NODE_ENV=development nodemon ./apiServer --exec babel-node",
+    "devApi": "NODE_ENV=development nodemon ./apiServer/run --exec babel-node",
+    "dashboard": "NODE_ENV=development babel-node ./dashboard/nodemon",
     "launchSputnik": "NODE_ENV=development nodemon ./sputnik --exec babel-node",
     "devSputnik": "RUN_GANACHE=true npm run launchSputnik",
     "devSputnik:noGanache": "RUN_GANACHE=false npm run launchSputnik",
@@ -47,7 +48,9 @@
     "mongoose": "5.3.1",
     "redis": "2.8.0",
     "ramda": "0.25.0",
-    "ws": "6.1.0"
+    "ws": "6.1.0",
+    "winston": "3.1.0",
+    "winston-redis": "3.0.0"
   },
   "devDependencies": {
     "@babel/cli": "7.1.2",
@@ -61,6 +64,7 @@
     "eslint-config-airbnb": "17.1.0",
     "eslint-plugin-import": "2.14.0",
     "ganache-core": "2.2.1",
+    "blessed": "0.1.81",
     "nodemon": "1.18.4"
   }
 }

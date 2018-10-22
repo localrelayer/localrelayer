@@ -2,6 +2,9 @@ import {
   subscribeOnEvents,
 } from './ethLogStreamer';
 import jobs from '../kueJobs';
+import {
+  logger,
+} from '../sputnikLogger';
 
 
 const watchEvents = {
@@ -33,16 +36,16 @@ const networksMapName = {
   test: 50,
 };
 
-export function subscribeExchangeEvents(networks) {
-  networks.forEach((networkName) => {
+export function subscribeEthEvents(networks) {
+  return networks.map((networkName) => {
     const networkId = networksMapName[networkName];
-    subscribeOnEvents({
+    return subscribeOnEvents({
       networkName,
       watchEvents,
       handler: (log) => {
-        console.log('=======Log Handler=======');
-        console.log(networkId);
-        console.log(log);
+        logger.debug('=======Log Handler=======');
+        logger.debug(`Network id: ${networkId}`);
+        logger.debug(log);
         jobs.create(
           log.event === 'Fill' ? 'ExchangeFillEvent' : 'EthEvent',
           {
@@ -51,7 +54,7 @@ export function subscribeExchangeEvents(networks) {
             networkName,
           },
         ).save();
-        console.log('=======Log Handler=======');
+        logger.debug('=======/Log Handler=======');
       },
     });
   });

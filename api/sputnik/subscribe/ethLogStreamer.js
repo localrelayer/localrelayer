@@ -9,6 +9,9 @@ import {
 import {
   getEventsAbi,
 } from '../../contracts';
+import {
+  logger,
+} from '../sputnikLogger';
 
 
 const streamConfigState = {
@@ -95,30 +98,20 @@ const getLatestBlock = networkName => async () => {
   return json.result;
 };
 
-/* https://github.com/0xProject/0x-monorepo/blob/master/packages/contract-wrappers/src/contract_wrappers/contract_wrapper.ts */
-async function check(blockAndLogStreamer, networkName) {
-  const fetchLatestBlock = getLatestBlock(networkName);
-  const latestBlock = await fetchLatestBlock();
-  await blockAndLogStreamer.reconcileNewBlock(latestBlock);
-  setTimeout(async () => {
-    await check(blockAndLogStreamer, networkName);
-  }, 1000);
-}
 
 export function subscribeOnEvents({
   networkName,
   watchEvents,
   handler,
 }) {
+  let runCheck = true;
   const eventsAbi = getEventsAbi(watchEvents);
   const decoder = new AbiDecoder([eventsAbi]);
   const blockAndLogStreamer = new BlockAndLogStreamer(
     getBlockByHash(networkName),
     getLogs(networkName),
     (e) => {
-      console.log('======EthLogStreamer Error======');
-      console.log(e);
-      console.log('======EthLogStreamer Error======');
+      logger.error(e);
     },
     {
       blockRetention: 100,
@@ -131,5 +124,25 @@ export function subscribeOnEvents({
       handler(decodedLog);
     },
   );
+
+  /* https://github.com/0xProject/0x-monorepo/blob/master/packages/contract-wrappers/src/contract_wrappers/contract_wrapper.ts */
+  async function check() {
+    try {
+      logger.debug('Run check');
+      const fetchLatestBlock = getLatestBlock(networkName);
+      const latestBlock = await fetchLatestBlock();
+      await blockAndLogStreamer.reconcileNewBlock(latestBlock);
+    } catch (err) {
+      logger.error(err);
+    }
+    setTimeout(async () => {
+      if (runCheck) {
+        await check(blockAndLogStreamer, networkName);
+      }
+    }, 1000);
+  }
   check(blockAndLogStreamer, networkName);
+  return () => {
+    runCheck = false;
+  };
 }
