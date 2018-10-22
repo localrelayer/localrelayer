@@ -78,7 +78,8 @@ const processes = [{
   id: 'fillHandlerQueue',
   name: 'FillHandler queue',
   run(cb) {
-    const queue = runFillQueueHandler(cb);
+    const queue = runFillQueueHandler();
+    cb();
     return (ccb) => {
       queue.shutdown(5000, ccb);
     };

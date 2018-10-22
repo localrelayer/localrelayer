@@ -79,11 +79,10 @@ const fillHandler = async (event, done) => {
 };
 
 /* Process this queue sequentially using only 1 job process */
-export function runFillQueueHandler(cb) {
+export function runFillQueueHandler() {
   jobs.process('ExchangeFillEvent', 1, (job, done) => {
     logger.info('ExchangeFillEvent queue started');
     fillHandler(job.data, done);
-    if (cb) cb();
   });
   return jobs;
 }
