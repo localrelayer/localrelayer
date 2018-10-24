@@ -1,142 +1,94 @@
 // @flow
-import io from 'socket.io-client';
-import { actionTypes as reduxResourceActions } from 'redux-resource';
+import * as R from 'ramda';
+import createActionCreators from 'redux-resource-action-creators';
 import {
   eventChannel,
 } from 'redux-saga';
-import {
-  fork,
-  take,
-  call,
-  put,
-  select,
-} from 'redux-saga/effects';
+import * as eff from 'redux-saga/effects';
 import type {
   Saga,
 } from 'redux-saga';
 
-import * as actionTypes from '../actions/types';
-import * as resourcesActions from '../actions/resources';
-import config from '../config';
-import {
-  sendNotification,
-  setUiState,
-  fillOrKillOrders,
-} from '../actions';
-import {
-  getResourceItemBydId,
-  getUiState,
-} from '../selectors';
-import {
-  loadUserOrders,
-  loadBalance,
-  loadCurrentTokenAndPairBalance,
-} from './profile';
+import * as actionTypes from '../actions/actionTypes';
 
-export function socketConnect(): Promise<*> {
+
+export function socketConnect(socketUrl): Promise<*> {
   console.log('_______');
-  console.log('Socket connecting', config.socketUrl);
-  console.log('_______');
-  const socket = io(config.socketUrl);
+  console.log('Socket connecting...', socketUrl);
+  const socket = new WebSocket(socketUrl);
   return new Promise((resolve) => {
-    socket.on('connect', () => {
+    socket.onerror = (err) => {
+      console.log('Socket connect error');
+      console.log(err);
+      console.log('_______');
       resolve(socket);
-    });
+    };
+    socket.onopen = () => {
+      console.log('Socket connected');
+      console.log('_______');
+      resolve(socket);
+    };
   });
 }
 
 function subscribe(socket) {
   return eventChannel((emit) => {
-    socket.on('new_message', (data) => {
-      emit(data);
-    });
-    socket.on('disconnect', () => {
-      console.warn('disconnect');
-    });
+    socket.onmessage = message => emit(message.data); /* eslint-disable-line */
     return () => {};
   });
 }
 
 function* read(socket) {
-  const channel = yield call(subscribe, socket);
+  const channel = yield eff.call(subscribe, socket);
   while (true) {
-    const data = yield take(channel);
+    const message = yield eff.take(channel);
+    const data = JSON.parse(message);
 
     console.warn('Message from socket');
     console.log(data);
 
-    const currentTokenId = yield select(getUiState('currentTokenId'));
-
-    if (data.matchedIds && data.token === currentTokenId) {
-      yield fork(loadUpdatedOrders, data.matchedIds);
-    } else if (data.tradingInfo) {
-      const token = yield select(getResourceItemBydId('tokens', data.token));
-      yield put({
-        type: reduxResourceActions.UPDATE_RESOURCES_SUCCEEDED,
-        resourceName: 'tokens',
-        resources: [{
-          ...token,
-          attributes: {
-            ...token.attributes,
-            tradingInfo: data.tradingInfo,
-          },
-        }],
+    if (data.channel === 'tradingInfo') {
+      const tradingInfoActions = createActionCreators('read', {
+        resourceType: 'tradingInfo',
+        requestKey: 'socketTradingInfo',
+        mergeListIds: true,
       });
+      yield eff.put(tradingInfoActions.succeeded({
+        resources: data.payload,
+      }));
     }
 
-    if (data.message) {
-      yield put(sendNotification({ message: data.message, type: 'success' }));
+    /*
+    if (data.orders) {
+      const resources = R.flatten(data.orders);
+      const ordersActions = createActionCreators('read', {
+        resourceType: 'orders',
+        requestKey: 'orders',
+        lists: ['tradingHistory'],
+        mergeListIds: true,
+        prepend: resources.length === 1,
+      });
+      yield eff.put(ordersActions.succeeded({
+        resources: resources.map(r => ({
+          id: r.orderHash,
+          ...r,
+        })),
+      }));
     }
-
-    if (data.txHash) {
-      yield put(setUiState('activeModal', 'TxModal'));
-      yield put(setUiState('txHash', data.txHash));
-    }
-
-    if (data.matchedOrders) {
-      yield put(fillOrKillOrders(data.matchedOrders, data.order));
-    }
+    */
   }
-}
-
-function* loadUpdatedOrders(matchedIds) {
-  yield put(
-    resourcesActions.fetchResourcesRequest({
-      resourceName: 'orders',
-      request: 'fetchUpdatedMatchedOrders',
-      lists: ['buy', 'sell', 'completedOrders'],
-      prepend: true,
-      withDeleted: false,
-      fetchQuery: {
-        filterCondition: {
-          filter: {
-            'id': {
-              in: matchedIds,
-            },
-            'canceled_at': null,
-            'deleted_at': null,
-          },
-        },
-        sortBy: '-created_at',
-      },
-    }),
-  );
-  yield call(loadUserOrders);
-  yield call(loadBalance);
-  yield call(loadCurrentTokenAndPairBalance);
 }
 
 function* write(socket) {
   while (true) {
-    const {
-      message,
-      data,
-    } = yield take(actionTypes.SEND_SOCKET_MESSAGE);
-    socket.emit(message, data);
+    const { message } = yield eff.take(actionTypes.SEND_SOCKET_MESSAGE);
+    console.log('SEND SOCKET MESSAGE');
+    console.log(message);
+    socket.send(JSON.stringify(message));
   }
 }
 
-export function* handleSocketIO(socket: any): Saga<void> {
-  yield fork(read, socket);
-  yield fork(write, socket);
+export function* handleSocketIO(socket): Saga<void> {
+  yield eff.fork(read, socket);
+  yield eff.fork(write, socket);
 }

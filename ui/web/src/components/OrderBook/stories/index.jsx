@@ -17,8 +17,8 @@ import 'web-styles/main.less';
 import OrderBook from '..';
 
 
-const baseAssetData = '0xe41d2489571d322189246dafa5ebde1f4699f498'; /* ZRX */
-const quoteAssetData = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'; /* WETH */
+const baseAssetData = '0xf47261b0000000000000000000000000e41d2489571d322189246dafa5ebde1f4699f498'; /* ZRX */
+const quoteAssetData = '0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'; /* WETH */
 
 const orderSelector = ({ order }) => ({
   id: order.signature,

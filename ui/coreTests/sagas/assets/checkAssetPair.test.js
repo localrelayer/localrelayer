@@ -15,9 +15,9 @@ import '../../web3InitTests';
 
 
 const networkId = 1;
-const baseAssetAddress = '0xe41d2489571d322189246dafa5ebde1f4699f498'; /* ZRX */
-const quoteAssetAddress = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'; /* WETH */
-const assetPairId = `${baseAssetAddress}_${quoteAssetAddress}`;
+const baseAssetData = '0xf47261b0000000000000000000000000e41d2489571d322189246dafa5ebde1f4699f498'; /* ZRX */
+const quoteAssetData = '0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'; /* WETH */
+const assetPairId = `${baseAssetData}_${quoteAssetData}`;
 
 describe('checkAssetPair saga', () => {
   api.setApiUrl('http://testSaga');
@@ -39,8 +39,8 @@ describe('checkAssetPair saga', () => {
       const { storeState } = await expectSaga(
         coreSagas.fetchAssetPairs,
         {
-          assetDataA: baseAssetAddress,
-          assetDataB: quoteAssetAddress,
+          assetDataA: baseAssetData,
+          assetDataB: quoteAssetData,
           networkId,
         },
       )
@@ -56,8 +56,8 @@ describe('checkAssetPair saga', () => {
       } = await expectSaga(
         coreSagas.checkAssetPair,
         {
-          baseAsset: baseAssetAddress,
-          quoteAsset: quoteAssetAddress,
+          baseAsset: baseAssetData,
+          quoteAsset: quoteAssetData,
           networkId,
         },
       )
@@ -100,7 +100,7 @@ describe('checkAssetPair saga', () => {
       } = await expectSaga(
         coreSagas.checkAssetPair,
         {
-          baseAsset: baseAssetAddress,
+          baseAsset: baseAssetData,
           quoteAsset: 'WETH',
           networkId,
         },
@@ -125,8 +125,8 @@ describe('checkAssetPair saga', () => {
       } = await expectSaga(
         coreSagas.checkAssetPair,
         {
-          baseAsset: baseAssetAddress,
-          quoteAsset: quoteAssetAddress,
+          baseAsset: baseAssetData,
+          quoteAsset: quoteAssetData,
           networkId,
         },
       )
@@ -172,7 +172,7 @@ describe('checkAssetPair saga', () => {
         await expectSaga(
           coreSagas.checkAssetPair,
           {
-            baseAsset: baseAssetAddress,
+            baseAsset: baseAssetData,
             quoteAsset: 'WETH',
             networkId,
           },

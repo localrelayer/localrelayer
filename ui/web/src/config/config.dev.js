@@ -1,6 +1,7 @@
 module.exports = {
-  apiUrl: 'http://localhost:3001/api',
+  apiUrl: 'http://localhost:5001',
+  // apiUrl: 'https://api.instex.io/api',
+  socketUrl: 'ws://localhost:5003',
   mockApi: true,
   useSentry: false,
-  // apiUrl: 'https://api.instex.io/api',
 };
