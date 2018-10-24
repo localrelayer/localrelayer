@@ -1,9 +1,3 @@
-node_modules/
-swagger/
+0x_ganache_snapshot/
 logs/
-dist/
-logfile
-*.log
-testrpc_snapshot/
-dump.rdb
-.vscode/
+dashboard/.config.js

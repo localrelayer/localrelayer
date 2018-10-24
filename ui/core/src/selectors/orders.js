@@ -32,21 +32,20 @@ export const getOpenOrders = createSelector(
   ),
 );
 
-export const getOrdersHistoryMock = createSelector(
+export const getTradingHistory = createSelector(
   [
-    getResourceMappedList('orders', 'asks'),
+    getResourceMappedList('orders', 'tradingHistory'),
   ],
   orders => (
     orders.map(order => ({
       ...order,
       price: (
-        BigNumber(order.takerAssetAmount)
-        / BigNumber(order.makerAssetAmount)
+        BigNumber(order.takerAssetAmount).div(order.makerAssetAmount)
       ).toFixed(8),
       amount: order.makerAssetAmount,
       total: order.takerAssetAmount,
       key: order.id,
-      date: new Date().toLocaleDateString('en-US'),
+      date: order.completedAt,
     }))
   ),
 );
@@ -59,8 +58,7 @@ export const getBidOrders = createSelector(
     orders.map(order => ({
       ...order,
       price: (
-        BigNumber(order.takerAssetAmount)
-        / BigNumber(order.makerAssetAmount)
+        BigNumber(order.takerAssetAmount).div(order.makerAssetAmount)
       ).toFixed(8),
       amount: order.makerAssetAmount,
       total: order.takerAssetAmount,
@@ -76,8 +74,7 @@ export const getAskOrders = createSelector(
     orders.map(order => ({
       ...order,
       price: (
-        BigNumber(order.takerAssetAmount)
-        / BigNumber(order.makerAssetAmount)
+        BigNumber(order.takerAssetAmount).div(order.makerAssetAmount)
       ).toFixed(8),
       amount: order.makerAssetAmount,
       total: order.takerAssetAmount,

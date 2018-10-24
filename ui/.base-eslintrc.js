@@ -7,7 +7,7 @@ module.exports = {
     fetch: true,
     web3: true,
     Web3: true,
-    ethereum: true,
+    WebSocket: true,
   },
   extends: [
     'airbnb',

@@ -1,0 +1,10 @@
+apps:
+  - script : ./dist/index.js
+    name   : collector-listener
+  - script : ./dist/socket-server.js
+    name   : collector-socket
+    watch  : true
+    env    :
+      NODE_ENV: development
+    env_production:
+      NODE_ENV: production

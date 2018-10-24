@@ -4,10 +4,11 @@ import fetch from './enhancedFetch';
 function apiFactory() {
   // GET methods with query parameters only
   const apiCommonMethods = [
-    ['getAssetPairs', '/asset_pairs'],
-    ['getOrders', '/orders'],
-    ['getOrderBook', '/orderbook'],
-    ['getOrderConfig', '/order-config'],
+    ['getAssetPairs', '/v2/asset_pairs'],
+    ['getOrders', '/v2/orders'],
+    ['getOrderBook', '/v2/orderbook'],
+    ['getOrderConfig', '/v2/order-config'],
+    ['getTradingHistory', '/sputnik/tradingHistory'],
   ];
   let apiUrl = '';
   let mockMethods = {};
@@ -19,7 +20,7 @@ function apiFactory() {
     if (!apiUrl) {
       throw new Error('No apiUrl!');
     }
-    const url = new URL(`${apiUrl}/${baseUrl}`);
+    const url = new URL(`${apiUrl}${baseUrl}`);
     url.search = new URLSearchParams(queryParameters);
     return url;
   }
@@ -109,6 +110,19 @@ function apiFactory() {
         endpointUrl: '/order',
         method: 'POST',
         methodName: 'postOrder',
+        bodyParameters,
+        queryParameters,
+      });
+    },
+
+    getTradingInfo(
+      bodyParameters,
+      queryParameters = {},
+    ) {
+      return performFetch({
+        endpointUrl: '/sputnik/tradingInfo',
+        method: 'POST',
+        methodName: 'getTradingInfo',
         bodyParameters,
         queryParameters,
       });

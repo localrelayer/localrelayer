@@ -7,6 +7,8 @@ import {
 import {
   ColoredSpan,
 } from 'web-components/SharedStyledComponents';
+import moment from 'moment';
+import * as colors from 'web-styles/colors';
 import * as S from './styled';
 
 type Props = {
@@ -16,10 +18,10 @@ type Props = {
 const columns = [
   {
     title: 'Date',
-    dataIndex: 'date',
+    dataIndex: 'completedAt',
     render: (text: string) => (
-      <Tooltip title={text}>
-        {text}
+      <Tooltip title={moment(text).format('ddd, MMM DD, YYYY hh:mm:ss A')}>
+        {moment(text).format('DD/MM/YYYY HH:mm')}
       </Tooltip>
     ),
   },
@@ -30,7 +32,7 @@ const columns = [
     render: (text: string, record) => (
       <Tooltip title={text}>
         <ColoredSpan
-          className={record.type === 'sell' ? 'red' : 'green'}
+          color={record.type === 'ask' ? colors.red : colors.green}
         >
           {Number(text).toFixed(8)}
         </ColoredSpan>

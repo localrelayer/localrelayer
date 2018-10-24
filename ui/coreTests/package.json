@@ -4,6 +4,7 @@
   "version": "0.0.1",
   "main": "./src",
   "scripts": {
+    "jest": "jest --no-cache",
     "test": "jest \"^((?!(\\.int\\.)).)*$\" --no-cache",
     "test:debug": "node --inspect-brk node_modules/.bin/jest --no-cache --runInBand",
     "test:int": "jest \"\\S*\\.int\\.\\S*\" --no-cache"

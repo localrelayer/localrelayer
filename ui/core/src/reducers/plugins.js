@@ -1,6 +1,7 @@
-export const multipleLists = resourceName => (state, action) => {
+export const multipleLists = resourceType => (state, action) => {
   const { resources, lists = [], prepend } = action;
-  if (action.resourceName !== resourceName) {
+
+  if (action.resourceType !== resourceType) {
     return state;
   }
   const resourcesIsUndefined = typeof resources === 'undefined';
@@ -42,4 +43,3 @@ export const multipleLists = resourceName => (state, action) => {
     lists: newLists,
   };
 };
-

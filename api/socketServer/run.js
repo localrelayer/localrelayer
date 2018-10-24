@@ -1,0 +1,5 @@
+import {
+  runWebSocketServer,
+} from '.';
+
+runWebSocketServer();

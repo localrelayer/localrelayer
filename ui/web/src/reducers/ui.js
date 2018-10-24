@@ -11,10 +11,13 @@ import type {
 
 const initialState: UiState = {
   isAppInitializing: true,
+  networkId: null,
 
   currentAssetPairId: null,
   isCurrentPairListed: true,
   isCurrentPairIssue: false,
+
+  tradingInfoSubscribeId: null,
 };
 
 const mergeUiValues = (

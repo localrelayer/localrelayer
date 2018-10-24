@@ -1,111 +1,57 @@
-# Instex API
+# Microservice that listens to all 0x 'Fill' events and stores trading info in redis
 
-## Setup
-Install packages:
-```sh
-$ yarn
-```
+The service listens to all Ganache (id 50) and Kovan (id 42) 0x events and collects trading data (last price, low and high prices, tokenA and tokenB volumes and 24 hour change). Data is expired every 24h.
 
-## Database
-Creating database and user in PostgreSQL:
-```sh
-CREATE DATABASE instex;
-CREATE USER instex WITH password 'instex';
-GRANT ALL ON DATABASE instex TO instex;
-```
 
-For test environment:
-```sh
-CREATE DATABASE instextest;
-CREATE USER instextest WITH password 'instextest';
-GRANT ALL ON DATABASE instextest TO instextest;
-```
+*Mainnet support is WIP*
 
-## CLI commands
-Run unit tests
-```sh
-npm run test
-```
-Reinitialize dev database (delete existing one)
-```sh
-npm run initializeDevDB
-```
-Reinitialize test database (delete existing one)
-```sh
-npm run initializeTestDB
-```
-Establish new dev seeds
-```sh
-npm run plantDevFixtures
-```
-Establish new test seeds
-```sh
-npm run plantTestFixtures
-```
-### Swagger API documentation
-Documentation available on api root path
 
-### Database migrations
-
-## Run dev server
-```sh
-$ npm start
-```
-# JSONAPI
-The server supported JSONAPI.
-A SPECIFICATION FOR BUILDING APIS IN JSON.
-http://jsonapi.org/
-## Filtering
-JSONAPI specification is agnostic about filtering strategies supported by a server.
-We have to use our own filter specification that described below.
-### DeliverMD filtering
-In simple filtering, we assume all arguments are chained via AND operators. To perform filtering on a field, you put the field name in brackets and append the operation to the end.  For example:
-```
-filter[id.eq]=1
-filter[id.ne]=2
-filter[score.gt]=5
-filter[score.ge]=5
-filter[score.lt]=5
-filter[score.le]=5
-filter[title.like]=%Hello%
-filter[id.in]=[1, 2, 3]
-filter[id.notin]=[1, 2, 3]
-
-filter: {
-  "id": {
-    "eq": 1,
-    "ne": 2,
-    "in": [1, 2, 3],
-    "notin": [1, 2, 3 ]
-  },
-  "score": {
-    "gt": 5,
-    "gte": 5,
-    "lt": 5,
-    "lte": 5,
-  },
-  "title": {
-    "like": "%Hello%",
-  }
-}
-```
-
-And of course across relationships, some will work:
+You can subscribe to any number of pairs. Format - *makerTokenAddress:takerTokenAddress*
 
 ```
-filter[author.email.eq]=myemail@example.com
+  socket.emit('subscribe', {
+    pairs: [
+      '0x6ff6c0ff1d68b964901f986d4c9fa3ac68346570_0xd0a1e359811322d97991e03f863a0c30c2cf029c',
+      '0x871dd7c2b4b25e1aa18728e9d5f2af4c4e431f5c_0x0b1ba0af832d7c05fd64161e0db78e85978e8082',
+    ],
+  });
 ```
 
-### DeliverMD searching
-In simple searching, we assume all arguments are chained via OR operators. To perform filtering on a field, you put the field name in brackets.
-Fields available for searching descibed in swagger doc for every resource.
-Some fields may have custom search engine(for specific search cases). This custom search fields desribed in swagger.
-```
-search[firstName]=searchValue
-search[lastName]=searchValue
+To process data you need to listen to 'message' event:
 
-search: {
-  "firstName": "searchValue",
-  "lastName": "searchValue",
-}
+```
+  socket.on('message', (data) => {
+    // Work with data here
+  });
+```
+
+To run on local machine:
+
+```
+yarn start-dev
+yarn socket-dev
+```
+
+To run an example client:
+
+```
+yarn example
+```
+
+You also required to run ganache-cli (for Ganache testnet)
+
+Response example:
+
+```
+  [{ tradingData:
+    {
+      lastPrice: '0.07',
+      minPrice: '0.07',
+      maxPrice: '0.07',
+      assetAVolume: '100',
+      assetBVolume: '7',
+      change24: 0,
+    },
+    pair: '0x871dd7c2b4b25e1aa18728e9d5f2af4c4e431f5c_0x0b1ba0af832d7c05fd64161e0db78e85978e8082',
+  }],
 ```

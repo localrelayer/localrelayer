@@ -1,3 +1,4 @@
+export * as coreActions from './actions';
 export * as coreReducers from './reducers';
 export * as coreSelectors from './selectors';
 export * as coreMocks from './mocks';

@@ -3,13 +3,16 @@ import {
   orderHashUtils,
 } from '@0xproject/order-utils';
 import * as R from 'ramda';
+
 import assetPairsMainJson from './assetPairs.main.json';
 import assetPairsKovanJson from './assetPairs.kovan.json';
+import assetPairsTestJson from './assetPairs.test.json';
 
 
 const assetPairsJson = {
   1: assetPairsMainJson,
   42: assetPairsKovanJson,
+  50: assetPairsTestJson,
 };
 
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
@@ -328,6 +331,29 @@ export function mocksOrdersFactory({
             offset,
             offset + perPage,
           ),
+      };
+    },
+
+    getTradingHistory({
+      baseAssetData,
+      quoteAssetData,
+    }) {
+      if (!baseAssetData || !quoteAssetData) {
+        throw Error('baseAssetData and quoteAssetData are required');
+      }
+      const now = new Date();
+      return {
+        records: (
+          orders.map((o, i) => ({
+            order: {
+              takerAddress: randomEthereumAddress(),
+              ...o.order,
+            },
+            metaData: {
+              completedAt: new Date(now - i * 60000).toString(),
+            },
+          }))
+        ),
       };
     },
   };
