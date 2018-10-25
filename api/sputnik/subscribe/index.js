@@ -46,14 +46,18 @@ export function subscribeEthEvents(networks) {
         logger.debug('=======Log Handler=======');
         logger.debug(`Network id: ${networkId}`);
         logger.debug(log);
-        jobs.create(
-          log.event === 'Fill' ? 'ExchangeFillEvent' : 'EthEvent',
-          {
-            log,
-            networkId,
-            networkName,
-          },
-        ).save();
+        try {
+          jobs.create(
+            log.event === 'Fill' ? 'ExchangeFillEvent' : 'EthEvent',
+            {
+              log,
+              networkId,
+              networkName,
+            },
+          ).save();
+        } catch (e) {
+          logger.error(e);
+        }
         logger.debug('=======/Log Handler=======');
       },
     });

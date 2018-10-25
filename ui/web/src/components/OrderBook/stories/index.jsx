@@ -1,5 +1,4 @@
 import React from 'react';
-import BigNumber from 'bignumber.js';
 import {
   storiesOf,
 } from '@storybook/react';
@@ -15,6 +14,9 @@ import {
 import TradingPageLayout from 'web-components/TradingPageLayout';
 import 'web-styles/main.less';
 import OrderBook from '..';
+import {
+  BigNumber,
+} from '0x.js';
 
 
 const baseAssetData = '0xf47261b0000000000000000000000000e41d2489571d322189246dafa5ebde1f4699f498'; /* ZRX */
@@ -23,8 +25,7 @@ const quoteAssetData = '0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c
 const orderSelector = ({ order }) => ({
   id: order.signature,
   price: (
-    BigNumber(order.takerAssetAmount)
-    / BigNumber(order.makerAssetAmount)
+    new BigNumber(order.takerAssetAmount).div(order.makerAssetAmount)
   ).toFixed(8),
   amount: order.makerAssetAmount,
   total: order.takerAssetAmount,

@@ -242,6 +242,8 @@ export function* initialize(): Saga<void> {
       networkId,
     },
   );
+  yield eff.fork(coreSagas.takeApproval);
+  yield eff.fork(coreSagas.takeDepositAndWithdraw);
 
   /* Web radio center */
   while (true) {

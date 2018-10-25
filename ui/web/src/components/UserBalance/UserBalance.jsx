@@ -7,14 +7,29 @@ import {
   Switch,
   Button,
   Input,
+  Form,
 } from 'antd';
-
+import {
+  Formik,
+} from 'formik';
 import type {
   Node,
 } from 'react';
+import type {
+  Asset,
+} from 'instex-core';
 
 import * as S from './styled';
 
+type Props = {
+  assets: Array<Asset>,
+  balance: String,
+  onToggle: Function,
+  withdraw: Function,
+  deposit: Function,
+}
+
+const isNumber = n => !isNaN(+n) && isFinite(n);
 
 const getColumns = onToggle => [
   {
@@ -59,11 +74,11 @@ const getColumns = onToggle => [
             <div>
               <div>
                 Wallet balance:
-                {record.fullBalance}
+                {record.balance}
               </div>
               <div>
                 In orders:
-                {(record.fullBalance - record.balance).toFixed(8)}
+                {record.balance}
               </div>
             </div>
           )}
@@ -93,32 +108,85 @@ const getColumns = onToggle => [
   },
 ];
 
+// DATA:
+// Tokens allowance
+// FUNCS:
+// Allowance
+// Deposit / Withdraw
+
 const UserBalance = ({
   assets,
   onToggle,
+  balance,
+  deposit,
+  withdraw,
 }: Props): Node => (
   <S.UserBalance>
     <S.Title>
-      <div>Balance 3.00000000 ETH</div>
+      <div>
+        Balance
+        {' '}
+        {balance}
+        {' '}
+        ETH
+      </div>
     </S.Title>
-    <S.WrappingBar>
-      <S.Amount>
-        <Input
-          addonAfter={<div>ETH</div>}
-          placeholder="Amount"
-        />
-      </S.Amount>
-      <S.UnwrapWrapBar>
-        <Button.Group>
-          <S.UnwrapButton type="primary">
-          Unwrap
-          </S.UnwrapButton>
-          <S.WrapButton type="primary">
-          Wrap
-          </S.WrapButton>
-        </Button.Group>
-      </S.UnwrapWrapBar>
-    </S.WrappingBar>
+    <Formik
+      isInitialValid
+      validate={(values) => {
+        const errors = {};
+        if (!values.amount) {
+          errors.amount = 'Required';
+        } else if (!isNumber(values.amount)) {
+          errors.amount = 'Amount should be a number';
+        }
+        return errors;
+      }}
+    >
+      {({
+        handleChange,
+        values,
+        resetForm,
+        errors,
+        isValid,
+        touched,
+      }) => (
+        <S.WrappingBar>
+          <S.Amount>
+            <Form.Item
+              validateStatus={errors.amount && 'error'}
+              help={errors.amount}
+            >
+              <Input
+                value={values.amount}
+                name="amount"
+                addonAfter={<div>ETH</div>}
+                placeholder="Amount"
+                onChange={handleChange}
+              />
+            </Form.Item>
+          </S.Amount>
+          <S.UnwrapWrapBar>
+            <Button.Group>
+              <S.UnwrapButton
+                type="primary"
+                disabled={touched && !isValid}
+                onClick={() => withdraw(values.amount) && resetForm({})}
+              >
+                  Unwrap
+              </S.UnwrapButton>
+              <S.WrapButton
+                type="primary"
+                disabled={touched && !isValid}
+                onClick={() => deposit(values.amount) && resetForm({})}
+              >
+                Wrap
+              </S.WrapButton>
+            </Button.Group>
+          </S.UnwrapWrapBar>
+        </S.WrappingBar>
+      )}
+    </Formik>
     <S.Table
       rowKey="symbol"
       dataSource={assets}

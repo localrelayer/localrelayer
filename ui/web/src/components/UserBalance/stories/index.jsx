@@ -17,6 +17,7 @@ const UserBalanceStory = () => (
     hideRest={boolean('Hide preview layout', false)}
     userBalance={(
       <UserBalance
+        balance={3}
         assets={[{
           symbol: 'WETH',
           fullBalance: 200,
@@ -29,7 +30,7 @@ const UserBalanceStory = () => (
           isTradable: false,
         }]}
         onToggle={() => {
-          console.log('123');
+          console.log('onToggle');
         }}
       />
     )}
