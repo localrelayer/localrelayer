@@ -6,15 +6,17 @@ import {
 } from './subscribe';
 import {
   runFillQueueHandler,
+  runEthEventHandler,
 } from './eventHandlers';
 
 
 function runSputnik() {
+  runEthEventHandler();
   runFillQueueHandler();
   subscribeEthEvents([
     ...(process.env.NODE_ENV === 'development' ? ['test'] : []),
-    'main',
-    'kovan',
+    // 'main',
+    // 'kovan',
   ]);
 }
 
