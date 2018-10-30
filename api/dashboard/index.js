@@ -45,7 +45,7 @@ const scenariosLogger = blessed.log({
   width: '50%',
   height: '99%',
   border: 'line',
-  label: 'Scenarious logs',
+  label: 'Output',
   tags: true,
   keys: true,
   vi: true,
@@ -178,17 +178,18 @@ const processes = [{
       queue.shutdown(5000, ccb);
     };
   },
-}, {
-  id: 'apiServerCreateOrderTest',
-  name: 'apiServer - Create order test',
-  type: 'process',
+}];
+
+const scenarios = [{
+  id: 'fillOrderERC20',
+  name: 'Fill ERC20 Order',
+  type: 'scenario',
   run(cb) {
     const child = exec([
-      'NODE_ENV=test',
-      'mocha apiServer/test/postOrder.test.js',
-      '--require @babel/register',
-      '--colors',
-      '--exit',
+      'NODE_ENV=development',
+      'nodemon --exec',
+      'babel-node',
+      'scenarios/fillOrderERC20.js',
     ].join(' '));
     cb();
     child.stdout.on('data', (data) => {
@@ -200,55 +201,19 @@ const processes = [{
     };
   },
 }, {
-  id: 'apiTests',
-  name: 'Api tests',
-  type: 'process',
-  run(cb) {
-    const child = exec('NODE_ENV=test mocha apiServer/test/*.test.js --require @babel/register');
-    cb();
-    let overallData = '';
-    child.stdout.on('data', (data) => {
-      overallData = overallData.concat(data);
-      scenariosLogger.setContent(`{#e1e10e-fg}${overallData}{/}`);
-    });
-    return (ccb) => {
-      child.kill('SIGINT');
-      ccb();
-    };
-  },
-}].map(p => ({
-  ...p,
-  active: dashboardConfig.defaultActiveProcesses.includes(p.id),
-}));
-
-const scenarios = [{
-  id: 'fillOrderERC20',
-  name: 'Fill ERC20 Order',
-  type: 'scenario',
-  run(cb) {
-    const child = exec('NODE_ENV=development nodemon --exec babel-node scenarios/fillOrderERC20.js');
-    cb();
-    let overallData = '';
-    child.stdout.on('data', (data) => {
-      overallData = overallData.concat(data);
-      scenariosLogger.setContent(`{#e1e10e-fg}${overallData}{/}`);
-    });
-    return (ccb) => {
-      child.kill('SIGINT');
-      ccb();
-    };
-  },
-}, {
   id: 'fillOrderFees',
   name: 'Fill order fees',
   type: 'scenario',
   run(cb) {
-    const child = exec('NODE_ENV=development nodemon --exec babel-node scenarios/fillOrderFees.js');
+    const child = exec([
+      'NODE_ENV=development',
+      'nodemon --exec',
+      'babel-node',
+      'scenarios/fillOrderFees.js',
+    ].join(' '));
     cb();
-    let overallData = '';
     child.stdout.on('data', (data) => {
-      overallData = overallData.concat(data);
-      scenariosLogger.setContent(`{#e1e10e-fg}${overallData}{/}`);
+      scenariosLogger.insertBottom(data);
     });
     return (ccb) => {
       child.kill('SIGINT');
@@ -260,12 +225,15 @@ const scenarios = [{
   name: 'Forwarder Buy ERC20 Tokens',
   type: 'scenario',
   run(cb) {
-    const child = exec('NODE_ENV=development nodemon --exec babel-node scenarios/forwarderBuyERC20Tokens.js');
+    const child = exec([
+      'NODE_ENV=development',
+      'nodemon --exec',
+      'babel-node',
+      'scenarios/forwarderBuyERC20Tokens.js',
+    ].join(' '));
     cb();
-    let overallData = '';
     child.stdout.on('data', (data) => {
-      overallData = overallData.concat(data);
-      scenariosLogger.setContent(`{#e1e10e-fg}${overallData}{/}`);
+      scenariosLogger.insertBottom(data);
     });
     return (ccb) => {
       child.kill('SIGINT');
@@ -277,12 +245,15 @@ const scenarios = [{
   name: 'Fill order SRA',
   type: 'scenario',
   run(cb) {
-    const child = exec('NODE_ENV=development nodemon --exec babel-node scenarios/fillOrderSRA.js');
+    const child = exec([
+      'NODE_ENV=development',
+      'nodemon --exec',
+      'babel-node',
+      'scenarios/fillOrderSRA.js',
+    ].join(' '));
     cb();
-    let overallData = '';
     child.stdout.on('data', (data) => {
-      overallData = overallData.concat(data);
-      scenariosLogger.setContent(`{#e1e10e-fg}${overallData}{/}`);
+      scenariosLogger.insertBottom(data);
     });
     return (ccb) => {
       child.kill('SIGINT');
@@ -294,12 +265,15 @@ const scenarios = [{
   name: 'Execute transaction',
   type: 'scenario',
   run(cb) {
-    const child = exec('NODE_ENV=development nodemon --exec babel-node scenarios/executeTransaction.js');
+    const child = exec([
+      'NODE_ENV=development',
+      'nodemon --exec',
+      'babel-node',
+      'scenarios/executeTransaction.js',
+    ].join(' '));
     cb();
-    let overallData = '';
     child.stdout.on('data', (data) => {
-      overallData = overallData.concat(data);
-      scenariosLogger.setContent(`{#e1e10e-fg}${overallData}{/}`);
+      scenariosLogger.insertBottom(data);
     });
     return (ccb) => {
       child.kill('SIGINT');
@@ -311,12 +285,15 @@ const scenarios = [{
   name: 'Match orders',
   type: 'scenario',
   run(cb) {
-    const child = exec('NODE_ENV=development nodemon --exec babel-node scenarios/matchOrders.js');
+    const child = exec([
+      'NODE_ENV=development',
+      'nodemon --exec',
+      'babel-node',
+      'scenarios/matchOrders.js',
+    ].join(' '));
     cb();
-    let overallData = '';
     child.stdout.on('data', (data) => {
-      overallData = overallData.concat(data);
-      scenariosLogger.setContent(`{#e1e10e-fg}${overallData}{/}`);
+      scenariosLogger.insertBottom(data);
     });
     return (ccb) => {
       child.kill('SIGINT');
@@ -328,12 +305,15 @@ const scenarios = [{
   name: 'Exchange subscribe',
   type: 'scenario',
   run(cb) {
-    const child = exec('NODE_ENV=development nodemon --exec babel-node scenarios/exchangeSubscribe.js');
+    const child = exec([
+      'NODE_ENV=development',
+      'nodemon --exec',
+      'babel-node',
+      'scenarios/exchangeSubscribe.js',
+    ].join(' '));
     cb();
-    let overallData = '';
     child.stdout.on('data', (data) => {
-      overallData = overallData.concat(data);
-      scenariosLogger.setContent(`{#e1e10e-fg}${overallData}{/}`);
+      scenariosLogger.insertBottom(data);
     });
     return (ccb) => {
       child.kill('SIGINT');
@@ -345,12 +325,15 @@ const scenarios = [{
   name: 'Cancel Orders',
   type: 'scenario',
   run(cb) {
-    const child = exec('NODE_ENV=development nodemon --exec babel-node scenarios/cancelOrders.js');
+    const child = exec([
+      'NODE_ENV=development',
+      'nodemon --exec',
+      'babel-node',
+      'scenarios/cancelOrders.js',
+    ].join(' '));
     cb();
-    let overallData = '';
     child.stdout.on('data', (data) => {
-      overallData = overallData.concat(data);
-      scenariosLogger.setContent(`{#e1e10e-fg}${overallData}{/}`);
+      scenariosLogger.insertBottom(data);
     });
     return (ccb) => {
       child.kill('SIGINT');
@@ -362,19 +345,74 @@ const scenarios = [{
   name: 'Execute transaction cancel order',
   type: 'scenario',
   run(cb) {
-    const child = exec('NODE_ENV=development nodemon --exec babel-node scenarios/executeTransactionCancelOrder.js');
+    const child = exec([
+      'NODE_ENV=development',
+      'nodemon --exec',
+      'babel-node',
+      'scenarios/executeTransactionCancelOrder.js',
+    ].join(' '));
     cb();
-    let overallData = '';
     child.stdout.on('data', (data) => {
-      overallData = overallData.concat(data);
-      scenariosLogger.setContent(`{#e1e10e-fg}${overallData}{/}`);
+      scenariosLogger.insertBottom(data);
     });
     return (ccb) => {
       child.kill('SIGINT');
       ccb();
     };
   },
-}].map(p => ({
+}];
+
+const tests = [
+  {
+    id: 'apiServerCreateOrderTest',
+    name: 'apiServer - Create order test',
+    type: 'test',
+    run(cb) {
+      const child = exec([
+        'NODE_ENV=test',
+        'mocha apiServer/test/postOrder.test.js',
+        '--require @babel/register',
+        '--colors',
+        '--exit',
+      ].join(' '));
+      cb();
+      child.stdout.on('data', (data) => {
+        scenariosLogger.insertBottom(data);
+      });
+      return (ccb) => {
+        child.kill('SIGINT');
+        ccb();
+      };
+    },
+  }, {
+    id: 'apiTests',
+    name: 'Api tests',
+    type: 'test',
+    run(cb) {
+      const child = exec([
+        'NODE_ENV=test',
+        'mocha apiServer/test/*.test.js',
+        '--require @babel/register',
+        '--colors',
+        '--exit',
+      ].join(' '));
+      cb();
+      child.stdout.on('data', (data) => {
+        scenariosLogger.insertBottom(data);
+      });
+      return (ccb) => {
+        child.kill('SIGINT');
+        ccb();
+      };
+    },
+  },
+];
+
+const allItems = [
+  ...processes,
+  ...tests,
+  ...scenarios,
+].map(p => ({
   ...p,
   active: dashboardConfig.defaultActiveProcesses.includes(p.id),
 }));
@@ -387,8 +425,7 @@ const commands = {
   k: 'Up',
   g: 'Jump to top',
   G: 'Jump to bottom',
-  o: 'Open scenarios',
-  c: 'Close scenarios',
+  t: 'Toggle scenarios',
   q: 'Quit',
 };
 const footerText = Object.keys(commands).map(key => (
@@ -437,9 +474,11 @@ redisSub.on('message', (channel, message) => {
 const dashboard = dashboardFactory({
   screen,
   processList,
-  scenarios,
+  scenariosLogger,
+  footer,
+  commands,
+  allItems,
   redisSub,
-  processes,
   onShowLogs: (process) => {
     logger.setLabel(`Logs - ${process.name}`);
     logger.setContent('');
@@ -474,7 +513,7 @@ fs.readFile(
     screen.log(data);
     let selectedIndex = 0;
     dashboard.showProcessLogs(
-      processes.filter(
+      allItems.filter(
         (p, i) => {
           if (p.id === data) {
             selectedIndex = i;
@@ -485,6 +524,9 @@ fs.readFile(
         },
       )[0],
     );
+    if (allItems[selectedIndex].type === 'scenario') {
+      dashboard.showScenarios();
+    }
     processList.select(selectedIndex);
     dashboard.runAll();
   },
