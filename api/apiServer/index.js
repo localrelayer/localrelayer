@@ -30,8 +30,7 @@ export {
 };
 
 export function runApiServer() {
-  app.listen(config.apiPort, () => {
+  return app.listen(config.apiPort, () => {
     logger.info(`App started on port ${config.apiPort}`);
   });
-  return app;
 }

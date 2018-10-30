@@ -1,6 +1,6 @@
 module.exports = {
   SSL: false,
-  apiPort: 5001,
+  apiPort: 5005,
   socketPort: 5003,
   mongo: 'mongodb://127.0.0.1:27017/relayerTest',
   redis: {

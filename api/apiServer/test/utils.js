@@ -1,8 +1,5 @@
 import supertest from 'supertest';
 import {
-  app,
-} from '..';
-import {
   assetDataUtils,
   BigNumber,
   generatePseudoRandomSalt,
@@ -11,7 +8,12 @@ import {
   Web3Wrapper,
 } from '@0xproject/web3-wrapper';
 
-const request = supertest.agent(app.listen(5001));
+import {
+  app,
+} from '..';
+import config from '../../config';
+
+export const request = supertest.agent(app.listen(config.apiPort));
 
 export const createOrder = ({
   baseAssetData,
@@ -60,7 +62,4 @@ export const createOrder = ({
     signature,
     sortPlace,
   };
-};
-export {
-  request,
 };

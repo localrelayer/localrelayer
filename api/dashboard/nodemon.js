@@ -4,7 +4,7 @@ nodemon({
   script: './dashboard/index.js',
   ext: 'js json',
   stdin: false,
-  delay: 1000,
+  delay: 500,
 });
 
 nodemon.on('crash', () => {
