@@ -1,13 +1,15 @@
 export function dashboardFactory({
   screen,
   processList,
+  scenarios,
   redisSub,
   processes,
   onShowLogs,
 }) {
-  const state = {
-    selectedForLogs: null,
-    ...(processes.reduce((acc, p) => ({
+  let state = {
+    selectedForLogs: '',
+    scenariosStatus: 'close',
+    ...(processes.concat(scenarios).reduce((acc, p) => ({
       ...acc,
       [p.id]: {
         ...p,
@@ -15,8 +17,8 @@ export function dashboardFactory({
       },
     }), {})),
   };
+  processList.focus();
   screen.render();
-
   function getStatus(processId) {
     const { status } = state[processId];
     switch (status) {
@@ -32,7 +34,7 @@ export function dashboardFactory({
 
   function renderProcess(process) {
     const isSelectedForLogs = state.selectedForLogs === process.id;
-    const spacesCount = 30 - process.name.length - (isSelectedForLogs ? 1 : 0);
+    const spacesCount = 50 - process.name.length - (isSelectedForLogs ? 1 : 0);
     return [
       process.name,
       Array(spacesCount).fill().join(' '),
@@ -42,8 +44,18 @@ export function dashboardFactory({
   }
 
   function render() {
+    // in order to get executable list omitting selectedForLogs field
+    const executableList = state.scenariosStatus === 'open'
+      ? Object.values(state).filter(
+        item => typeof item !== 'string',
+      )
+      : Object.values(state).filter(
+        item => (
+          typeof item !== 'string' && item.type === 'process'
+        ),
+      );
     processList.setItems(
-      processes
+      executableList
         .map(p => renderProcess(p)),
     );
     screen.render();
@@ -103,20 +115,59 @@ export function dashboardFactory({
     redisSub.subscribe(`logs-${process.id}`);
     render();
   }
-
   processList.key('enter', () => {
-    const process = processes[processList.selected];
+    const executableList = Object.values(state).filter(item => typeof item !== 'string');
+    const process = executableList[processList.selected];
     showProcessLogs(process);
   });
 
   processList.key('r', () => {
-    const process = processes[processList.selected];
+    const executableList = Object.values(state).filter(item => typeof item !== 'string');
+    const process = executableList[processList.selected];
     runProcess(process);
   });
 
   processList.key('s', () => {
-    const process = processes[processList.selected];
+    const executableList = Object.values(state).filter(item => typeof item !== 'string');
+    const process = executableList[processList.selected];
     stopProcess(process);
+  });
+
+  processList.key('o', () => {
+    const currentScenarios = Object.values(state).filter(
+      item => (typeof item !== 'string' && item.type === 'scenario'),
+    );
+    state = {
+      ...(currentScenarios.reduce((acc, p) => ({
+        ...acc,
+        [p.id]: {
+          ...p,
+          status: state[p.id] ? state[p.id].status : 'stopped',
+        },
+      }), state)),
+      scenariosStatus: 'open',
+    };
+    const executableList = Object.values(state).filter(item => typeof item !== 'string');
+    processList.setItems(executableList.map(p => renderProcess(p)));
+    screen.render();
+  });
+
+  processList.key('c', () => {
+    const currentProcesses = Object.values(state).filter(
+      item => (typeof item !== 'string' && item.type === 'process'),
+    );
+    state = {
+      ...(currentProcesses.reduce((acc, p) => ({
+        ...acc,
+        [p.id]: {
+          ...p,
+          status: state[p.id] ? state[p.id].status : 'stopped',
+        },
+      }), state)),
+      scenariosStatus: 'closed',
+    };
+    processList.setItems(currentProcesses.map(p => renderProcess(p)));
+    screen.render();
   });
 
   return ({

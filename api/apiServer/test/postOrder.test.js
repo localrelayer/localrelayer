@@ -3,6 +3,7 @@ import {
   SchemaValidator,
   schemas,
 } from '@0xproject/json-schemas';
+
 import {
   Order,
 } from '../../db';
@@ -10,6 +11,7 @@ import {
   request,
   createOrder,
 } from './utils';
+
 
 const validator = new SchemaValidator();
 const { expect } = chai;
@@ -21,7 +23,6 @@ describe('postOrder', () => {
 
   it('should check if created order has valid schema', async () => {
     const order = createOrder({});
-
     expect(validator.isValid(
       order,
       schemas.signedOrderSchema,

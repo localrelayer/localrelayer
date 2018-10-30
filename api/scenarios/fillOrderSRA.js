@@ -65,7 +65,7 @@ export async function scenarioAsync() {
   const takerAssetData = assetDataUtils.encodeERC20AssetData(zrxTokenAddress);
   const makerAssetData = assetDataUtils.encodeERC20AssetData(etherTokenAddress);
   // the amount the maker is selling of maker asset
-  const makerAssetAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(0.17), DECIMALS);
+  const makerAssetAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(0.01), DECIMALS);
   // the amount the maker wants of taker asset
   const takerAssetAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(0.005), DECIMALS);
 
@@ -149,7 +149,6 @@ export async function scenarioAsync() {
       networkId: GANACHE_NETWORK_ID,
     },
   );
-  console.log(response);
   if (response.asks.total === 0) {
     throw new Error('No orders found on the SRA Endpoint');
   }
