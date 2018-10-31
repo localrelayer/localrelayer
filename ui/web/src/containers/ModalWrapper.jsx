@@ -11,7 +11,7 @@ import {
 } from 'instex-core/selectors';
 import type { Token } from 'instex-core/types';
 import type { Dispatch } from 'redux';
-import GasModal from '../components/Modals/GasModal';
+import GasModal from '../components/Modals/GasModal.back';
 import AllowanceModal from '../components/Modals/AllowanceModal';
 import TxModal from '../components/Modals/TxModal';
 import WrapModal from '../components/Modals/WrapModal';

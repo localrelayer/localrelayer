@@ -13,9 +13,10 @@ const initialState: WalletState = {
   networkId: null,
   networkName: '',
   selectedAccount: null,
-  selectedAccountBalance: null,
+  selectedAccountBalance: '0',
   accounts: [],
   balance: {},
+  allowance: {},
 };
 
 const mergeValues = (

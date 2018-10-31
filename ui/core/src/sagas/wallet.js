@@ -1,6 +1,6 @@
 // @flow
 import * as eff from 'redux-saga/effects';
-
+import * as R from 'ramda';
 import * as walletActions from '../actions/wallet';
 import ethApi from '../ethApi';
 
@@ -48,6 +48,20 @@ export function* watchWallet({
       ),
     );
 
+    const allowance = yield eff.all(
+      tokens.reduce(
+        (acc, tokenAddress) => ({
+          ...acc,
+          [tokenAddress]: eff.call(
+            [contractWrappers.erc20Token, contractWrappers.erc20Token.getProxyAllowanceAsync],
+            tokenAddress,
+            selectedAccount,
+          ),
+        }),
+        {},
+      ),
+    );
+
     const changedData = [];
     const wallet = yield eff.select(s => s.wallet);
     if (wallet.networkId !== networkId) {
@@ -71,9 +85,18 @@ export function* watchWallet({
         selectedAccountBalance,
       });
     }
-    changedData.push({
-      balance,
-    });
+
+    if (!R.equals(wallet.balance, balance)) {
+      changedData.push({
+        balance,
+      });
+    }
+
+    if (!R.equals(wallet.allowance, allowance)) {
+      changedData.push({
+        allowance,
+      });
+    }
 
     if (changedData.length) {
       yield eff.put(

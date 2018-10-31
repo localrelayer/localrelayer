@@ -96,7 +96,7 @@ export async function scenarioAsync() {
   ]);
 
   // Initialize the Standard Relayer API client
-  const httpClient = new HttpClient('http://localhost:3000/v2/');
+  const httpClient = new HttpClient('http://localhost:5001/v2/');
 
   // Generate and expiration time and find the exchange smart contract address
   const randomExpiration = getRandomFutureDateInSeconds();
