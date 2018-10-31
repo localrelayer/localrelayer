@@ -1,75 +1,46 @@
 // @flow
-
 import React from 'react';
-import { connect } from 'react-redux';
-import type {
-  Tokens,
-} from 'instex-core/types';
-import type { MapStateToProps } from 'react-redux';
+
 import type {
   Node,
-  StatelessFunctionalComponent,
 } from 'react';
-import {
-  callContract,
-  setUiState,
-} from 'instex-core/actions';
-import {
-  getResourceMappedList,
-} from 'instex-core/selectors';
-import UserBalance from '../../components/UserBalance';
-import { StyleContainer } from './styled';
 
-type Props = {
-  tokens: Tokens,
-  balance: string,
-  dispatch: Dispatch,
-  isBalanceLoading: boolean,
-  lockedBalance: string,
-  isConnected: boolean,
-};
+import {
+  getAssetsWithBalanceAndAllowance,
+  getFormattedWalletBalance,
+} from 'web-selectors';
+import Component from 'web-components/ConnectComponent';
+import UserBalance from 'web-components/UserBalance';
+import {
+  coreActions,
+} from 'instex-core';
 
-const UserBalanceContainer: StatelessFunctionalComponent<Props> = ({
-  tokens,
-  balance,
-  dispatch,
-  isBalanceLoading,
-  lockedBalance,
-  isConnected,
-}: Props): Node => (
-  <StyleContainer className="component-container">
-    <UserBalance
-      isBalanceLoading={isBalanceLoading}
-      tokens={tokens}
-      onToggle={(checked, token) => {
-        if (checked) {
-          dispatch(setUiState('activeModal', 'GasModal'));
-          dispatch(setUiState('onGasOk', { action: 'callContract', args: ['setAllowance', token] }));
-        } else {
-          dispatch(setUiState('activeModal', 'GasModal'));
-          dispatch(setUiState('onGasOk', { action: 'callContract', args: ['unsetAllowance', token] }));
+
+const UserBalanceContainer = (): Node => (
+  <Component
+    mapStateToProps={state => ({
+      assets: getAssetsWithBalanceAndAllowance(state),
+      balance: getFormattedWalletBalance(state),
+    })}
+  >
+    {({
+      assets,
+      balance,
+      dispatch,
+    }) => (
+      <UserBalance
+        assets={assets}
+        balance={balance}
+        onToggle={
+          (isTradable, asset) => (
+            dispatch(coreActions.setApproval(isTradable, asset))
+          )
         }
-      }}
-      balance={balance}
-      wrap={() => {
-        dispatch(setUiState('activeModal', 'GasModal'));
-        dispatch(setUiState('onGasOk', { action: 'callContract', args: ['deposit'] }));
-      }}
-      unwrap={() => {
-        dispatch(setUiState('activeModal', 'GasModal'));
-        dispatch(setUiState('onGasOk', { action: 'callContract', args: ['withdraw'] }));
-      }}
-      lockedBalance={lockedBalance}
-      isConnected={isConnected}
-    />
-  </StyleContainer>
+        deposit={amount => dispatch(coreActions.depositOrWithdrawRequest('deposit', amount))}
+        withdraw={amount => dispatch(coreActions.depositOrWithdrawRequest('withdraw', amount))}
+      />
+    )}
+  </Component>
 );
 
-const mapStateToProps: MapStateToProps<*, *, *> = state => ({
-  tokens: getResourceMappedList('tokens', 'currentUserTokens')(state),
-  balance: state.profile.balance,
-  isBalanceLoading: state.ui.isBalanceLoading,
-  isConnected: state.profile.connectionStatus !== 'Not connected' && state.profile.connectionStatus !== 'Locked',
-});
-
-export default connect(mapStateToProps)(UserBalanceContainer);
+export default UserBalanceContainer;

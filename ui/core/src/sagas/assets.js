@@ -5,11 +5,16 @@ import {
 } from '0x.js';
 import {
   addressUtils,
+  BigNumber,
 } from '@0xproject/utils';
 
 import {
+  Web3Wrapper,
+} from '@0xproject/web3-wrapper';
+import {
   getAssetByIdField,
   getResourceById,
+  getWalletState,
 } from '../selectors';
 import api from '../api';
 import {
@@ -18,6 +23,10 @@ import {
 import abiZRX from '../contracts/abiZRX';
 // https://etherscan.io/address/0x86fa049857e0209aa7d9e616f7eb3b3b78ecfdb0#code
 import abiEOS from '../contracts/abiEOS';
+import {
+  actionTypes,
+} from '../actions';
+import ethApi from '../ethApi';
 
 
 function* extractInfo(tokenContract) {
@@ -54,6 +63,7 @@ export function* getAssetAdditionalInfo({
      * If call new web3 using call effect we will have an issue because of new context,
      * issue appears only with redux-saga-test-plan
      */
+    const web3 = ethApi.getWeb3();
     const zrxContract = new web3.eth.Contract(abiZRX, tokenAddress);
     const additionalInfo = yield eff.call(extractInfo, zrxContract);
     return {
@@ -229,10 +239,10 @@ export function* checkAssetPair({
     (
       assetsTypes.baseAsset
       && (
-        yield eff.select(s => getAssetByIdField({
+        yield eff.select(getAssetByIdField({
           fieldName: assetsTypes.baseAsset.type,
           value: assetsTypes.baseAsset.value,
-        })(s.assets.resources))
+        }))
       )
     ) || (
       assetsTypes.baseAsset.type === 'address' && (
@@ -247,10 +257,10 @@ export function* checkAssetPair({
     (
       assetsTypes.quoteAsset
       && (
-        yield eff.select(s => getAssetByIdField({
+        yield eff.select(getAssetByIdField({
           fieldName: assetsTypes.quoteAsset.type,
           value: assetsTypes.quoteAsset.value,
-        })(s.assets.resources))
+        }))
       )
     ) || (
       assetsTypes.quoteAsset.type === 'address' && (
@@ -306,4 +316,52 @@ export function* checkAssetPair({
     ...(!quoteAssetResource ? { quoteAssetResource: 'Wrong asset' } : {}),
   };
   throw errors;
+}
+
+function* processApproval(action) {
+  const web3 = ethApi.getWeb3();
+  const networkId = eff.call(web3.eth.net.getId);
+  const contractWrappers = ethApi.getWrappers(networkId);
+  const amount = action.payload.isTradable
+    ? contractWrappers.erc20Token.UNLIMITED_ALLOWANCE_IN_BASE_UNITS
+    : new BigNumber(0);
+  const selectedAccount = yield eff.select(getWalletState('selectedAccount'));
+  yield eff.call(
+    [contractWrappers.erc20Token, contractWrappers.erc20Token.setProxyAllowanceAsync],
+    action.payload.asset.address,
+    selectedAccount,
+    amount,
+  );
+}
+
+function* processDepositWithdraw(action) {
+  const web3 = ethApi.getWeb3();
+  const networkId = eff.call(web3.eth.net.getId);
+  const contractWrappers = ethApi.getWrappers(networkId);
+  const selectedAccount = yield eff.select(getWalletState('selectedAccount'));
+  const etherToken = yield eff.select(getAssetByIdField({
+    fieldName: 'symbol',
+    value: 'WETH',
+  }));
+  yield eff.call(
+    [
+      contractWrappers.etherToken,
+      contractWrappers.etherToken[`${action.payload.type}Async`],
+    ],
+    etherToken.address,
+    Web3Wrapper.toBaseUnitAmount(new BigNumber(action.payload.amount), etherToken.decimals),
+    selectedAccount,
+    {
+      // Default gas amount isn't enought for withdrawal
+      gasLimit: 100000,
+    },
+  );
+}
+
+export function* takeApproval() {
+  yield eff.takeEvery(actionTypes.SET_APPROVAL_REQUEST, processApproval);
+}
+
+export function* takeDepositAndWithdraw() {
+  yield eff.takeEvery(actionTypes.DEPOSIT_WITHDRAW_REQUEST, processDepositWithdraw);
 }

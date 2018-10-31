@@ -5,5 +5,6 @@ export default {
     'socketServer',
     'apiServer',
     'fillHandlerQueue',
+    'ethEventHandlerQueue',
   ],
 };

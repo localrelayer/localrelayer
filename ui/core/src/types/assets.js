@@ -7,6 +7,8 @@ export type Asset = {
   name: string,
   symbol: string,
   decimals: number,
+  balance?: string,
+  isTradable?: boolean,
 };
 
 export type AssetPair = {

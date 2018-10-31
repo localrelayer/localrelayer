@@ -12,6 +12,7 @@ import {
 } from '../sputnik/subscribe';
 import {
   runFillQueueHandler,
+  runEthEventHandler,
 } from '../sputnik/eventHandlers';
 import {
   runWebSocketServer,
@@ -45,7 +46,7 @@ const processes = [{
   run(cb) {
     const subscriptions = subscribeEthEvents([
       'test',
-      'main',
+      // 'main',
       'kovan',
     ]);
     cb();
@@ -84,7 +85,15 @@ const processes = [{
       queue.shutdown(5000, ccb);
     };
   },
-}].map(p => ({
+}, { id: 'ethEventHandlerQueue',
+  name: 'EthEventHandler queue',
+  run(cb) {
+    const queue = runEthEventHandler();
+    cb();
+    return (ccb) => {
+      queue.shutdown(5000, ccb);
+    };
+  } }].map(p => ({
   ...p,
   active: dashboardConfig.defaultActiveProcesses.includes(p.id),
 }));
