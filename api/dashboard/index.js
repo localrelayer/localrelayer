@@ -1,6 +1,8 @@
 import fs from 'fs';
 import blessed from 'blessed';
-
+import {
+  exec,
+} from 'child_process';
 import {
   redisClient,
 } from '../redis';
@@ -12,7 +14,6 @@ import {
 } from '../sputnik/subscribe';
 import {
   runFillQueueHandler,
-  runEthEventHandler,
 } from '../sputnik/eventHandlers';
 import {
   runWebSocketServer,
@@ -25,78 +26,10 @@ import {
 } from './dashboard';
 import dashboardConfig from './.config';
 
-
 const tmpFile = '/tmp/instexDashboard';
 const redisSub = redisClient.duplicate();
 const redisDashboardClient = redisClient.duplicate();
 const program = blessed.program();
-
-const processes = [{
-  id: 'ganacheServer',
-  name: 'Ganache server',
-  run(cb) {
-    const server = runGanacheServer(cb);
-    return (ccb) => {
-      server.close(ccb);
-    };
-  },
-}, {
-  id: 'sputnikSubscribe',
-  name: 'Sputnik subscribe',
-  run(cb) {
-    const subscriptions = subscribeEthEvents([
-      'test',
-      // 'main',
-      'kovan',
-    ]);
-    cb();
-    return (ccb) => {
-      subscriptions.forEach(s => s());
-      ccb();
-    };
-  },
-}, {
-  id: 'socketServer',
-  name: 'WebSocket server',
-  run(cb) {
-    const server = runWebSocketServer();
-    cb();
-    return (ccb) => {
-      server.close(ccb);
-    };
-  },
-}, {
-  id: 'apiServer',
-  name: 'Api server',
-  run(cb) {
-    const server = runApiServer();
-    cb();
-    return (ccb) => {
-      server.close(ccb);
-    };
-  },
-}, {
-  id: 'fillHandlerQueue',
-  name: 'FillHandler queue',
-  run(cb) {
-    const queue = runFillQueueHandler();
-    cb();
-    return (ccb) => {
-      queue.shutdown(5000, ccb);
-    };
-  },
-}, { id: 'ethEventHandlerQueue',
-  name: 'EthEventHandler queue',
-  run(cb) {
-    const queue = runEthEventHandler();
-    cb();
-    return (ccb) => {
-      queue.shutdown(5000, ccb);
-    };
-  } }].map(p => ({
-  ...p,
-  active: dashboardConfig.defaultActiveProcesses.includes(p.id),
-}));
 
 const screen = blessed.screen({
   smartCSR: true,
@@ -107,14 +40,36 @@ const screen = blessed.screen({
   title: 'Instex dashboard',
 });
 
+const scenariosLogger = blessed.log({
+  parent: screen,
+  width: '50%',
+  height: '99%',
+  border: 'line',
+  label: 'Output',
+  tags: true,
+  keys: true,
+  vi: true,
+  mouse: true,
+  scrollback: 100,
+  scrollbar: {
+    ch: ' ',
+    track: {
+      bg: 'blue',
+    },
+    style: {
+      inverse: true,
+    },
+  },
+});
+
 const processList = blessed.list({
   parent: screen,
   top: '70%',
-  left: '50%',
   width: '50%',
+  left: '50%',
   height: '30%',
   border: 'line',
-  label: 'Processes',
+  label: 'Executing List',
   align: 'left',
   mouse: true,
   keys: true,
@@ -135,7 +90,8 @@ const processList = blessed.list({
 
 const logger = blessed.log({
   parent: screen,
-  width: '100%',
+  width: '50%',
+  left: '50%',
   height: '70%',
   border: 'line',
   label: 'Logs',
@@ -155,36 +111,312 @@ const logger = blessed.log({
   },
 });
 
-const scenariousLogger = blessed.log({
-  parent: screen,
-  top: '70%',
-  width: '50%',
-  height: '30%',
-  border: 'line',
-  label: 'Scenarious logs',
-  tags: true,
-  keys: true,
-  vi: true,
-  mouse: true,
-  scrollback: 100,
-  scrollbar: {
-    ch: ' ',
-    track: {
-      bg: 'blue',
-    },
-    style: {
-      inverse: true,
-    },
-  },
-});
-scenariousLogger.setContent('{#e1e10e-fg}TODO: show scenarious logs{/}');
-
 const footer = blessed.box({
   parent: screen,
   width: '100%',
   top: program.rows - 1,
   tags: true,
 });
+
+const processes = [{
+  id: 'ganacheServer',
+  name: 'Ganache server',
+  type: 'process',
+  run(cb) {
+    const server = runGanacheServer(cb);
+    return (ccb) => {
+      server.close(ccb);
+    };
+  },
+}, {
+  id: 'sputnikSubscribe',
+  name: 'Sputnik subscribe',
+  type: 'process',
+  run(cb) {
+    const subscriptions = subscribeEthEvents([
+      'test',
+      'main',
+      'kovan',
+    ]);
+    cb();
+    return (ccb) => {
+      subscriptions.forEach(s => s());
+      ccb();
+    };
+  },
+}, {
+  id: 'socketServer',
+  name: 'WebSocket server',
+  type: 'process',
+  run(cb) {
+    const server = runWebSocketServer();
+    cb();
+    return (ccb) => {
+      server.close(ccb);
+    };
+  },
+}, {
+  id: 'apiServer',
+  name: 'Api server',
+  type: 'process',
+  run(cb) {
+    const server = runApiServer();
+    cb();
+    return (ccb) => {
+      server.close();
+      ccb();
+    };
+  },
+}, {
+  id: 'fillHandlerQueue',
+  name: 'FillHandler queue',
+  type: 'process',
+  run(cb) {
+    const queue = runFillQueueHandler();
+    cb();
+    return (ccb) => {
+      queue.shutdown(5000, ccb);
+    };
+  },
+}];
+
+const scenarios = [{
+  id: 'fillOrderERC20',
+  name: 'Fill ERC20 Order',
+  type: 'scenario',
+  run(cb) {
+    const child = exec([
+      'NODE_ENV=development',
+      'nodemon --exec',
+      'babel-node',
+      'scenarios/fillOrderERC20.js',
+    ].join(' '));
+    cb();
+    child.stdout.on('data', (data) => {
+      scenariosLogger.insertBottom(data);
+    });
+    return (ccb) => {
+      child.kill('SIGINT');
+      ccb();
+    };
+  },
+}, {
+  id: 'fillOrderFees',
+  name: 'Fill order fees',
+  type: 'scenario',
+  run(cb) {
+    const child = exec([
+      'NODE_ENV=development',
+      'nodemon --exec',
+      'babel-node',
+      'scenarios/fillOrderFees.js',
+    ].join(' '));
+    cb();
+    child.stdout.on('data', (data) => {
+      scenariosLogger.insertBottom(data);
+    });
+    return (ccb) => {
+      child.kill('SIGINT');
+      ccb();
+    };
+  },
+}, {
+  id: 'forwarderBuyERC20Tokens',
+  name: 'Forwarder Buy ERC20 Tokens',
+  type: 'scenario',
+  run(cb) {
+    const child = exec([
+      'NODE_ENV=development',
+      'nodemon --exec',
+      'babel-node',
+      'scenarios/forwarderBuyERC20Tokens.js',
+    ].join(' '));
+    cb();
+    child.stdout.on('data', (data) => {
+      scenariosLogger.insertBottom(data);
+    });
+    return (ccb) => {
+      child.kill('SIGINT');
+      ccb();
+    };
+  },
+}, {
+  id: 'fillOrderSRA',
+  name: 'Fill order SRA',
+  type: 'scenario',
+  run(cb) {
+    const child = exec([
+      'NODE_ENV=development',
+      'nodemon --exec',
+      'babel-node',
+      'scenarios/fillOrderSRA.js',
+    ].join(' '));
+    cb();
+    child.stdout.on('data', (data) => {
+      scenariosLogger.insertBottom(data);
+    });
+    return (ccb) => {
+      child.kill('SIGINT');
+      ccb();
+    };
+  },
+}, {
+  id: 'executeTransaction',
+  name: 'Execute transaction',
+  type: 'scenario',
+  run(cb) {
+    const child = exec([
+      'NODE_ENV=development',
+      'nodemon --exec',
+      'babel-node',
+      'scenarios/executeTransaction.js',
+    ].join(' '));
+    cb();
+    child.stdout.on('data', (data) => {
+      scenariosLogger.insertBottom(data);
+    });
+    return (ccb) => {
+      child.kill('SIGINT');
+      ccb();
+    };
+  },
+}, {
+  id: 'matchOrders',
+  name: 'Match orders',
+  type: 'scenario',
+  run(cb) {
+    const child = exec([
+      'NODE_ENV=development',
+      'nodemon --exec',
+      'babel-node',
+      'scenarios/matchOrders.js',
+    ].join(' '));
+    cb();
+    child.stdout.on('data', (data) => {
+      scenariosLogger.insertBottom(data);
+    });
+    return (ccb) => {
+      child.kill('SIGINT');
+      ccb();
+    };
+  },
+}, {
+  id: 'exchangeSubscribe',
+  name: 'Exchange subscribe',
+  type: 'scenario',
+  run(cb) {
+    const child = exec([
+      'NODE_ENV=development',
+      'nodemon --exec',
+      'babel-node',
+      'scenarios/exchangeSubscribe.js',
+    ].join(' '));
+    cb();
+    child.stdout.on('data', (data) => {
+      scenariosLogger.insertBottom(data);
+    });
+    return (ccb) => {
+      child.kill('SIGINT');
+      ccb();
+    };
+  },
+}, {
+  id: 'cancelOrders',
+  name: 'Cancel Orders',
+  type: 'scenario',
+  run(cb) {
+    const child = exec([
+      'NODE_ENV=development',
+      'nodemon --exec',
+      'babel-node',
+      'scenarios/cancelOrders.js',
+    ].join(' '));
+    cb();
+    child.stdout.on('data', (data) => {
+      scenariosLogger.insertBottom(data);
+    });
+    return (ccb) => {
+      child.kill('SIGINT');
+      ccb();
+    };
+  },
+}, {
+  id: 'executeTransactionCancelOrder',
+  name: 'Execute transaction cancel order',
+  type: 'scenario',
+  run(cb) {
+    const child = exec([
+      'NODE_ENV=development',
+      'nodemon --exec',
+      'babel-node',
+      'scenarios/executeTransactionCancelOrder.js',
+    ].join(' '));
+    cb();
+    child.stdout.on('data', (data) => {
+      scenariosLogger.insertBottom(data);
+    });
+    return (ccb) => {
+      child.kill('SIGINT');
+      ccb();
+    };
+  },
+}];
+
+const tests = [
+  {
+    id: 'apiServerCreateOrderTest',
+    name: 'apiServer - Create order test',
+    type: 'test',
+    run(cb) {
+      const child = exec([
+        'NODE_ENV=test',
+        'mocha apiServer/test/postOrder.test.js',
+        '--require @babel/register',
+        '--colors',
+        '--exit',
+      ].join(' '));
+      cb();
+      child.stdout.on('data', (data) => {
+        scenariosLogger.insertBottom(data);
+      });
+      return (ccb) => {
+        child.kill('SIGINT');
+        ccb();
+      };
+    },
+  }, {
+    id: 'apiTests',
+    name: 'Api tests',
+    type: 'test',
+    run(cb) {
+      const child = exec([
+        'NODE_ENV=test',
+        'mocha apiServer/test/*.test.js',
+        '--require @babel/register',
+        '--colors',
+        '--exit',
+      ].join(' '));
+      cb();
+      child.stdout.on('data', (data) => {
+        scenariosLogger.insertBottom(data);
+      });
+      return (ccb) => {
+        child.kill('SIGINT');
+        ccb();
+      };
+    },
+  },
+];
+
+const allItems = [
+  ...processes,
+  ...tests,
+  ...scenarios,
+].map(p => ({
+  ...p,
+  active: dashboardConfig.defaultActiveProcesses.includes(p.id),
+}));
+
 const commands = {
   Enter: 'Show process logs',
   r: 'Run process',
@@ -193,6 +425,7 @@ const commands = {
   k: 'Up',
   g: 'Jump to top',
   G: 'Jump to bottom',
+  t: 'Toggle scenarios',
   q: 'Quit',
 };
 const footerText = Object.keys(commands).map(key => (
@@ -241,8 +474,11 @@ redisSub.on('message', (channel, message) => {
 const dashboard = dashboardFactory({
   screen,
   processList,
+  scenariosLogger,
+  footer,
+  commands,
+  allItems,
   redisSub,
-  processes,
   onShowLogs: (process) => {
     logger.setLabel(`Logs - ${process.name}`);
     logger.setContent('');
@@ -275,13 +511,23 @@ fs.readFile(
       screen.log(err);
     }
     screen.log(data);
+    let selectedIndex = 0;
     dashboard.showProcessLogs(
-      processes.filter(
-        p => (
-          data ? p.id === data : true
-        ),
+      allItems.filter(
+        (p, i) => {
+          if (p.id === data) {
+            selectedIndex = i;
+          }
+          return (
+            data ? p.id === data : true
+          );
+        },
       )[0],
     );
+    if (allItems[selectedIndex].type === 'scenario') {
+      dashboard.showScenarios();
+    }
+    processList.select(selectedIndex);
     dashboard.runAll();
   },
 );

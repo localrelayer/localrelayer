@@ -30,7 +30,9 @@ module.exports = {
         ExportDeclaration: 'always'
     }],
   },
-  env: {
-    node: true,
+  "env": {
+    "browser": true,
+    "mocha": true,
+    "node": true
   },
 };
