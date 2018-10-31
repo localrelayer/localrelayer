@@ -48,7 +48,7 @@ export async function scenarioAsync() {
   // Initialize the Web3Wrapper, this provides helper functions around fetching
   // account information, balances, general contract logs
   const web3Wrapper = new Web3Wrapper(providerEngine);
-  const [maker, taker] = await web3Wrapper.getAvailableAddressesAsync();
+  const [taker, maker] = await web3Wrapper.getAvailableAddressesAsync();
   const zrxTokenAddress = contractWrappers.exchange.getZRXTokenAddress();
   const etherTokenAddress = contractWrappers.etherToken.getContractAddressIfExists();
   if (!etherTokenAddress) {
@@ -62,12 +62,12 @@ export async function scenarioAsync() {
   );
   printUtils.printAccounts();
 
-  const makerAssetData = assetDataUtils.encodeERC20AssetData(zrxTokenAddress);
-  const takerAssetData = assetDataUtils.encodeERC20AssetData(etherTokenAddress);
+  const takerAssetData = assetDataUtils.encodeERC20AssetData(zrxTokenAddress);
+  const makerAssetData = assetDataUtils.encodeERC20AssetData(etherTokenAddress);
   // the amount the maker is selling of maker asset
-  const makerAssetAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(5), DECIMALS);
+  const makerAssetAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(0.01), DECIMALS);
   // the amount the maker wants of taker asset
-  const takerAssetAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(0.1), DECIMALS);
+  const takerAssetAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(0.005), DECIMALS);
 
 
   // Allow the 0x ERC20 Proxy to move ZRX on behalf of makerAccount
@@ -124,6 +124,7 @@ export async function scenarioAsync() {
     ...orderConfig,
   };
 
+  await printUtils.fetchAndPrintContractBalancesAsync();
   // Generate the order hash and sign it
   const orderHashHex = orderHashUtils.getOrderHashHex(order);
   const signature = await signatureUtils.ecSignOrderHashAsync(
@@ -151,16 +152,16 @@ export async function scenarioAsync() {
   if (response.asks.total === 0) {
     throw new Error('No orders found on the SRA Endpoint');
   }
-  const sraOrder = response.asks.records[0].order;
+  // if we don't remove full filled order from global scope,
+  // we should get last added order here not 1st every time
+  const sraOrder = response.asks.records[response.asks.records.length - 1].order;
   printUtils.printOrder(sraOrder);
-
   // Validate the order is Fillable given the maker and taker balances
   await contractWrappers.exchange.validateFillOrderThrowIfInvalidAsync(
     sraOrder,
     takerAssetAmount,
     taker,
   );
-
   // Fill the Order via 0x Exchange contract
   const txHash = await contractWrappers.exchange.fillOrderAsync(sraOrder, takerAssetAmount, taker, {
     gasLimit: GAS_DEFAULT,

@@ -15,8 +15,8 @@ function runSputnik() {
   runFillQueueHandler();
   subscribeEthEvents([
     ...(process.env.NODE_ENV === 'development' ? ['test'] : []),
-    // 'main',
-    // 'kovan',
+    'main',
+    'kovan',
   ]);
 }
 

@@ -1,13 +1,17 @@
 export function dashboardFactory({
   screen,
   processList,
+  scenariosLogger,
+  allItems,
+  footer,
+  commands,
   redisSub,
-  processes,
   onShowLogs,
 }) {
-  const state = {
-    selectedForLogs: null,
-    ...(processes.reduce((acc, p) => ({
+  let state = {
+    selectedForLogs: '',
+    scenariosStatus: 'closed',
+    ...(allItems.reduce((acc, p) => ({
       ...acc,
       [p.id]: {
         ...p,
@@ -15,8 +19,8 @@ export function dashboardFactory({
       },
     }), {})),
   };
+  processList.focus();
   screen.render();
-
   function getStatus(processId) {
     const { status } = state[processId];
     switch (status) {
@@ -32,18 +36,42 @@ export function dashboardFactory({
 
   function renderProcess(process) {
     const isSelectedForLogs = state.selectedForLogs === process.id;
-    const spacesCount = 30 - process.name.length - (isSelectedForLogs ? 1 : 0);
+    const spacesCount = 50 - process.name.length - (isSelectedForLogs ? 1 : 0);
+    let coloredName;
+    switch (process.type) {
+      case 'scenario': {
+        coloredName = `{#00FFFF-fg}${process.name}{/#00FFFF-fg}`;
+        break;
+      }
+      case 'test': {
+        coloredName = `{#DAA520-fg}${process.name}{/#DAA520-fg}`;
+        break;
+      }
+      default: {
+        coloredName = `{#2E8B57-fg}${process.name}{/#2E8B57-fg}`;
+        break;
+      }
+    }
     return [
-      process.name,
+      coloredName,
       Array(spacesCount).fill().join(' '),
-      isSelectedForLogs ? '*' : '',
+      isSelectedForLogs ? '{#FFA500-fg}*{/#FFA500-fg}' : '',
       `${getStatus(process.id)}`.toString(),
     ].join(' ');
   }
 
   function render() {
+    const executableList = state.scenariosStatus === 'opened'
+      ? Object.values(state).filter(
+        item => typeof item !== 'string',
+      )
+      : Object.values(state).filter(
+        item => (
+          typeof item !== 'string' && (item.type === 'process' || item.type === 'test')
+        ),
+      );
     processList.setItems(
-      processes
+      executableList
         .map(p => renderProcess(p)),
     );
     screen.render();
@@ -59,6 +87,7 @@ export function dashboardFactory({
 
   function runProcess(process) {
     const { status } = state[process.id];
+    scenariosLogger.setLabel(`Output - ${process.name}`);
     if (status === 'stopped') {
       setProcessStatus(
         process.id,
@@ -95,6 +124,45 @@ export function dashboardFactory({
     }
   }
 
+  function showScenarios() {
+    const currentScenarios = Object.values(state).filter(
+      item => (typeof item !== 'string' && item.type === 'scenario'),
+    );
+    state = {
+      ...(currentScenarios.reduce((acc, p) => ({
+        ...acc,
+        [p.id]: {
+          ...p,
+          status: state[p.id] ? state[p.id].status : 'stopped',
+        },
+      }), state)),
+      scenariosStatus: 'opened',
+    };
+    const executableList = Object.values(state).filter(item => typeof item !== 'string');
+    processList.setItems(executableList.map(p => renderProcess(p)));
+    screen.render();
+  }
+
+  function hideScenarios() {
+    const currentProcesses = Object.values(state).filter(
+      item => (
+        typeof item !== 'string' && (item.type === 'process' || item.type === 'test')
+      ),
+    );
+    state = {
+      ...(currentProcesses.reduce((acc, p) => ({
+        ...acc,
+        [p.id]: {
+          ...p,
+          status: state[p.id] ? state[p.id].status : 'stopped',
+        },
+      }), state)),
+      scenariosStatus: 'closed',
+    };
+    processList.setItems(currentProcesses.map(p => renderProcess(p)));
+    screen.render();
+  }
+
   function showProcessLogs(process) {
     onShowLogs(process);
     state.selectedForLogs = process.id;
@@ -103,29 +171,77 @@ export function dashboardFactory({
     redisSub.subscribe(`logs-${process.id}`);
     render();
   }
-
+  processList.on('select item', () => {
+    const executableList = Object.values(state).filter(item => typeof item !== 'string');
+    switch (executableList[processList.selected].type) {
+      case 'scenario': {
+        const scenarioCommands = Object.assign({}, commands);
+        scenarioCommands.Enter = 'Show scenario logs';
+        scenarioCommands.r = 'Run scenario';
+        scenarioCommands.s = 'Stop Scenario';
+        footer.setContent(Object.keys(scenarioCommands).map(key => (
+          `{white-bg}{black-fg}${key}{/black-fg}{/white-bg} ${scenarioCommands[key]}`
+        )).join('  '));
+        break;
+      }
+      case 'test': {
+        const scenarioCommands = Object.assign({}, commands);
+        scenarioCommands.Enter = 'Show test logs';
+        scenarioCommands.r = 'Run test';
+        scenarioCommands.s = 'Stop test';
+        footer.setContent(Object.keys(scenarioCommands).map(key => (
+          `{white-bg}{black-fg}${key}{/black-fg}{/white-bg} ${scenarioCommands[key]}`
+        )).join('  '));
+        break;
+      }
+      default: {
+        footer.setContent(Object.keys(commands).map(key => (
+          `{white-bg}{black-fg}${key}{/black-fg}{/white-bg} ${commands[key]}`
+        )).join('  '));
+        break;
+      }
+    }
+  });
   processList.key('enter', () => {
-    const process = processes[processList.selected];
+    const executableList = Object.values(state).filter(item => typeof item !== 'string');
+    const process = executableList[processList.selected];
     showProcessLogs(process);
   });
 
   processList.key('r', () => {
-    const process = processes[processList.selected];
+    const executableList = Object.values(state).filter(item => typeof item !== 'string');
+    const process = executableList[processList.selected];
     runProcess(process);
   });
 
   processList.key('s', () => {
-    const process = processes[processList.selected];
+    const executableList = Object.values(state).filter(item => typeof item !== 'string');
+    const process = executableList[processList.selected];
     stopProcess(process);
+  });
+
+  processList.key('t', () => {
+    switch (state.scenariosStatus) {
+      case 'closed': {
+        showScenarios();
+        break;
+      }
+      case 'opened': {
+        hideScenarios();
+        break;
+      }
+      default: break;
+    }
   });
 
   return ({
     render,
     setProcessStatus,
     showProcessLogs,
+    showScenarios,
 
     runAll() {
-      processes
+      allItems
         .forEach(
           p => (
             p.active ? runProcess(p) : renderProcess(p)
@@ -134,7 +250,7 @@ export function dashboardFactory({
     },
 
     stopAll() {
-      processes
+      allItems
         .filter(p => p.active)
         .forEach(
           p => (
