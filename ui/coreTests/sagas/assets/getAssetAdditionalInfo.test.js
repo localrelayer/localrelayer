@@ -102,7 +102,7 @@ describe('getAssetAdditionalInfo saga', () => {
       symbol: '',
       decimals: '18',
     });
-    sinon.stub(web3ContractMock.methods, 'name').throws('Eror using ZRX ABI');
+    sinon.stub(web3ContractMock.methods, 'name').throws('Error using ZRX ABI');
 
     const web3EosContractMock = getWeb3ContractMock({
       /* Alt mock name */
