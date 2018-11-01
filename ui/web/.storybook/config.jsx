@@ -106,6 +106,7 @@ function loadStories() {
   require('../src/labStories/uiWalletViewer/index');
   require('../src/components/UserOrders/stories');
   require('../src/containers/UserOrdersContainer/stories');
+  require('../src/components/BuySell/stories');
   require('../src/components/UserBalance/stories');
   require('../src/containers/UserBalanceContainer/stories');
   require('../src/components/Modals/stories');
