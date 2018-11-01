@@ -194,7 +194,7 @@ function* socketConnect(): Saga<void> {
 }
 
 export function* initialize(): Saga<void> {
-  yield eff.take(actionTypes.INITIALIZE_WEB_APP);
+  const { historyType } = yield eff.take(actionTypes.INITIALIZE_WEB_APP);
   console.log('Web initialize saga');
 
   const networkId = yield eff.call(web3.eth.net.getId);
@@ -210,7 +210,7 @@ export function* initialize(): Saga<void> {
   );
   yield eff.fork(socketConnect);
 
-  const history = getHistory();
+  const history = getHistory(historyType);
   const historyChannel = eventChannel(
     emitter => (
       history.listen((location, action) => {
@@ -245,13 +245,13 @@ export function* initialize(): Saga<void> {
   yield eff.fork(coreSagas.takeApproval);
   yield eff.fork(coreSagas.takeDepositAndWithdraw);
 
+  let watchWalletTask;
   /* Web radio center */
   while (true) {
     const {
       sagaName,
       message,
     } = yield eff.take(webRadioChannel);
-    let watchWalletTask;
 
     switch (sagaName) {
       case 'setCurrentPair': {
@@ -267,7 +267,7 @@ export function* initialize(): Saga<void> {
         watchWalletTask = yield eff.fork(
           coreSagas.watchWallet,
           {
-            delay: 2000,
+            delay: 5000,
             tokens: [
               tokenA,
               tokenB,
