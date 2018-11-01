@@ -24,10 +24,12 @@ import AppContainer from 'web-containers/AppContainer';
 
 
 type Props = {
+  route: string,
   history: any,
 };
 
 const AppContainerStory = ({
+  route,
   history = getHistory(
     'memory',
     {
@@ -51,6 +53,9 @@ const AppContainerStory = ({
       }));
     },
   );
+  if (route) {
+    history.push(route);
+  }
   return (
     <Component
       componentWillUnmount={({ dispatch }) => {
@@ -72,22 +77,15 @@ storiesOf('Containers|AppContainer', module)
   .addDecorator(withKnobs)
   .add(
     '/ - index route',
-    () => <AppContainerStory />,
+    () => (
+      <AppContainerStory />
+    ),
   )
   .add(
     '/ZRX-WETH',
     () => (
       <AppContainerStory
-        history={
-          getHistory(
-            'memory',
-            {
-              initialEntries: [
-                '/ZRX-WETH',
-              ],
-              initialIndex: 0,
-            },
-          )}
+        route="/ZRX-WETH"
       />
     ),
   )
@@ -95,19 +93,10 @@ storiesOf('Containers|AppContainer', module)
     '/ABX-WETH - using addresses',
     () => (
       <AppContainerStory
-        history={
-          getHistory(
-            'memory',
-            {
-              initialEntries: [
-                [
-                  '/0x9a794dc1939f1d78fa48613b89b8f9d0a20da00e',
-                  '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-                ].join('-'),
-              ],
-              initialIndex: 0,
-            },
-          )}
+        route={[
+          '/0x9a794dc1939f1d78fa48613b89b8f9d0a20da00e',
+          '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+        ].join('-')}
       />
     ),
   )
@@ -115,19 +104,10 @@ storiesOf('Containers|AppContainer', module)
     '/WRONG-WETH - wrong addresses',
     () => (
       <AppContainerStory
-        history={
-          getHistory(
-            'memory',
-            {
-              initialEntries: [
-                [
-                  '/FAKE',
-                  'WETH',
-                ].join('-'),
-              ],
-              initialIndex: 0,
-            },
-          )}
+        route={[
+          '/FAKE',
+          'WETH',
+        ].join('-')}
       />
     ),
   )
