@@ -117,11 +117,16 @@ export function dashboardFactory({
         process.id,
         'starting',
       );
-      state.processes[process.id].stop = process.run(() => {
+      state.processes[process.id].stop = process.run((child) => {
         setProcessStatus(
           process.id,
           'running',
         );
+        if (process.type !== 'process') {
+          child.on('exit', () => {
+            setProcessStatus(process.id, 'stopped');
+          });
+        }
       });
     }
   }
