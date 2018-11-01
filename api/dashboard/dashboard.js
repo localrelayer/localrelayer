@@ -24,11 +24,10 @@ export function dashboardFactory({
   function getStatus(processId) {
     const { status } = state[processId];
     switch (status) {
-      case 'stopped':
-      case 'starting':
-      case 'stopping':
-      case 'running':
-        return `{green-fg}${status}{/green-fg}`;
+      case 'stopped': return `{grey-fg}${status}{/grey-fg}`;
+      case 'starting': return `{yellow-fg}${status}{/yellow-fg}`;
+      case 'stopping': return `{red-fg}${status}{/red-fg}`;
+      case 'running': return `{green-fg}${status}{/green-fg}`;
       default:
         return null;
     }
