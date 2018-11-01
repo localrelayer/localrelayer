@@ -425,13 +425,9 @@ const commands = {
   k: 'Up',
   g: 'Jump to top',
   G: 'Jump to bottom',
-  t: 'Toggle scenarios',
+  t: 'Toggle tests/scenarios',
   q: 'Quit',
 };
-const footerText = Object.keys(commands).map(key => (
-  `{white-bg}{black-fg}${key}{/black-fg}{/white-bg} ${commands[key]}`
-)).join('  ');
-footer.setContent(footerText);
 
 function formatLogMessage(data) {
   return [
@@ -525,7 +521,7 @@ fs.readFile(
       )[0],
     );
     if (allItems[selectedIndex].type === 'scenario') {
-      dashboard.showScenarios();
+      dashboard.showTestsAndScenarios();
     }
     processList.select(selectedIndex);
     dashboard.runAll();
