@@ -8,21 +8,23 @@ export function dashboardFactory({
   redisSub,
   onShowLogs,
 }) {
-  let state = {
+  const state = {
     selectedForLogs: '',
-    scenariosStatus: 'closed',
-    ...(allItems.reduce((acc, p) => ({
-      ...acc,
-      [p.id]: {
-        ...p,
-        status: 'stopped',
-      },
-    }), {})),
+    displayTestsAndScenariosStatus: false,
+    processes: (
+      allItems.reduce((acc, p) => ({
+        ...acc,
+        [p.id]: {
+          ...p,
+          status: 'stopped',
+        },
+      }), {})
+    ),
   };
   processList.focus();
-  screen.render();
+
   function getStatus(processId) {
-    const { status } = state[processId];
+    const { status } = state.processes[processId];
     switch (status) {
       case 'stopped': return `{grey-fg}${status}{/grey-fg}`;
       case 'starting': return `{yellow-fg}${status}{/yellow-fg}`;
@@ -59,16 +61,30 @@ export function dashboardFactory({
     ].join(' ');
   }
 
+  function renderFooter() {
+    const executableList = Object.values(state.processes);
+    const selectedProcess = executableList[processList.selected];
+    const adaptedCommands = {
+      ...commands,
+      Enter: `Show ${selectedProcess.type} logs`,
+      r: `Run ${selectedProcess.type}`,
+      s: `Stop ${selectedProcess.type}`,
+    };
+    footer.setContent(Object.keys(adaptedCommands).map(key => (
+      `{white-bg}{black-fg}${key}{/black-fg}{/white-bg} ${adaptedCommands[key]}`
+    )).join('  '));
+  }
+
   function render() {
-    const executableList = state.scenariosStatus === 'opened'
-      ? Object.values(state).filter(
-        item => typeof item !== 'string',
-      )
-      : Object.values(state).filter(
+    const executableList = (
+      Object.values(state.processes).filter(
         item => (
-          typeof item !== 'string' && (item.type === 'process' || item.type === 'test')
+          item.type === 'process'
+            ? true
+            : state.displayTestsAndScenariosStatus
         ),
-      );
+      )
+    );
     processList.setItems(
       executableList
         .map(p => renderProcess(p)),
@@ -80,19 +96,19 @@ export function dashboardFactory({
     processId,
     status,
   ) {
-    state[processId].status = status;
+    state.processes[processId].status = status;
     render();
   }
 
   function runProcess(process) {
-    const { status } = state[process.id];
+    const { status } = state.processes[process.id];
     scenariosLogger.setLabel(`Output - ${process.name}`);
     if (status === 'stopped') {
       setProcessStatus(
         process.id,
         'starting',
       );
-      state[process.id].stop = process.run(() => {
+      state.processes[process.id].stop = process.run(() => {
         setProcessStatus(
           process.id,
           'running',
@@ -105,7 +121,7 @@ export function dashboardFactory({
     const {
       status,
       stop,
-    } = state[process.id];
+    } = state.processes[process.id];
     if (
       status === 'running'
       && stop
@@ -114,7 +130,7 @@ export function dashboardFactory({
         process.id,
         'stopping',
       );
-      state[process.id].stop(() => {
+      state.processes[process.id].stop(() => {
         setProcessStatus(
           process.id,
           'stopped',
@@ -123,43 +139,14 @@ export function dashboardFactory({
     }
   }
 
-  function showScenarios() {
-    const currentScenarios = Object.values(state).filter(
-      item => (typeof item !== 'string' && item.type === 'scenario'),
-    );
-    state = {
-      ...(currentScenarios.reduce((acc, p) => ({
-        ...acc,
-        [p.id]: {
-          ...p,
-          status: state[p.id] ? state[p.id].status : 'stopped',
-        },
-      }), state)),
-      scenariosStatus: 'opened',
-    };
-    const executableList = Object.values(state).filter(item => typeof item !== 'string');
-    processList.setItems(executableList.map(p => renderProcess(p)));
-    screen.render();
+  function showTestsAndScenarios() {
+    state.displayTestsAndScenariosStatus = true;
+    render();
   }
 
   function hideScenarios() {
-    const currentProcesses = Object.values(state).filter(
-      item => (
-        typeof item !== 'string' && (item.type === 'process' || item.type === 'test')
-      ),
-    );
-    state = {
-      ...(currentProcesses.reduce((acc, p) => ({
-        ...acc,
-        [p.id]: {
-          ...p,
-          status: state[p.id] ? state[p.id].status : 'stopped',
-        },
-      }), state)),
-      scenariosStatus: 'closed',
-    };
-    processList.setItems(currentProcesses.map(p => renderProcess(p)));
-    screen.render();
+    state.displayTestsAndScenariosStatus = false;
+    render();
   }
 
   function showProcessLogs(process) {
@@ -170,62 +157,37 @@ export function dashboardFactory({
     redisSub.subscribe(`logs-${process.id}`);
     render();
   }
+
   processList.on('select item', () => {
-    const executableList = Object.values(state).filter(item => typeof item !== 'string');
-    switch (executableList[processList.selected].type) {
-      case 'scenario': {
-        const scenarioCommands = Object.assign({}, commands);
-        scenarioCommands.Enter = 'Show scenario logs';
-        scenarioCommands.r = 'Run scenario';
-        scenarioCommands.s = 'Stop Scenario';
-        footer.setContent(Object.keys(scenarioCommands).map(key => (
-          `{white-bg}{black-fg}${key}{/black-fg}{/white-bg} ${scenarioCommands[key]}`
-        )).join('  '));
-        break;
-      }
-      case 'test': {
-        const scenarioCommands = Object.assign({}, commands);
-        scenarioCommands.Enter = 'Show test logs';
-        scenarioCommands.r = 'Run test';
-        scenarioCommands.s = 'Stop test';
-        footer.setContent(Object.keys(scenarioCommands).map(key => (
-          `{white-bg}{black-fg}${key}{/black-fg}{/white-bg} ${scenarioCommands[key]}`
-        )).join('  '));
-        break;
-      }
-      default: {
-        footer.setContent(Object.keys(commands).map(key => (
-          `{white-bg}{black-fg}${key}{/black-fg}{/white-bg} ${commands[key]}`
-        )).join('  '));
-        break;
-      }
-    }
+    renderFooter();
+    screen.render();
   });
+
   processList.key('enter', () => {
-    const executableList = Object.values(state).filter(item => typeof item !== 'string');
+    const executableList = Object.values(state.processes);
     const process = executableList[processList.selected];
     showProcessLogs(process);
   });
 
   processList.key('r', () => {
-    const executableList = Object.values(state).filter(item => typeof item !== 'string');
+    const executableList = Object.values(state.processes);
     const process = executableList[processList.selected];
     runProcess(process);
   });
 
   processList.key('s', () => {
-    const executableList = Object.values(state).filter(item => typeof item !== 'string');
+    const executableList = Object.values(state.processes);
     const process = executableList[processList.selected];
     stopProcess(process);
   });
 
   processList.key('t', () => {
-    switch (state.scenariosStatus) {
-      case 'closed': {
-        showScenarios();
+    switch (state.displayTestsAndScenariosStatus) {
+      case false: {
+        showTestsAndScenarios();
         break;
       }
-      case 'opened': {
+      case true: {
         hideScenarios();
         break;
       }
@@ -237,7 +199,7 @@ export function dashboardFactory({
     render,
     setProcessStatus,
     showProcessLogs,
-    showScenarios,
+    showTestsAndScenarios,
 
     runAll() {
       allItems
