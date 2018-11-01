@@ -110,6 +110,8 @@ function loadStories() {
   require('../src/components/UserBalance/stories');
   require('../src/containers/UserBalanceContainer/stories');
   require('../src/components/Modals/stories');
+  require('../src/components/Header/stories');
+  require('../src/containers/HeaderContainer/stories');
 }
 
 configure(loadStories, module);

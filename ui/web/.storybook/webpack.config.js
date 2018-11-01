@@ -48,6 +48,17 @@ module.exports = (storybookBaseConfig, configType) => {
       },
       'js-to-styles-var-loader',
     ],
+  },
+  {
+    test: /\.(?:ico|gif|png|jpg|jpeg|eot|webp)$/,
+    use: [
+      {
+        loader: 'file-loader',
+        options: {
+          name: '[path][name].[ext]',
+        },
+      },
+    ],
   });
   // aliases
   storybookBaseConfig.resolve.alias = {

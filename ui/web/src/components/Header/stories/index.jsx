@@ -1,0 +1,261 @@
+import React from 'react';
+import {
+  storiesOf,
+} from '@storybook/react';
+import {
+  withKnobs,
+} from '@storybook/addon-knobs';
+
+import 'web-styles/main.less';
+import Header from '..';
+
+const tokensInfo = [{
+  key: '1',
+  coin: 'ZRX',
+  price: 0.00312421,
+  volume: 300.242144,
+  volumeEth: 324344,
+  change: 112233444,
+}, {
+  key: '2',
+  coin: 'DAI',
+  price: 0.00312424,
+  volume: 400.242144,
+  volumeEth: 324344,
+  change: 112233444,
+}, {
+  key: '3',
+  coin: 'ETH',
+  price: 0.00312214,
+  volume: 400.242144,
+  volumeEth: 324344,
+  change: 112233444,
+}, {
+  key: '4',
+  coin: 'ZRX',
+  price: 0.00312421,
+  volume: 400.242144,
+  volumeEth: 324344,
+  change: 112233444,
+}, {
+  key: '5',
+  coin: 'DAI',
+  price: 0.00312424,
+  volume: 400.242144,
+  volumeEth: 324344,
+  change: 112233444,
+}, {
+  key: '6',
+  coin: 'ETH',
+  price: 0.00312214,
+  volume: 200.242144,
+  volumeEth: 324344,
+  change: 112233444,
+}, {
+  key: '7',
+  coin: 'ZRX',
+  price: 0.00312421,
+  volume: 400.242144,
+  volumeEth: 324344,
+  change: 112233444,
+}, {
+  key: '8',
+  coin: 'DAI',
+  price: 0.00312424,
+  volume: 400.242144,
+  volumeEth: 124344,
+  change: 112233444,
+}, {
+  key: '9',
+  coin: 'ETH',
+  price: 0.00312214,
+  volume: 400.242144,
+  volumeEth: 324344,
+  change: 112233444,
+}, {
+  key: '10',
+  coin: 'ZRX',
+  price: 0.00312421,
+  volume: 400.242144,
+  volumeEth: 324344,
+  change: 112233444,
+}, {
+  key: '11',
+  coin: 'DAI',
+  price: 0.00312424,
+  volume: 400.242144,
+  volumeEth: 324344,
+  change: 112233444,
+}, {
+  key: '12',
+  coin: 'ETH',
+  price: 0.00312214,
+  volume: 400.242144,
+  volumeEth: 324344,
+  change: 112233444,
+}, {
+  key: '13',
+  coin: 'ZRX',
+  price: 0.00312421,
+  volume: 400.242144,
+  volumeEth: 224344,
+  change: 112233444,
+}, {
+  key: '14',
+  coin: 'DAI',
+  price: 0.00312424,
+  volume: 400.242144,
+  volumeEth: 324344,
+  change: 112233444,
+}, {
+  key: '15',
+  coin: 'ETH',
+  price: 0.00312214,
+  volume: 400.242144,
+  volumeEth: 324344,
+  change: 112233444,
+}, {
+  key: '16',
+  coin: 'ZRX',
+  price: 0.00312421,
+  volume: 400.242144,
+  volumeEth: 524344,
+  change: 112233444,
+}, {
+  key: '17',
+  coin: 'DAI',
+  price: 0.00312424,
+  volume: 400.242144,
+  volumeEth: 324344,
+  change: 112233444,
+}, {
+  key: '18',
+  coin: 'ETH',
+  price: 0.00312214,
+  volume: 400.242144,
+  volumeEth: 324344,
+  change: 112233444,
+}, {
+  key: '19',
+  coin: 'ZRX',
+  price: 0.00312421,
+  volume: 400.242144,
+  volumeEth: 324344,
+  change: 112233444,
+}, {
+  key: '20',
+  coin: 'DAI',
+  price: 0.00312424,
+  volume: 400.242144,
+  volumeEth: 324344,
+  change: 112233444,
+}, {
+  key: '21',
+  coin: 'ETH',
+  price: 0.00312214,
+  volume: 400.242144,
+  volumeEth: 324344,
+  change: 112233444,
+}, {
+  key: '22',
+  coin: 'ZRX',
+  price: 0.00312421,
+  volume: 400.242144,
+  volumeEth: 324344,
+  change: 112233444,
+}, {
+  key: '23',
+  coin: 'DAI',
+  price: 0.00312424,
+  volume: 400.242144,
+  volumeEth: 324344,
+  change: 112233444,
+}, {
+  key: '24',
+  coin: 'ETH',
+  price: 0.00312214,
+  volume: 400.242144,
+  volumeEth: 324344,
+  change: 112233444,
+}, {
+  key: '25',
+  coin: 'ZRX',
+  price: 0.00312421,
+  volume: 400.242144,
+  volumeEth: 324344,
+  change: 112233444,
+}, {
+  key: '26',
+  coin: 'DAI',
+  price: 0.00312424,
+  volume: 400.242144,
+  volumeEth: 324344,
+  change: 112233444,
+}, {
+  key: '27',
+  coin: 'ETH',
+  price: 0.00312214,
+  volume: 400.242144,
+  volumeEth: 324344,
+  change: 112233444,
+}, {
+  key: '28',
+  coin: 'ZRX',
+  price: 0.00312421,
+  volume: 400.242144,
+  volumeEth: 324344,
+  change: 112233444,
+}, {
+  key: '29',
+  coin: 'DAI',
+  price: 0.00312424,
+  volume: 400.242144,
+  volumeEth: 324344,
+  change: 112233444,
+}, {
+  key: '30',
+  coin: 'ETH',
+  price: 0.00312214,
+  volume: 400.242144,
+  volumeEth: 324344,
+  change: 112233444,
+}, {
+  key: '31',
+  coin: 'ZRX',
+  price: 0.00312421,
+  volume: 400.242144,
+  volumeEth: 324344,
+  change: 112233444,
+}, {
+  key: '32',
+  coin: 'DAI',
+  price: 0.00312424,
+  volume: 400.242144,
+  volumeEth: 324344,
+  change: 112233444,
+}, {
+  key: '33',
+  coin: 'ETH',
+  price: 0.00312214,
+  volume: 400.242144,
+  volumeEth: 324344,
+  change: 112233444,
+}];
+
+storiesOf('Components|Header', module)
+  .addDecorator(withKnobs)
+  .add(
+    'default', () => (
+      <Header tokensInfo={tokensInfo} />
+    ),
+  )
+  .add(
+    'full screen', () => (
+      <Header tokensInfo={tokensInfo} />
+    ),
+    {
+      options: {
+        goFullScreen: true,
+      },
+    },
+  );

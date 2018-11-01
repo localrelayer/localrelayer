@@ -8,6 +8,28 @@ import {
   getResourceMap,
 } from './resources';
 
+export const getTokensInfoMock = createSelector(
+  [
+    getResourceMappedList('orders', 'asks'),
+    getResourceMap('assets'),
+  ],
+  (orders, assets) => (
+    orders.map(order => ({
+      ...order,
+      price: (
+        BigNumber(order.takerAssetAmount)
+        / BigNumber(order.makerAssetAmount)
+      ).toFixed(8),
+      amount: order.makerAssetAmount,
+      total: order.takerAssetAmount,
+      key: order.id,
+      coin: `${assets[order.makerAssetData].symbol}`,
+      change: 0.01,
+      volume: 0.03,
+      volumeEth: 320.333,
+    }))
+  ),
+);
 
 export const getOpenOrders = createSelector(
   [
