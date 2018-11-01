@@ -1,5 +1,4 @@
 // @flow
-import * as R from 'ramda';
 import createActionCreators from 'redux-resource-action-creators';
 import {
   eventChannel,
