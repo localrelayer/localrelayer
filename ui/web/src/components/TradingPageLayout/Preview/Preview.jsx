@@ -23,7 +23,6 @@ const components = [
   'chart',
   'orderBook',
   'buySell',
-  'news',
 ];
 
 /* Capitalize firts letter */
