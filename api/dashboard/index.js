@@ -187,11 +187,10 @@ const scenarios = [{
   run(cb) {
     const child = exec([
       'NODE_ENV=development',
-      'nodemon --exec',
       'babel-node',
       'scenarios/fillOrderERC20.js',
     ].join(' '));
-    cb();
+    cb(child);
     child.stdout.on('data', (data) => {
       scenariosLogger.insertBottom(data);
     });
@@ -207,11 +206,10 @@ const scenarios = [{
   run(cb) {
     const child = exec([
       'NODE_ENV=development',
-      'nodemon --exec',
       'babel-node',
       'scenarios/fillOrderFees.js',
     ].join(' '));
-    cb();
+    cb(child);
     child.stdout.on('data', (data) => {
       scenariosLogger.insertBottom(data);
     });
@@ -227,11 +225,10 @@ const scenarios = [{
   run(cb) {
     const child = exec([
       'NODE_ENV=development',
-      'nodemon --exec',
       'babel-node',
       'scenarios/forwarderBuyERC20Tokens.js',
     ].join(' '));
-    cb();
+    cb(child);
     child.stdout.on('data', (data) => {
       scenariosLogger.insertBottom(data);
     });
@@ -247,11 +244,10 @@ const scenarios = [{
   run(cb) {
     const child = exec([
       'NODE_ENV=development',
-      'nodemon --exec',
       'babel-node',
       'scenarios/fillOrderSRA.js',
     ].join(' '));
-    cb();
+    cb(child);
     child.stdout.on('data', (data) => {
       scenariosLogger.insertBottom(data);
     });
@@ -267,11 +263,10 @@ const scenarios = [{
   run(cb) {
     const child = exec([
       'NODE_ENV=development',
-      'nodemon --exec',
       'babel-node',
       'scenarios/executeTransaction.js',
     ].join(' '));
-    cb();
+    cb(child);
     child.stdout.on('data', (data) => {
       scenariosLogger.insertBottom(data);
     });
@@ -287,11 +282,10 @@ const scenarios = [{
   run(cb) {
     const child = exec([
       'NODE_ENV=development',
-      'nodemon --exec',
       'babel-node',
       'scenarios/matchOrders.js',
     ].join(' '));
-    cb();
+    cb(child);
     child.stdout.on('data', (data) => {
       scenariosLogger.insertBottom(data);
     });
@@ -307,11 +301,10 @@ const scenarios = [{
   run(cb) {
     const child = exec([
       'NODE_ENV=development',
-      'nodemon --exec',
       'babel-node',
       'scenarios/exchangeSubscribe.js',
     ].join(' '));
-    cb();
+    cb(child);
     child.stdout.on('data', (data) => {
       scenariosLogger.insertBottom(data);
     });
@@ -327,11 +320,10 @@ const scenarios = [{
   run(cb) {
     const child = exec([
       'NODE_ENV=development',
-      'nodemon --exec',
       'babel-node',
       'scenarios/cancelOrders.js',
     ].join(' '));
-    cb();
+    cb(child);
     child.stdout.on('data', (data) => {
       scenariosLogger.insertBottom(data);
     });
@@ -347,11 +339,10 @@ const scenarios = [{
   run(cb) {
     const child = exec([
       'NODE_ENV=development',
-      'nodemon --exec',
       'babel-node',
       'scenarios/executeTransactionCancelOrder.js',
     ].join(' '));
-    cb();
+    cb(child);
     child.stdout.on('data', (data) => {
       scenariosLogger.insertBottom(data);
     });
@@ -375,7 +366,7 @@ const tests = [
         '--colors',
         '--exit',
       ].join(' '));
-      cb();
+      cb(child);
       child.stdout.on('data', (data) => {
         scenariosLogger.insertBottom(data);
       });
@@ -396,7 +387,7 @@ const tests = [
         '--colors',
         '--exit',
       ].join(' '));
-      cb();
+      cb(child);
       child.stdout.on('data', (data) => {
         scenariosLogger.insertBottom(data);
       });
