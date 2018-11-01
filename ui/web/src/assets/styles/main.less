@@ -1,6 +1,14 @@
 @import "~antd/dist/antd.less";
 require('./colors.js');
-
+.ant-popover-inner {
+  background-color: @popover-bg !important;
+}
+.ant-popover-arrow {
+  background-color: @popover-bg !important;
+}
+.ant-popover-inner-content {
+  color: fade(#fff, 85%) !important;
+}
 .ant-modal-content {
   background-color: @layout-body-background !important;
   color: #DADDDF !important;
@@ -18,7 +26,6 @@ require('./colors.js');
 .ant-modal-close {
   color: #DADDDF !important;
 }
-
 .ant-alert-info {
   border: 1px solid @item-hover-bg !important;
   background-color: @item-hover-bg !important;
