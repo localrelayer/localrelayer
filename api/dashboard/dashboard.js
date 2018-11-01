@@ -64,12 +64,21 @@ export function dashboardFactory({
   function renderFooter() {
     const executableList = Object.values(state.processes);
     const selectedProcess = executableList[processList.selected];
-    const adaptedCommands = {
-      ...commands,
-      Enter: `Show ${selectedProcess.type} logs`,
-      r: `Run ${selectedProcess.type}`,
-      s: `Stop ${selectedProcess.type}`,
-    };
+    const {
+      Enter,
+      ...excludeEnter
+    } = commands;
+    const adaptedCommands = selectedProcess.type === 'process'
+      ? {
+        ...commands,
+        r: `Run ${selectedProcess.type}`,
+        s: `Stop ${selectedProcess.type}`,
+      }
+      : {
+        ...excludeEnter,
+        r: `Run ${selectedProcess.type}`,
+        s: `Stop ${selectedProcess.type}`,
+      };
     footer.setContent(Object.keys(adaptedCommands).map(key => (
       `{white-bg}{black-fg}${key}{/black-fg}{/white-bg} ${adaptedCommands[key]}`
     )).join('  '));
@@ -166,7 +175,9 @@ export function dashboardFactory({
   processList.key('enter', () => {
     const executableList = Object.values(state.processes);
     const process = executableList[processList.selected];
-    showProcessLogs(process);
+    if (process.type === 'process') {
+      showProcessLogs(process);
+    }
   });
 
   processList.key('r', () => {
