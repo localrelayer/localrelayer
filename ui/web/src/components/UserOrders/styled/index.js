@@ -21,8 +21,7 @@ export const Title = styled.div`
 export const UserOrdersTable = styled(Table)`
    height: 90%;
   .ant-table {
-    border-bottom: 1px solid ${colors['component-background']};
-    border-top: 1px solid ${colors['component-background']};
+    border: none;
   }
 
   .ant-table-thead > tr > th {
@@ -38,7 +37,7 @@ export const UserOrdersTable = styled(Table)`
   }
 
   .ant-table-tbody > tr > td {
-    border-bottom: 1px solid ${colors['component-background']};
+    border: none;
     color: white;
     font-size: 12px;
     text-align: left;
