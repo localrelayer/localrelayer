@@ -106,6 +106,7 @@ function filterOrders({
  * predefinedOrders is meant to facilitate tests
  */
 export function mocksOrdersFactory({
+  networkId,
   assetDataA,
   assetDataB,
   orders: predefinedOrders,
@@ -121,6 +122,7 @@ export function mocksOrdersFactory({
   },
 }) {
   const assetPairs = getAssetPairs({
+    networkId,
     assetDataA,
     assetDataB,
     // Just in case, to get all
