@@ -12,29 +12,37 @@ api.setMockMethods({
       coreMocks.getAssetPairs(args.queryParameters),
     ));
   },
-  getOrderBook({
-    baseAssetData = '0xf47261b0000000000000000000000000e41d2489571d322189246dafa5ebde1f4699f498', /* ZRX */
-    quoteAssetData = '0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2', /* WETH */
-  }) {
+  getOrderBook({ queryParameters }) {
+    const {
+      baseAssetData = '0xf47261b0000000000000000000000000e41d2489571d322189246dafa5ebde1f4699f498', /* ZRX */
+      quoteAssetData = '0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2', /* WETH */
+      networkId = 1,
+    } = queryParameters;
     return new Promise(r => r(
       coreMocks.mocksOrdersFactory({
+        networkId,
         assetDataA: baseAssetData,
         assetDataB: quoteAssetData,
       }).getOrderBook({
+        networkId,
         baseAssetData,
         quoteAssetData,
       }),
     ));
   },
-  getTradingHistory({
-    baseAssetData = '0xf47261b0000000000000000000000000e41d2489571d322189246dafa5ebde1f4699f498', /* ZRX */
-    quoteAssetData = '0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2', /* WETH */
-  }) {
+  getTradingHistory({ queryParameters }) {
+    const {
+      baseAssetData = '0xf47261b0000000000000000000000000e41d2489571d322189246dafa5ebde1f4699f498', /* ZRX */
+      quoteAssetData = '0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2', /* WETH */
+      networkId = 1,
+    } = queryParameters;
     return new Promise(r => r(
       coreMocks.mocksOrdersFactory({
+        networkId,
         assetDataA: baseAssetData,
         assetDataB: quoteAssetData,
       }).getTradingHistory({
+        networkId,
         baseAssetData,
         quoteAssetData,
       }),

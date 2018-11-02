@@ -111,6 +111,7 @@ function* setCurrentPair({
       yield eff.fork(
         coreSagas.fetchOrderBook,
         {
+          networkId,
           baseAssetData: assetPair.assetDataA.assetData,
           quoteAssetData: assetPair.assetDataB.assetData,
         },
@@ -118,6 +119,7 @@ function* setCurrentPair({
       yield eff.fork(
         coreSagas.fetchTradingHistory,
         {
+          networkId,
           makerAssetData: assetPair.assetDataA.assetData,
           takerAssetData: assetPair.assetDataB.assetData,
         },

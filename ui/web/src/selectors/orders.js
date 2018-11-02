@@ -6,9 +6,6 @@ import {
   coreSelectors as cs,
 } from 'instex-core';
 import {
-  assetDataUtils,
-} from '0x.js';
-import {
   getCurrentAssetPair,
 } from '.';
 
