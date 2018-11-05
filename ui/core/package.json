@@ -4,6 +4,6 @@
   "version": "0.0.1",
   "main": "./src",
   "dependencies": {
-    "cross-fetch": "2.2.2"
+    "cross-fetch": "2.2.3"
   }
 }
