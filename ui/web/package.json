@@ -49,9 +49,6 @@
     "styled-components": "3.4.5"
   },
   "devDependencies": {
-    "@emotion/core": "0.13.0",
-    "@emotion/provider": "0.11.1",
-    "@emotion/styled": "0.10.5",
     "@storybook/addon-actions": "4.0.2",
     "@storybook/addon-info": "4.0.2",
     "@storybook/addon-knobs": "4.0.2",
