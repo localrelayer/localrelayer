@@ -7,3 +7,4 @@ export ethApi from './ethApi';
 export api from './api';
 export * as coreCache from './cache';
 export * as contracts from './contracts';
+export * as utils from './utils';

@@ -3,6 +3,12 @@ import type {
   State,
   UiStateKey,
 } from '../types';
+import {
+  createSelector,
+} from 'reselect';
+import {
+  getResourceMap,
+} from 'instex-core/selectors';
 
 
 export function getUiState<UK: UiStateKey>(

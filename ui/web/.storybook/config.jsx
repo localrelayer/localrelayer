@@ -114,6 +114,7 @@ function loadStories() {
   require('../src/containers/HeaderContainer/stories');
   require('../src/components/TradingChart/stories');
   require('../src/containers/TradingChartContainer/stories');
+  require('../src/containers/BuySellContainer/stories');
 }
 
 configure(loadStories, module);
