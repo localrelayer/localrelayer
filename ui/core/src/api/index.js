@@ -108,9 +108,22 @@ function apiFactory() {
       queryParameters = {},
     ) {
       return performFetch({
-        endpointUrl: '/order',
+        endpointUrl: '/v2/order',
         method: 'POST',
         methodName: 'postOrder',
+        bodyParameters,
+        queryParameters,
+      });
+    },
+
+    postOrderConfig(
+      bodyParameters,
+      queryParameters = {},
+    ) {
+      return performFetch({
+        endpointUrl: '/v2/order_config',
+        method: 'POST',
+        methodName: 'postOrderConfig',
         bodyParameters,
         queryParameters,
       });

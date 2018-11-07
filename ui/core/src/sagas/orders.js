@@ -1,10 +1,20 @@
 import {
+  generatePseudoRandomSalt,
   orderHashUtils,
+  signatureUtils,
+  MetamaskSubprovider,
 } from '0x.js';
 import * as eff from 'redux-saga/effects';
 import createActionCreators from 'redux-resource-action-creators';
+import {
+  actionTypes,
+} from '../actions';
 
 import api from '../api';
+import ethApi from '../ethApi';
+import {
+  getContractAddressesForNetwork,
+} from '../utils';
 
 
 export function* fetchOrderBook(opts = {}) {
@@ -63,13 +73,9 @@ export function* fetchTradingHistory(opts = {}) {
         ...opts,
       },
     );
-    const orders = response.records.map(({
-      order,
-      metaData,
-    }) => ({
+    const orders = response.records.map(order => ({
       id: orderHashUtils.getOrderHashHex(order),
       ...order,
-      completedAt: metaData.completedAt,
     }));
 
     yield eff.put(actions.succeeded({
@@ -82,4 +88,50 @@ export function* fetchTradingHistory(opts = {}) {
       resources: [],
     }));
   }
+}
+
+function* postOrder({
+  order: {
+    makerAddress,
+    takerAddress,
+    makerAssetData,
+    takerAssetData,
+    makerAssetAmount,
+    takerAssetAmount,
+    expirationTimeSeconds,
+  },
+}) {
+  const web3 = ethApi.getWeb3();
+  const networkId = yield eff.call(web3.eth.net.getId);
+  const provider = new MetamaskSubprovider(web3.currentProvider);
+
+  const exchangeAddress = getContractAddressesForNetwork(networkId).exchange;
+  const orderConfigRequest = {
+    exchangeAddress,
+    makerAddress,
+    takerAddress,
+    makerAssetAmount,
+    takerAssetAmount,
+    makerAssetData,
+    takerAssetData,
+    expirationTimeSeconds,
+  };
+  const orderConfig = yield eff.call(api.postOrderConfig, orderConfigRequest);
+  const order = {
+    salt: generatePseudoRandomSalt(),
+    ...orderConfigRequest,
+    ...orderConfig,
+  };
+  const signedOrder = yield eff.call(
+    signatureUtils.ecSignOrderAsync,
+    provider,
+    order,
+    makerAddress,
+  );
+  console.log(signedOrder, 'signed order from saga');
+  yield eff.call(api.postOrder, signedOrder, { networkId });
+}
+
+export function* takePostOrder() {
+  yield eff.takeEvery(actionTypes.POST_ORDER_REQUEST, postOrder);
 }

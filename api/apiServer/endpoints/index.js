@@ -8,9 +8,6 @@ import {
   BigNumber,
 } from '0x.js';
 import {
-  getContractAddressesForNetworkOrThrow,
-} from '@0x/contract-addresses';
-import {
   SchemaValidator,
   schemas,
 } from '@0x/json-schemas';
@@ -28,8 +25,8 @@ import {
 import {
   initWeb3ProviderEngine,
   getOrderConfig,
+  getContractAddressesForNetwork,
   transformBigNumberOrder,
-  GANACHE_CONTRACT_ADDRESSES,
 } from 'utils';
 import {
   redisClient,
@@ -158,11 +155,7 @@ standardRelayerApi.post('/order', async (ctx) => {
         web3ProviderEngine,
         {
           networkId,
-          contractAddresses: (
-            networkId === 50
-              ? GANACHE_CONTRACT_ADDRESSES
-              : getContractAddressesForNetworkOrThrow(networkId)
-          ),
+          contractAddresses: getContractAddressesForNetwork(networkId),
         },
       );
 
