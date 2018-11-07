@@ -225,16 +225,27 @@ interesting place to trade and big relayers can get additional fee income from t
 ![bid/ask mindmap](https://user-images.githubusercontent.com/555405/46295019-c6c3e900-c59f-11e8-9655-076ee97f736d.png)
 
 # Test Ethereum accounts
-Use this accounts during development.
 
-Wallet backup phrase:
+Use this accounts during development
+
+**Wallet backup phrase**
 ```
 stereo cheese harsh ordinary scrub media chair beauty artist poet ranch attack
 ```
 
-Password(you can create your own or use this one just for the convention):
+**Password (you can create your own or use this one just for the convention)**
 ```
 instexMetamask
+```
+
+**Testnet ZRX address**
+```
+0x871dd7c2b4b25e1aa18728e9d5f2af4c4e431f5c
+```
+
+**Testnet WETH address**
+```
+0x0b1ba0af832d7c05fd64161e0db78e85978e8082
 ```
 
 Wilder and Joshua - account names for the simplicity.
