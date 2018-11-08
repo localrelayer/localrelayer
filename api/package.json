@@ -35,7 +35,7 @@
     "plantAssetPairsProd": "NODE_ENV=production babel-node apiServer/scripts/loadAssetPairs.js"
   },
   "dependencies": {
-    "0x.js": "1.0.8",
+    "0x.js": "2.0.0",
     "kue": "0.11.6",
     "@0xproject/connect": "3.0.0",
     "cli-table": "0.3.1",

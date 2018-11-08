@@ -135,8 +135,8 @@ const processes = [{
   run(cb) {
     const subscriptions = subscribeEthEvents([
       'test',
-      'main',
-      'kovan',
+      // 'main',
+      // 'kovan',
     ]);
     cb();
     return (ccb) => {
@@ -356,7 +356,7 @@ const scenarios = [{
 const tests = [
   {
     id: 'apiServerCreateOrderTest',
-    name: 'apiServer - Create order test',
+    name: 'apiServer - Create order tests',
     type: 'test',
     run(cb) {
       const child = exec([
@@ -478,15 +478,6 @@ const dashboard = dashboardFactory({
         logger.scrollTo(logger.getLines().length);
       },
     );
-    fs.writeFile(
-      tmpFile,
-      process.id,
-      (err) => {
-        if (err) {
-          screen.log(err);
-        }
-      },
-    );
   },
 });
 
@@ -506,12 +497,12 @@ fs.readFile(
             selectedIndex = i;
           }
           return (
-            data ? p.id === data : true
+            data ? (p.id === data && p.type === 'process') : true
           );
         },
-      )[0],
+      )[0] || allItems[0],
     );
-    if (allItems[selectedIndex].type === 'scenario') {
+    if (['scenario', 'test'].includes(allItems[selectedIndex].type)) {
       dashboard.showTestsAndScenarios();
     }
     processList.select(selectedIndex);
@@ -520,9 +511,18 @@ fs.readFile(
 );
 
 screen.key('q', () => {
-  dashboard.stopAll();
-  screen.destroy();
-  setTimeout(() => {
-    process.exit(1);
-  }, 500);
+  fs.writeFile(
+    tmpFile,
+    allItems[processList.selected].id,
+    (err) => {
+      if (err) {
+        screen.log(err);
+      }
+      dashboard.stopAll();
+      screen.destroy();
+      setTimeout(() => {
+        process.exit(1);
+      }, 500);
+    },
+  );
 });

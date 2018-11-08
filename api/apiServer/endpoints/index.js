@@ -45,10 +45,10 @@ export const fieldsToSkip = [
 
 const getValidationErrors = (instance, schema) => {
   const validationInfo = validator.validate(instance, schema);
-  const errors = validationInfo.errors.map(
+  const errors = validationInfo.errors.filter(e => e.name !== 'allOf').map(
     error => (
       {
-        field: error.property,
+        field: error.argument,
         code: 1000,
         reason: error.message,
       }
@@ -60,6 +60,22 @@ const getValidationErrors = (instance, schema) => {
     validationErrors: errors,
   };
 };
+
+const tranformBigNumberOrder = order => (
+  Object.keys(order).reduce((acc, fieldName) => ({
+    ...acc,
+    [fieldName]: (
+      [
+        'salt',
+        'makerAssetAmount',
+        'takerAssetAmount',
+        'makerFee',
+        'takerFee',
+        'expirationTimeSeconds',
+      ].includes(fieldName) ? BigNumber(order[fieldName]) : order[fieldName]
+    ),
+  }), {})
+);
 
 export const sortOrderbook = (a, b) => {
   const aPrice = new BigNumber(a.takerAssetAmount).div(a.makerAssetAmount);
@@ -99,57 +115,54 @@ standardRelayerApi.post('/order_config', (ctx) => {
 standardRelayerApi.post('/order', async (ctx) => {
   logger.debug('HTTP: POST order');
   const submittedOrder = ctx.request.body;
-
-  const encMakerAssetData = assetDataUtils.decodeERC20AssetData(submittedOrder.makerAssetData);
-  const encTakerAssetData = assetDataUtils.decodeERC20AssetData(submittedOrder.takerAssetData);
   const networkId = ctx.query.networkId || 1;
-  const signedOrder = {
-    ...submittedOrder,
-    salt: new BigNumber(submittedOrder.salt),
-    makerAssetAmount: new BigNumber(submittedOrder.makerAssetAmount),
-    takerAssetAmount: new BigNumber(submittedOrder.takerAssetAmount),
-    makerFee: new BigNumber(submittedOrder.makerFee),
-    takerFee: new BigNumber(submittedOrder.takerFee),
-    expirationTimeSeconds: new BigNumber(submittedOrder.expirationTimeSeconds),
-    makerAssetAddress: encMakerAssetData.tokenAddress,
-    makerAssetProxyId: encMakerAssetData.assetProxyId,
-    takerAssetAddress: encTakerAssetData.tokenAddress,
-    takerAssetProxyId: encTakerAssetData.assetProxyId,
-  };
-  const orderHash = orderHashUtils.getOrderHashHex(signedOrder);
-  const order = new Order({
-    ...signedOrder,
-    orderHash,
-    networkId,
-  });
-  if (validator.isValid(order, schemas.signedOrderSchema)) {
+  logger.debug(submittedOrder);
+
+  if (validator.isValid(submittedOrder, schemas.signedOrderSchema)) {
     const contractWrappers = new ContractWrappers(
       initProvider(networkId).engine,
       {
         networkId: +networkId,
       },
     );
+
     try {
-      if (process.env.NODE_ENV !== 'test') {
-        await contractWrappers.exchange.validateOrderFillableOrThrowAsync(signedOrder);
-      }
-      try {
-        await order.save();
-      } catch (e) {
-        logger.debug('CANT SAVE', e);
-        ctx.status = 400;
-      }
-      redisClient.publish('orders', JSON.stringify(order));
+      await contractWrappers.exchange.validateOrderFillableOrThrowAsync(
+        tranformBigNumberOrder(submittedOrder),
+      );
     } catch (e) {
       logger.debug('Order not valid', e);
+      ctx.status = 400;
+      return;
     }
+
+    const decMakerAssetData = assetDataUtils.decodeERC20AssetData(submittedOrder.makerAssetData);
+    const decTakerAssetData = assetDataUtils.decodeERC20AssetData(submittedOrder.takerAssetData);
+    const order = new Order({
+      ...submittedOrder,
+      makerAssetAddress: decMakerAssetData.tokenAddress,
+      makerAssetProxyId: decMakerAssetData.assetProxyId,
+      takerAssetAddress: decTakerAssetData.tokenAddress,
+      takerAssetProxyId: decTakerAssetData.assetProxyId,
+      orderHash: orderHashUtils.getOrderHashHex(submittedOrder),
+      networkId,
+    });
+    try {
+      await order.save();
+    } catch (e) {
+      logger.debug('CANT SAVE', e);
+      ctx.status = 400;
+      return;
+    }
+
+    redisClient.publish('orders', JSON.stringify(order));
     ctx.status = 201;
     ctx.message = 'OK';
     ctx.body = {};
   } else {
     ctx.status = 400;
     ctx.message = 'Validation error';
-    ctx.body = getValidationErrors(order, schemas.signedOrderSchema);
+    ctx.body = getValidationErrors(submittedOrder, schemas.signedOrderSchema);
   }
 });
 
