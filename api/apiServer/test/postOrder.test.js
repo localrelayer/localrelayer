@@ -5,37 +5,49 @@ import {
 } from '@0xproject/json-schemas';
 
 import {
-  Order,
-} from '../../db';
-import {
   request,
-  createOrder,
 } from './utils';
 
 
 const validator = new SchemaValidator();
 const { expect } = chai;
 
+
 describe('postOrder', () => {
-  after(async () => {
-    await Order.deleteOne({});
-  });
-
-  it('should check if created order has valid schema', async () => {
-    const order = createOrder({});
-    expect(validator.isValid(
-      order,
-      schemas.signedOrderSchema,
-    )).to.equal(true);
-  });
-
-  it('should create order and insert it to db', async () => {
-    const order = createOrder({});
-    const response = await request
-      .post('/v2/order')
-      .send(order);
-
-    expect(response.statusCode).to.equal(201);
-    expect(response.res.statusMessage).to.equal('OK');
+  describe('create a new order with wrond data', () => {
+    const requiredFields = [
+      'makerAddress',
+      'takerAddress',
+      'makerFee',
+      'takerFee',
+      'senderAddress',
+      'makerAssetAmount',
+      'takerAssetAmount',
+      'makerAssetData',
+      'takerAssetData',
+      'salt',
+      'exchangeAddress',
+      'feeRecipientAddress',
+      'expirationTimeSeconds',
+      'signature',
+    ];
+    it('should response 400 with required fields errors', async () => {
+      const response = await request
+        .post('/v2/order')
+        .send({});
+      expect(validator.isValid(
+        response.body,
+        schemas.relayerApiErrorResponseSchema,
+      )).to.equal(true);
+      expect(response.statusCode).to.equal(400);
+      expect(response.body.reason).to.equal('Validation failed');
+      expect(response.body.validationErrors).to.have.deep.members(
+        requiredFields.map(field => ({
+          field,
+          code: 1000,
+          reason: `requires property "${field}"`,
+        })),
+      );
+    });
   });
 });
