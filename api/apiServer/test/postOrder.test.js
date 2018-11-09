@@ -55,6 +55,19 @@ describe('postOrder', () => {
       reason: `requires property "${field}"`,
     });
 
+    const formatError = (field) => {
+      const pattern = JSON.stringify(
+        field === 'signature'
+          ? schemas.hexSchema.pattern
+          : schemas[schemas.orderSchema.properties[field].$ref.substring(1)].pattern,
+      );
+      return ({
+        field,
+        code: 1000,
+        reason: `does not match pattern ${pattern}`,
+      });
+    };
+
     it('should response 400 with required fields errors', async () => {
       /* Missed one required field per each request */
       const allResponses = await Promise.all(requiredFields.map(f => (
@@ -96,6 +109,58 @@ describe('postOrder', () => {
       expect(response.body.reason).to.equal('Validation failed');
       expect(response.body.validationErrors).to.have.deep.members(
         requiredFields.map(field => requireError(field)),
+      );
+    });
+
+    it('should response 400 with wrong format fields errors', async () => {
+      /* Wrong one field per each request */
+      const allResponses = await Promise.all(requiredFields.map(f => (
+        request
+          .post('/v2/order')
+          .send(
+            requiredFields
+              .filter(field => field !== f)
+              .reduce((acc, fieldName) => ({
+                ...acc,
+                [fieldName]: (
+                  fieldName.includes('Address')
+                    ? randomEthereumAddress()
+                    : testData[fieldName]
+                ),
+              }), {
+                [f]: 'wrong format',
+              }),
+          )
+      )));
+      allResponses.forEach((r, i) => {
+        const field = requiredFields[i];
+        expect(validator.isValid(
+          r.body,
+          schemas.relayerApiErrorResponseSchema,
+        )).to.equal(true);
+        expect(r.statusCode).to.equal(400);
+        expect(r.body.reason).to.equal('Validation failed');
+        expect(r.body.validationErrors).to.have.deep.members([formatError(field)]);
+      });
+
+      /* request with all fields */
+      const response = await request
+        .post('/v2/order')
+        .send(
+          requiredFields
+            .reduce((acc, fieldName) => ({
+              ...acc,
+              [fieldName]: 'wrong format',
+            }), {}),
+        );
+      expect(validator.isValid(
+        response.body,
+        schemas.relayerApiErrorResponseSchema,
+      )).to.equal(true);
+      expect(response.statusCode).to.equal(400);
+      expect(response.body.reason).to.equal('Validation failed');
+      expect(response.body.validationErrors).to.have.deep.members(
+        requiredFields.map(field => formatError(field)),
       );
     });
   });
