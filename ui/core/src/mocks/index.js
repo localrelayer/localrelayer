@@ -1,9 +1,14 @@
 import {
+  BigNumber,
+} from '0x.js';
+import {
   generatePseudoRandomSalt,
   orderHashUtils,
-} from '@0xproject/order-utils';
+} from '@0x/order-utils';
+import {
+  Web3Wrapper,
+} from '@0x/web3-wrapper';
 import * as R from 'ramda';
-
 import assetPairsMainJson from './assetPairs.main.json';
 import assetPairsKovanJson from './assetPairs.kovan.json';
 import assetPairsTestJson from './assetPairs.test.json';
@@ -29,11 +34,11 @@ function randomEthereumAddress() {
 }
 
 function generateRandomMakerAssetAmount() {
-  return ((Math.random() * 100) + 10).toFixed(6);
+  return Web3Wrapper.toBaseUnitAmount(new BigNumber((Math.round(Math.random() * 100) + 10)), 18);
 }
 
 function generateRandomTakerAssetAmount() {
-  return ((Math.random() * 0.3) + 0.03).toFixed(6);
+  return Web3Wrapper.toBaseUnitAmount(new BigNumber((Math.round(Math.random() * 5)) + 15), 18);
 }
 
 export function getAssetPairs({
@@ -149,13 +154,14 @@ export function mocksOrdersFactory({
         } else {
           asks -= 1;
         }
+        console.log(pair);
         const randomOrder = {
           makerAddress: randomEthereumAddress(),
           takerAddress: NULL_ADDRESS,
           feeRecipientAddress: randomEthereumAddress(),
           senderAddress: randomEthereumAddress(),
-          makerAssetAmount: generateRandomMakerAssetAmount(),
-          takerAssetAmount: generateRandomTakerAssetAmount(),
+          makerAssetAmount: generateRandomMakerAssetAmount().toString(),
+          takerAssetAmount: generateRandomTakerAssetAmount().toString(),
           makerFee: '10000000000000000',
           takerFee: '20000000000000000',
           expirationTimeSeconds: '1532560590',

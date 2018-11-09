@@ -1,7 +1,13 @@
 // @flow
 import {
+  BigNumber as OldBigNumber,
+} from '0x.js';
+import {
   createSelector,
 } from 'reselect';
+import {
+  Web3Wrapper,
+} from '@0x/web3-wrapper';
 import {
   getResourceMappedList,
   getResourceMap,
@@ -37,8 +43,12 @@ export const getOpenOrders = createSelector(
     orders.map(order => ({
       ...order,
       price: BigNumber(order.takerAssetAmount).div(order.makerAssetAmount).toFixed(8),
-      amount: order.makerAssetAmount,
-      total: order.takerAssetAmount,
+      amount: Web3Wrapper.toUnitAmount(
+        new OldBigNumber(order.makerAssetAmount), assets[order.makerAssetData].decimals,
+      ).toFixed(8),
+      total: Web3Wrapper.toUnitAmount(
+        new OldBigNumber(order.takerAssetAmount), assets[order.takerAssetData].decimals,
+      ).toFixed(8),
       key: order.id,
       date: new Date().toLocaleDateString('en-US'),
       status: 'Done',
@@ -51,13 +61,18 @@ export const getOpenOrders = createSelector(
 export const getTradingHistory = createSelector(
   [
     getResourceMappedList('orders', 'tradingHistory'),
+    getResourceMap('assets'),
   ],
-  orders => (
+  (orders, assets) => (
     orders.map(order => ({
       ...order,
       price: BigNumber(order.takerAssetAmount).div(order.makerAssetAmount).toFixed(8),
-      amount: order.makerAssetAmount,
-      total: order.takerAssetAmount,
+      amount: Web3Wrapper.toUnitAmount(
+        new OldBigNumber(order.makerAssetAmount), assets[order.makerAssetData].decimals,
+      ).toFixed(8),
+      total: Web3Wrapper.toUnitAmount(
+        new OldBigNumber(order.takerAssetAmount), assets[order.takerAssetData].decimals,
+      ).toFixed(8),
       key: order.id,
       date: order.completedAt,
     }))
@@ -67,13 +82,18 @@ export const getTradingHistory = createSelector(
 export const getBidOrders = createSelector(
   [
     getResourceMappedList('orders', 'bids'),
+    getResourceMap('assets'),
   ],
-  orders => (
+  (orders, assets) => (
     orders.map(order => ({
       ...order,
       price: BigNumber(order.takerAssetAmount).div(order.makerAssetAmount).toFixed(8),
-      amount: order.makerAssetAmount,
-      total: order.takerAssetAmount,
+      amount: Web3Wrapper.toUnitAmount(
+        new OldBigNumber(order.makerAssetAmount), assets[order.makerAssetData].decimals,
+      ).toFixed(8),
+      total: Web3Wrapper.toUnitAmount(
+        new OldBigNumber(order.takerAssetAmount), assets[order.takerAssetData].decimals,
+      ).toFixed(8),
     }))
   ),
 );
@@ -81,13 +101,18 @@ export const getBidOrders = createSelector(
 export const getAskOrders = createSelector(
   [
     getResourceMappedList('orders', 'asks'),
+    getResourceMap('assets'),
   ],
-  orders => (
+  (orders, assets) => (
     orders.map(order => ({
       ...order,
       price: BigNumber(order.takerAssetAmount).div(order.makerAssetAmount).toFixed(8),
-      amount: order.makerAssetAmount,
-      total: order.takerAssetAmount,
+      amount: Web3Wrapper.toUnitAmount(
+        new OldBigNumber(order.makerAssetAmount), assets[order.makerAssetData].decimals,
+      ).toFixed(8),
+      total: Web3Wrapper.toUnitAmount(
+        new OldBigNumber(order.takerAssetAmount), assets[order.takerAssetData].decimals,
+      ).toFixed(8),
     }))
   ),
 );

@@ -138,7 +138,7 @@ export class PrintUtils {
   }
 
   async fetchAndPrintContractAllowancesAsync() {
-    const erc20ProxyAddress = this.contractWrappers.erc20Proxy.getContractAddress();
+    const erc20ProxyAddress = this.contractWrappers.erc20Proxy.address;
     const flattenedAllowances = [];
     const flattenedAccounts = Object.keys(this.accounts).map(
       account => account.charAt(0).toUpperCase() + account.slice(1),

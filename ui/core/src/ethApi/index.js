@@ -1,6 +1,9 @@
 import {
   ContractWrappers,
-} from '@0xproject/contract-wrappers';
+} from '@0x/contract-wrappers';
+import {
+  getContractWrappersConfig,
+} from './contracts';
 
 /**
  * This factory intends to hide details of implementation JSON RPC Ethereum api.
@@ -21,9 +24,7 @@ function ethApiFactory() {
     setWrappers(networkId) {
       contractWrappers = new ContractWrappers(
         web3.currentProvider,
-        {
-          networkId,
-        },
+        getContractWrappersConfig(networkId),
       );
     },
 

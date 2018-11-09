@@ -4,12 +4,11 @@ import {
   generatePseudoRandomSalt,
   orderHashUtils,
   signatureUtils,
-  SignerType,
+  BigNumber,
 } from '0x.js';
-
 import {
   Web3Wrapper,
-} from '@0xproject/web3-wrapper';
+} from '@0x/web3-wrapper';
 import {
   providerEngine,
 } from './utils/providerEngine';
@@ -18,15 +17,20 @@ import {
 } from './utils/printing';
 import {
   DECIMALS,
-  GANACHE_NETWORK_ID,
   ZERO,
   NULL_ADDRESS,
   GAS_DEFAULT,
 } from './utils/constants';
 import {
+  NETWORK_CONFIGS,
+} from './utils/configs';
+import {
+  getContractAddressesForNetwork,
+  getContractWrappersConfig,
+} from './utils/contracts';
+import {
   getRandomFutureDateInSeconds,
 } from './utils/helpers';
-import BigNumber from '../BigNumber';
 
 export async function scenarioAsync() {
   PrintUtils.printScenario('Fill Order');
@@ -34,16 +38,15 @@ export async function scenarioAsync() {
   // 0x contracts as well as ERC20/ERC721 token contracts on the blockchain
   const contractWrappers = new ContractWrappers(
     providerEngine,
-    {
-      networkId: GANACHE_NETWORK_ID,
-    },
+    getContractWrappersConfig(NETWORK_CONFIGS.networkId),
   );
+  const contractAddresses = getContractAddressesForNetwork(NETWORK_CONFIGS.networkId);
   // Initialize the Web3Wrapper, this provides helper functions around fetching
   // account information, balances, general contract logs
   const web3Wrapper = new Web3Wrapper(providerEngine);
   const [maker, taker] = await web3Wrapper.getAvailableAddressesAsync();
-  const zrxTokenAddress = contractWrappers.exchange.getZRXTokenAddress();
-  const etherTokenAddress = contractWrappers.etherToken.getContractAddressIfExists();
+  const zrxTokenAddress = contractAddresses.zrxToken;
+  const etherTokenAddress = contractAddresses.etherToken;
   if (!etherTokenAddress) {
     throw new Error('Ether Token not found on this network');
   }
@@ -54,11 +57,10 @@ export async function scenarioAsync() {
     { WETH: etherTokenAddress, ZRX: zrxTokenAddress },
   );
   printUtils.printAccounts();
-
   // the amount the maker is selling of maker asset
-  const makerAssetAmount = Web3Wrapper.toBaseUnitAmount(BigNumber(5), DECIMALS);
+  const makerAssetAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(5), DECIMALS);
   // the amount the maker wants of taker asset
-  const takerAssetAmount = Web3Wrapper.toBaseUnitAmount(BigNumber(0.1), DECIMALS);
+  const takerAssetAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(0.1), DECIMALS);
   // 0x v2 uses hex encoded asset data strings
   // to encode all the information needed to identify an asset
   const makerAssetData = assetDataUtils.encodeERC20AssetData(zrxTokenAddress);
@@ -91,7 +93,8 @@ export async function scenarioAsync() {
 
   // Set up the Order and fill it
   const randomExpiration = getRandomFutureDateInSeconds();
-  const exchangeAddress = contractWrappers.exchange.getContractAddress();
+  console.log(randomExpiration);
+  const exchangeAddress = contractAddresses.exchange;
 
   // Create the order
   const order = {
@@ -118,12 +121,7 @@ export async function scenarioAsync() {
 
   // Generate the order hash and sign it
   const orderHashHex = orderHashUtils.getOrderHashHex(order);
-  const signature = await signatureUtils.ecSignOrderHashAsync(
-    providerEngine,
-    orderHashHex,
-    maker,
-    SignerType.Default,
-  );
+  const signature = await signatureUtils.ecSignHashAsync(providerEngine, orderHashHex, maker);
   const signedOrder = { ...order, signature };
 
   // Validate the order is Fillable before calling fillOrder
