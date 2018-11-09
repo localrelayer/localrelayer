@@ -29,7 +29,7 @@ export const createOrder = ({
   const etherTokenAddress = '0x871dd7c2b4b25e1aa18728e9d5f2af4c4e431f5c';
   const makerAssetData = baseAssetData || assetDataUtils.encodeERC20AssetData(zrxTokenAddress);
   const takerAssetData = quoteAssetData || assetDataUtils.encodeERC20AssetData(etherTokenAddress);
-  const randomExpiration = BigNumber(Date.now() + 1000000).div(900).ceil();
+  const randomExpiration = BigNumber(Date.now() + 1000000).div(900).integerValue(BigNumber.ROUND_CEIL);
   const exchangeAddress = '0x48bacb9266a570d521063ef5dd96e61686dbe788';
   const orderConfigRequest = {
     exchangeAddress,

@@ -5,6 +5,7 @@ import {
   orderHashUtils,
   signatureUtils,
   SignerType,
+  BigNumber,
 } from '0x.js';
 import {
   Web3Wrapper,
@@ -27,7 +28,6 @@ import {
 import {
   getRandomFutureDateInSeconds,
 } from './utils/helpers';
-import BigNumber from '../BigNumber';
 
 /**
  * In this scenario, the maker creates and signs an order for selling ZRX for WETH. This
@@ -65,9 +65,9 @@ export async function scenarioAsync() {
   const takerAssetData = assetDataUtils.encodeERC20AssetData(zrxTokenAddress);
   const makerAssetData = assetDataUtils.encodeERC20AssetData(etherTokenAddress);
   // the amount the maker is selling of maker asset
-  const makerAssetAmount = Web3Wrapper.toBaseUnitAmount(BigNumber(0.01), DECIMALS);
+  const makerAssetAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(0.01), DECIMALS);
   // the amount the maker wants of taker asset
-  const takerAssetAmount = Web3Wrapper.toBaseUnitAmount(BigNumber(0.005), DECIMALS);
+  const takerAssetAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(0.005), DECIMALS);
 
 
   // Allow the 0x ERC20 Proxy to move ZRX on behalf of makerAccount

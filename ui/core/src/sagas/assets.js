@@ -5,10 +5,10 @@ import {
 } from '0x.js';
 import {
   addressUtils,
-} from '@0xproject/utils';
+} from '@0x/utils';
 import {
   Web3Wrapper,
-} from '@0xproject/web3-wrapper';
+} from '@0x/web3-wrapper';
 import {
   getAssetByIdField,
   getResourceById,

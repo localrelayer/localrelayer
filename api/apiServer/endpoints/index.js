@@ -8,7 +8,7 @@ import {
 import {
   SchemaValidator,
   schemas,
-} from '@0xproject/json-schemas';
+} from '@0x/json-schemas';
 import {
   ZERO,
   NULL_ADDRESS,

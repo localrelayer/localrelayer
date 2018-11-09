@@ -7,7 +7,7 @@ import {
 } from 'instex-core';
 import {
   Web3Wrapper,
-} from '@0xproject/web3-wrapper';
+} from '@0x/web3-wrapper';
 import BigNumber from 'instex-core/BigNumber';
 
 

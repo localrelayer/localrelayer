@@ -1,6 +1,7 @@
 import {
   assetDataUtils,
   ContractWrappers,
+  BigNumber,
 } from '0x.js';
 import {
   Web3Wrapper,
@@ -21,8 +22,6 @@ import {
 import {
   getRandomFutureDateInSeconds,
 } from './utils/helpers';
-import BigNumber from '../BigNumber';
-
 
 /**
  * In this scenario, the maker creates and signs many orders selling ZRX for WETH.
@@ -56,9 +55,9 @@ export async function scenarioAsync() {
   printUtils.printAccounts();
 
   // the amount the maker is selling of maker asset
-  const makerAssetAmount = BigNumber(100);
+  const makerAssetAmount = new BigNumber(100);
   // the amount the maker wants of taker asset
-  const takerAssetAmount = BigNumber(10);
+  const takerAssetAmount = new BigNumber(10);
   // 0x v2 uses hex encoded asset data strings
   // to encode all the information needed to identify an asset
   const makerAssetData = assetDataUtils.encodeERC20AssetData(zrxTokenAddress);
@@ -80,7 +79,7 @@ export async function scenarioAsync() {
     senderAddress: NULL_ADDRESS,
     feeRecipientAddress: NULL_ADDRESS,
     expirationTimeSeconds: randomExpiration,
-    salt: BigNumber(Date.now() - 1000 * 60 * 10),
+    salt: new BigNumber(Date.now() - 1000 * 60 * 10),
     makerAssetAmount,
     takerAssetAmount,
     makerAssetData,
@@ -91,12 +90,12 @@ export async function scenarioAsync() {
 
   const order2 = {
     ...order1,
-    salt: BigNumber(Date.now() - 1000 * 60),
+    salt: new BigNumber(Date.now() - 1000 * 60),
   };
 
   const order3 = {
     ...order1,
-    salt: BigNumber(Date.now()),
+    salt: new BigNumber(Date.now()),
   };
 
   // Fetch and print the order info

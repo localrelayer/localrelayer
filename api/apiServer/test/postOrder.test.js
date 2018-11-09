@@ -2,11 +2,10 @@ import chai from 'chai';
 import {
   SchemaValidator,
   schemas,
-} from '@0xproject/json-schemas';
+} from '@0x/json-schemas';
 import {
   generatePseudoRandomSalt,
-} from '@0xproject/order-utils';
-
+} from '@0x/order-utils';
 import {
   request,
   randomEthereumAddress,
