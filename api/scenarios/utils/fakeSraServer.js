@@ -3,6 +3,7 @@ import {
 } from './providerEngine';
 
 import * as constants from './constants';
+import BigNumber from '../../BigNumber';
 
 const zeroEx = require('0x.js');
 const bodyParser = require('body-parser');
@@ -41,12 +42,12 @@ function renderOrderbookResponse(baseAssetData, quoteAssetData) {
 }
 // As the orders come in as JSON they need to be turned into the correct types such as BigNumber
 function parseHTTPOrder(signedOrder) {
-  signedOrder.salt = new zeroEx.BigNumber(signedOrder.salt);
-  signedOrder.makerAssetAmount = new zeroEx.BigNumber(signedOrder.makerAssetAmount);
-  signedOrder.takerAssetAmount = new zeroEx.BigNumber(signedOrder.takerAssetAmount);
-  signedOrder.makerFee = new zeroEx.BigNumber(signedOrder.makerFee);
-  signedOrder.takerFee = new zeroEx.BigNumber(signedOrder.takerFee);
-  signedOrder.expirationTimeSeconds = new zeroEx.BigNumber(signedOrder.expirationTimeSeconds);
+  signedOrder.salt = BigNumber(signedOrder.salt);
+  signedOrder.makerAssetAmount = BigNumber(signedOrder.makerAssetAmount);
+  signedOrder.takerAssetAmount = BigNumber(signedOrder.takerAssetAmount);
+  signedOrder.makerFee = BigNumber(signedOrder.makerFee);
+  signedOrder.takerFee = BigNumber(signedOrder.takerFee);
+  signedOrder.expirationTimeSeconds = BigNumber(signedOrder.expirationTimeSeconds);
   return signedOrder;
 }
 function removeOrder(orderHash) {

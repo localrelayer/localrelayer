@@ -2,11 +2,11 @@
 import {
   createSelector,
 } from 'reselect';
-import BigNumber from 'bignumber.js';
 import {
   getResourceMappedList,
   getResourceMap,
 } from './resources';
+import BigNumber from '../../BigNumber';
 
 export const getTokensInfoMock = createSelector(
   [
@@ -16,10 +16,7 @@ export const getTokensInfoMock = createSelector(
   (orders, assets) => (
     orders.map(order => ({
       ...order,
-      price: (
-        BigNumber(order.takerAssetAmount)
-        / BigNumber(order.makerAssetAmount)
-      ).toFixed(8),
+      price: BigNumber(order.takerAssetAmount).div(order.makerAssetAmount).toFixed(8),
       amount: order.makerAssetAmount,
       total: order.takerAssetAmount,
       key: order.id,
@@ -39,10 +36,7 @@ export const getOpenOrders = createSelector(
   (orders, assets) => (
     orders.map(order => ({
       ...order,
-      price: (
-        BigNumber(order.takerAssetAmount)
-        / BigNumber(order.makerAssetAmount)
-      ).toFixed(8),
+      price: BigNumber(order.takerAssetAmount).div(order.makerAssetAmount).toFixed(8),
       amount: order.makerAssetAmount,
       total: order.takerAssetAmount,
       key: order.id,
@@ -61,9 +55,7 @@ export const getTradingHistory = createSelector(
   orders => (
     orders.map(order => ({
       ...order,
-      price: (
-        BigNumber(order.takerAssetAmount).div(order.makerAssetAmount)
-      ).toFixed(8),
+      price: BigNumber(order.takerAssetAmount).div(order.makerAssetAmount).toFixed(8),
       amount: order.makerAssetAmount,
       total: order.takerAssetAmount,
       key: order.id,
@@ -79,9 +71,7 @@ export const getBidOrders = createSelector(
   orders => (
     orders.map(order => ({
       ...order,
-      price: (
-        BigNumber(order.takerAssetAmount).div(order.makerAssetAmount)
-      ).toFixed(8),
+      price: BigNumber(order.takerAssetAmount).div(order.makerAssetAmount).toFixed(8),
       amount: order.makerAssetAmount,
       total: order.takerAssetAmount,
     }))
@@ -95,9 +85,7 @@ export const getAskOrders = createSelector(
   orders => (
     orders.map(order => ({
       ...order,
-      price: (
-        BigNumber(order.takerAssetAmount).div(order.makerAssetAmount)
-      ).toFixed(8),
+      price: BigNumber(order.takerAssetAmount).div(order.makerAssetAmount).toFixed(8),
       amount: order.makerAssetAmount,
       total: order.takerAssetAmount,
     }))

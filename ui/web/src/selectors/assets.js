@@ -8,9 +8,7 @@ import {
 import {
   Web3Wrapper,
 } from '@0xproject/web3-wrapper';
-import {
-  BigNumber,
-} from '0x.js';
+import BigNumber from 'instex-core/BigNumber';
 
 
 export const getCurrentAssetPair = createSelector(
@@ -60,10 +58,10 @@ export const getAssetsWithBalanceAndAllowance = createSelector(
       return currentPairId.split('_').map((key) => {
         const asset = assets[key];
         const assetFormattedBalance = Web3Wrapper.toUnitAmount(
-          new BigNumber(balance[asset.address] || 0),
+          BigNumber(balance[asset.address] || 0),
           asset.decimals,
         ).toFixed(8);
-        const isTradable = new BigNumber(allowance[asset.address] || 0).gt(0);
+        const isTradable = BigNumber(allowance[asset.address] || 0).gt(0);
         return {
           ...asset,
           balance: assetFormattedBalance,
