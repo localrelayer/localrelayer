@@ -7,11 +7,9 @@ import {
 import {
   Web3Wrapper,
 } from '@0xproject/web3-wrapper';
-import {
-  BigNumber,
-} from '0x.js';
+import BigNumber from 'instex-core/BigNumber';
 
 export const getFormattedWalletBalance = createSelector(
   [getWalletState('selectedAccountBalance')],
-  balance => Web3Wrapper.toUnitAmount(new BigNumber(balance), 18).toFixed(8),
+  balance => Web3Wrapper.toUnitAmount(BigNumber(balance), 18).toFixed(8),
 );

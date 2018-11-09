@@ -2,7 +2,6 @@ import Koa from 'koa';
 import Router from 'koa-router';
 import {
   orderHashUtils,
-  BigNumber,
   assetDataUtils,
   ContractWrappers,
 } from '0x.js';
@@ -27,6 +26,7 @@ import {
 import {
   redisClient,
 } from '../../redis';
+import BigNumber from '../../BigNumber';
 
 const app = new Koa();
 const standardRelayerApi = new Router({
@@ -78,10 +78,10 @@ const tranformBigNumberOrder = order => (
 );
 
 export const sortOrderbook = (a, b) => {
-  const aPrice = new BigNumber(a.takerAssetAmount).div(a.makerAssetAmount);
-  const aTakerFeePrice = new BigNumber(a.takerFee).div(a.takerAssetAmount);
-  const bPrice = new BigNumber(b.takerAssetAmount).div(b.makerAssetAmount);
-  const bTakerFeePrice = new BigNumber(b.takerFee).div(b.takerAssetAmount);
+  const aPrice = BigNumber(a.takerAssetAmount).div(a.makerAssetAmount);
+  const aTakerFeePrice = BigNumber(a.takerFee).div(a.takerAssetAmount);
+  const bPrice = BigNumber(b.takerAssetAmount).div(b.makerAssetAmount);
+  const bTakerFeePrice = BigNumber(b.takerFee).div(b.takerAssetAmount);
   const aExpirationTimeSeconds = parseInt(a.expirationTimeSeconds, 10);
   const bExpirationTimeSeconds = parseInt(b.expirationTimeSeconds, 10);
   return aPrice - bPrice
@@ -282,8 +282,8 @@ standardRelayerApi.get('/asset_pairs', async (ctx) => {
 standardRelayerApi.get('/orders', async (ctx) => {
   logger.debug('HTTP: GET ORDERS');
   const sort = (a, b) => {
-    const aPrice = new BigNumber(a.takerAssetAmount).div(a.makerAssetAmount);
-    const bPrice = new BigNumber(b.takerAssetAmount).div(b.makerAssetAmount);
+    const aPrice = BigNumber(a.takerAssetAmount).div(a.makerAssetAmount);
+    const bPrice = BigNumber(b.takerAssetAmount).div(b.makerAssetAmount);
     return aPrice - bPrice;
   };
   const {

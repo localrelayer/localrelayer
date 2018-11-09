@@ -1,6 +1,5 @@
 import {
   assetDataUtils,
-  BigNumber,
   ContractWrappers,
   generatePseudoRandomSalt,
   orderHashUtils,
@@ -26,6 +25,7 @@ import {
 import {
   getRandomFutureDateInSeconds,
 } from './utils/helpers';
+import BigNumber from '../BigNumber';
 
 /**
  * In this scenario a third party, called the sender, submits the operation on behalf of the taker.
@@ -64,13 +64,13 @@ export async function scenarioAsync() {
   printUtils.printAccounts();
 
   // the amount the maker is selling of maker asset
-  const makerAssetAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(5), DECIMALS);
+  const makerAssetAmount = Web3Wrapper.toBaseUnitAmount(BigNumber(5), DECIMALS);
   // the amount the maker wants of taker asset
-  const takerAssetAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(0.1), DECIMALS);
+  const takerAssetAmount = Web3Wrapper.toBaseUnitAmount(BigNumber(0.1), DECIMALS);
   // the amount of fees the maker pays in ZRX
-  const makerFee = Web3Wrapper.toBaseUnitAmount(new BigNumber(0.01), DECIMALS);
+  const makerFee = Web3Wrapper.toBaseUnitAmount(BigNumber(0.01), DECIMALS);
   // the amount of fees the taker pays in ZRX
-  const takerFee = Web3Wrapper.toBaseUnitAmount(new BigNumber(0.01), DECIMALS);
+  const takerFee = Web3Wrapper.toBaseUnitAmount(BigNumber(0.01), DECIMALS);
   // 0x v2 uses hex encoded asset data strings
   // to encode all the information needed to identify an asset
   const makerAssetData = assetDataUtils.encodeERC20AssetData(zrxTokenAddress);

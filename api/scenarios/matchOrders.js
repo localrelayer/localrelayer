@@ -1,6 +1,5 @@
 import {
   assetDataUtils,
-  BigNumber,
   ContractWrappers,
   generatePseudoRandomSalt,
   orderHashUtils,
@@ -27,6 +26,7 @@ import {
 import {
   getRandomFutureDateInSeconds,
 } from './utils/helpers';
+import BigNumber from '../BigNumber';
 
 /**
  * In this scenario, the leftMaker creates and signs an order (leftOrder) for selling ZRX for WETH.
@@ -64,9 +64,9 @@ export async function scenarioAsync() {
   printUtils.printAccounts();
 
   // the amount the maker is selling of maker asset
-  const makerAssetAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(10), DECIMALS);
+  const makerAssetAmount = Web3Wrapper.toBaseUnitAmount(BigNumber(10), DECIMALS);
   // the amount the maker wants of taker asset
-  const takerAssetAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(0.4), DECIMALS);
+  const takerAssetAmount = Web3Wrapper.toBaseUnitAmount(BigNumber(0.4), DECIMALS);
   // 0x v2 uses hex encoded asset data strings
   // to encode all the information needed to identify an asset
   const makerAssetData = assetDataUtils.encodeERC20AssetData(zrxTokenAddress);
@@ -138,7 +138,7 @@ export async function scenarioAsync() {
 
   // Create the matched order
   const rightOrderTakerAssetAmount = Web3Wrapper.toBaseUnitAmount(
-    new BigNumber(0.2),
+    BigNumber(0.2),
     DECIMALS,
   );
   const rightOrder = {

@@ -5,7 +5,6 @@ import {
 } from '0x.js';
 import {
   addressUtils,
-  BigNumber,
 } from '@0xproject/utils';
 import {
   Web3Wrapper,
@@ -26,6 +25,7 @@ import {
   actionTypes,
 } from '../actions';
 import ethApi from '../ethApi';
+import BigNumber from '../../BigNumber';
 
 
 function* extractInfo(tokenContract) {
@@ -323,7 +323,7 @@ function* processApproval(action) {
   const contractWrappers = ethApi.getWrappers(networkId);
   const amount = action.payload.isTradable
     ? contractWrappers.erc20Token.UNLIMITED_ALLOWANCE_IN_BASE_UNITS
-    : new BigNumber(0);
+    : BigNumber(0);
   const selectedAccount = yield eff.select(getWalletState('selectedAccount'));
   yield eff.call(
     [contractWrappers.erc20Token, contractWrappers.erc20Token.setProxyAllowanceAsync],
@@ -348,7 +348,7 @@ function* processDepositWithdraw(action) {
       contractWrappers.etherToken[`${action.payload.type}Async`],
     ],
     etherToken.address,
-    Web3Wrapper.toBaseUnitAmount(new BigNumber(action.payload.amount), etherToken.decimals),
+    Web3Wrapper.toBaseUnitAmount(BigNumber(action.payload.amount), etherToken.decimals),
     selectedAccount,
     {
       // Default gas amount isn't enought for withdrawal

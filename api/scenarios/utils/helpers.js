@@ -1,6 +1,4 @@
-import {
-  BigNumber,
-} from '0x.js';
+import BigNumber from '../../BigNumber';
 
 export const getRandomFutureDateInSeconds = (
-) => new BigNumber(Date.now() + 1000000).div(900).ceil();
+) => BigNumber(Date.now() + 1000000).div(900).ceil();

@@ -1,6 +1,5 @@
 import {
   assetDataUtils,
-  BigNumber,
   ContractWrappers,
   generatePseudoRandomSalt,
   orderHashUtils,
@@ -27,6 +26,7 @@ import {
 import {
   getRandomFutureDateInSeconds,
 } from './utils/helpers';
+import BigNumber from '../BigNumber';
 
 export async function scenarioAsync() {
   PrintUtils.printScenario('Fill Order');
@@ -56,9 +56,9 @@ export async function scenarioAsync() {
   printUtils.printAccounts();
 
   // the amount the maker is selling of maker asset
-  const makerAssetAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(5), DECIMALS);
+  const makerAssetAmount = Web3Wrapper.toBaseUnitAmount(BigNumber(5), DECIMALS);
   // the amount the maker wants of taker asset
-  const takerAssetAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(0.1), DECIMALS);
+  const takerAssetAmount = Web3Wrapper.toBaseUnitAmount(BigNumber(0.1), DECIMALS);
   // 0x v2 uses hex encoded asset data strings
   // to encode all the information needed to identify an asset
   const makerAssetData = assetDataUtils.encodeERC20AssetData(zrxTokenAddress);
