@@ -44,11 +44,14 @@ export const fieldsToSkip = [
 ];
 
 const getValidationErrors = (instance, schema) => {
-  const validationInfo = validator.validate(instance, schema);
+  const validationInfo = validator.validate(
+    instance,
+    schema,
+  );
   const errors = validationInfo.errors.filter(e => e.name !== 'allOf').map(
     error => (
       {
-        field: error.argument,
+        field: error.name === 'required' ? error.argument : error.property.split('.')[1],
         code: 1000,
         reason: error.message,
       }
