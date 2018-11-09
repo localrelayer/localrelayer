@@ -62,7 +62,7 @@ describe('postOrder', () => {
       );
       return ({
         field,
-        code: 1000,
+        code: 1001,
         reason: `does not match pattern ${pattern}`,
       });
     };
@@ -161,6 +161,64 @@ describe('postOrder', () => {
       expect(response.body.validationErrors).to.have.deep.members(
         requiredFields.map(field => formatError(field)),
       );
+    });
+
+    it('should response 400 with wrong expirationTimeSeconds', async () => {
+      const response = await request
+        .post('/v2/order')
+        .send(
+          requiredFields
+            .reduce((acc, fieldName) => ({
+              [fieldName]: (
+                fieldName.includes('Address')
+                  ? randomEthereumAddress()
+                  : testData[fieldName]
+              ),
+              ...acc,
+            }), {
+              expirationTimeSeconds: '59',
+            }),
+        );
+      expect(validator.isValid(
+        response.body,
+        schemas.relayerApiErrorResponseSchema,
+      )).to.equal(true);
+      expect(response.statusCode).to.equal(400);
+      expect(response.body.reason).to.equal('Validation failed');
+      expect(response.body.validationErrors).to.have.deep.members([{
+        field: 'expirationTimeSeconds',
+        code: 1004,
+        reason: 'Minimum possible value - 60',
+      }]);
+    });
+
+    it('should response 400 with wrong networkId', async () => {
+      /* Ropsten network id */
+      const networkId = '3';
+      const response = await request
+        .post(`/v2/order?networkId=${networkId}`)
+        .send(
+          requiredFields
+            .reduce((acc, fieldName) => ({
+              ...acc,
+              [fieldName]: (
+                fieldName.includes('Address')
+                  ? randomEthereumAddress()
+                  : testData[fieldName]
+              ),
+            }), {}),
+        );
+      expect(validator.isValid(
+        response.body,
+        schemas.relayerApiErrorResponseSchema,
+      )).to.equal(true);
+      expect(response.statusCode).to.equal(400);
+      expect(response.body.reason).to.equal('Validation failed');
+      expect(response.body.validationErrors).to.have.deep.members([{
+        field: 'networkId',
+        code: 1006,
+        reason: `Network id ${networkId} is not supported`,
+      }]);
     });
   });
 });

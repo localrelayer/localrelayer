@@ -52,7 +52,7 @@ const getValidationErrors = (instance, schema) => {
     error => (
       {
         field: error.name === 'required' ? error.argument : error.property.split('.')[1],
-        code: 1000,
+        code: error.name === 'required' ? 1000 : 1001,
         reason: error.message,
       }
     ),
@@ -79,6 +79,17 @@ const tranformBigNumberOrder = order => (
     ),
   }), {})
 );
+
+const validateExpirationTimeSeconds = expirationTimeSeconds => (
+  Number(expirationTimeSeconds) > 60
+);
+
+const validateNetworkId = networkId => ([
+  1,
+  42,
+  ...[process.env.NODE_ENV === 'test' ? [50] : []],
+].includes(networkId));
+
 
 export const sortOrderbook = (a, b) => {
   const aPrice = BigNumber(a.takerAssetAmount).div(a.makerAssetAmount);
@@ -118,10 +129,14 @@ standardRelayerApi.post('/order_config', (ctx) => {
 standardRelayerApi.post('/order', async (ctx) => {
   logger.debug('HTTP: POST order');
   const submittedOrder = ctx.request.body;
-  const networkId = ctx.query.networkId || 1;
+  const networkId = Number(ctx.query.networkId || '1');
   logger.debug(submittedOrder);
 
-  if (validator.isValid(submittedOrder, schemas.signedOrderSchema)) {
+  if (
+    validator.isValid(submittedOrder, schemas.signedOrderSchema)
+    && validateExpirationTimeSeconds(Number(submittedOrder.expirationTimeSeconds))
+    && validateNetworkId(networkId)
+  ) {
     const contractWrappers = new ContractWrappers(
       initProvider(networkId).engine,
       {
@@ -166,6 +181,25 @@ standardRelayerApi.post('/order', async (ctx) => {
     ctx.status = 400;
     ctx.message = 'Validation error';
     ctx.body = getValidationErrors(submittedOrder, schemas.signedOrderSchema);
+
+    if (
+      !ctx.body.validationErrors.find(e => e.field === 'expirationTimeSeconds')
+      && !validateExpirationTimeSeconds(Number(submittedOrder.expirationTimeSeconds))
+    ) {
+      ctx.body.validationErrors.push({
+        code: 1004,
+        field: 'expirationTimeSeconds',
+        reason: 'Minimum possible value - 60',
+      });
+    }
+
+    if (!validateNetworkId(networkId)) {
+      ctx.body.validationErrors.push({
+        code: 1006,
+        field: 'networkId',
+        reason: `Network id ${networkId} is not supported`,
+      });
+    }
   }
 });
 
