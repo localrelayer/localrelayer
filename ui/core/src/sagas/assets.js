@@ -321,13 +321,13 @@ function* processApproval(action) {
   const web3 = ethApi.getWeb3();
   const networkId = eff.call(web3.eth.net.getId);
   const contractWrappers = ethApi.getWrappers(networkId);
-  const amount = action.payload.isTradable
+  const amount = action.isTradable
     ? contractWrappers.erc20Token.UNLIMITED_ALLOWANCE_IN_BASE_UNITS
     : BigNumber(0);
   const selectedAccount = yield eff.select(getWalletState('selectedAccount'));
   yield eff.call(
     [contractWrappers.erc20Token, contractWrappers.erc20Token.setProxyAllowanceAsync],
-    action.payload.asset.address,
+    action.asset.address,
     selectedAccount,
     amount,
   );
@@ -345,10 +345,10 @@ function* processDepositWithdraw(action) {
   yield eff.call(
     [
       contractWrappers.etherToken,
-      contractWrappers.etherToken[`${action.payload.type}Async`],
+      contractWrappers.etherToken[`${action.method}Async`],
     ],
     etherToken.address,
-    Web3Wrapper.toBaseUnitAmount(BigNumber(action.payload.amount), etherToken.decimals),
+    Web3Wrapper.toBaseUnitAmount(BigNumber(action.amount), etherToken.decimals),
     selectedAccount,
     {
       // Default gas amount isn't enought for withdrawal
