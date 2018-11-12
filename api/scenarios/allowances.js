@@ -4,16 +4,20 @@ import {
 
 import {
   Web3Wrapper,
-} from '@0xproject/web3-wrapper';
+} from '@0x/web3-wrapper';
 import {
   providerEngine,
 } from './utils/providerEngine';
 import {
+  getContractAddressesForNetwork,
+  getContractWrappersConfig,
+} from './utils/contracts';
+import {
   PrintUtils,
 } from './utils/printing';
 import {
-  GANACHE_NETWORK_ID,
-} from './utils/constants';
+  NETWORK_CONFIGS,
+} from './utils/configs';
 
 export async function scenarioAsync() {
   PrintUtils.printScenario('Allowances');
@@ -21,16 +25,15 @@ export async function scenarioAsync() {
   // 0x contracts as well as ERC20/ERC721 token contracts on the blockchain
   const contractWrappers = new ContractWrappers(
     providerEngine,
-    {
-      networkId: GANACHE_NETWORK_ID,
-    },
+    getContractWrappersConfig(NETWORK_CONFIGS.networkId),
   );
+  const contractAddresses = getContractAddressesForNetwork(NETWORK_CONFIGS.networkId);
   // Initialize the Web3Wrapper, this provides helper functions around fetching
   // account information, balances, general contract logs
   const web3Wrapper = new Web3Wrapper(providerEngine);
   const [maker, taker] = await web3Wrapper.getAvailableAddressesAsync();
-  const zrxTokenAddress = contractWrappers.exchange.getZRXTokenAddress();
-  const etherTokenAddress = contractWrappers.etherToken.getContractAddressIfExists();
+  const zrxTokenAddress = contractAddresses.zrxToken;
+  const etherTokenAddress = contractAddresses.etherToken;
   if (!etherTokenAddress) {
     throw new Error('Ether Token not found on this network');
   }

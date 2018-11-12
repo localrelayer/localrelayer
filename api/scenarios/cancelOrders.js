@@ -5,7 +5,7 @@ import {
 } from '0x.js';
 import {
   Web3Wrapper,
-} from '@0xproject/web3-wrapper';
+} from '@0x/web3-wrapper';
 
 import {
   PrintUtils,
@@ -14,35 +14,36 @@ import {
   providerEngine,
 } from './utils/providerEngine';
 import {
-  GANACHE_NETWORK_ID,
   ZERO,
   NULL_ADDRESS,
   GAS_DEFAULT,
 } from './utils/constants';
 import {
+  getContractAddressesForNetwork,
+  getContractWrappersConfig,
+} from './utils/contracts';
+import {
   getRandomFutureDateInSeconds,
 } from './utils/helpers';
+import {
+  NETWORK_CONFIGS,
+} from './utils/configs';
 
-/**
- * In this scenario, the maker creates and signs many orders selling ZRX for WETH.
- * The maker is able to cancel all any number of these orders effeciently by using cancelOrdersUpTo.
- */
 export async function scenarioAsync() {
   PrintUtils.printScenario('Cancel Orders Up To');
   // Initialize the ContractWrappers, this provides helper functions around calling
   // 0x contracts as well as ERC20/ERC721 token contracts on the blockchain
   const contractWrappers = new ContractWrappers(
     providerEngine,
-    {
-      networkId: GANACHE_NETWORK_ID,
-    },
+    getContractWrappersConfig(NETWORK_CONFIGS.networkId),
   );
+  const contractAddresses = getContractAddressesForNetwork(NETWORK_CONFIGS.networkId);
   // Initialize the Web3Wrapper, this provides helper functions around fetching
   // account information, balances, general contract logs
   const web3Wrapper = new Web3Wrapper(providerEngine);
   const [maker, taker] = await web3Wrapper.getAvailableAddressesAsync();
-  const zrxTokenAddress = contractWrappers.exchange.getZRXTokenAddress();
-  const etherTokenAddress = contractWrappers.etherToken.getContractAddressIfExists();
+  const zrxTokenAddress = contractAddresses.zrxToken;
+  const etherTokenAddress = contractAddresses.etherToken;
   if (!etherTokenAddress) {
     throw new Error('Ether Token not found on this network');
   }
@@ -65,7 +66,7 @@ export async function scenarioAsync() {
 
   // Set up the Order and fill it
   const randomExpiration = getRandomFutureDateInSeconds();
-  const exchangeAddress = contractWrappers.exchange.getContractAddress();
+  const exchangeAddress = contractAddresses.exchange;
 
   // Rather than using a random salt, we use an incrementing salt value.
   // When combined with cancelOrdersUpTo, all lesser values of salt can be cancelled

@@ -16,6 +16,9 @@ import {
   NULL_ADDRESS,
 } from '../../scenarios/utils/constants';
 import {
+  getContractWrappersConfig,
+} from '../../scenarios/utils/contracts';
+import {
   initProvider,
 } from '../../utils';
 import {
@@ -88,7 +91,8 @@ const validateExpirationTimeSeconds = expirationTimeSeconds => (
 const validateNetworkId = networkId => ([
   1,
   42,
-  ...[process.env.NODE_ENV === 'test' ? [50] : []],
+  50,
+  // ...[process.env.NODE_ENV === 'test' ? [50] : []],
 ].includes(networkId));
 
 
@@ -142,9 +146,7 @@ standardRelayerApi.post('/order', async (ctx) => {
     const provider = initProvider(networkId);
     const contractWrappers = new ContractWrappers(
       provider.engine,
-      {
-        networkId: +networkId,
-      },
+      getContractWrappersConfig(networkId),
     );
 
     try {
