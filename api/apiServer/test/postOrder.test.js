@@ -1,5 +1,10 @@
 import chai from 'chai';
 import {
+  orderHashUtils,
+  signatureUtils,
+  ContractWrappers,
+} from '0x.js';
+import {
   SchemaValidator,
   schemas,
 } from '@0x/json-schemas';
@@ -7,11 +12,19 @@ import {
   generatePseudoRandomSalt,
 } from '@0x/order-utils';
 import {
+  Web3Wrapper,
+} from '@0x/web3-wrapper';
+import {
   request,
   randomEthereumAddress,
   generateRandomMakerAssetAmount,
   generateRandomTakerAssetAmount,
+  toBaseUnit,
+  initTestProvider,
 } from './utils';
+import {
+  GANACHE_CONTRACT_ADDRESSES,
+} from '../../utils';
 
 
 const validator = new SchemaValidator();
@@ -41,8 +54,8 @@ describe('postOrder', () => {
       takerFee: '0',
       makerAssetAmount: generateRandomMakerAssetAmount(18),
       takerAssetAmount: generateRandomTakerAssetAmount(18),
-      makerAssetData: '0xf47261b0000000000000000000000000e41d2489571d322189246dafa5ebde1f4699f498', /* ZRX */
-      takerAssetData: '0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2', /* WETH */
+      makerAssetData: '0xf47261b0000000000000000000000000871dd7c2b4b25e1aa18728e9d5f2af4c4e431f5c', /* ZRX */
+      takerAssetData: '0xf47261b00000000000000000000000000b1ba0af832d7c05fd64161e0db78e85978e8082', /* WETH */
       salt: generatePseudoRandomSalt().toString(),
       expirationTimeSeconds: '1532560590',
       signature: randomEthereumAddress(),
@@ -247,5 +260,71 @@ describe('postOrder', () => {
         reason: 'Invalid signature',
       }]);
     });
+
+    it('should response 400 with low balance', async () => {
+      /* Testnet network id */
+      const networkId = 50;
+      /* 100000 ZRX - huge amount */
+      const makerAssetAmount = toBaseUnit(100000, 18);
+      const provider = initTestProvider();
+      const web3Wrapper = new Web3Wrapper(provider);
+      const [makerAddress] = await web3Wrapper.getAvailableAddressesAsync();
+
+
+      const contractAddresses = GANACHE_CONTRACT_ADDRESSES;
+      const contractWrappers = new ContractWrappers(
+        provider,
+        {
+          networkId,
+          contractAddresses: GANACHE_CONTRACT_ADDRESSES,
+        },
+      );
+
+      // Allowance
+      await contractWrappers.erc20Token.setUnlimitedProxyAllowanceAsync(
+        contractAddresses.zrxToken,
+        makerAddress,
+      );
+      const order = (
+        requiredFields
+          .reduce((acc, fieldName) => ({
+            [fieldName]: (
+              fieldName.includes('Address')
+                ? randomEthereumAddress()
+                : testData[fieldName]
+            ),
+            ...acc,
+          }), {
+            makerAddress,
+            makerAssetAmount,
+          })
+      );
+      const orderHash = orderHashUtils.getOrderHashHex(order);
+      const signature = await signatureUtils.ecSignHashAsync(
+        provider,
+        orderHash,
+        makerAddress,
+      );
+      provider.stop();
+      const response = await request
+        .post(`/v2/order?networkId=${networkId}`)
+        .send({
+          ...order,
+          signature,
+        });
+      expect(validator.isValid(
+        response.body,
+        schemas.relayerApiErrorResponseSchema,
+      )).to.equal(true);
+      expect(response.statusCode).to.equal(400);
+      expect(response.body.reason).to.equal('Unfillable order');
+    });
+
+    xit('should response 400 without allowence', async () => {
+    });
+  });
+
+  describe('create a new order with correct data', () => {
+    /* make sure order was created */
   });
 });

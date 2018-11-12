@@ -8,6 +8,9 @@ import {
   BigNumber,
 } from '0x.js';
 import {
+  getContractAddressesForNetworkOrThrow,
+} from '@0x/contract-addresses';
+import {
   SchemaValidator,
   schemas,
 } from '@0x/json-schemas';
@@ -16,10 +19,8 @@ import {
   NULL_ADDRESS,
 } from '../../scenarios/utils/constants';
 import {
-  getContractWrappersConfig,
-} from '../../scenarios/utils/contracts';
-import {
   initProvider,
+  GANACHE_CONTRACT_ADDRESSES,
 } from '../../utils';
 import {
   Order,
@@ -91,8 +92,7 @@ const validateExpirationTimeSeconds = expirationTimeSeconds => (
 const validateNetworkId = networkId => ([
   1,
   42,
-  50,
-  // ...[process.env.NODE_ENV === 'test' ? [50] : []],
+  ...(process.env.NODE_ENV === 'test' ? [50] : []),
 ].includes(networkId));
 
 
@@ -132,7 +132,6 @@ standardRelayerApi.post('/order_config', (ctx) => {
 });
 
 standardRelayerApi.post('/order', async (ctx) => {
-  logger.debug('HTTP: POST order');
   const submittedOrder = ctx.request.body;
   const networkId = Number(ctx.query.networkId || '1');
   logger.debug(submittedOrder);
@@ -146,7 +145,14 @@ standardRelayerApi.post('/order', async (ctx) => {
     const provider = initProvider(networkId);
     const contractWrappers = new ContractWrappers(
       provider.engine,
-      getContractWrappersConfig(networkId),
+      {
+        networkId,
+        contractAddresses: (
+          networkId === 50
+            ? GANACHE_CONTRACT_ADDRESSES
+            : getContractAddressesForNetworkOrThrow(networkId)
+        ),
+      },
     );
 
     try {
@@ -157,7 +163,7 @@ standardRelayerApi.post('/order', async (ctx) => {
         submittedOrder.makerAddress,
       );
     } catch (err) {
-      logger.debug('Signature is not valid');
+      logger.debug('Signature is not a valid');
       logger.debug(err);
       ctx.status = 400;
       ctx.message = 'Validation error';
@@ -170,6 +176,7 @@ standardRelayerApi.post('/order', async (ctx) => {
           reason: 'Invalid signature',
         }],
       };
+      provider.engine.stop();
       return;
     }
 
@@ -178,9 +185,15 @@ standardRelayerApi.post('/order', async (ctx) => {
         tranformBigNumberOrder(submittedOrder),
       );
     } catch (err) {
-      logger.debug('Order not valid');
+      logger.debug('Order is not a valid');
       logger.debug(err);
       ctx.status = 400;
+      ctx.message = 'Validation error';
+      ctx.body = {
+        code: 100,
+        reason: 'Unfillable order',
+      };
+      provider.engine.stop();
       return;
     }
 
@@ -200,6 +213,7 @@ standardRelayerApi.post('/order', async (ctx) => {
     } catch (e) {
       logger.debug('CANT SAVE', e);
       ctx.status = 400;
+      provider.engine.stop();
       return;
     }
 
@@ -207,6 +221,7 @@ standardRelayerApi.post('/order', async (ctx) => {
     ctx.status = 201;
     ctx.message = 'OK';
     ctx.body = {};
+    provider.engine.stop();
   } else {
     ctx.status = 400;
     ctx.message = 'Validation error';

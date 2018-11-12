@@ -1,10 +1,14 @@
 import supertest from 'supertest';
 import {
   assetDataUtils,
-  BigNumber,
   generatePseudoRandomSalt,
+  RPCSubprovider,
+  Web3ProviderEngine,
   BigNumber,
 } from '0x.js';
+import {
+  MnemonicWalletSubprovider,
+} from '@0x/subproviders';
 import {
   Web3Wrapper,
 } from '@0xproject/web3-wrapper';
@@ -95,4 +99,16 @@ export function generateRandomTakerAssetAmount(decimals) {
     amount,
     decimals,
   );
+}
+
+export function initTestProvider() {
+  const mnemonicWallet = new MnemonicWalletSubprovider({
+    mnemonic: 'stereo cheese harsh ordinary scrub media chair beauty artist poet ranch attack',
+    baseDerivationPath: '44\'/60\'/0\'/0',
+  });
+  const pe = new Web3ProviderEngine();
+  pe.addProvider(mnemonicWallet);
+  pe.addProvider(new RPCSubprovider('http://localhost:8545'));
+  pe.start();
+  return pe;
 }
