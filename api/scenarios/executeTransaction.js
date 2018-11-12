@@ -5,12 +5,10 @@ import {
   generatePseudoRandomSalt,
   orderHashUtils,
   signatureUtils,
-  SignerType,
-  BigNumber,
 } from '0x.js';
 import {
   Web3Wrapper,
-} from '@0xproject/web3-wrapper';
+} from '@0x/web3-wrapper';
 
 import {
   PrintUtils,
@@ -20,39 +18,36 @@ import {
 } from './utils/providerEngine';
 import {
   DECIMALS,
-  GANACHE_NETWORK_ID,
   NULL_ADDRESS,
   GAS_DEFAULT,
 } from './utils/constants';
 import {
   getRandomFutureDateInSeconds,
 } from './utils/helpers';
+import {
+  getContractAddressesForNetwork,
+  getContractWrappersConfig,
+} from './utils/contracts';
+import {
+  NETWORK_CONFIGS,
+} from './utils/configs';
 
-/**
- * In this scenario a third party, called the sender, submits the operation on behalf of the taker.
- * This allows a sender to pay the gas on for the taker. It can be combined with a custom sender
- * contract with additional business logic (e.g checking a whitelist). Or the sender
- * can choose how and when the transaction should be submitted, if at all.
- * The maker creates and signs the order. The signed order and fillOrder parameters for the
- * execute transaction function call are signed by the taker.
- */
 export async function scenarioAsync() {
   PrintUtils.printScenario('Execute Transaction fillOrder');
   // Initialize the ContractWrappers, this provides helper functions around calling
   // 0x contracts as well as ERC20/ERC721 token contracts on the blockchain
   const contractWrappers = new ContractWrappers(
     providerEngine,
-    {
-      networkId: GANACHE_NETWORK_ID,
-    },
+    getContractWrappersConfig(NETWORK_CONFIGS.networkId),
   );
+  const contractAddresses = getContractAddressesForNetwork(NETWORK_CONFIGS.networkId);
   // Initialize the Web3Wrapper, this provides helper functions around fetching
   // account information, balances, general contract logs
   const web3Wrapper = new Web3Wrapper(providerEngine);
   const [maker, taker, sender] = await web3Wrapper.getAvailableAddressesAsync();
   const feeRecipientAddress = sender;
-  const zrxTokenAddress = contractWrappers.exchange.getZRXTokenAddress();
-  const etherTokenAddress = contractWrappers.etherToken.getContractAddressIfExists();
+  const zrxTokenAddress = contractAddresses.zrxToken;
+  const etherTokenAddress = contractAddresses.etherToken;
   if (!etherTokenAddress) {
     throw new Error('Ether Token not found on this network');
   }
@@ -128,7 +123,7 @@ export async function scenarioAsync() {
     takerFee,
   };
 
-  const exchangeAddress = contractWrappers.exchange.getContractAddress();
+  const exchangeAddress = contractAddresses.exchange;
   const order = {
     ...orderWithoutExchangeAddress,
     exchangeAddress,
@@ -141,11 +136,10 @@ export async function scenarioAsync() {
 
   // Generate the order hash and sign it
   const orderHashHex = orderHashUtils.getOrderHashHex(order);
-  const signature = await signatureUtils.ecSignOrderHashAsync(
+  const signature = await signatureUtils.ecSignHashAsync(
     providerEngine,
     orderHashHex,
     maker,
-    SignerType.Default,
   );
 
   const signedOrder = {
@@ -168,11 +162,10 @@ export async function scenarioAsync() {
     takerTransactionSalt,
     taker,
   );
-  const takerSignatureHex = await signatureUtils.ecSignOrderHashAsync(
+  const takerSignatureHex = await signatureUtils.ecSignHashAsync(
     providerEngine,
     executeTransactionHex,
     taker,
-    SignerType.Default,
   );
   // The sender submits this operation via executeTransaction
   // passing in the signature from the taker

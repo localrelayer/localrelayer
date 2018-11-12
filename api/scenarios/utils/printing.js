@@ -3,7 +3,7 @@ import {
 } from '0x.js';
 import {
   Web3Wrapper,
-} from '@0xproject/web3-wrapper';
+} from '@0x/web3-wrapper';
 
 import {
   DECIMALS, UNLIMITED_ALLOWANCE_IN_BASE_UNITS,
