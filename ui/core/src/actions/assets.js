@@ -19,10 +19,8 @@ export const checkPairRequest = query => ({
 
 export const setApprovalRequest = (isTradable: boolean, asset: Asset) => ({
   type: actionTypes.SET_APPROVAL_REQUEST,
-  payload: {
-    isTradable,
-    asset,
-  },
+  isTradable,
+  asset,
 });
 
 export const depositOrWithdrawRequest = (method: string, amount: string) => ({
