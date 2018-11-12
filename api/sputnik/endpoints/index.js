@@ -134,15 +134,28 @@ sputnikApi.get('/bars', async (ctx) => {
   logger.debug('RECORDS');
   logger.debug(records);
 
-  const bars = records.reduce((acc, o) => {
-    let period = moment(o.completedAt).utc();
+  const bars = records.reduce((acc, order) => {
+    let period = moment(order.completedAt).utc();
     if (res.round) {
       period = nearestMinutes(res.round, period).unix();
     } else {
       period = period.startOf(res.startOf).unix();
     }
-    const amount = o.makerAssetAmount;
-    const price = new BigNumber(o.takerAssetAmount).div(o.makerAssetAmount);
+
+    const [
+      price,
+      amount,
+    ] = (
+      order.makerAssetData === baseAssetData
+        ? [
+          new BigNumber(order.takerAssetAmount).div(order.makerAssetAmount),
+          order.makerAssetAmount,
+        ]
+        : [
+          new BigNumber(order.makerAssetAmount).div(order.takerAssetAmount),
+          order.takerAssetAmount,
+        ]
+    );
 
     if (acc[period]) {
       acc[period].volume += parseFloat(amount);
@@ -165,7 +178,7 @@ sputnikApi.get('/bars', async (ctx) => {
   }, {});
   ctx.status = 200;
   ctx.body = {
-    bars,
+    items: bars,
   };
 });
 
