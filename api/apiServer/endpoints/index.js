@@ -2,8 +2,10 @@ import Koa from 'koa';
 import Router from 'koa-router';
 import {
   orderHashUtils,
+  signatureUtils,
   assetDataUtils,
   ContractWrappers,
+  BigNumber,
 } from '0x.js';
 import {
   SchemaValidator,
@@ -15,7 +17,7 @@ import {
 } from '../../scenarios/utils/constants';
 import {
   initProvider,
-} from '../../scenarios/utils/provider';
+} from '../../utils';
 import {
   Order,
   AssetPair,
@@ -26,7 +28,6 @@ import {
 import {
   redisClient,
 } from '../../redis';
-import BigNumber from '../../BigNumber';
 
 const app = new Koa();
 const standardRelayerApi = new Router({
@@ -75,7 +76,7 @@ const tranformBigNumberOrder = order => (
         'makerFee',
         'takerFee',
         'expirationTimeSeconds',
-      ].includes(fieldName) ? BigNumber(order[fieldName]) : order[fieldName]
+      ].includes(fieldName) ? new BigNumber(order[fieldName]) : order[fieldName]
     ),
   }), {})
 );
@@ -137,19 +138,46 @@ standardRelayerApi.post('/order', async (ctx) => {
     && validateExpirationTimeSeconds(Number(submittedOrder.expirationTimeSeconds))
     && validateNetworkId(networkId)
   ) {
+    const orderHash = orderHashUtils.getOrderHashHex(submittedOrder);
+    const provider = initProvider(networkId);
     const contractWrappers = new ContractWrappers(
-      initProvider(networkId).engine,
+      provider.engine,
       {
         networkId: +networkId,
       },
     );
 
     try {
+      await signatureUtils.isValidSignatureAsync(
+        provider.engine,
+        orderHash,
+        submittedOrder.signature,
+        submittedOrder.makerAddress,
+      );
+    } catch (err) {
+      logger.debug('Signature is not valid');
+      logger.debug(err);
+      ctx.status = 400;
+      ctx.message = 'Validation error';
+      ctx.body = {
+        code: 100,
+        reason: 'Validation failed',
+        validationErrors: [{
+          field: 'signature',
+          code: 1005,
+          reason: 'Invalid signature',
+        }],
+      };
+      return;
+    }
+
+    try {
       await contractWrappers.exchange.validateOrderFillableOrThrowAsync(
         tranformBigNumberOrder(submittedOrder),
       );
-    } catch (e) {
-      logger.debug('Order not valid', e);
+    } catch (err) {
+      logger.debug('Order not valid');
+      logger.debug(err);
       ctx.status = 400;
       return;
     }
@@ -162,7 +190,7 @@ standardRelayerApi.post('/order', async (ctx) => {
       makerAssetProxyId: decMakerAssetData.assetProxyId,
       takerAssetAddress: decTakerAssetData.tokenAddress,
       takerAssetProxyId: decTakerAssetData.assetProxyId,
-      orderHash: orderHashUtils.getOrderHashHex(submittedOrder),
+      orderHash,
       networkId,
     });
     try {

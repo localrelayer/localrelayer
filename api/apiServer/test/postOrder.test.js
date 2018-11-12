@@ -39,8 +39,8 @@ describe('postOrder', () => {
     const testData = {
       makerFee: '0',
       takerFee: '0',
-      makerAssetAmount: generateRandomMakerAssetAmount(),
-      takerAssetAmount: generateRandomTakerAssetAmount(),
+      makerAssetAmount: generateRandomMakerAssetAmount(18),
+      takerAssetAmount: generateRandomTakerAssetAmount(18),
       makerAssetData: '0xf47261b0000000000000000000000000e41d2489571d322189246dafa5ebde1f4699f498', /* ZRX */
       takerAssetData: '0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2', /* WETH */
       salt: generatePseudoRandomSalt().toString(),
@@ -192,7 +192,7 @@ describe('postOrder', () => {
       }]);
     });
 
-    it('should response 400 with wrong networkId', async () => {
+    it('should response 400 with unsupported networkId', async () => {
       /* Ropsten network id */
       const networkId = '3';
       const response = await request
@@ -218,6 +218,33 @@ describe('postOrder', () => {
         field: 'networkId',
         code: 1006,
         reason: `Network id ${networkId} is not supported`,
+      }]);
+    });
+
+    it('should response 400 with invalid signature', async () => {
+      const response = await request
+        .post('/v2/order')
+        .send(
+          requiredFields
+            .reduce((acc, fieldName) => ({
+              ...acc,
+              [fieldName]: (
+                fieldName.includes('Address')
+                  ? randomEthereumAddress()
+                  : testData[fieldName]
+              ),
+            }), {}),
+        );
+      expect(validator.isValid(
+        response.body,
+        schemas.relayerApiErrorResponseSchema,
+      )).to.equal(true);
+      expect(response.statusCode).to.equal(400);
+      expect(response.body.reason).to.equal('Validation failed');
+      expect(response.body.validationErrors).to.have.deep.members([{
+        field: 'signature',
+        code: 1005,
+        reason: 'Invalid signature',
       }]);
     });
   });
