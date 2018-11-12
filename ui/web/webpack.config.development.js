@@ -17,6 +17,7 @@ module.exports = env => merge(config(env), {
     }),
     new webpack.ProvidePlugin({
       React: 'react',
+      BigNumber: 'bignumber.js',
     }),
     new webpack.NamedModulesPlugin(),
     new webpack.HotModuleReplacementPlugin(),

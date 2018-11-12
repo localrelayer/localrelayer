@@ -93,10 +93,10 @@ const validateNetworkId = networkId => ([
 
 
 export const sortOrderbook = (a, b) => {
-  const aPrice = BigNumber(a.takerAssetAmount).div(a.makerAssetAmount);
-  const aTakerFeePrice = BigNumber(a.takerFee).div(a.takerAssetAmount);
-  const bPrice = BigNumber(b.takerAssetAmount).div(b.makerAssetAmount);
-  const bTakerFeePrice = BigNumber(b.takerFee).div(b.takerAssetAmount);
+  const aPrice = new BigNumber(a.takerAssetAmount).div(a.makerAssetAmount);
+  const aTakerFeePrice = new BigNumber(a.takerFee).div(a.takerAssetAmount);
+  const bPrice = new BigNumber(b.takerAssetAmount).div(b.makerAssetAmount);
+  const bTakerFeePrice = new BigNumber(b.takerFee).div(b.takerAssetAmount);
   const aExpirationTimeSeconds = parseInt(a.expirationTimeSeconds, 10);
   const bExpirationTimeSeconds = parseInt(b.expirationTimeSeconds, 10);
   return aPrice - bPrice
@@ -347,8 +347,8 @@ standardRelayerApi.get('/asset_pairs', async (ctx) => {
 standardRelayerApi.get('/orders', async (ctx) => {
   logger.debug('HTTP: GET ORDERS');
   const sort = (a, b) => {
-    const aPrice = BigNumber(a.takerAssetAmount).div(a.makerAssetAmount);
-    const bPrice = BigNumber(b.takerAssetAmount).div(b.makerAssetAmount);
+    const aPrice = new BigNumber(a.takerAssetAmount).div(a.makerAssetAmount);
+    const bPrice = new BigNumber(b.takerAssetAmount).div(b.makerAssetAmount);
     return aPrice - bPrice;
   };
   const {

@@ -4,9 +4,11 @@ import {
   schemas,
 } from '@0x/json-schemas';
 import {
+  BigNumber,
+} from '0x.js';
+import {
   request,
 } from './utils';
-import BigNumber from '../../BigNumber';
 
 const validator = new SchemaValidator();
 const { expect } = chai;
@@ -16,7 +18,7 @@ describe('OrderConfig', () => {
     exchangeAddress: '0x48bacb9266a570d521063ef5dd96e61686dbe788',
     makerAddress: '0x6ecbe1db9ef729cbe972c83fb886247691fb6beb',
     takerAddress: '0x0000000000000000000000000000000000000000',
-    expirationTimeSeconds: BigNumber(Date.now() + 1000000).div(900).integerValue(BigNumber.ROUND_CEIL),
+    expirationTimeSeconds: new BigNumber(Date.now() + 1000000).div(900).ceil(),
     makerAssetAmount: '5000000000000000000',
     takerAssetAmount: '100000000000000000',
     makerAssetData: '0xf47261b00000000000000000000000000b1ba0af832d7c05fd64161e0db78e85978e8082',

@@ -2,6 +2,7 @@ import * as eff from 'redux-saga/effects';
 import createActionCreators from 'redux-resource-action-creators';
 import {
   assetDataUtils,
+  BigNumber,
 } from '0x.js';
 import {
   addressUtils,
@@ -25,7 +26,6 @@ import {
   actionTypes,
 } from '../actions';
 import ethApi from '../ethApi';
-import BigNumber from '../../BigNumber';
 
 
 function* extractInfo(tokenContract) {
@@ -323,7 +323,7 @@ function* processApproval(action) {
   const contractWrappers = ethApi.getWrappers(networkId);
   const amount = action.isTradable
     ? contractWrappers.erc20Token.UNLIMITED_ALLOWANCE_IN_BASE_UNITS
-    : BigNumber(0);
+    : new BigNumber(0);
   const selectedAccount = yield eff.select(getWalletState('selectedAccount'));
   yield eff.call(
     [contractWrappers.erc20Token, contractWrappers.erc20Token.setProxyAllowanceAsync],
@@ -348,7 +348,7 @@ function* processDepositWithdraw(action) {
       contractWrappers.etherToken[`${action.method}Async`],
     ],
     etherToken.address,
-    Web3Wrapper.toBaseUnitAmount(BigNumber(action.amount), etherToken.decimals),
+    Web3Wrapper.toBaseUnitAmount(new BigNumber(action.payload.amount), etherToken.decimals),
     selectedAccount,
     {
       // Default gas amount isn't enought for withdrawal

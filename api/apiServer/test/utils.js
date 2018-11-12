@@ -1,6 +1,7 @@
 import supertest from 'supertest';
 import {
   assetDataUtils,
+  BigNumber,
   generatePseudoRandomSalt,
   BigNumber,
 } from '0x.js';
@@ -29,26 +30,26 @@ export const createOrder = ({
   const etherTokenAddress = '0x871dd7c2b4b25e1aa18728e9d5f2af4c4e431f5c';
   const makerAssetData = baseAssetData || assetDataUtils.encodeERC20AssetData(zrxTokenAddress);
   const takerAssetData = quoteAssetData || assetDataUtils.encodeERC20AssetData(etherTokenAddress);
-  const randomExpiration = BigNumber(Date.now() + 1000000).div(900).integerValue(BigNumber.ROUND_CEIL);
+  const randomExpiration = new BigNumber(Date.now() + 1000000).div(900).ceil();
   const exchangeAddress = '0x48bacb9266a570d521063ef5dd96e61686dbe788';
   const orderConfigRequest = {
     exchangeAddress,
     makerAddress: maker,
     takerAddress: '0x0000000000000000000000000000000000000000',
-    expirationTimeSeconds: expirationTime ? BigNumber(expirationTime) : randomExpiration,
+    expirationTimeSeconds: expirationTime ? new BigNumber(expirationTime) : randomExpiration,
     makerAssetAmount: makerAssetAmount
-      ? Web3Wrapper.toBaseUnitAmount(BigNumber(makerAssetAmount), 18)
-      : Web3Wrapper.toBaseUnitAmount(BigNumber(5), 18),
+      ? Web3Wrapper.toBaseUnitAmount(new BigNumber(makerAssetAmount), 18)
+      : Web3Wrapper.toBaseUnitAmount(new BigNumber(5), 18),
     takerAssetAmount: takerAssetAmount
-      ? Web3Wrapper.toBaseUnitAmount(BigNumber(takerAssetAmount), 18)
-      : Web3Wrapper.toBaseUnitAmount(BigNumber(0.1), 18),
+      ? Web3Wrapper.toBaseUnitAmount(new BigNumber(takerAssetAmount), 18)
+      : Web3Wrapper.toBaseUnitAmount(new BigNumber(0.1), 18),
     makerAssetData,
     takerAssetData,
   };
   const orderConfig = {
     senderAddress: '0x0000000000000000000000000000000000000000',
     feeRecipientAddress: '0x0000000000000000000000000000000000000000',
-    makerFee: BigNumber(0),
+    makerFee: new BigNumber(0),
     takerFee: takerFee || '1000',
   };
   const order = {

@@ -1,7 +1,7 @@
 import {
   assetDataUtils,
-  ContractWrappers,
   BigNumber,
+  ContractWrappers,
 } from '0x.js';
 import {
   Web3Wrapper,

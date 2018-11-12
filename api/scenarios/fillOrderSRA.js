@@ -1,5 +1,6 @@
 import {
   assetDataUtils,
+  BigNumber,
   ContractWrappers,
   generatePseudoRandomSalt,
   orderHashUtils,
