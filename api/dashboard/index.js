@@ -344,6 +344,7 @@ const tests = [
         'NODE_ENV=test',
         'mocha apiServer/test/postOrder.test.js',
         '--require @babel/register',
+        '--timeout 10000',
         '--colors',
         '--exit',
       ].join(' '));

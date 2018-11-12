@@ -29,6 +29,7 @@
     "scenario:exchangeSubscribe": "NODE_ENV=development nodemon --exec babel-node scenarios/exchangeSubscribe.js",
     "scenario:cancelOrders": "NODE_ENV=development nodemon --exec babel-node scenarios/cancelOrders.js",
     "scenario:executeTransactionCancelOrder": "NODE_ENV=development nodemon --exec babel-node scenarios/executeTransactionCancelOrder.js",
+    "test": "NODE_ENV=test mocha --require @babel/register --exit",
     "test:api": "NODE_ENV=test mocha apiServer/test/*.test.js --require @babel/register --exit",
     "plantAssetPairsDev": "NODE_ENV=development babel-node apiServer/scripts/loadAssetPairs.js",
     "plantAssetPairsTest": "NODE_ENV=test babel-node apiServer/scripts/loadAssetPairs.js",
