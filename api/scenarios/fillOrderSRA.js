@@ -5,15 +5,13 @@ import {
   generatePseudoRandomSalt,
   orderHashUtils,
   signatureUtils,
-  SignerType,
-  BigNumber,
 } from '0x.js';
 import {
   Web3Wrapper,
-} from '@0xproject/web3-wrapper';
+} from '@0x/web3-wrapper';
 import {
   HttpClient,
-} from '@0xproject/connect';
+} from '@0x/connect';
 import {
   PrintUtils,
 } from './utils/printing';
@@ -27,31 +25,31 @@ import {
   NULL_ADDRESS,
 } from './utils/constants';
 import {
+  getContractAddressesForNetwork,
+  getContractWrappersConfig,
+} from './utils/contracts';
+import {
   getRandomFutureDateInSeconds,
 } from './utils/helpers';
+import {
+  NETWORK_CONFIGS,
+} from './utils/configs';
 
-/**
- * In this scenario, the maker creates and signs an order for selling ZRX for WETH. This
- * order is then submitted to a Relayer via the Standard Relayer API. A Taker queries
- * this Standard Relayer API to discover orders.
- * The taker fills this order via the 0x Exchange contract.
- */
 export async function scenarioAsync() {
   PrintUtils.printScenario('Fill Order Standard Relayer API');
   // Initialize the ContractWrappers, this provides helper functions around calling
   // 0x contracts as well as ERC20/ERC721 token contracts on the blockchain
   const contractWrappers = new ContractWrappers(
     providerEngine,
-    {
-      networkId: GANACHE_NETWORK_ID,
-    },
+    getContractWrappersConfig(NETWORK_CONFIGS.networkId),
   );
+  const contractAddresses = getContractAddressesForNetwork(NETWORK_CONFIGS.networkId);
   // Initialize the Web3Wrapper, this provides helper functions around fetching
   // account information, balances, general contract logs
   const web3Wrapper = new Web3Wrapper(providerEngine);
-  const [taker, maker] = await web3Wrapper.getAvailableAddressesAsync();
-  const zrxTokenAddress = contractWrappers.exchange.getZRXTokenAddress();
-  const etherTokenAddress = contractWrappers.etherToken.getContractAddressIfExists();
+  const [maker, taker] = await web3Wrapper.getAvailableAddressesAsync();
+  const zrxTokenAddress = contractAddresses.zrxToken;
+  const etherTokenAddress = contractAddresses.etherToken;
   if (!etherTokenAddress) {
     throw new Error('Ether Token not found on this network');
   }
@@ -66,9 +64,9 @@ export async function scenarioAsync() {
   const takerAssetData = assetDataUtils.encodeERC20AssetData(zrxTokenAddress);
   const makerAssetData = assetDataUtils.encodeERC20AssetData(etherTokenAddress);
   // the amount the maker is selling of maker asset
-  const makerAssetAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(0.01), DECIMALS);
+  const makerAssetAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(0.005), DECIMALS);
   // the amount the maker wants of taker asset
-  const takerAssetAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(0.005), DECIMALS);
+  const takerAssetAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(0.01), DECIMALS);
 
 
   // Allow the 0x ERC20 Proxy to move ZRX on behalf of makerAccount
@@ -101,7 +99,7 @@ export async function scenarioAsync() {
 
   // Generate and expiration time and find the exchange smart contract address
   const randomExpiration = getRandomFutureDateInSeconds();
-  const exchangeAddress = contractWrappers.exchange.getContractAddress();
+  const exchangeAddress = contractAddresses.exchange;
 
   // Ask the relayer about the parameters they require for the order
   const orderConfigRequest = {
@@ -128,20 +126,17 @@ export async function scenarioAsync() {
   await printUtils.fetchAndPrintContractBalancesAsync();
   // Generate the order hash and sign it
   const orderHashHex = orderHashUtils.getOrderHashHex(order);
-  const signature = await signatureUtils.ecSignOrderHashAsync(
+  const signature = await signatureUtils.ecSignHashAsync(
     providerEngine,
     orderHashHex,
     maker,
-    SignerType.Default,
   );
   const signedOrder = { ...order, signature };
 
   // Validate this order
   await contractWrappers.exchange.validateOrderFillableOrThrowAsync(signedOrder);
-
   // Submit the order to the SRA Endpoint
   await httpClient.submitOrderAsync(signedOrder, { networkId: GANACHE_NETWORK_ID });
-
   // Taker queries the Orderbook from the Relayer
   const orderbookRequest = { baseAssetData: makerAssetData, quoteAssetData: takerAssetData };
   const response = await httpClient.getOrderbookAsync(

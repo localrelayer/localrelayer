@@ -5,12 +5,10 @@ import {
   generatePseudoRandomSalt,
   orderHashUtils,
   signatureUtils,
-  SignerType,
-  BigNumber,
 } from '0x.js';
 import {
   Web3Wrapper,
-} from '@0xproject/web3-wrapper';
+} from '@0x/web3-wrapper';
 
 import {
   PrintUtils,
@@ -20,33 +18,36 @@ import {
 } from './utils/providerEngine';
 import {
   DECIMALS,
-  GANACHE_NETWORK_ID,
   ZERO,
   NULL_ADDRESS,
   GAS_DEFAULT,
 } from './utils/constants';
 import {
+  getContractAddressesForNetwork,
+  getContractWrappersConfig,
+} from './utils/contracts';
+import {
   getRandomFutureDateInSeconds,
 } from './utils/helpers';
+import {
+  NETWORK_CONFIGS,
+} from './utils/configs';
 
-/**
- * In this scenario, the maker creates and signs an order for selling ZRX for WETH.
- * The taker uses the forwarding contract to buy these tokens. When using
- * the forwarding contract the taker does not require any additional setup.
- */
 export async function scenarioAsync() {
   PrintUtils.printScenario('Forwarder Buy Tokens');
   // Initialize the ContractWrappers, this provides helper functions around calling
   // 0x contracts as well as ERC20/ERC721 token contracts on the blockchain
-  const contractWrappers = new ContractWrappers(providerEngine, {
-    networkId: GANACHE_NETWORK_ID,
-  });
+  const contractWrappers = new ContractWrappers(
+    providerEngine,
+    getContractWrappersConfig(NETWORK_CONFIGS.networkId),
+  );
+  const contractAddresses = getContractAddressesForNetwork(NETWORK_CONFIGS.networkId);
   // Initialize the Web3Wrapper, this provides helper functions around fetching
   // account information, balances, general contract logs
   const web3Wrapper = new Web3Wrapper(providerEngine);
   const [maker, taker] = await web3Wrapper.getAvailableAddressesAsync();
-  const zrxTokenAddress = contractWrappers.exchange.getZRXTokenAddress();
-  const etherTokenAddress = contractWrappers.etherToken.getContractAddressIfExists();
+  const zrxTokenAddress = contractAddresses.zrxToken;
+  const etherTokenAddress = contractAddresses.etherToken;
   if (!etherTokenAddress) {
     throw new Error('Ether Token not found on this network');
   }
@@ -76,7 +77,7 @@ export async function scenarioAsync() {
 
   // Set up the Order and fill it
   const randomExpiration = getRandomFutureDateInSeconds();
-  const exchangeAddress = contractWrappers.exchange.getContractAddress();
+  const exchangeAddress = contractAddresses.exchange;
 
   // Create the order
   const order = {
@@ -103,11 +104,10 @@ export async function scenarioAsync() {
 
   // Generate the order hash and sign it
   const orderHashHex = orderHashUtils.getOrderHashHex(order);
-  const signature = await signatureUtils.ecSignOrderHashAsync(
+  const signature = await signatureUtils.ecSignHashAsync(
     providerEngine,
     orderHashHex,
     maker,
-    SignerType.Default,
   );
   const signedOrder = {
     ...order,
