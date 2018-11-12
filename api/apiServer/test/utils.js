@@ -2,6 +2,7 @@ import supertest from 'supertest';
 import {
   assetDataUtils,
   generatePseudoRandomSalt,
+  BigNumber,
 } from '0x.js';
 import {
   Web3Wrapper,
@@ -11,7 +12,6 @@ import {
   app,
 } from '..';
 import config from '../../config';
-import BigNumber from '../../BigNumber';
 
 export const request = supertest.agent(app.listen(config.apiPort));
 
@@ -75,10 +75,23 @@ export function randomEthereumAddress() {
   return `0x${randomHex.join('')}`;
 }
 
-export function generateRandomMakerAssetAmount() {
-  return ((Math.random() * 100) + 10).toFixed(6);
+export function toBaseUnit(amount, decimals) {
+  const unit = new BigNumber(10).pow(decimals);
+  return (new BigNumber(amount)).times(unit);
 }
 
-export function generateRandomTakerAssetAmount() {
-  return ((Math.random() * 0.3) + 0.03).toFixed(6);
+export function generateRandomMakerAssetAmount(decimals) {
+  const amount = new BigNumber(Math.round(Math.random() * 100) + 10);
+  return toBaseUnit(
+    amount,
+    decimals,
+  );
+}
+
+export function generateRandomTakerAssetAmount(decimals) {
+  const amount = new BigNumber(Math.round(Math.random() * 5) + 15);
+  return toBaseUnit(
+    amount,
+    decimals,
+  );
 }
