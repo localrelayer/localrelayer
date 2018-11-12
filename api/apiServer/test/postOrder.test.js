@@ -21,9 +21,11 @@ import {
   generateRandomTakerAssetAmount,
   toBaseUnit,
   initTestProvider,
+  getRandomFutureDateInSeconds,
 } from './utils';
 import {
   GANACHE_CONTRACT_ADDRESSES,
+  NULL_ADDRESS,
 } from '../../utils';
 
 
@@ -57,7 +59,8 @@ describe('postOrder', () => {
       makerAssetData: '0xf47261b0000000000000000000000000871dd7c2b4b25e1aa18728e9d5f2af4c4e431f5c', /* ZRX */
       takerAssetData: '0xf47261b00000000000000000000000000b1ba0af832d7c05fd64161e0db78e85978e8082', /* WETH */
       salt: generatePseudoRandomSalt().toString(),
-      expirationTimeSeconds: '1532560590',
+      takerAddress: NULL_ADDRESS,
+      expirationTimeSeconds: getRandomFutureDateInSeconds(),
       signature: randomEthereumAddress(),
     };
 
@@ -264,8 +267,9 @@ describe('postOrder', () => {
     it('should response 400 with low balance', async () => {
       /* Testnet network id */
       const networkId = 50;
-      /* 100000 ZRX - huge amount */
-      const makerAssetAmount = toBaseUnit(100000, 18);
+      /* 10000000000ZRX - huge amount */
+      /* TODO: get current balance and plus additional amount */
+      const makerAssetAmount = toBaseUnit(10000000000, 18);
       const provider = initTestProvider();
       const web3Wrapper = new Web3Wrapper(provider);
       const [makerAddress] = await web3Wrapper.getAvailableAddressesAsync();
@@ -276,7 +280,7 @@ describe('postOrder', () => {
         provider,
         {
           networkId,
-          contractAddresses: GANACHE_CONTRACT_ADDRESSES,
+          contractAddresses,
         },
       );
 

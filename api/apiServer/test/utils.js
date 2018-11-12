@@ -11,7 +11,7 @@ import {
 } from '@0x/subproviders';
 import {
   Web3Wrapper,
-} from '@0xproject/web3-wrapper';
+} from '@0x/web3-wrapper';
 
 import {
   app,
@@ -112,3 +112,7 @@ export function initTestProvider() {
   pe.start();
   return pe;
 }
+
+export const getRandomFutureDateInSeconds = () => (
+  new BigNumber(Date.now() + 1000000).div(900).ceil()
+);
