@@ -20,6 +20,10 @@ import {
   ORDER_FIELDS,
 } from 'utils';
 
+import {
+  metaFields,
+} from '../apiServer/endpoints';
+
 
 const logger = createLogger(
   'socketServer',
@@ -81,10 +85,10 @@ export function runWebSocketServer() {
 
       if (
         data.type === 'unsubscribe'
-        && data.requesId
+        && data.requestId
       ) {
         logger.debug('unsubscribe');
-        ws.subscriptions[data.requesId] = null;
+        ws.subscriptions[data.requestId] = null;
       }
       logger.debug(ws.subscriptions);
     });
@@ -137,13 +141,11 @@ export function runWebSocketServer() {
     wss.clients.forEach((client) => {
       Object.keys(client.subscriptions).forEach((subId) => {
         const sub = client.subscriptions[subId];
-        logger.debug('Hello');
         const order = JSON.parse(message);
-        logger.debug(order);
 
         if (
           sub.channel === 'orders'
-          && validator.isValid(sub.payload, schemas.relayerApiOrdersChannelSubscribePayload)
+          && validator.isValid(sub.payload, schemas.relayerApiOrdersChannelSubscribePayloadSchema)
           && order.networkId === (sub.payload.networkId || 1)
           && shouldExistAndEqual(sub.payload.makerAssetProxyId, order.makerAssetProxyId)
           && shouldExistAndEqual(sub.payload.takerAssetProxyId, order.takerAssetProxyId)
@@ -162,6 +164,7 @@ export function runWebSocketServer() {
             [
               ...ORDER_FIELDS,
               'metaData',
+              'completedAt',
             ],
           );
 

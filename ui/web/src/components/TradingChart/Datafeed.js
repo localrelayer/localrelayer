@@ -3,18 +3,22 @@
 import type {
   AssetPair,
 } from 'instex-core/types';
+import type {
+  Dispatch,
+} from 'redux';
 import {
   assetDataUtils, BigNumber,
 } from '0x.js';
 import {
   api,
+  coreActions,
 } from 'instex-core';
-import config from 'web-config';
+
 import {
   Web3Wrapper,
 } from '@0x/web3-wrapper';
 
-export const getDatafeed = (assetPair: AssetPair) => ({
+export const getDatafeed = (assetPair: AssetPair, dispatch: Dispatch) => ({
   onReady: (cb: any) => {
     setTimeout(() => cb({
       supports_search: false,
@@ -45,7 +49,6 @@ export const getDatafeed = (assetPair: AssetPair) => ({
       .encodeERC20AssetData(assetPair.assetDataA.assetData.address);
     const quoteAssetData = assetDataUtils
       .encodeERC20AssetData(assetPair.assetDataB.assetData.address);
-    console.log(assetPair);
     // TODO: DELETE
     await api.clearMockMethods();
     const data = await api.getBars({
@@ -61,16 +64,19 @@ export const getDatafeed = (assetPair: AssetPair) => ({
       noData: false,
     };
 
-    const bars = Object.keys(data.bars).map((a) => {
+    const barsData = data.items || data;
+    const bars = Object.keys(barsData).map((a) => {
       // Convert volume to normal unit amount
-      data.bars[a].volume = +Web3Wrapper.toUnitAmount(
-        new BigNumber(data.bars[a].volume),
+      const volume = +Web3Wrapper.toUnitAmount(
+        new BigNumber(barsData[a].volume),
         assetPair.assetDataB.assetData.decimals,
-      ).toFixed(8);
-      return data.bars[a];
-    }) || [];
+      );
 
-    console.log(bars);
+      return {
+        ...barsData[a],
+        volume,
+      };
+    }) || [];
 
     if (!bars.length) {
       meta.noData = true;
@@ -91,31 +97,15 @@ export const getDatafeed = (assetPair: AssetPair) => ({
       has_no_volume: false,
       has_empty_bars: true,
       minmov: 1,
-      pricescale: 1000000,
       has_daily: true,
+      pricescale: 10 ** 7,
     }), 0);
   },
 
   subscribeBars: async (symbolInfo: any, resolution: any, onRealtimeCallback: any) => {
-    console.log(symbolInfo);
-    const socket = new WebSocket(config.socketUrl);
-    socket.onopen = () => {
-      console.log('CHART SOCKET connected');
-      console.log('_______');
-    };
-
-    socket.onmessage = message => console.log('GOT MESSAGE', message);
-
-    // socket.onmessage('updated_bar', (data) => {
-    //   console.log('SOCKETDATA', data);
-    // });
-    // console.log('SOCKET', socket);
-    // socket.onmessage('updated_bar', (data) => {
-    //   console.log('SOCKETDATA', data);
-    //   if (data.token === symbolInfo.ticker) {
-    //     onRealtimeCallback(data.bar);
-    //   }
-    // });
+    dispatch(
+      coreActions.tradingChartSubscribeSocket(onRealtimeCallback, assetPair),
+    );
   },
 
   unsubscribeBars: () => {

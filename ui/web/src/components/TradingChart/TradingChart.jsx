@@ -5,6 +5,10 @@ import React, {
 import type {
   AssetPair,
 } from 'instex-core/types';
+import type {
+  Dispatch,
+} from 'redux';
+
 import {
   getDatafeed,
 } from './Datafeed';
@@ -12,6 +16,7 @@ import colors from '../../assets/styles/colors';
 
 type Props = {
   assetPair: AssetPair,
+  dispatch: Dispatch,
 };
 
 const getParameterByName = (name) => {
@@ -29,20 +34,20 @@ const getParameterByName = (name) => {
  */
 export default class extends Component<Props> {
   componentDidMount() {
-    const { assetPair } = this.props;
+    const { assetPair, dispatch } = this.props;
     if (assetPair) {
-      this.initalizedChartWidget(assetPair);
+      this.initalizedChartWidget(assetPair, dispatch);
     }
   }
 
   componentWillReceiveProps(nextProps: Props) {
-    const { assetPair } = this.props;
+    const { assetPair, dispatch } = this.props;
     if (nextProps.assetPair && (nextProps.assetPair.id !== assetPair?.id)) {
-      this.initalizedChartWidget(nextProps.assetPair);
+      this.initalizedChartWidget(nextProps.assetPair, dispatch);
     }
   }
 
-  initalizedChartWidget = (assetPair: AssetPair) => {
+  initalizedChartWidget = (assetPair: AssetPair, dispatch: Dispatch) => {
     // eslint-disable-next-line
     const widget = new window.TradingView.widget({
       // debug: true,
@@ -51,7 +56,7 @@ export default class extends Component<Props> {
       height: '100%',
       width: '100%',
       container_id: 'chart_container',
-      datafeed: getDatafeed(assetPair),
+      datafeed: getDatafeed(assetPair, dispatch),
       library_path: 'charting_library/',
       locale: getParameterByName('lang') || 'en',
       disabled_features: [

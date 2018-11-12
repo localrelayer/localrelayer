@@ -8,6 +8,9 @@ import type {
   Saga,
 } from 'redux-saga';
 
+import {
+  tradingChartOrderCreated,
+} from '../actions/orders';
 import * as actionTypes from '../actions/actionTypes';
 
 
@@ -55,6 +58,10 @@ function* read(socket) {
       yield eff.put(tradingInfoActions.succeeded({
         resources: data.payload,
       }));
+    }
+
+    if (data.channel === 'orders') {
+      yield eff.put(tradingChartOrderCreated(data.payload));
     }
 
     /*
