@@ -120,8 +120,8 @@ function* setCurrentPair({
         coreSagas.fetchTradingHistory,
         {
           networkId,
-          makerAssetData: assetPair.assetDataA.assetData,
-          takerAssetData: assetPair.assetDataB.assetData,
+          baseAssetData: assetPair.assetDataA.assetData,
+          quoteAssetData: assetPair.assetDataB.assetData,
         },
       );
       yield eff.put(
