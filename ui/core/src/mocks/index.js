@@ -140,7 +140,7 @@ export function mocksOrdersFactory({
     } = qty;
     return {
       next: (order = {}) => {
-        const pair = assetPairs.records[Math.floor(Math.random() * assetPairs.records.length)];
+        const pair = assetPairs.records[Math.floor(Math.random() * (assetPairs.records.length - 1))];
         const {
           type: orderType,
           ...predefinedOrder
@@ -154,7 +154,6 @@ export function mocksOrdersFactory({
         } else {
           asks -= 1;
         }
-        console.log(pair);
         const randomOrder = {
           makerAddress: randomEthereumAddress(),
           takerAddress: NULL_ADDRESS,
