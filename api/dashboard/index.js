@@ -295,25 +295,6 @@ const scenarios = [{
     };
   },
 }, {
-  id: 'exchangeSubscribe',
-  name: 'Exchange subscribe',
-  type: 'scenario',
-  run(cb) {
-    const child = exec([
-      'NODE_ENV=development',
-      'babel-node',
-      'scenarios/exchangeSubscribe.js',
-    ].join(' '));
-    cb(child);
-    child.stdout.on('data', (data) => {
-      scenariosLogger.insertBottom(data);
-    });
-    return (ccb) => {
-      child.kill('SIGINT');
-      ccb();
-    };
-  },
-}, {
   id: 'cancelOrders',
   name: 'Cancel Orders',
   type: 'scenario',

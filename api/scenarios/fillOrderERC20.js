@@ -5,7 +5,6 @@ import {
   generatePseudoRandomSalt,
   orderHashUtils,
   signatureUtils,
-  BigNumber,
 } from '0x.js';
 import {
   Web3Wrapper,
@@ -94,7 +93,7 @@ export async function scenarioAsync() {
 
   // Set up the Order and fill it
   const randomExpiration = getRandomFutureDateInSeconds();
-  console.log(randomExpiration);
+
   const exchangeAddress = contractAddresses.exchange;
 
   // Create the order
