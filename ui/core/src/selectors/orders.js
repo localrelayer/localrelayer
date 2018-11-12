@@ -22,7 +22,7 @@ export const getTokensInfoMock = createSelector(
     orders.map(order => ({
       ...order,
       price: (
-        BigNumber(order.takerAssetAmount).div(order.makerAssetAmount)
+        new BigNumber(order.takerAssetAmount).div(order.makerAssetAmount)
       ).toFixed(8),
       amount: order.makerAssetAmount,
       total: order.takerAssetAmount,
@@ -64,8 +64,9 @@ export const getTradingHistory = createSelector(
     getResourceMappedList('orders', 'tradingHistory'),
     getResourceMap('assets'),
   ],
-  (orders, assets) => (
-    orders.map(order => ({
+  (orders, assets) => {
+    console.log(orders, assets);
+    return orders.map(order => ({
       ...order,
       price: new BigNumber(order.takerAssetAmount).div(order.makerAssetAmount).toFixed(8),
       amount: Web3Wrapper.toUnitAmount(
@@ -77,7 +78,7 @@ export const getTradingHistory = createSelector(
       key: order.id,
       date: order.completedAt,
     }))
-  ),
+  },
 );
 
 export const getBidOrders = createSelector(

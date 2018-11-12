@@ -7,7 +7,7 @@ type Props = {
 }
 
 const BuySellForm = ({ type }: Props) => (
-  <S.BuySellForm layout="vertical" onSubmit="">
+  <S.BuySellForm layout="vertical" onSubmit={() => {}}>
     <S.BuySellForm.Item
       label={(
         <S.FormItemTitle>

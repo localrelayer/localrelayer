@@ -48,10 +48,7 @@ export function* fetchOrderBook(opts = {}) {
   }
 }
 
-export function* fetchTradingHistory({
-  makerAssetData,
-  takerAssetData,
-}) {
+export function* fetchTradingHistory(opts = {}) {
   const actions = createActionCreators('read', {
     resourceType: 'orders',
     requestKey: 'tradingHistory',
@@ -63,8 +60,7 @@ export function* fetchTradingHistory({
     const response = yield eff.call(
       api.getTradingHistory,
       {
-        makerAssetData,
-        takerAssetData,
+        ...opts,
       },
     );
     const orders = response.records.map(({
