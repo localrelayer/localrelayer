@@ -1,4 +1,7 @@
-import BigNumber from '../../BigNumber';
+import {
+  BigNumber,
+} from '0x.js';
+
 
 export const calculateTradingInfo = ({
   makerAssetAmount,

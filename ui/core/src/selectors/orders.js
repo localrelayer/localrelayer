@@ -1,6 +1,6 @@
 // @flow
 import {
-  BigNumber as OldBigNumber,
+  BigNumber,
 } from '0x.js';
 import {
   createSelector,
@@ -12,7 +12,6 @@ import {
   getResourceMappedList,
   getResourceMap,
 } from './resources';
-import BigNumber from '../../BigNumber';
 
 export const getTokensInfoMock = createSelector(
   [
@@ -22,7 +21,9 @@ export const getTokensInfoMock = createSelector(
   (orders, assets) => (
     orders.map(order => ({
       ...order,
-      price: BigNumber(order.takerAssetAmount).div(order.makerAssetAmount).toFixed(8),
+      price: (
+        BigNumber(order.takerAssetAmount).div(order.makerAssetAmount)
+      ).toFixed(8),
       amount: order.makerAssetAmount,
       total: order.takerAssetAmount,
       key: order.id,
@@ -42,12 +43,12 @@ export const getOpenOrders = createSelector(
   (orders, assets) => (
     orders.map(order => ({
       ...order,
-      price: BigNumber(order.takerAssetAmount).div(order.makerAssetAmount).toFixed(8),
+      price: new BigNumber(order.takerAssetAmount).div(order.makerAssetAmount).toFixed(8),
       amount: Web3Wrapper.toUnitAmount(
-        new OldBigNumber(order.makerAssetAmount), assets[order.makerAssetData].decimals,
+        new BigNumber(order.makerAssetAmount), assets[order.makerAssetData].decimals,
       ).toFixed(8),
       total: Web3Wrapper.toUnitAmount(
-        new OldBigNumber(order.takerAssetAmount), assets[order.takerAssetData].decimals,
+        new BigNumber(order.takerAssetAmount), assets[order.takerAssetData].decimals,
       ).toFixed(8),
       key: order.id,
       date: new Date().toLocaleDateString('en-US'),
@@ -66,12 +67,12 @@ export const getTradingHistory = createSelector(
   (orders, assets) => (
     orders.map(order => ({
       ...order,
-      price: BigNumber(order.takerAssetAmount).div(order.makerAssetAmount).toFixed(8),
+      price: new BigNumber(order.takerAssetAmount).div(order.makerAssetAmount).toFixed(8),
       amount: Web3Wrapper.toUnitAmount(
-        new OldBigNumber(order.makerAssetAmount), assets[order.makerAssetData].decimals,
+        new BigNumber(order.makerAssetAmount), assets[order.makerAssetData].decimals,
       ).toFixed(8),
       total: Web3Wrapper.toUnitAmount(
-        new OldBigNumber(order.takerAssetAmount), assets[order.takerAssetData].decimals,
+        new BigNumber(order.takerAssetAmount), assets[order.takerAssetData].decimals,
       ).toFixed(8),
       key: order.id,
       date: order.completedAt,
@@ -87,12 +88,12 @@ export const getBidOrders = createSelector(
   (orders, assets) => (
     orders.map(order => ({
       ...order,
-      price: BigNumber(order.takerAssetAmount).div(order.makerAssetAmount).toFixed(8),
+      price: new BigNumber(order.takerAssetAmount).div(order.makerAssetAmount).toFixed(8),
       amount: Web3Wrapper.toUnitAmount(
-        new OldBigNumber(order.makerAssetAmount), assets[order.makerAssetData].decimals,
+        new BigNumber(order.makerAssetAmount), assets[order.makerAssetData].decimals,
       ).toFixed(8),
       total: Web3Wrapper.toUnitAmount(
-        new OldBigNumber(order.takerAssetAmount), assets[order.takerAssetData].decimals,
+        new BigNumber(order.takerAssetAmount), assets[order.takerAssetData].decimals,
       ).toFixed(8),
     }))
   ),
@@ -106,12 +107,12 @@ export const getAskOrders = createSelector(
   (orders, assets) => (
     orders.map(order => ({
       ...order,
-      price: BigNumber(order.takerAssetAmount).div(order.makerAssetAmount).toFixed(8),
+      price: new BigNumber(order.takerAssetAmount).div(order.makerAssetAmount).toFixed(8),
       amount: Web3Wrapper.toUnitAmount(
-        new OldBigNumber(order.makerAssetAmount), assets[order.makerAssetData].decimals,
+        new BigNumber(order.makerAssetAmount), assets[order.makerAssetData].decimals,
       ).toFixed(8),
       total: Web3Wrapper.toUnitAmount(
-        new OldBigNumber(order.takerAssetAmount), assets[order.takerAssetData].decimals,
+        new BigNumber(order.takerAssetAmount), assets[order.takerAssetData].decimals,
       ).toFixed(8),
     }))
   ),

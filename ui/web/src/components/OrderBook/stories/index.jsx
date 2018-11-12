@@ -7,7 +7,7 @@ import {
   boolean,
 } from '@storybook/addon-knobs';
 import {
-  BigNumber as OldBigNumber,
+  BigNumber,
 } from '0x.js';
 import {
   coreMocks,
@@ -19,7 +19,6 @@ import {
 import TradingPageLayout from 'web-components/TradingPageLayout';
 import 'web-styles/main.less';
 import OrderBook from '..';
-import BigNumber from 'instex-core/BigNumber';
 
 
 const baseAssetData = '0xf47261b0000000000000000000000000e41d2489571d322189246dafa5ebde1f4699f498'; /* ZRX */
@@ -27,12 +26,12 @@ const quoteAssetData = '0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c
 
 const orderSelector = ({ order }) => ({
   id: order.signature,
-  price: BigNumber(order.takerAssetAmount).div(order.makerAssetAmount).toFixed(8),
+  price: new BigNumber(order.takerAssetAmount).div(order.makerAssetAmount).toFixed(8),
   amount: Web3Wrapper.toUnitAmount(
-    new OldBigNumber(order.makerAssetAmount), 18,
+    new BigNumber(order.makerAssetAmount), 18,
   ).toFixed(8),
   total: Web3Wrapper.toUnitAmount(
-    new OldBigNumber(order.takerAssetAmount), 18,
+    new BigNumber(order.takerAssetAmount), 18,
   ).toFixed(8),
   ...order,
 });
