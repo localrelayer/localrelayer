@@ -86,7 +86,7 @@ const tranformBigNumberOrder = order => (
 );
 
 const validateExpirationTimeSeconds = expirationTimeSeconds => (
-  Number(expirationTimeSeconds) > 60
+  (+new Date() - Number(expirationTimeSeconds)) > 60
 );
 
 const validateNetworkId = networkId => ([
@@ -138,7 +138,7 @@ standardRelayerApi.post('/order', async (ctx) => {
 
   if (
     validator.isValid(submittedOrder, schemas.signedOrderSchema)
-    && validateExpirationTimeSeconds(Number(submittedOrder.expirationTimeSeconds))
+    && validateExpirationTimeSeconds(submittedOrder.expirationTimeSeconds)
     && validateNetworkId(networkId)
   ) {
     const orderHash = orderHashUtils.getOrderHashHex(submittedOrder);
@@ -229,12 +229,12 @@ standardRelayerApi.post('/order', async (ctx) => {
 
     if (
       !ctx.body.validationErrors.find(e => e.field === 'expirationTimeSeconds')
-      && !validateExpirationTimeSeconds(Number(submittedOrder.expirationTimeSeconds))
+      && !validateExpirationTimeSeconds(submittedOrder.expirationTimeSeconds)
     ) {
       ctx.body.validationErrors.push({
         code: 1004,
         field: 'expirationTimeSeconds',
-        reason: 'Minimum possible value - 60',
+        reason: 'Minimum possible expiration 60 sec',
       });
     }
 

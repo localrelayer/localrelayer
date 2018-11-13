@@ -192,7 +192,7 @@ describe('postOrder', () => {
               ),
               ...acc,
             }), {
-              expirationTimeSeconds: '59',
+              expirationTimeSeconds: (+new Date()).toString(),
             }),
         );
       expect(validator.isValid(
@@ -204,7 +204,7 @@ describe('postOrder', () => {
       expect(response.body.validationErrors).to.have.deep.members([{
         field: 'expirationTimeSeconds',
         code: 1004,
-        reason: 'Minimum possible value - 60',
+        reason: 'Minimum possible expiration 60 sec',
       }]);
     });
 
