@@ -15,11 +15,11 @@ import {
   schemas,
 } from '@0x/json-schemas';
 import {
-  ZERO,
   NULL_ADDRESS,
 } from '../../scenarios/utils/constants';
 import {
   initProvider,
+  getOrderConfig,
   GANACHE_CONTRACT_ADDRESSES,
 } from '../../utils';
 import {
@@ -95,6 +95,23 @@ const validateNetworkId = networkId => ([
   ...(process.env.NODE_ENV === 'test' ? [50] : []),
 ].includes(networkId));
 
+const validateOrderConfig = (order) => {
+  const config = getOrderConfig();
+  return Object.keys(config).reduce(
+    (acc, fieldName) => ([
+      ...acc,
+      ...(
+        order[fieldName] !== config[fieldName]
+          ? [{
+            field: fieldName,
+            code: fieldName.includes('Address') ? 1003 : 1004,
+            reason: 'Wrong order config field',
+          }]
+          : []
+      ),
+    ]), [],
+  );
+};
 
 export const sortOrderbook = (a, b) => {
   const aPrice = new BigNumber(a.takerAssetAmount).div(a.makerAssetAmount);
@@ -110,12 +127,6 @@ export const sortOrderbook = (a, b) => {
 
 standardRelayerApi.post('/order_config', (ctx) => {
   logger.debug('HTTP: POST order config');
-  const orderConfigResponse = {
-    senderAddress: NULL_ADDRESS,
-    feeRecipientAddress: NULL_ADDRESS,
-    makerFee: ZERO,
-    takerFee: '1000',
-  };
   const orderConfigRequest = ctx.request.body;
   if (!validator.isValid(orderConfigRequest, schemas.relayerApiOrderConfigPayloadSchema)) {
     ctx.status = 400;
@@ -127,19 +138,20 @@ standardRelayerApi.post('/order_config', (ctx) => {
   } else {
     ctx.status = 200;
     ctx.message = 'The additional fields necessary in order to submit an order to the relayer.';
-    ctx.body = orderConfigResponse;
+    ctx.body = getOrderConfig();
   }
 });
 
 standardRelayerApi.post('/order', async (ctx) => {
-  const submittedOrder = ctx.request.body;
   const networkId = Number(ctx.query.networkId || '1');
-  logger.debug(submittedOrder);
+  const submittedOrder = ctx.request.body;
+  const orderConfigErrors = validateOrderConfig(submittedOrder);
 
   if (
     validator.isValid(submittedOrder, schemas.signedOrderSchema)
     && validateExpirationTimeSeconds(submittedOrder.expirationTimeSeconds)
     && validateNetworkId(networkId)
+    && !orderConfigErrors.length
   ) {
     const orderHash = orderHashUtils.getOrderHashHex(submittedOrder);
     const provider = initProvider(networkId);
@@ -244,6 +256,17 @@ standardRelayerApi.post('/order', async (ctx) => {
         field: 'networkId',
         reason: `Network id ${networkId} is not supported`,
       });
+    }
+
+    if (orderConfigErrors.length) {
+      ctx.body.validationErrors = [
+        ...ctx.body.validationErrors,
+        ...orderConfigErrors.filter(
+          e => (
+            !ctx.body.validationErrors.find(ve => ve.field === e.field)
+          ),
+        ),
+      ];
     }
   }
 });
