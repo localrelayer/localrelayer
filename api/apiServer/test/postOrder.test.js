@@ -33,57 +33,32 @@ import {
 const validator = new SchemaValidator();
 const { expect } = chai;
 
+const orderConfig = getOrderConfig();
+const testData = {
+  makerAddress: () => randomEthereumAddress(),
+  takerAddress: () => NULL_ADDRESS,
+  makerAssetAmount: () => generateRandomMakerAssetAmount(18).toString(),
+  takerAssetAmount: () => generateRandomTakerAssetAmount(18).toString(),
+  makerAssetData: () => '0xf47261b0000000000000000000000000871dd7c2b4b25e1aa18728e9d5f2af4c4e431f5c', /* ZRX */
+  takerAssetData: () => '0xf47261b00000000000000000000000000b1ba0af832d7c05fd64161e0db78e85978e8082', /* WETH */
+  exchangeAddress: () => randomEthereumAddress(),
+  salt: () => generatePseudoRandomSalt().toString(),
+  expirationTimeSeconds: () => getRandomFutureDateInSeconds().toString(),
+  signature: () => randomEthereumAddress(),
+};
+const requiredFields = Object.keys({
+  ...orderConfig,
+  ...testData,
+});
 
 describe('postOrder', () => {
   describe('create a new order with wrong data', () => {
-    const requiredFields = [
-      'makerAddress',
-      'takerAddress',
-      'makerFee',
-      'takerFee',
-      'senderAddress',
-      'makerAssetAmount',
-      'takerAssetAmount',
-      'makerAssetData',
-      'takerAssetData',
-      'salt',
-      'exchangeAddress',
-      'feeRecipientAddress',
-      'expirationTimeSeconds',
-      'signature',
-    ];
-    const testData = {
-      ...getOrderConfig(),
-      makerAssetAmount: generateRandomMakerAssetAmount(18),
-      takerAssetAmount: generateRandomTakerAssetAmount(18),
-      makerAssetData: '0xf47261b0000000000000000000000000871dd7c2b4b25e1aa18728e9d5f2af4c4e431f5c', /* ZRX */
-      takerAssetData: '0xf47261b00000000000000000000000000b1ba0af832d7c05fd64161e0db78e85978e8082', /* WETH */
-      salt: generatePseudoRandomSalt().toString(),
-      takerAddress: NULL_ADDRESS,
-      expirationTimeSeconds: getRandomFutureDateInSeconds(),
-      signature: randomEthereumAddress(),
-    };
-
-    const requireError = field => ({
-      field,
-      code: 1000,
-      reason: `requires property "${field}"`,
-    });
-
-    const formatError = (field) => {
-      const pattern = JSON.stringify(
-        field === 'signature'
-          ? schemas.hexSchema.pattern
-          : schemas[schemas.orderSchema.properties[field].$ref.substring(1)].pattern,
-      );
-      return ({
-        field,
-        code: 1001,
-        reason: `does not match pattern ${pattern}`,
-      });
-    };
-
     it('should response 400 with required fields errors', async () => {
+      const requireError = field => ({
+        field,
+        code: 1000,
+        reason: `requires property "${field}"`,
+      });
       /* Missed one required field per each request */
       const allResponses = await Promise.all(requiredFields.map(f => (
         request
@@ -94,8 +69,8 @@ describe('postOrder', () => {
               .reduce((acc, fieldName) => ({
                 ...acc,
                 [fieldName]: (
-                  testData[fieldName]
-                  || randomEthereumAddress()
+                  orderConfig[fieldName]
+                  || testData[fieldName]()
                 ),
               }), {}),
           )
@@ -127,6 +102,18 @@ describe('postOrder', () => {
     });
 
     it('should response 400 with wrong format fields errors', async () => {
+      const formatError = (field) => {
+        const pattern = JSON.stringify(
+          field === 'signature'
+            ? schemas.hexSchema.pattern
+            : schemas[schemas.orderSchema.properties[field].$ref.substring(1)].pattern,
+        );
+        return ({
+          field,
+          code: 1001,
+          reason: `does not match pattern ${pattern}`,
+        });
+      };
       /* Wrong one field per each request */
       const allResponses = await Promise.all(requiredFields.map(f => (
         request
@@ -137,8 +124,8 @@ describe('postOrder', () => {
               .reduce((acc, fieldName) => ({
                 ...acc,
                 [fieldName]: (
-                  testData[fieldName]
-                  || randomEthereumAddress()
+                  orderConfig[fieldName]
+                  || testData[fieldName]()
                 ),
               }), {
                 [f]: 'wrong format',
@@ -184,8 +171,8 @@ describe('postOrder', () => {
           requiredFields
             .reduce((acc, fieldName) => ({
               [fieldName]: (
-                testData[fieldName]
-                || randomEthereumAddress()
+                orderConfig[fieldName]
+                || testData[fieldName]()
               ),
               ...acc,
             }), {
@@ -215,8 +202,8 @@ describe('postOrder', () => {
             .reduce((acc, fieldName) => ({
               ...acc,
               [fieldName]: (
-                testData[fieldName]
-                || randomEthereumAddress()
+                orderConfig[fieldName]
+                || testData[fieldName]()
               ),
             }), {}),
         );
@@ -241,8 +228,8 @@ describe('postOrder', () => {
             .reduce((acc, fieldName) => ({
               ...acc,
               [fieldName]: (
-                testData[fieldName]
-                || randomEthereumAddress()
+                orderConfig[fieldName]
+                || testData[fieldName]()
               ),
             }), {}),
         );
@@ -289,8 +276,8 @@ describe('postOrder', () => {
         requiredFields
           .reduce((acc, fieldName) => ({
             [fieldName]: (
-              testData[fieldName]
-              || randomEthereumAddress()
+              orderConfig[fieldName]
+              || testData[fieldName]()
             ),
             ...acc,
           }), {
@@ -351,8 +338,8 @@ describe('postOrder', () => {
         requiredFields
           .reduce((acc, fieldName) => ({
             [fieldName]: (
-              testData[fieldName]
-              || randomEthereumAddress()
+              orderConfig[fieldName]
+              || testData[fieldName]()
             ),
             ...acc,
           }), {
@@ -388,8 +375,8 @@ describe('postOrder', () => {
           requiredFields
             .reduce((acc, fieldName) => ({
               [fieldName]: (
-                testData[fieldName]
-                || randomEthereumAddress()
+                orderConfig[fieldName]
+                || testData[fieldName]()
               ),
               ...acc,
             }), {
