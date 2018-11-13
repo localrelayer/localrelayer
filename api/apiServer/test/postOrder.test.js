@@ -26,6 +26,7 @@ import {
 import {
   GANACHE_CONTRACT_ADDRESSES,
   NULL_ADDRESS,
+  getOrderConfig,
 } from '../../utils';
 
 
@@ -52,8 +53,7 @@ describe('postOrder', () => {
       'signature',
     ];
     const testData = {
-      makerFee: '0',
-      takerFee: '0',
+      ...getOrderConfig(),
       makerAssetAmount: generateRandomMakerAssetAmount(18),
       takerAssetAmount: generateRandomTakerAssetAmount(18),
       makerAssetData: '0xf47261b0000000000000000000000000871dd7c2b4b25e1aa18728e9d5f2af4c4e431f5c', /* ZRX */
@@ -94,9 +94,8 @@ describe('postOrder', () => {
               .reduce((acc, fieldName) => ({
                 ...acc,
                 [fieldName]: (
-                  fieldName.includes('Address')
-                    ? randomEthereumAddress()
-                    : testData[fieldName]
+                  testData[fieldName]
+                  || randomEthereumAddress()
                 ),
               }), {}),
           )
@@ -138,9 +137,8 @@ describe('postOrder', () => {
               .reduce((acc, fieldName) => ({
                 ...acc,
                 [fieldName]: (
-                  fieldName.includes('Address')
-                    ? randomEthereumAddress()
-                    : testData[fieldName]
+                  testData[fieldName]
+                  || randomEthereumAddress()
                 ),
               }), {
                 [f]: 'wrong format',
@@ -186,9 +184,8 @@ describe('postOrder', () => {
           requiredFields
             .reduce((acc, fieldName) => ({
               [fieldName]: (
-                fieldName.includes('Address')
-                  ? randomEthereumAddress()
-                  : testData[fieldName]
+                testData[fieldName]
+                || randomEthereumAddress()
               ),
               ...acc,
             }), {
@@ -218,9 +215,8 @@ describe('postOrder', () => {
             .reduce((acc, fieldName) => ({
               ...acc,
               [fieldName]: (
-                fieldName.includes('Address')
-                  ? randomEthereumAddress()
-                  : testData[fieldName]
+                testData[fieldName]
+                || randomEthereumAddress()
               ),
             }), {}),
         );
@@ -245,9 +241,8 @@ describe('postOrder', () => {
             .reduce((acc, fieldName) => ({
               ...acc,
               [fieldName]: (
-                fieldName.includes('Address')
-                  ? randomEthereumAddress()
-                  : testData[fieldName]
+                testData[fieldName]
+                || randomEthereumAddress()
               ),
             }), {}),
         );
@@ -293,9 +288,8 @@ describe('postOrder', () => {
         requiredFields
           .reduce((acc, fieldName) => ({
             [fieldName]: (
-              fieldName.includes('Address')
-                ? randomEthereumAddress()
-                : testData[fieldName]
+              testData[fieldName]
+              || randomEthereumAddress()
             ),
             ...acc,
           }), {
@@ -325,6 +319,34 @@ describe('postOrder', () => {
     });
 
     xit('should response 400 without allowence', async () => {
+    });
+
+    it('should response 400 with validateOrderConfig', async () => {
+      const response = await request
+        .post('/v2/order?validateOrderConfig=true')
+        .send(
+          requiredFields
+            .reduce((acc, fieldName) => ({
+              [fieldName]: (
+                testData[fieldName]
+                || randomEthereumAddress()
+              ),
+              ...acc,
+            }), {
+              senderAddress: randomEthereumAddress(),
+            }),
+        );
+      expect(validator.isValid(
+        response.body,
+        schemas.relayerApiErrorResponseSchema,
+      )).to.equal(true);
+      expect(response.statusCode).to.equal(400);
+      expect(response.body.reason).to.equal('Validation failed');
+      expect(response.body.validationErrors).to.have.deep.members([{
+        field: 'senderAddress',
+        code: 1003,
+        reason: 'Wrong order config field',
+      }]);
     });
   });
 

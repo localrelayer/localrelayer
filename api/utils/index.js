@@ -39,3 +39,10 @@ export const initProvider = (networkId) => {
 };
 
 export const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
+
+export const getOrderConfig = () => ({
+  senderAddress: NULL_ADDRESS,
+  feeRecipientAddress: '0xc6c3d375b62d66fe0a796ed4ac30bd09ff2d1be5',
+  makerFee: '0',
+  takerFee: '0',
+});
