@@ -16,17 +16,17 @@ import {
 } from '@0x/web3-wrapper';
 import {
   request,
-  randomEthereumAddress,
-  generateRandomMakerAssetAmount,
-  generateRandomTakerAssetAmount,
-  toBaseUnit,
   initTestProvider,
-  getRandomFutureDateInSeconds,
 } from './utils';
 import {
   GANACHE_CONTRACT_ADDRESSES,
   NULL_ADDRESS,
   getOrderConfig,
+  randomEthereumAddress,
+  generateRandomMakerAssetAmount,
+  generateRandomTakerAssetAmount,
+  toBaseUnit,
+  getRandomFutureDateInSeconds,
 } from '../../utils';
 
 
