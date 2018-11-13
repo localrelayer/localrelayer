@@ -3,6 +3,7 @@ import {
   orderHashUtils,
   signatureUtils,
   ContractWrappers,
+  BigNumber,
 } from '0x.js';
 import {
   SchemaValidator,
@@ -25,7 +26,6 @@ import {
   randomEthereumAddress,
   generateRandomMakerAssetAmount,
   generateRandomTakerAssetAmount,
-  toBaseUnit,
   getRandomFutureDateInSeconds,
 } from '../../utils';
 
@@ -35,7 +35,7 @@ const { expect } = chai;
 
 
 describe('postOrder', () => {
-  describe('create a new order with wrond data', () => {
+  describe('create a new order with wrong data', () => {
     const requiredFields = [
       'makerAddress',
       'takerAddress',
@@ -262,14 +262,9 @@ describe('postOrder', () => {
     it('should response 400 with low balance', async () => {
       /* Testnet network id */
       const networkId = 50;
-      /* 10000000000ZRX - huge amount */
-      /* TODO: get current balance and plus additional amount */
-      const makerAssetAmount = toBaseUnit(10000000000, 18);
       const provider = initTestProvider();
       const web3Wrapper = new Web3Wrapper(provider);
       const [makerAddress] = await web3Wrapper.getAvailableAddressesAsync();
-
-
       const contractAddresses = GANACHE_CONTRACT_ADDRESSES;
       const contractWrappers = new ContractWrappers(
         provider,
@@ -278,11 +273,79 @@ describe('postOrder', () => {
           contractAddresses,
         },
       );
-
+      /* maker balance in base units */
+      const makerAssetAmount = await contractWrappers.erc20Token.getBalanceAsync(
+        contractAddresses.zrxToken,
+        makerAddress,
+      );
+      /* some value gt current balance which will be set as makerAssetAmount */
+      const overMakerAssetAmount = new BigNumber(makerAssetAmount).plus(1);
       // Allowance
       await contractWrappers.erc20Token.setUnlimitedProxyAllowanceAsync(
         contractAddresses.zrxToken,
         makerAddress,
+      );
+      const order = (
+        requiredFields
+          .reduce((acc, fieldName) => ({
+            [fieldName]: (
+              testData[fieldName]
+              || randomEthereumAddress()
+            ),
+            ...acc,
+          }), {
+            makerAddress,
+            makerAssetAmount: overMakerAssetAmount,
+          })
+      );
+      const orderHash = orderHashUtils.getOrderHashHex(order);
+      const signature = await signatureUtils.ecSignHashAsync(
+        provider,
+        orderHash,
+        makerAddress,
+      );
+      provider.stop();
+      const response = await request
+        .post(`/v2/order?networkId=${networkId}`)
+        .send({
+          ...order,
+          signature,
+        });
+      expect(validator.isValid(
+        response.body,
+        schemas.relayerApiErrorResponseSchema,
+      )).to.equal(true);
+      expect(response.statusCode).to.equal(400);
+      expect(response.body.reason).to.equal('Unfillable order');
+    });
+
+    it('should response 400 without allowance', async () => {
+      const networkId = 50;
+      const provider = initTestProvider();
+      const web3Wrapper = new Web3Wrapper(provider);
+      const [makerAddress] = await web3Wrapper.getAvailableAddressesAsync();
+      const contractAddresses = GANACHE_CONTRACT_ADDRESSES;
+      const contractWrappers = new ContractWrappers(
+        provider,
+        {
+          networkId,
+          contractAddresses,
+        },
+      );
+      /* maker balance in base units */
+      const makerAssetAmount = await contractWrappers.erc20Token.getBalanceAsync(
+        contractAddresses.zrxToken,
+        makerAddress,
+      );
+      /* amount lt makerAssetAmount, which will be set as allowance limit */
+      const bellowMakerAssetAmount = makerAssetAmount.minus(1);
+      // Allowance
+      /* set allowance lt makerAssetAmount */
+      await contractWrappers.erc20Token.setProxyAllowanceAsync(
+        contractAddresses.zrxToken,
+        makerAddress,
+        /* amountInBaseUnits */
+        bellowMakerAssetAmount,
       );
       const order = (
         requiredFields
@@ -316,9 +379,6 @@ describe('postOrder', () => {
       )).to.equal(true);
       expect(response.statusCode).to.equal(400);
       expect(response.body.reason).to.equal('Unfillable order');
-    });
-
-    xit('should response 400 without allowence', async () => {
     });
 
     it('should response 400 with validateOrderConfig', async () => {
