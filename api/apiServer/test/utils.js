@@ -3,7 +3,6 @@ import {
   assetDataUtils,
   generatePseudoRandomSalt,
   RPCSubprovider,
-  Web3ProviderEngine,
   BigNumber,
 } from '0x.js';
 import {
@@ -16,6 +15,9 @@ import {
 import {
   app,
 } from '..';
+import {
+  providers,
+} from '../../utils';
 import config from '../../config';
 
 export const request = supertest.agent(app.listen(config.apiPort));
@@ -69,15 +71,13 @@ export const createOrder = ({
   };
 };
 
-
 export function initTestProvider() {
   const mnemonicWallet = new MnemonicWalletSubprovider({
     mnemonic: 'stereo cheese harsh ordinary scrub media chair beauty artist poet ranch attack',
     baseDerivationPath: '44\'/60\'/0\'/0',
   });
-  const pe = new Web3ProviderEngine();
+  const pe = providers[50];
   pe.addProvider(mnemonicWallet);
   pe.addProvider(new RPCSubprovider('http://localhost:8545'));
-  pe.start();
   return pe;
 }

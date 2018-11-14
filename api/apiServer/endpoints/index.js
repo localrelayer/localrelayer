@@ -18,7 +18,7 @@ import {
   NULL_ADDRESS,
 } from '../../scenarios/utils/constants';
 import {
-  initProvider,
+  providers,
   getOrderConfig,
   GANACHE_CONTRACT_ADDRESSES,
 } from '../../utils';
@@ -154,9 +154,9 @@ standardRelayerApi.post('/order', async (ctx) => {
     && !orderConfigErrors.length
   ) {
     const orderHash = orderHashUtils.getOrderHashHex(submittedOrder);
-    const provider = initProvider(networkId);
+    const providerEngine = providers[networkId];
     const contractWrappers = new ContractWrappers(
-      provider.engine,
+      providerEngine,
       {
         networkId,
         contractAddresses: (
@@ -169,7 +169,7 @@ standardRelayerApi.post('/order', async (ctx) => {
 
     try {
       await signatureUtils.isValidSignatureAsync(
-        provider.engine,
+        providerEngine,
         orderHash,
         submittedOrder.signature,
         submittedOrder.makerAddress,
@@ -188,7 +188,6 @@ standardRelayerApi.post('/order', async (ctx) => {
           reason: 'Invalid signature',
         }],
       };
-      provider.engine.stop();
       return;
     }
 
@@ -205,7 +204,6 @@ standardRelayerApi.post('/order', async (ctx) => {
         code: 100,
         reason: 'Unfillable order',
       };
-      provider.engine.stop();
       return;
     }
 
@@ -225,7 +223,6 @@ standardRelayerApi.post('/order', async (ctx) => {
     } catch (e) {
       logger.debug('CANT SAVE', e);
       ctx.status = 400;
-      provider.engine.stop();
       return;
     }
 
@@ -233,7 +230,6 @@ standardRelayerApi.post('/order', async (ctx) => {
     ctx.status = 201;
     ctx.message = 'OK';
     ctx.body = {};
-    provider.engine.stop();
   } else {
     ctx.status = 400;
     ctx.message = 'Validation error';

@@ -291,7 +291,6 @@ describe('postOrder', () => {
         orderHash,
         makerAddress,
       );
-      provider.stop();
       const response = await request
         .post(`/v2/order?networkId=${networkId}`)
         .send({
@@ -353,7 +352,6 @@ describe('postOrder', () => {
         orderHash,
         makerAddress,
       );
-      provider.stop();
       const response = await request
         .post(`/v2/order?networkId=${networkId}`)
         .send({
