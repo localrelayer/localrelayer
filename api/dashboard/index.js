@@ -191,6 +191,9 @@ const scenarios = [{
       'scenarios/fillOrderERC20.js',
     ].join(' '));
     cb(child);
+    child.stderr.on('data', (data) => {
+      scenariosLogger.insertBottom(data);
+    });
     child.stdout.on('data', (data) => {
       scenariosLogger.insertBottom(data);
     });
@@ -210,6 +213,9 @@ const scenarios = [{
       'scenarios/fillOrderFees.js',
     ].join(' '));
     cb(child);
+    child.stderr.on('data', (data) => {
+      scenariosLogger.insertBottom(data);
+    });
     child.stdout.on('data', (data) => {
       scenariosLogger.insertBottom(data);
     });
@@ -229,6 +235,9 @@ const scenarios = [{
       'scenarios/forwarderBuyERC20Tokens.js',
     ].join(' '));
     cb(child);
+    child.stderr.on('data', (data) => {
+      scenariosLogger.insertBottom(data);
+    });
     child.stdout.on('data', (data) => {
       scenariosLogger.insertBottom(data);
     });
@@ -248,6 +257,9 @@ const scenarios = [{
       'scenarios/fillOrderSRA.js',
     ].join(' '));
     cb(child);
+    child.stderr.on('data', (data) => {
+      scenariosLogger.insertBottom(data);
+    });
     child.stdout.on('data', (data) => {
       scenariosLogger.insertBottom(data);
     });
@@ -267,6 +279,9 @@ const scenarios = [{
       'scenarios/executeTransaction.js',
     ].join(' '));
     cb(child);
+    child.stderr.on('data', (data) => {
+      scenariosLogger.insertBottom(data);
+    });
     child.stdout.on('data', (data) => {
       scenariosLogger.insertBottom(data);
     });
@@ -286,6 +301,9 @@ const scenarios = [{
       'scenarios/matchOrders.js',
     ].join(' '));
     cb(child);
+    child.stderr.on('data', (data) => {
+      scenariosLogger.insertBottom(data);
+    });
     child.stdout.on('data', (data) => {
       scenariosLogger.insertBottom(data);
     });
@@ -305,6 +323,9 @@ const scenarios = [{
       'scenarios/cancelOrders.js',
     ].join(' '));
     cb(child);
+    child.stderr.on('data', (data) => {
+      scenariosLogger.insertBottom(data);
+    });
     child.stdout.on('data', (data) => {
       scenariosLogger.insertBottom(data);
     });
@@ -324,6 +345,9 @@ const scenarios = [{
       'scenarios/executeTransactionCancelOrder.js',
     ].join(' '));
     cb(child);
+    child.stderr.on('data', (data) => {
+      scenariosLogger.insertBottom(data);
+    });
     child.stdout.on('data', (data) => {
       scenariosLogger.insertBottom(data);
     });
@@ -349,6 +373,9 @@ const tests = [
         '--exit',
       ].join(' '));
       cb(child);
+      child.stderr.on('data', (data) => {
+        scenariosLogger.insertBottom(data);
+      });
       child.stdout.on('data', (data) => {
         scenariosLogger.insertBottom(data);
       });
@@ -370,6 +397,9 @@ const tests = [
         '--exit',
       ].join(' '));
       cb(child);
+      child.stderr.on('data', (data) => {
+        scenariosLogger.insertBottom(data);
+      });
       child.stdout.on('data', (data) => {
         scenariosLogger.insertBottom(data);
       });
