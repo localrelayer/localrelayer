@@ -4,7 +4,10 @@ import {
 } from '0x.js';
 
 
-export const initProvider = (networkId) => {
+export const initWeb3ProviderEngine = (
+  networkId,
+  afterStart = true,
+) => {
   const networksByIds = {
     1: {
       rpcUrl: 'https://mainnet.infura.io/v3/240b30f52dcb42e0a051a4acdfe00d8e',
@@ -16,19 +19,15 @@ export const initProvider = (networkId) => {
       rpcUrl: 'http://localhost:8545',
     },
   };
-  const network = networksByIds[+networkId];
+  const network = networksByIds[networkId];
+  if (!network) {
+    return null;
+  }
 
   const engine = new Web3ProviderEngine();
   engine.addProvider(new RPCSubprovider(network.rpcUrl));
-  engine.start();
-  return {
-    engine,
-    networkId,
-  };
-};
-
-export const providers = {
-  1: initProvider(1).engine,
-  42: initProvider(42).engine,
-  50: initProvider(50).engine,
+  if (afterStart) {
+    engine.start();
+  }
+  return engine;
 };

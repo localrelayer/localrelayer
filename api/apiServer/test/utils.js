@@ -16,7 +16,7 @@ import {
   app,
 } from '..';
 import {
-  providers,
+  initWeb3ProviderEngine,
 } from '../../utils';
 import config from '../../config';
 
@@ -76,8 +76,12 @@ export function initTestProvider() {
     mnemonic: 'stereo cheese harsh ordinary scrub media chair beauty artist poet ranch attack',
     baseDerivationPath: '44\'/60\'/0\'/0',
   });
-  const pe = providers[50];
+  const pe = initWeb3ProviderEngine(
+    50,
+    false,
+  );
   pe.addProvider(mnemonicWallet);
   pe.addProvider(new RPCSubprovider('http://localhost:8545'));
+  pe.start();
   return pe;
 }

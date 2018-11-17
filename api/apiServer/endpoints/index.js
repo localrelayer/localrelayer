@@ -18,7 +18,7 @@ import {
   NULL_ADDRESS,
 } from '../../scenarios/utils/constants';
 import {
-  providers,
+  initWeb3ProviderEngine,
   getOrderConfig,
   GANACHE_CONTRACT_ADDRESSES,
 } from '../../utils';
@@ -142,128 +142,137 @@ standardRelayerApi.post('/order_config', (ctx) => {
   }
 });
 
+/* create a middleware wich will provide a provider and stop it at the end of request */
 standardRelayerApi.post('/order', async (ctx) => {
   const networkId = Number(ctx.query.networkId || '1');
-  const submittedOrder = ctx.request.body;
-  const orderConfigErrors = validateOrderConfig(submittedOrder);
+  const web3ProviderEngine = initWeb3ProviderEngine(networkId);
 
-  if (
-    validator.isValid(submittedOrder, schemas.signedOrderSchema)
-    && validateExpirationTimeSeconds(submittedOrder.expirationTimeSeconds)
-    && validateNetworkId(networkId)
-    && !orderConfigErrors.length
-  ) {
-    const orderHash = orderHashUtils.getOrderHashHex(submittedOrder);
-    const providerEngine = providers[networkId];
-    const contractWrappers = new ContractWrappers(
-      providerEngine,
-      {
-        networkId,
-        contractAddresses: (
-          networkId === 50
-            ? GANACHE_CONTRACT_ADDRESSES
-            : getContractAddressesForNetworkOrThrow(networkId)
-        ),
-      },
-    );
-
-    try {
-      await signatureUtils.isValidSignatureAsync(
-        providerEngine,
-        orderHash,
-        submittedOrder.signature,
-        submittedOrder.makerAddress,
-      );
-    } catch (err) {
-      logger.debug('Signature is not a valid');
-      logger.debug(err);
-      ctx.status = 400;
-      ctx.message = 'Validation error';
-      ctx.body = {
-        code: 100,
-        reason: 'Validation failed',
-        validationErrors: [{
-          field: 'signature',
-          code: 1005,
-          reason: 'Invalid signature',
-        }],
-      };
-      return;
-    }
-
-    try {
-      await contractWrappers.exchange.validateOrderFillableOrThrowAsync(
-        tranformBigNumberOrder(submittedOrder),
-      );
-    } catch (err) {
-      logger.debug('Order is not a valid');
-      logger.debug(err);
-      ctx.status = 400;
-      ctx.message = 'Validation error';
-      ctx.body = {
-        code: 100,
-        reason: 'Unfillable order',
-      };
-      return;
-    }
-
-    const decMakerAssetData = assetDataUtils.decodeERC20AssetData(submittedOrder.makerAssetData);
-    const decTakerAssetData = assetDataUtils.decodeERC20AssetData(submittedOrder.takerAssetData);
-    const order = new Order({
-      ...submittedOrder,
-      makerAssetAddress: decMakerAssetData.tokenAddress,
-      makerAssetProxyId: decMakerAssetData.assetProxyId,
-      takerAssetAddress: decTakerAssetData.tokenAddress,
-      takerAssetProxyId: decTakerAssetData.assetProxyId,
-      orderHash,
-      networkId,
-    });
-    try {
-      await order.save();
-    } catch (e) {
-      logger.debug('CANT SAVE', e);
-      ctx.status = 400;
-      return;
-    }
-
-    redisClient.publish('orders', JSON.stringify(order));
-    ctx.status = 201;
-    ctx.message = 'OK';
-    ctx.body = {};
-  } else {
-    ctx.status = 400;
-    ctx.message = 'Validation error';
-    ctx.body = getValidationErrors(submittedOrder, schemas.signedOrderSchema);
+  async function endPoint() {
+    const submittedOrder = ctx.request.body;
+    const orderConfigErrors = validateOrderConfig(submittedOrder);
 
     if (
-      !ctx.body.validationErrors.find(e => e.field === 'expirationTimeSeconds')
-      && !validateExpirationTimeSeconds(submittedOrder.expirationTimeSeconds)
+      validator.isValid(submittedOrder, schemas.signedOrderSchema)
+      && validateExpirationTimeSeconds(submittedOrder.expirationTimeSeconds)
+      && validateNetworkId(networkId)
+      && !orderConfigErrors.length
     ) {
-      ctx.body.validationErrors.push({
-        code: 1004,
-        field: 'expirationTimeSeconds',
-        reason: 'Minimum possible expiration 60 sec',
-      });
-    }
-
-    if (!validateNetworkId(networkId)) {
-      ctx.body.validationErrors.push({
-        code: 1006,
-        field: 'networkId',
-        reason: `Network id ${networkId} is not supported`,
-      });
-    }
-
-    if (orderConfigErrors.length) {
-      ctx.body.validationErrors = [
-        ...ctx.body.validationErrors,
-        ...orderConfigErrors.filter(
-          e => (
-            !ctx.body.validationErrors.find(ve => ve.field === e.field)
+      const orderHash = orderHashUtils.getOrderHashHex(submittedOrder);
+      const contractWrappers = new ContractWrappers(
+        web3ProviderEngine,
+        {
+          networkId,
+          contractAddresses: (
+            networkId === 50
+              ? GANACHE_CONTRACT_ADDRESSES
+              : getContractAddressesForNetworkOrThrow(networkId)
           ),
-        ),
-      ];
+        },
+      );
+
+      try {
+        await signatureUtils.isValidSignatureAsync(
+          web3ProviderEngine,
+          orderHash,
+          submittedOrder.signature,
+          submittedOrder.makerAddress,
+        );
+      } catch (err) {
+        logger.debug('Signature is not a valid');
+        logger.debug(err);
+        ctx.status = 400;
+        ctx.message = 'Validation error';
+        ctx.body = {
+          code: 100,
+          reason: 'Validation failed',
+          validationErrors: [{
+            field: 'signature',
+            code: 1005,
+            reason: 'Invalid signature',
+          }],
+        };
+        return;
+      }
+
+      try {
+        await contractWrappers.exchange.validateOrderFillableOrThrowAsync(
+          tranformBigNumberOrder(submittedOrder),
+        );
+      } catch (err) {
+        logger.debug('Order is not a valid');
+        logger.debug(err);
+        ctx.status = 400;
+        ctx.message = 'Validation error';
+        ctx.body = {
+          code: 100,
+          reason: 'Unfillable order',
+        };
+        return;
+      }
+
+      const decMakerAssetData = assetDataUtils.decodeERC20AssetData(submittedOrder.makerAssetData);
+      const decTakerAssetData = assetDataUtils.decodeERC20AssetData(submittedOrder.takerAssetData);
+      const order = new Order({
+        ...submittedOrder,
+        makerAssetAddress: decMakerAssetData.tokenAddress,
+        makerAssetProxyId: decMakerAssetData.assetProxyId,
+        takerAssetAddress: decTakerAssetData.tokenAddress,
+        takerAssetProxyId: decTakerAssetData.assetProxyId,
+        orderHash,
+        networkId,
+      });
+      try {
+        await order.save();
+      } catch (e) {
+        logger.debug('CANT SAVE', e);
+        ctx.status = 400;
+        return;
+      }
+
+      redisClient.publish('orders', JSON.stringify(order));
+      ctx.status = 201;
+      ctx.message = 'OK';
+      ctx.body = {};
+    } else {
+      ctx.status = 400;
+      ctx.message = 'Validation error';
+      ctx.body = getValidationErrors(submittedOrder, schemas.signedOrderSchema);
+
+      if (
+        !ctx.body.validationErrors.find(e => e.field === 'expirationTimeSeconds')
+        && !validateExpirationTimeSeconds(submittedOrder.expirationTimeSeconds)
+      ) {
+        ctx.body.validationErrors.push({
+          code: 1004,
+          field: 'expirationTimeSeconds',
+          reason: 'Minimum possible expiration 60 sec',
+        });
+      }
+
+      if (!validateNetworkId(networkId)) {
+        ctx.body.validationErrors.push({
+          code: 1006,
+          field: 'networkId',
+          reason: `Network id ${networkId} is not supported`,
+        });
+      }
+
+      if (orderConfigErrors.length) {
+        ctx.body.validationErrors = [
+          ...ctx.body.validationErrors,
+          ...orderConfigErrors.filter(
+            e => (
+              !ctx.body.validationErrors.find(ve => ve.field === e.field)
+            ),
+          ),
+        ];
+      }
     }
+  }
+
+  await endPoint();
+  if (web3ProviderEngine) {
+    web3ProviderEngine.stop();
   }
 });
 
