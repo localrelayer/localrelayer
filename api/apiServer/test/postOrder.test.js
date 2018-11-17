@@ -33,6 +33,7 @@ import {
 const validator = new SchemaValidator();
 const { expect } = chai;
 
+const web3ProviderEngine = initTestProvider();
 const orderConfig = getOrderConfig();
 const testData = {
   makerAddress: () => randomEthereumAddress(),
@@ -52,6 +53,9 @@ const requiredFields = Object.keys({
 });
 
 describe('postOrder', () => {
+  after(() => {
+    web3ProviderEngine.stop();
+  });
   describe('create a new order with wrong data', () => {
     it('should response 400 with required fields errors', async () => {
       const requireError = field => ({
@@ -249,12 +253,11 @@ describe('postOrder', () => {
     it('should response 400 with low balance', async () => {
       /* Testnet network id */
       const networkId = 50;
-      const provider = initTestProvider();
-      const web3Wrapper = new Web3Wrapper(provider);
+      const web3Wrapper = new Web3Wrapper(web3ProviderEngine);
       const [makerAddress] = await web3Wrapper.getAvailableAddressesAsync();
       const contractAddresses = GANACHE_CONTRACT_ADDRESSES;
       const contractWrappers = new ContractWrappers(
-        provider,
+        web3ProviderEngine,
         {
           networkId,
           contractAddresses,
@@ -287,7 +290,7 @@ describe('postOrder', () => {
       );
       const orderHash = orderHashUtils.getOrderHashHex(order);
       const signature = await signatureUtils.ecSignHashAsync(
-        provider,
+        web3ProviderEngine,
         orderHash,
         makerAddress,
       );
@@ -307,12 +310,11 @@ describe('postOrder', () => {
 
     it('should response 400 without allowance', async () => {
       const networkId = 50;
-      const provider = initTestProvider();
-      const web3Wrapper = new Web3Wrapper(provider);
+      const web3Wrapper = new Web3Wrapper(web3ProviderEngine);
       const [makerAddress] = await web3Wrapper.getAvailableAddressesAsync();
       const contractAddresses = GANACHE_CONTRACT_ADDRESSES;
       const contractWrappers = new ContractWrappers(
-        provider,
+        web3ProviderEngine,
         {
           networkId,
           contractAddresses,
@@ -348,7 +350,7 @@ describe('postOrder', () => {
       );
       const orderHash = orderHashUtils.getOrderHashHex(order);
       const signature = await signatureUtils.ecSignHashAsync(
-        provider,
+        web3ProviderEngine,
         orderHash,
         makerAddress,
       );
