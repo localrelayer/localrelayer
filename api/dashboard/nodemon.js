@@ -1,10 +1,12 @@
 import nodemon from 'nodemon';
 
+import dashboardConfig from './.config';
+
 nodemon({
   script: './dashboard/index.js',
   ext: 'js json',
   stdin: false,
-  delay: 500,
+  delay: dashboardConfig.nodemonDelay,
 });
 
 nodemon.on('crash', () => {

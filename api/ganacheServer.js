@@ -1,11 +1,16 @@
+import 'module-alias/register';
 import ganache from 'ganache-core';
 import {
   createLogger,
-} from './logger';
+} from 'logger';
 
 export const logger = createLogger(
   'ganacheServer',
-//  'info',
+  process.env.LOG_LEVEL || 'silly',
+  (
+    require.main === module
+    && process.env.DASHBOARD_PARENT !== 'true'
+  ),
 );
 logger.debug('ganacheServer logger was created');
 
@@ -74,4 +79,8 @@ export function runGanacheServer(cb) {
   });
 
   return server;
+}
+
+if (require.main === module) {
+  runGanacheServer();
 }

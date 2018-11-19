@@ -1,3 +1,4 @@
+import 'module-alias/register';
 import {
   orderHashUtils,
 } from '0x.js';
@@ -11,10 +12,10 @@ import {
   generateRandomTakerAssetAmount,
   getRandomFutureDateInSeconds,
   randomEthereumAddress,
-} from '../../utils';
+} from 'utils';
 import {
   Order,
-} from '../../db';
+} from 'db';
 
 
 (() => {

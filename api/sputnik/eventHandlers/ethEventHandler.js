@@ -1,8 +1,5 @@
 import jobs from '../kueJobs';
 import {
-  redisClient,
-} from '../../redis';
-import {
   createLogger,
 } from '../../logger';
 

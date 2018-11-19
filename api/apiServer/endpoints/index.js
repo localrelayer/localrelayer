@@ -14,24 +14,23 @@ import {
   SchemaValidator,
   schemas,
 } from '@0x/json-schemas';
+
 import {
-  NULL_ADDRESS,
-} from '../../scenarios/utils/constants';
+  logger,
+} from 'apiLogger';
+import {
+  Order,
+  AssetPair,
+} from 'db';
 import {
   initWeb3ProviderEngine,
   getOrderConfig,
   GANACHE_CONTRACT_ADDRESSES,
-} from '../../utils';
-import {
-  Order,
-  AssetPair,
-} from '../../db';
-import {
-  logger,
-} from '../apiLogger';
+  NULL_ADDRESS,
+} from 'utils';
 import {
   redisClient,
-} from '../../redis';
+} from 'redisClient';
 
 const app = new Koa();
 const standardRelayerApi = new Router({

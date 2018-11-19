@@ -1,7 +1,7 @@
 import redis from 'redis';
 import wrapper from 'co-redis';
 
-import config from './config';
+import config from 'config';
 
 
 export const redisClient = redis.createClient({

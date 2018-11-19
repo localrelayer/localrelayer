@@ -1,25 +1,30 @@
+import 'module-alias/register';
 import {
   performance,
 } from 'perf_hooks';
 
-import jobs from '../kueJobs';
 import {
   redisClient,
-} from '../../redis';
+} from 'redisClient';
+import {
+  createLogger,
+} from 'logger';
+import jobs from '../kueJobs';
 import {
   collectOrder,
   collectTradingInfo,
 } from '../collect';
-import {
-  createLogger,
-} from '../../logger';
 
 
 const logger = createLogger(
-  'fillHandlerQueue',
-//  'info',
+  'fillQueueHandler',
+  process.env.LOG_LEVEL || 'silly',
+  (
+    require.main === module
+    && process.env.DASHBOARD_PARENT !== 'true'
+  ),
 );
-logger.debug('fillHandlerQueue logger was created');
+logger.debug('fillQueueHandler logger was created');
 
 const fillHandler = async (event, done) => {
   const t0 = performance.now();
@@ -85,4 +90,8 @@ export function runFillQueueHandler() {
     fillHandler(job.data, done);
   });
   return jobs;
+}
+
+if (require.main === module) {
+  runFillQueueHandler();
 }

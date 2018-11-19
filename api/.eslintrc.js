@@ -1,4 +1,24 @@
+const path = require('path');
+const packageJson = require('./package.json');
+
 module.exports = {
+  settings: {
+    'import/resolver': {
+      alias: {
+        map: (
+          Object.keys(
+            packageJson._moduleAliases
+          ).map(moduleName => ([
+            moduleName,
+            path.join(
+              __dirname,
+              packageJson._moduleAliases[moduleName],
+            ),
+          ]))
+        ),
+      },
+    },
+  },
   parser: 'babel-eslint',
   parserOptions: {
     allowImportExportEverywhere: true,
@@ -27,12 +47,12 @@ module.exports = {
           multiline: true,
         },
         ImportDeclaration: 'always',
-        ExportDeclaration: 'always'
+        ExportDeclaration: 'always',
     }],
   },
-  "env": {
-    "browser": true,
-    "mocha": true,
-    "node": true
+  env: {
+    browser: true,
+    mocha: true,
+    node: true,
   },
 };

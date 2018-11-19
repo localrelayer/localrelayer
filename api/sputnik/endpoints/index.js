@@ -3,10 +3,10 @@ import Router from 'koa-router';
 
 import {
   Order,
-} from '../../db';
+} from 'db';
 import {
   coRedisClient,
-} from '../../redis';
+} from 'redisClient';
 
 const app = new Koa();
 

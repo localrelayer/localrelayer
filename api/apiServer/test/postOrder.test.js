@@ -15,10 +15,7 @@ import {
 import {
   Web3Wrapper,
 } from '@0x/web3-wrapper';
-import {
-  request,
-  initTestProvider,
-} from './utils';
+
 import {
   GANACHE_CONTRACT_ADDRESSES,
   NULL_ADDRESS,
@@ -27,7 +24,11 @@ import {
   generateRandomMakerAssetAmount,
   generateRandomTakerAssetAmount,
   getRandomFutureDateInSeconds,
-} from '../../utils';
+} from 'utils';
+import {
+  request,
+  initTestProvider,
+} from './utils';
 
 
 const validator = new SchemaValidator();
