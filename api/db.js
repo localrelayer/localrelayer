@@ -11,6 +11,7 @@ mongoose.connect(
   },
 );
 
+/* Why so much indexes? WTF? */
 const orderSchema = mongoose.Schema({
   makerAddress: { type: String, index: true },
   takerAddress: { type: String, index: true },
@@ -32,6 +33,11 @@ const orderSchema = mongoose.Schema({
   takerAssetProxyId: { type: String, index: true },
   makerAssetAddress: { type: String, index: true },
   takerAssetAddress: { type: String, index: true },
+  isValid: { type: Boolean },
+  error: { type: String },
+  remainingFillableMakerAssetAmount: { type: String, index: true },
+  remainingFillableTakerAssetAmount: { type: String, index: true },
+  completedAt: { type: Date, index: true },
 }, { versionKey: false });
 
 const assetDataSchema = mongoose.Schema({

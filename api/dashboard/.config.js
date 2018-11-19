@@ -11,13 +11,18 @@ export default {
     forkProcess: true,
     logLevel: 'silly',
   },
+  orderWatcher: {
+    forkProcess: true,
+    logLevel: 'silly',
+    ethNetworks: [
+      'test',
+    ],
+  },
   sputnikSubscribe: {
     forkProcess: true,
     logLevel: 'silly',
     ethNetworks: [
       'test',
-       'main',
-       'kovan',
     ],
   },
   ganacheServer: {
@@ -25,10 +30,8 @@ export default {
     logLevel: 'silly',
   },
   defaultActiveProcesses: [
-    'apiServer',
+    'orderWatcher',
     'socketServer',
-    'fillQueueHandler',
-    'sputnikSubscribe',
     'ganacheServer',
   ],
   fgProcessLogLevel: 'silly',

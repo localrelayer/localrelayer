@@ -20,6 +20,7 @@ import {
 import {
   daemonLoggerWidget,
   supervisorWidget,
+  screen,
 } from '../widgets';
 import dashboardConfig from '../.config';
 
@@ -27,6 +28,7 @@ import dashboardConfig from '../.config';
 const daemonProcessOutputHandler = processId => (data) => {
   if (supervisorWidget.selectedForLogs === processId) {
     daemonLoggerWidget.insertBottom(data);
+    screen.render();
   }
 };
 
@@ -83,6 +85,25 @@ export const daemons = [{
     cb();
     return (ccb) => {
       server.close(ccb);
+    };
+  },
+}, {
+  id: 'orderWatcher',
+  name: 'Order watcher',
+  type: 'daemon',
+
+  run(cb) {
+    if (dashboardConfig.orderWatcher.forkProcess) {
+      return daemonStarter(
+        'orderWatcher',
+        cb,
+        `ETH_NETWORKS=${dashboardConfig.orderWatcher.ethNetworks.join(',')} npm run orderWatcher`,
+      );
+    }
+    const queue = runFillQueueHandler();
+    cb();
+    return (ccb) => {
+      queue.shutdown(5000, ccb);
     };
   },
 }, {

@@ -17,6 +17,7 @@ export async function collectOrder(data) {
 }
 
 export async function collectTradingInfo(order, logger) {
+  console.log('a');
   const {
     networkId,
     makerAssetData: assetDataA,

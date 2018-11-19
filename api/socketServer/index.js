@@ -16,10 +16,12 @@ import {
   createLogger,
 } from 'logger';
 import {
-  fieldsToSkip,
-} from '../apiServer/endpoints';
+  clearObjectKeys,
+  ORDER_FIELDS,
+} from 'utils';
 
-export const logger = createLogger(
+
+const logger = createLogger(
   'socketServer',
   process.env.LOG_LEVEL || 'silly',
   (
@@ -28,17 +30,8 @@ export const logger = createLogger(
   ),
 );
 logger.debug('socketServer logger was created');
-
 // Check if val1 doesn't exist or equal to val1
 const shouldExistAndEqual = (val1, val2) => (val1 ? val1 === val2 : true);
-
-const removeProps = (...propsToFilter) => obj => Object.keys(obj)
-  .filter(key => !propsToFilter.includes(key))
-  .reduce((newObj, key) => {
-    newObj[key] = obj[key];
-    return newObj;
-  }, {});
-
 const validator = new SchemaValidator();
 
 export function runWebSocketServer() {
@@ -139,7 +132,7 @@ export function runWebSocketServer() {
 
   const redisSRA = redisClient.duplicate();
   redisSRA.on('message', async (channel, message) => {
-    logger.debug('Hiii');
+    logger.debug(message);
 
     wss.clients.forEach((client) => {
       Object.keys(client.subscriptions).forEach((subId) => {
@@ -164,7 +157,13 @@ export function runWebSocketServer() {
           )
         ) {
           logger.debug('SEND!!!');
-          const clearOrder = removeProps(...fieldsToSkip)(order);
+          const clearOrder = clearObjectKeys(
+            order,
+            [
+              ...ORDER_FIELDS,
+              'metaData',
+            ],
+          );
 
           client.send(JSON.stringify({
             type: 'update',
