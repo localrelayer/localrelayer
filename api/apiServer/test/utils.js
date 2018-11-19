@@ -13,12 +13,12 @@ import {
 } from '@0x/web3-wrapper';
 
 import {
+  initWeb3ProviderEngine,
+} from 'utils';
+import config from 'config';
+import {
   app,
 } from '..';
-import {
-  initWeb3ProviderEngine,
-} from '../../utils';
-import config from '../../config';
 
 export const request = supertest.agent(app.listen(config.apiPort));
 

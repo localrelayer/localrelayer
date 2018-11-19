@@ -1,9 +1,11 @@
 import {
   createLogger,
-} from '../logger';
+} from 'logger';
+
 
 export const logger = createLogger(
   'sputnikSubscribe',
-//  'info',
+  process.env.LOG_LEVEL || 'silly',
+  process.env.DASHBOARD_PARENT !== 'true',
 );
 logger.debug('sputnikSubscribe logger was created');

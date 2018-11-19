@@ -1,27 +1,15 @@
-import {
-  runGanacheServer,
-} from '../ganacheServer';
+import 'module-alias/register';
 import {
   subscribeEthEvents,
 } from './subscribe';
-import {
-  runFillQueueHandler,
-  runEthEventHandler,
-} from './eventHandlers';
 
 
 function runSputnik() {
-  runEthEventHandler();
-  runFillQueueHandler();
-  subscribeEthEvents([
-    ...(process.env.NODE_ENV === 'development' ? ['test'] : []),
-    'main',
-    'kovan',
-  ]);
+  subscribeEthEvents(
+    (process.env.ETH_NETWORKS || 'main,kovan,test').split(','),
+  );
 }
 
-if (process.env.RUN_GANACHE === 'true') {
-  runGanacheServer(runSputnik);
-} else {
+if (require.main === module) {
   runSputnik();
 }

@@ -2,9 +2,10 @@ import winston from 'winston';
 import WinstonRedisTransport from 'winston-redis';
 import path from 'path';
 import fs from 'fs';
+
 import {
   redisClient,
-} from './redis';
+} from 'redisClient';
 
 
 const loggerRedisClient = redisClient.duplicate();

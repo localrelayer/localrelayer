@@ -1,12 +1,13 @@
 import {
   coRedisClient,
-} from '../../redis';
+} from 'redisClient';
+import {
+  Order,
+} from 'db';
+
 import {
   calculateTradingInfo,
 } from '../process';
-import {
-  Order,
-} from '../../db';
 
 
 export async function collectOrder(data) {

@@ -1,3 +1,4 @@
+import 'module-alias/register';
 import WebSocket from 'ws';
 import https from 'https';
 import fs from 'fs';
@@ -9,18 +10,22 @@ import {
 import {
   redisClient,
   coRedisClient,
-} from '../redis';
-import config from '../config';
+} from 'redisClient';
+import config from 'config';
 import {
   createLogger,
-} from '../logger';
+} from 'logger';
 import {
   fieldsToSkip,
 } from '../apiServer/endpoints';
 
 export const logger = createLogger(
   'socketServer',
-  'debug',
+  process.env.LOG_LEVEL || 'silly',
+  (
+    require.main === module
+    && process.env.DASHBOARD_PARENT !== 'true'
+  ),
 );
 logger.debug('socketServer logger was created');
 
@@ -177,4 +182,8 @@ export function runWebSocketServer() {
     server.listen(config.socketPort);
   }
   return wss;
+}
+
+if (require.main === module) {
+  runWebSocketServer();
 }

@@ -1,18 +1,29 @@
+import blessed from 'blessed';
+import {
+  theme,
+} from './theme';
+
+
+const baseCommands = {
+  j: 'Down',
+  k: 'Up',
+  g: 'Jump to top',
+  G: 'Jump to bottom',
+  q: 'Quit',
+};
+
 export function dashboardFactory({
   screen,
-  processList,
-  scenariosLogger,
-  allItems,
-  footer,
-  commands,
+  supervisorWidget,
+  allProcesses,
+  footerWidget,
   redisSub,
-  onShowLogs,
+  onRunFgProcess,
+  onShowDaemonLogs,
 }) {
   const state = {
-    selectedForLogs: '',
-    displayTestsAndScenariosStatus: false,
     processes: (
-      allItems.reduce((acc, p) => ({
+      allProcesses.reduce((acc, p) => ({
         ...acc,
         [p.id]: {
           ...p,
@@ -21,81 +32,87 @@ export function dashboardFactory({
       }), {})
     ),
   };
-  processList.focus();
-
-  function getStatus(processId) {
-    const { status } = state.processes[processId];
-    switch (status) {
-      case 'stopped': return `{grey-fg}${status}{/grey-fg}`;
-      case 'starting': return `{yellow-fg}${status}{/yellow-fg}`;
-      case 'stopping': return `{red-fg}${status}{/red-fg}`;
-      case 'running': return `{green-fg}${status}{/green-fg}`;
-      default:
-        return null;
-    }
-  }
+  supervisorWidget.focus();
 
   function renderProcess(process) {
-    const isSelectedForLogs = state.selectedForLogs === process.id;
+    const isSelectedForLogs = supervisorWidget.selectedForLogs === process.id;
     const spacesCount = 50 - process.name.length - (isSelectedForLogs ? 1 : 0);
-    let coloredName;
-    switch (process.type) {
-      case 'scenario': {
-        coloredName = `{#00FFFF-fg}${process.name}{/#00FFFF-fg}`;
-        break;
-      }
-      case 'test': {
-        coloredName = `{#DAA520-fg}${process.name}{/#DAA520-fg}`;
-        break;
-      }
-      default: {
-        coloredName = `{#2E8B57-fg}${process.name}{/#2E8B57-fg}`;
-        break;
-      }
-    }
+    const color = theme.processType[process.type];
+    const coloredName = `{${color}-fg}${process.name}{/${color}-fg}`;
+    const { status } = state.processes[process.id];
+    const statusColor = theme.processStatus[status];
+
     return [
       coloredName,
       Array(spacesCount).fill().join(' '),
-      isSelectedForLogs ? '{#FFA500-fg}*{/#FFA500-fg}' : '',
-      `${getStatus(process.id)}`.toString(),
+      isSelectedForLogs
+        ? (
+          `{${theme.selectedProcess}-fg}◉{/${theme.selectedProcess}-fg}`
+        )
+        : (
+          ''
+        ),
+      '  ',
+      `{${statusColor}-fg}${status}{/${statusColor}-fg}`,
     ].join(' ');
   }
 
   function renderFooter() {
     const executableList = Object.values(state.processes);
-    const selectedProcess = executableList[processList.selected];
-    const {
-      Enter,
-      ...excludeEnter
-    } = commands;
-    const adaptedCommands = selectedProcess.type === 'process'
+    const selectedProcess = executableList[supervisorWidget.selected];
+    const adaptedCommands = selectedProcess.type === 'daemon'
       ? {
-        ...commands,
+        Enter: 'Show daemon logs',
         r: `Run ${selectedProcess.type}`,
         s: `Stop ${selectedProcess.type}`,
       }
       : {
-        ...excludeEnter,
-        r: `Run ${selectedProcess.type}`,
+        Enter: `Run ${selectedProcess.type}`,
         s: `Stop ${selectedProcess.type}`,
       };
-    footer.setContent(Object.keys(adaptedCommands).map(key => (
-      `{white-bg}{black-fg}${key}{/black-fg}{/white-bg} ${adaptedCommands[key]}`
-    )).join('  '));
+    const allCommands = {
+      ...adaptedCommands,
+      ...baseCommands,
+    };
+
+    const renderFooterCommand = command => (
+      `{white-bg}{black-fg}${command}{/black-fg}{/white-bg} ${allCommands[command]}`
+    );
+    const adaptedCommandsString = (
+      Object.keys(adaptedCommands)
+        .map(renderFooterCommand)
+        .join('  ')
+    );
+    const baseCommandsString = (
+      Object.keys(baseCommands)
+        .map(renderFooterCommand)
+        .join('  ')
+    );
+    const processTypeColorsString = (
+      Object.keys(theme.processType)
+        .map(type => (
+          `{${theme.processType[type]}-fg}☐◼︎◼︎☐ - ${type}{/${theme.processType[type]}-fg}`
+        ))
+        .join('  ')
+    );
+
+    footerWidget.setContent([
+      adaptedCommandsString,
+      Array(
+        60
+        - (
+          blessed.helpers.stripTags(adaptedCommandsString).length
+        ),
+      ).fill().join(' '),
+      baseCommandsString,
+      Array(10).fill().join(' '),
+      processTypeColorsString,
+    ].join('  '));
   }
 
   function render() {
-    const executableList = (
-      Object.values(state.processes).filter(
-        item => (
-          item.type === 'process'
-            ? true
-            : state.displayTestsAndScenariosStatus
-        ),
-      )
-    );
-    processList.setItems(
-      executableList
+    supervisorWidget.setItems(
+      Object.values(state.processes)
         .map(p => renderProcess(p)),
     );
     screen.render();
@@ -111,18 +128,18 @@ export function dashboardFactory({
 
   function runProcess(process) {
     const { status } = state.processes[process.id];
-    scenariosLogger.setLabel(`Output - ${process.name}`);
     if (status === 'stopped') {
       setProcessStatus(
         process.id,
         'starting',
       );
+      onRunFgProcess(process);
       state.processes[process.id].stop = process.run((child) => {
         setProcessStatus(
           process.id,
           'running',
         );
-        if (process.type !== 'process') {
+        if (process.type !== 'daemon') {
           child.on('exit', () => {
             setProcessStatus(process.id, 'stopped');
           });
@@ -153,72 +170,51 @@ export function dashboardFactory({
     }
   }
 
-  function showTestsAndScenarios() {
-    state.displayTestsAndScenariosStatus = true;
-    render();
-  }
-
-  function hideScenarios() {
-    state.displayTestsAndScenariosStatus = false;
-    render();
-  }
-
-  function showProcessLogs(process) {
-    onShowLogs(process);
-    state.selectedForLogs = process.id;
+  function showDaemonLogs(process) {
+    onShowDaemonLogs(process);
+    supervisorWidget.selectedForLogs = process.id;
 
     redisSub.unsubscribe();
     redisSub.subscribe(`logs-${process.id}`);
     render();
   }
 
-  processList.on('select item', () => {
+  supervisorWidget.on('select item', () => {
     renderFooter();
     screen.render();
   });
 
-  processList.key('enter', () => {
+  supervisorWidget.key('enter', () => {
     const executableList = Object.values(state.processes);
-    const process = executableList[processList.selected];
-    if (process.type === 'process') {
-      showProcessLogs(process);
+    const process = executableList[supervisorWidget.selected];
+    if (process.type === 'daemon') {
+      showDaemonLogs(process);
+    } else {
+      runProcess(process);
     }
   });
 
-  processList.key('r', () => {
+  supervisorWidget.key('r', () => {
     const executableList = Object.values(state.processes);
-    const process = executableList[processList.selected];
-    runProcess(process);
+    const process = executableList[supervisorWidget.selected];
+    if (process.type === 'daemon') {
+      runProcess(process);
+    }
   });
 
-  processList.key('s', () => {
+  supervisorWidget.key('s', () => {
     const executableList = Object.values(state.processes);
-    const process = executableList[processList.selected];
+    const process = executableList[supervisorWidget.selected];
     stopProcess(process);
-  });
-
-  processList.key('t', () => {
-    switch (state.displayTestsAndScenariosStatus) {
-      case false: {
-        showTestsAndScenarios();
-        break;
-      }
-      case true: {
-        hideScenarios();
-        break;
-      }
-      default: break;
-    }
   });
 
   return ({
     render,
     setProcessStatus,
-    showProcessLogs,
-    showTestsAndScenarios,
+    showDaemonLogs,
 
     runAll() {
-      allItems
+      allProcesses
         .forEach(
           p => (
             p.active ? runProcess(p) : renderProcess(p)
@@ -227,7 +223,7 @@ export function dashboardFactory({
     },
 
     stopAll() {
-      allItems
+      allProcesses
         .filter(p => p.active)
         .forEach(
           p => (
