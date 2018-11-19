@@ -4,12 +4,14 @@ import {
 
 import {
   fgProcessLoggerWidget,
+  screen,
 } from '../widgets';
 import dashboardConfig from '../.config';
 
 
 const fgProcessOutputHandler = (data) => {
   fgProcessLoggerWidget.insertBottom(data);
+  screen.render();
 };
 
 function scenarioStarter(cb, scenarioFilePath) {

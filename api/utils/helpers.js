@@ -4,6 +4,7 @@ import {
 
 import {
   NULL_ADDRESS,
+  ORDER_FIELDS,
 } from './constants';
 
 
@@ -18,3 +19,30 @@ export const getOrderConfig = () => ({
   makerFee: '0',
   takerFee: '0',
 });
+
+export const transformBigNumberOrder = order => (
+  Object.keys(order).reduce((acc, fieldName) => ({
+    ...acc,
+    [fieldName]: (
+      [
+        'salt',
+        'makerAssetAmount',
+        'takerAssetAmount',
+        'makerFee',
+        'takerFee',
+        'expirationTimeSeconds',
+      ].includes(fieldName) ? new BigNumber(order[fieldName]) : order[fieldName]
+    ),
+  }), {})
+);
+
+export const clearObjectKeys = (obj, keys) => (
+  Object.keys(obj).reduce((acc, key) => ({
+    ...acc,
+    ...(keys.includes(key) ? { [key]: obj[key] } : {}),
+  }), {})
+);
+
+export const clearOrderFields = order => (
+  clearObjectKeys(order, ORDER_FIELDS)
+);

@@ -25,6 +25,7 @@ import {
 import {
   initWeb3ProviderEngine,
   getOrderConfig,
+  transformBigNumberOrder,
   GANACHE_CONTRACT_ADDRESSES,
   NULL_ADDRESS,
 } from 'utils';
@@ -68,22 +69,6 @@ const getValidationErrors = (instance, schema) => {
   };
 };
 
-const tranformBigNumberOrder = order => (
-  Object.keys(order).reduce((acc, fieldName) => ({
-    ...acc,
-    [fieldName]: (
-      [
-        'salt',
-        'makerAssetAmount',
-        'takerAssetAmount',
-        'makerFee',
-        'takerFee',
-        'expirationTimeSeconds',
-      ].includes(fieldName) ? new BigNumber(order[fieldName]) : order[fieldName]
-    ),
-  }), {})
-);
-
 const validateExpirationTimeSeconds = expirationTimeSeconds => (
   (+new Date() - Number(expirationTimeSeconds)) > 60
 );
@@ -91,7 +76,11 @@ const validateExpirationTimeSeconds = expirationTimeSeconds => (
 const validateNetworkId = networkId => ([
   1,
   42,
-  ...(process.env.NODE_ENV === 'test' ? [50] : []),
+  ...(
+    ['development', 'test'].includes(process.env.NODE_ENV)
+      ? [50]
+      : []
+  ),
 ].includes(networkId));
 
 const validateOrderConfig = (order) => {
@@ -195,7 +184,7 @@ standardRelayerApi.post('/order', async (ctx) => {
 
       try {
         await contractWrappers.exchange.validateOrderFillableOrThrowAsync(
-          tranformBigNumberOrder(submittedOrder),
+          transformBigNumberOrder(submittedOrder),
         );
       } catch (err) {
         logger.debug('Order is not a valid');
@@ -211,23 +200,31 @@ standardRelayerApi.post('/order', async (ctx) => {
 
       const decMakerAssetData = assetDataUtils.decodeERC20AssetData(submittedOrder.makerAssetData);
       const decTakerAssetData = assetDataUtils.decodeERC20AssetData(submittedOrder.takerAssetData);
-      const order = new Order({
+      const order = {
         ...submittedOrder,
         makerAssetAddress: decMakerAssetData.tokenAddress,
         makerAssetProxyId: decMakerAssetData.assetProxyId,
         takerAssetAddress: decTakerAssetData.tokenAddress,
         takerAssetProxyId: decTakerAssetData.assetProxyId,
+        isValid: true,
+        remainingFillableMakerAssetAmount: submittedOrder.makerAssetAmount,
+        remainingFillableTakerAssetAmount: submittedOrder.takerAssetAmount,
         orderHash,
         networkId,
+      };
+      const orderInstance = new Order({
+      /* the object will be muted here */
+        ...order,
       });
       try {
-        await order.save();
+        await orderInstance.save();
       } catch (e) {
         logger.debug('CANT SAVE', e);
         ctx.status = 400;
         return;
       }
 
+      logger.debug(order);
       redisClient.publish('orders', JSON.stringify(order));
       ctx.status = 201;
       ctx.message = 'OK';
@@ -292,7 +289,8 @@ standardRelayerApi.get('/orderbook', async (ctx) => {
   })
     .select(`-${fieldsToSkip.join(' -')}`)
     .skip(perPage * (page - 1))
-    .limit(parseInt(perPage, 10));
+    .limit(parseInt(perPage, 10))
+    .lean();
   const askOrders = await Order.find({
     takerAssetData: quoteAssetData,
     makerAssetData: baseAssetData,
@@ -300,11 +298,38 @@ standardRelayerApi.get('/orderbook', async (ctx) => {
   })
     .select(`-${fieldsToSkip.join(' -')}`)
     .skip(perPage * (page - 1))
-    .limit(parseInt(perPage, 10));
+    .limit(parseInt(perPage, 10))
+    .lean();
   const askOrdersSorted = askOrders.sort(sortOrderbook);
   const bidOrdersSorted = bidOrders.sort(sortOrderbook);
-  const bidApiOrders = bidOrdersSorted.map(order => ({ metaData: {}, order }));
-  const askApiOrders = askOrdersSorted.map(order => ({ metaData: {}, order }));
+  const bidApiOrders = bidOrdersSorted.map((order) => {
+    const {
+      isValid,
+      remainingFillableMakerAssetAmount,
+      remainingFillableTakerAssetAmount,
+      ...orderMetaOmitted
+    } = order;
+    return { metaData: {
+      isValid: order.isValid,
+      remainingFillableMakerAssetAmount: order.remainingFillableMakerAssetAmount,
+      remainingFillableTakerAssetAmount: order.remainingFillableTakerAssetAmount,
+    },
+    order: orderMetaOmitted };
+  });
+  const askApiOrders = askOrdersSorted.map((order) => {
+    const {
+      isValid,
+      remainingFillableMakerAssetAmount,
+      remainingFillableTakerAssetAmount,
+      ...orderMetaOmitted
+    } = order;
+    return { metaData: {
+      isValid: order.isValid,
+      remainingFillableMakerAssetAmount: order.remainingFillableMakerAssetAmount,
+      remainingFillableTakerAssetAmount: order.remainingFillableTakerAssetAmount,
+    },
+    order: orderMetaOmitted };
+  });
   const response = {
     bids: {
       records: bidApiOrders,
@@ -331,10 +356,21 @@ standardRelayerApi.get('/order/:orderHash', async (ctx) => {
     orderHash: ctx.params.orderHash,
     networkId,
   })
-    .select(`-${fieldsToSkip.join(' -')}`);
+    .select(`-${fieldsToSkip.join(' -')}`)
+    .lean();
+  const {
+    isValid,
+    remainingFillableMakerAssetAmount,
+    remainingFillableTakerAssetAmount,
+    ...orderMetaOmitted
+  } = order;
   const response = {
-    order,
-    metaData: {},
+    order: orderMetaOmitted,
+    metaData: {
+      isValid: order.isValid,
+      remainingFillableMakerAssetAmount: order.remainingFillableMakerAssetAmount,
+      remainingFillableTakerAssetAmount: order.remainingFillableTakerAssetAmount,
+    },
   };
   ctx.status = 200;
   ctx.message = 'The order and meta info associated with the orderHash';
@@ -433,14 +469,27 @@ standardRelayerApi.get('/orders', async (ctx) => {
   })
     .select(`-${fieldsToSkip.join(' -')}`)
     .skip(perPage * (page - 1))
-    .limit(parseInt(perPage, 10));
+    .limit(parseInt(perPage, 10))
+    .lean();
   if (!takerAssetData.$exists && !makerAssetData.$exists) {
     orders.sort(sort);
   }
-  const records = orders.map(record => ({
-    order: record,
-    metaData: {},
-  }));
+  const records = orders.map((record) => {
+    const {
+      isValid,
+      remainingFillableMakerAssetAmount,
+      remainingFillableTakerAssetAmount,
+      ...orderMetaOmitted
+    } = record;
+    return {
+      order: orderMetaOmitted,
+      metaData: {
+        isValid: record.isValid,
+        remainingFillableMakerAssetAmount: record.remainingFillableMakerAssetAmount,
+        remainingFillableTakerAssetAmount: record.remainingFillableTakerAssetAmount,
+      },
+    };
+  });
   const response = {
     total: orders.length,
     page: parseInt(page, 10),

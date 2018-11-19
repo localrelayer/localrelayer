@@ -4,19 +4,21 @@ import {
 
 import {
   fgProcessLoggerWidget,
+  screen,
 } from '../widgets';
 import dashboardConfig from '../.config';
 
 
 const fgProcessOutputHandler = (data) => {
   fgProcessLoggerWidget.insertBottom(data);
+  screen.render();
 };
 
 function testStarter(cb, testFilesPath) {
   const child = exec([
     'DASHBOARD_PARENT=true',
     `LOG_LEVEL=${dashboardConfig.fgProcessLogLevel}`,
-    'NODE_ENV=test mocha',
+    'NODE_ENV=development mocha',
     testFilesPath,
     '--require @babel/register',
     '--require module-alias/register',
@@ -54,6 +56,17 @@ export const tests = [
       return testStarter(
         cb,
         'apiServer/test/*.test.js',
+      );
+    },
+  }, {
+    id: 'checkOrderWatch',
+    name: 'check order watch',
+    type: 'test',
+
+    run(cb) {
+      return testStarter(
+        cb,
+        'apiServer/test/checkOrderWatch.test.js',
       );
     },
   },

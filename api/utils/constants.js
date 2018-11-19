@@ -11,3 +11,26 @@ export const GANACHE_CONTRACT_ADDRESSES = {
 };
 
 export const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
+
+export const ETH_NETWORKS_NAME_MAP = {
+  main: 1,
+  kovan: 42,
+  test: 50,
+};
+
+export const ORDER_FIELDS = [
+  'makerAddress',
+  'takerAddress',
+  'senderAddress',
+  'feeRecipientAddress',
+  'exchangeAddress',
+  'makerAssetAmount',
+  'takerAssetAmount',
+  'makerFee',
+  'takerFee',
+  'makerAssetData',
+  'takerAssetData',
+  'salt',
+  'expirationTimeSeconds',
+  'signature',
+];

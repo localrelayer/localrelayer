@@ -9,28 +9,34 @@ export const calculateTradingInfo = ({
   currentTradingInfo = {},
 }) => {
   const {
-    minPrice: prevMinPrice,
-    maxPrice: prevMaxPrice,
+    minPrice: prevMinPrice = 0,
+    maxPrice: prevMaxPrice = 0,
     assetAVolume: prevAssetAVolume,
     assetBVolume: prevAssetBVolume,
     firstOrderPrice,
   } = currentTradingInfo;
 
-  const lastPrice = BigNumber(takerAssetAmount).div(BigNumber(makerAssetAmount));
+  console.log('→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→');
+  console.log(makerAssetAmount);
+  console.log(takerAssetAmount);
+  console.log(currentTradingInfo);
+  console.log('←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←');
+
+  const lastPrice = new BigNumber(takerAssetAmount).div(new BigNumber(makerAssetAmount));
 
   const minPrice = BigNumber.min(lastPrice, prevMinPrice).toNumber() || lastPrice;
   const maxPrice = BigNumber.max(lastPrice, prevMaxPrice).toNumber() || lastPrice;
 
   const assetAVolume = prevAssetAVolume
-    ? BigNumber(makerAssetAmount).plus(prevAssetAVolume)
+    ? new BigNumber(makerAssetAmount).plus(prevAssetAVolume)
     : makerAssetAmount;
 
   const assetBVolume = prevAssetBVolume
-    ? BigNumber(takerAssetAmount).plus(prevAssetBVolume)
+    ? new BigNumber(takerAssetAmount).plus(prevAssetBVolume)
     : takerAssetAmount;
 
   const change24 = firstOrderPrice
-    ? BigNumber(lastPrice)
+    ? new BigNumber(lastPrice)
       .div(firstOrderPrice)
       .minus(1)
       .times(100)
@@ -38,12 +44,12 @@ export const calculateTradingInfo = ({
     : '0.00';
 
   return {
-    lastPrice: BigNumber(lastPrice).toFixed(8),
-    minPrice: BigNumber(minPrice).toFixed(8),
-    maxPrice: BigNumber(maxPrice).toFixed(8),
-    assetAVolume: BigNumber(assetAVolume).toFixed(8),
-    assetBVolume: BigNumber(assetBVolume).toFixed(8),
+    lastPrice: new BigNumber(lastPrice).toFixed(8),
+    minPrice: new BigNumber(minPrice).toFixed(8),
+    maxPrice: new BigNumber(maxPrice).toFixed(8),
+    assetAVolume: new BigNumber(assetAVolume).toFixed(8),
+    assetBVolume: new BigNumber(assetBVolume).toFixed(8),
     change24,
-    firstOrderPrice: BigNumber(firstOrderPrice || lastPrice).toFixed(8),
+    firstOrderPrice: new BigNumber(firstOrderPrice || lastPrice).toFixed(8),
   };
 };

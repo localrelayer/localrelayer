@@ -19,6 +19,8 @@ import {
 import {
   GANACHE_CONTRACT_ADDRESSES,
   NULL_ADDRESS,
+  ORDER_FIELDS,
+  toBaseUnit,
   getOrderConfig,
   randomEthereumAddress,
   generateRandomMakerAssetAmount,
@@ -43,15 +45,11 @@ const testData = {
   takerAssetAmount: () => generateRandomTakerAssetAmount(18).toString(),
   makerAssetData: () => '0xf47261b0000000000000000000000000871dd7c2b4b25e1aa18728e9d5f2af4c4e431f5c', /* ZRX */
   takerAssetData: () => '0xf47261b00000000000000000000000000b1ba0af832d7c05fd64161e0db78e85978e8082', /* WETH */
-  exchangeAddress: () => randomEthereumAddress(),
+  exchangeAddress: () => GANACHE_CONTRACT_ADDRESSES.exchange,
   salt: () => generatePseudoRandomSalt().toString(),
   expirationTimeSeconds: () => getRandomFutureDateInSeconds().toString(),
   signature: () => randomEthereumAddress(),
 };
-const requiredFields = Object.keys({
-  ...orderConfig,
-  ...testData,
-});
 
 describe('postOrder', () => {
   after(() => {
@@ -65,11 +63,11 @@ describe('postOrder', () => {
         reason: `requires property "${field}"`,
       });
       /* Missed one required field per each request */
-      const allResponses = await Promise.all(requiredFields.map(f => (
+      const allResponses = await Promise.all(ORDER_FIELDS.map(f => (
         request
           .post('/v2/order')
           .send(
-            requiredFields
+            ORDER_FIELDS
               .filter(field => field !== f)
               .reduce((acc, fieldName) => ({
                 ...acc,
@@ -81,7 +79,7 @@ describe('postOrder', () => {
           )
       )));
       allResponses.forEach((r, i) => {
-        const field = requiredFields[i];
+        const field = ORDER_FIELDS[i];
         expect(validator.isValid(
           r.body,
           schemas.relayerApiErrorResponseSchema,
@@ -102,7 +100,7 @@ describe('postOrder', () => {
       expect(response.statusCode).to.equal(400);
       expect(response.body.reason).to.equal('Validation failed');
       expect(response.body.validationErrors).to.have.deep.members(
-        requiredFields.map(field => requireError(field)),
+        ORDER_FIELDS.map(field => requireError(field)),
       );
     });
 
@@ -120,11 +118,11 @@ describe('postOrder', () => {
         });
       };
       /* Wrong one field per each request */
-      const allResponses = await Promise.all(requiredFields.map(f => (
+      const allResponses = await Promise.all(ORDER_FIELDS.map(f => (
         request
           .post('/v2/order')
           .send(
-            requiredFields
+            ORDER_FIELDS
               .filter(field => field !== f)
               .reduce((acc, fieldName) => ({
                 ...acc,
@@ -138,7 +136,7 @@ describe('postOrder', () => {
           )
       )));
       allResponses.forEach((r, i) => {
-        const field = requiredFields[i];
+        const field = ORDER_FIELDS[i];
         expect(validator.isValid(
           r.body,
           schemas.relayerApiErrorResponseSchema,
@@ -152,7 +150,7 @@ describe('postOrder', () => {
       const response = await request
         .post('/v2/order')
         .send(
-          requiredFields
+          ORDER_FIELDS
             .reduce((acc, fieldName) => ({
               ...acc,
               [fieldName]: 'wrong format',
@@ -165,7 +163,7 @@ describe('postOrder', () => {
       expect(response.statusCode).to.equal(400);
       expect(response.body.reason).to.equal('Validation failed');
       expect(response.body.validationErrors).to.have.deep.members(
-        requiredFields.map(field => formatError(field)),
+        ORDER_FIELDS.map(field => formatError(field)),
       );
     });
 
@@ -173,7 +171,7 @@ describe('postOrder', () => {
       const response = await request
         .post('/v2/order')
         .send(
-          requiredFields
+          ORDER_FIELDS
             .reduce((acc, fieldName) => ({
               [fieldName]: (
                 orderConfig[fieldName]
@@ -203,7 +201,7 @@ describe('postOrder', () => {
       const response = await request
         .post(`/v2/order?networkId=${networkId}`)
         .send(
-          requiredFields
+          ORDER_FIELDS
             .reduce((acc, fieldName) => ({
               ...acc,
               [fieldName]: (
@@ -229,7 +227,7 @@ describe('postOrder', () => {
       const response = await request
         .post('/v2/order')
         .send(
-          requiredFields
+          ORDER_FIELDS
             .reduce((acc, fieldName) => ({
               ...acc,
               [fieldName]: (
@@ -277,7 +275,7 @@ describe('postOrder', () => {
         makerAddress,
       );
       const order = (
-        requiredFields
+        ORDER_FIELDS
           .reduce((acc, fieldName) => ({
             [fieldName]: (
               orderConfig[fieldName]
@@ -337,7 +335,7 @@ describe('postOrder', () => {
         bellowMakerAssetAmount,
       );
       const order = (
-        requiredFields
+        ORDER_FIELDS
           .reduce((acc, fieldName) => ({
             [fieldName]: (
               orderConfig[fieldName]
@@ -373,7 +371,7 @@ describe('postOrder', () => {
       const response = await request
         .post('/v2/order?validateOrderConfig=true')
         .send(
-          requiredFields
+          ORDER_FIELDS
             .reduce((acc, fieldName) => ({
               [fieldName]: (
                 orderConfig[fieldName]
@@ -399,6 +397,62 @@ describe('postOrder', () => {
   });
 
   describe('create a new order with correct data', () => {
-    /* make sure order was created */
+    it('should response 200', async () => {
+      const networkId = 50;
+      const web3Wrapper = new Web3Wrapper(web3ProviderEngine);
+      const [makerAddress] = await web3Wrapper.getAvailableAddressesAsync();
+      const contractAddresses = GANACHE_CONTRACT_ADDRESSES;
+      const contractWrappers = new ContractWrappers(
+        web3ProviderEngine,
+        {
+          networkId,
+          contractAddresses,
+        },
+      );
+
+      await contractWrappers.erc20Token.setUnlimitedProxyAllowanceAsync(
+        contractAddresses.zrxToken,
+        makerAddress,
+      );
+      const order = (
+        ORDER_FIELDS
+          .reduce((acc, fieldName) => ({
+            [fieldName]: (
+              orderConfig[fieldName]
+              || testData[fieldName]()
+            ),
+            ...acc,
+          }), {
+            makerAddress,
+            makerAssetAmount: toBaseUnit(
+              2,
+              18,
+            ).toString(),
+          })
+      );
+      const orderHash = orderHashUtils.getOrderHashHex(order);
+      const signature = await signatureUtils.ecSignHashAsync(
+        web3ProviderEngine,
+        orderHash,
+        makerAddress,
+      );
+      const response = await request
+        .post(`/v2/order?networkId=${networkId}`)
+        .send({
+          ...order,
+          signature,
+        });
+      /*
+      await contractWrappers.erc20Token.setProxyAllowanceAsync(
+        contractAddresses.zrxToken,
+        makerAddress,
+        toBaseUnit(
+          1,
+          18,
+        ),
+      );
+      */
+      expect(response.statusCode).to.equal(201);
+    });
   });
 });
