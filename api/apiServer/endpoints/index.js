@@ -30,7 +30,6 @@ import {
   getOrderConfig,
   transformBigNumberOrder,
   GANACHE_CONTRACT_ADDRESSES,
-  NULL_ADDRESS,
 } from 'utils';
 import {
   redisClient,
@@ -422,7 +421,10 @@ standardRelayerApi.get('/asset_pairs', async (ctx) => {
     'assetDataA.assetData': assetDataA,
     'assetDataB.assetData': assetDataB,
     networkId,
-  }, { 'assetDataA._id': 0, 'assetDataB._id': 0 })
+  }, {
+    'assetDataA._id': 0,
+    'assetDataB._id': 0,
+  })
     .select('-_id -networkId')
     .skip(perPage * (page - 1))
     .limit(parseInt(perPage, 10));

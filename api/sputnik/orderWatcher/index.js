@@ -66,7 +66,7 @@ async function watcherCreator(networkId) {
       const {
         remainingFillableMakerAssetAmount,
         remainingFillableTakerAssetAmount,
-      } = orderState;
+      } = orderState.orderRelevantState;
       order.remainingFillableMakerAssetAmount = remainingFillableMakerAssetAmount;
       order.remainingFillableTakerAssetAmount = remainingFillableTakerAssetAmount;
       await order.save();

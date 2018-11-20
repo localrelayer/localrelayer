@@ -8,7 +8,7 @@ import {
 
 import {
   getEventsAbi,
-} from '../../contracts';
+} from 'utils';
 import {
   logger,
 } from '../sputnikLogger';
