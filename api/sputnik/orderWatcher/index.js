@@ -54,7 +54,7 @@ async function watcherCreator(networkId) {
       isValid,
       orderHash,
     } = orderState;
-
+    console.log(orderState);
     const order = await Order.findOne({
       orderHash,
     });
@@ -136,19 +136,6 @@ async function watcherCreator(networkId) {
   return orderWatcher;
 }
 
-export async function deleteOrders(orderHashes) {
-  await Order.deleteMany({
-    $or: (
-      orderHashes.reduce((acc, orderHash) => ([
-        ...acc,
-        {
-          orderHash,
-        },
-      ]), [])
-    ),
-  });
-}
-
 function removeShadowedOrders() {
   const now = Date.now();
   const orderHashes = [];
@@ -195,6 +182,26 @@ function removeShadowedOrders() {
       );
     }
   });
+
+  const redisTestSub = redisClient.duplicate();
+  redisTestSub.on('message', async (channel, message) => {
+    const { hashes } = JSON.parse(message);
+    await Order.deleteMany({
+      $or: (
+        hashes.reduce((acc, orderHash) => ([
+          ...acc,
+          {
+            orderHash,
+          },
+        ]), [])
+      ),
+    });
+    hashes.forEach((hash) => {
+      /* for testing network ID always 50 */
+      watchers[50].removeOrder(hash);
+    });
+  });
   redisSub.subscribe('orderWatcher');
+  redisTestSub.subscribe('testingOrderWatcher');
   removeShadowedOrders();
 })();
