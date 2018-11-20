@@ -29,7 +29,6 @@ export const getTradingHistory = createSelector(
       orders
         .map(
           (order) => {
-            // const makerAsset = assetDataUtils.decodeAssetDataOrThrow(order.makerAssetData);
             const makerAsset = order.makerAssetData;
             return {
               ...order,

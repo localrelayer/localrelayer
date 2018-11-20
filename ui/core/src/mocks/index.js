@@ -39,7 +39,7 @@ function nearestMinutes(interval, someMoment) {
   return someMoment.clone().minute(roundedMinutes).second(0);
 }
 
-const assetPairsJson = {
+export const assetPairsJson = {
   1: assetPairsMainJson,
   42: assetPairsKovanJson,
   50: assetPairsTestJson,
@@ -165,7 +165,9 @@ export function mocksOrdersFactory({
     } = qty;
     return {
       next: (order = {}) => {
-        const pair = assetPairs.records[Math.floor(Math.random() * (assetPairs.records.length - 1))];
+        const pair = assetPairs.records[
+          Math.floor(Math.random() * (assetPairs.records.length - 1))
+        ];
         const {
           type: orderType,
           ...predefinedOrder
