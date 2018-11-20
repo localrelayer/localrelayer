@@ -1,90 +1,102 @@
 // @flow
-import React from 'react';
+import React, {
+  useState,
+} from 'react';
 import {
   Input,
-  Select,
 } from 'antd';
 import * as S from './styled';
 import logo from '../../assets/logo5.png';
 
 type Props = {
-  tokensInfo: Array<any>,
+  listedAssetPairs: Array<any>,
+  currentAssetPair: any,
 }
 const columns = [
   {
-    title: 'Coin',
-    dataIndex: 'coin',
-    key: 'coin',
-    render: text => text || '--',
+    title: 'Pair',
+    key: 'pair',
+    render: (text, record) => ([
+      record.assetDataA.assetData.symbol,
+      record.assetDataB.assetData.symbol,
+    ].join('/')),
   },
   {
-    title: 'Price',
-    dataIndex: 'price',
-    key: 'price',
-    render: text => text || '--',
+    title: 'Base token',
+    dataIndex: 'assetDataA.assetData.name',
   },
   {
-    title: 'Volume',
-    dataIndex: 'volume',
-    key: 'volume',
-    sorter: (a, b) => a - b,
-    render: text => text || '--',
-  },
-  {
-    title: 'Volume (ETH)',
-    dataIndex: 'volumeEth',
-    key: 'volumeEth',
-    sorter: (a, b) => a - b,
-    render: text => text || '--',
-  },
-  {
-    title: 'Change',
-    dataIndex: 'change',
-    key: 'change',
-    render: text => text || '--',
+    title: 'Quote token',
+    dataIndex: 'assetDataB.assetData.name',
   },
 ];
 
-const Header = ({ tokensInfo }: Props) => (
-  <S.Header>
-    <S.InstexLogo src={logo} alt="logo" />
-    <S.Trade>
-      <S.HeaderIcon type="swap" />
-      Trade
-    </S.Trade>
-    <S.Account>
-      <S.HeaderIcon type="home" />
-      Account
-    </S.Account>
-    <S.TokensPopover
-      trigger="click"
-      placement="bottom"
-      content={(
-        <S.PopoverContent>
-          <S.SearchBar>
-            <Input placeholder="Search token name, symbol or address" />
-            <Select defaultValue="WETH">
-              <Select.Option value="WETH">
-              WETH
-              </Select.Option>
-            </Select>
-          </S.SearchBar>
-          <S.TokensTable
-            size="middle"
-            columns={columns}
-            dataSource={tokensInfo}
-          />
-        </S.PopoverContent>
-)}
-    >
-      <S.TokensButton
-        type="primary"
+const Header = ({
+  listedAssetPairs,
+  currentAssetPair,
+}: Props) => {
+  const [searchText, setSearchText] = useState('');
+  const s = searchText.toLowerCase();
+  const currentAssetPairName = (
+    currentAssetPair
+      ? [
+        currentAssetPair.assetDataA.assetData.symbol,
+        currentAssetPair.assetDataB.assetData.symbol,
+      ].join('/')
+      : ''
+  );
+  return (
+    <S.Header>
+      <S.InstexLogo src={logo} alt="logo" />
+      <S.Trade>
+        <S.HeaderIcon type="swap" />
+        Trade
+      </S.Trade>
+      <S.Account>
+        <S.HeaderIcon type="home" />
+        Account
+      </S.Account>
+      <S.TokensPopover
+        trigger="click"
+        placement="bottom"
+        content={(
+          <S.PopoverContent>
+            <S.SearchBar>
+              <Input
+                autoFocus
+                value={searchText}
+                onChange={ev => setSearchText(ev.target.value)}
+                placeholder="Search token name, symbol or address"
+              />
+            </S.SearchBar>
+            <S.TokensTable
+              rowKey="id"
+              size="middle"
+              columns={columns}
+              dataSource={listedAssetPairs.filter(p => (
+                searchText.length
+                  ? (
+                    p.assetDataA.assetData.name.toLowerCase().includes(s)
+                    || p.assetDataA.assetData.symbol.toLowerCase().includes(s)
+                    || p.assetDataA.assetData.address.toLowerCase().includes(s)
+                    || p.assetDataB.assetData.symbol.toLowerCase().includes(s)
+                    || p.assetDataB.assetData.address.toLowerCase().includes(s)
+                  )
+                  : true
+              ))}
+            />
+          </S.PopoverContent>
+        )}
       >
-        Tokens(ZRX/WETH)
-        <S.HeaderIcon type="down" />
-      </S.TokensButton>
-    </S.TokensPopover>
-  </S.Header>
-);
+        <S.TokensButton type="primary">
+          Tokens(
+          {currentAssetPairName}
+          )
+          <S.HeaderIcon type="down" />
+        </S.TokensButton>
+      </S.TokensPopover>
+    </S.Header>
+  );
+};
 
 export default Header;

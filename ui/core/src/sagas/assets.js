@@ -108,7 +108,7 @@ export function* fetchAssetPairs(opts = { networkId: 1 }) {
     const perPage = firstPageResponse.records.length;
     const restPagesResponses = yield eff.all(
       Array(
-        Math.ceil(firstPageResponse.total / perPage),
+        Math.ceil((firstPageResponse.total / perPage) || 0),
       )
         .fill(null)
         .map(

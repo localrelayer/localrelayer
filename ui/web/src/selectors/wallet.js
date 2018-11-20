@@ -12,6 +12,6 @@ import {
 } from '0x.js';
 
 export const getFormattedWalletBalance = createSelector(
-  [getWalletState('selectedAccountBalance')],
+  getWalletState('selectedAccountBalance'),
   balance => Web3Wrapper.toUnitAmount(new BigNumber(balance), 18).toFixed(8),
 );

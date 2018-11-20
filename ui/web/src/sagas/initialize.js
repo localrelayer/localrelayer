@@ -20,6 +20,7 @@ import {
 import {
   coreSagas,
   coreActions,
+  api,
 } from 'instex-core';
 
 import moment from 'moment';
@@ -284,6 +285,7 @@ function* socketConnect(): Saga<void> {
 
 export function* initialize(): Saga<void> {
   const { historyType } = yield eff.take(actionTypes.INITIALIZE_WEB_APP);
+  api.setApiUrl(config.apiUrl);
   console.log('Web initialize saga');
 
   const networkId = yield eff.call(web3.eth.net.getId);

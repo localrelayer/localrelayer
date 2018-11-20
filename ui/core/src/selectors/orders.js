@@ -66,9 +66,8 @@ export const getTradingHistory = createSelector(
     getResourceMappedList('orders', 'tradingHistory'),
     getResourceMap('assets'),
   ],
-  (orders, assets) => {
-    console.log(orders, assets);
-    return orders.map(order => ({
+  (orders, assets) => (
+    orders.map(order => ({
       ...order,
       amount: Web3Wrapper.toUnitAmount(
         new BigNumber(order.makerAssetAmount), assets[order.makerAssetData].decimals,
@@ -82,7 +81,7 @@ export const getTradingHistory = createSelector(
       key: order.id,
       date: order.completedAt,
     }))
-  },
+  ),
 );
 
 export const getBidOrders = createSelector(

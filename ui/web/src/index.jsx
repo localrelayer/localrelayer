@@ -2,8 +2,8 @@
 import '@babel/polyfill';
 import React from 'react';
 import {
-  Route,
-} from 'react-router-dom';
+  Router,
+} from 'react-router';
 import {
   render as reactRender,
 } from 'react-dom';
@@ -12,6 +12,8 @@ import {
 } from 'react-redux';
 import {
   hot,
+  setConfig,
+  cold,
 } from 'react-hot-loader';
 import {
   LocaleProvider,
@@ -23,6 +25,7 @@ import type {
   ComponentType,
 } from 'react';
 
+import 'web-styles/main.less';
 import App from 'web-containers/AppContainer';
 import browserHistory from './history/browser';
 import store from './store';
@@ -35,15 +38,23 @@ if (config.useSentry) {
   ).install();
 }
 
+setConfig({
+  pureSFC: true,
+  onComponentCreate: type => (
+    String(type).indexOf('useState') > 0
+      || String(type).indexOf('useEffect') > 0
+  ) && cold(type),
+});
+
 const rootEl: HTMLElement = window.document.getElementById('body');
 
 const render: Function = (Component: ComponentType<*>) => (
   reactRender(
     <Provider store={store}>
       <LocaleProvider locale={enUS}>
-        <Route history={browserHistory}>
+        <Router history={browserHistory}>
           <Component />
-        </Route>
+        </Router>
       </LocaleProvider>
     </Provider>,
     rootEl,

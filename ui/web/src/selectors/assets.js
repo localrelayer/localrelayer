@@ -24,23 +24,18 @@ export const getCurrentAssetPair = createSelector(
     assets,
     assetPairs,
     tradingInfo,
-    currentPairId,
-  ) => {
-    const pair = assetPairs[currentPairId];
-    const pairTradingInfo = tradingInfo[currentPairId];
-    return pair ? {
-      ...pair,
-      assetDataA: {
-        ...pair.assetDataA,
-        assetData: assets[pair.assetDataA.assetData],
-      },
-      assetDataB: {
-        ...pair.assetDataB,
-        assetData: assets[pair.assetDataB.assetData],
-      },
-      tradingInfo: pairTradingInfo,
-    } : null;
-  },
+    currentAssetPairId,
+  ) => (
+    currentAssetPairId
+      ? ({
+        ...cs.constructAssetPair({
+          assetPair: assetPairs[currentAssetPairId],
+          assets,
+        }),
+        tradingInfo: tradingInfo[currentAssetPairId],
+      })
+      : null
+  ),
 );
 
 export const getAssetsWithBalanceAndAllowance = createSelector(

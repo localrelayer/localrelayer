@@ -5,7 +5,7 @@ import {
   Button,
   Table,
 } from 'antd';
-import * as colors from 'web-styles/colors.js';
+import * as colors from 'web-styles/colors';
 
 export const HeaderIcon = styled(Icon)`
   padding-right: 10px;
@@ -104,7 +104,7 @@ export const PopoverContent = styled.div`
   justify-content: center;
   & .ant-input {
     background-color: ${colors['background-color-light']};
-    width: 70%;
+    width: 100%;
   border-radius: 4px 0 0 4px;
   }
   
