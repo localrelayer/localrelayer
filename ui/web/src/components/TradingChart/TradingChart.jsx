@@ -3,15 +3,27 @@ import React, {
   Component,
 } from 'react';
 import type {
-  Token,
+  AssetPair,
 } from 'instex-core/types';
+import type {
+  Dispatch,
+} from 'redux';
+
 import {
   getDatafeed,
 } from './Datafeed';
 import colors from '../../assets/styles/colors';
 
 type Props = {
-  token: Token,
+  assetPair: AssetPair,
+  dispatch: Dispatch,
+};
+
+const getParameterByName = (name) => {
+  const newName = name.replace(/[[]/, '\\[').replace(/[\]]/, '\\]');
+  const regex = new RegExp(`[\\?&]${newName}=([^&#]*)`);
+  const results = regex.exec(window.location.search);
+  return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
 };
 
 
@@ -22,18 +34,20 @@ type Props = {
  */
 export default class extends Component<Props> {
   componentDidMount() {
-    if (this.props.token.id) {
-      this.initalizedChartWidget(this.props.token);
+    const { assetPair, dispatch } = this.props;
+    if (assetPair) {
+      this.initalizedChartWidget(assetPair, dispatch);
     }
   }
 
   componentWillReceiveProps(nextProps: Props) {
-    if (nextProps.token.id !== this.props.token.id) {
-      this.initalizedChartWidget(nextProps.token);
+    const { assetPair, dispatch } = this.props;
+    if (nextProps.assetPair && (nextProps.assetPair.id !== assetPair?.id)) {
+      this.initalizedChartWidget(nextProps.assetPair, dispatch);
     }
   }
 
-  initalizedChartWidget = (token: Token) => {
+  initalizedChartWidget = (assetPair: AssetPair, dispatch: Dispatch) => {
     // eslint-disable-next-line
     const widget = new window.TradingView.widget({
       // debug: true,
@@ -42,7 +56,7 @@ export default class extends Component<Props> {
       height: '100%',
       width: '100%',
       container_id: 'chart_container',
-      datafeed: getDatafeed(token),
+      datafeed: getDatafeed(assetPair, dispatch),
       library_path: 'charting_library/',
       locale: getParameterByName('lang') || 'en',
       disabled_features: [
@@ -92,11 +106,4 @@ export default class extends Component<Props> {
   render() {
     return <div style={{ height: '100%' }} id="chart_container" />;
   }
-}
-
-function getParameterByName(name) {
-  const newName = name.replace(/[[]/, '\\[').replace(/[\]]/, '\\]');
-  const regex = new RegExp(`[\\?&]${newName}=([^&#]*)`);
-  const results = regex.exec(window.location.search);
-  return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
 }

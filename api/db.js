@@ -39,18 +39,34 @@ const orderSchema = mongoose.Schema({
   remainingFillableTakerAssetAmount: { type: String, index: true },
   completedAt: { type: Date, index: true },
 }, { versionKey: false });
+// mongoose.set('useFindAndModify', false);
 
 const assetDataSchema = mongoose.Schema({
-  minAmount: { type: String, index: true },
-  maxAmount: { type: String, index: true },
-  precision: { type: Number },
-  assetData: { type: String, index: true },
+  minAmount: {
+    type: String,
+    index: true,
+  },
+  maxAmount: {
+    type: String,
+    index: true,
+  },
+  precision: {
+    type: Number,
+  },
+  assetData: {
+    type: String,
+    index: true,
+  },
 });
 const assetPairsSchema = mongoose.Schema({
   assetDataA: assetDataSchema,
   assetDataB: assetDataSchema,
-  networkId: { type: Number },
-}, { versionKey: false });
+  networkId: {
+    type: Number,
+  },
+}, {
+  versionKey: false,
+});
 // orderSchema.index({ logIndex: 1, transactionHash: 1 }, { unique: true });
 
 export const Order = mongoose.model('Order', orderSchema);

@@ -33,7 +33,7 @@ const layoutXs = [
     i: 'userOrders', x: 0, y: 34, w: 1, h: 11, static: false,
   },
   {
-    i: 'chart', x: 0, y: 0, w: 0, h: 0, static: false,
+    i: 'tradingChart', x: 0, y: 0, w: 0, h: 0, static: false,
   },
 ];
 
@@ -45,7 +45,7 @@ const layoutSm = [
   userBalanceLayout.sm,
   buySellLayout.sm,
   {
-    i: 'chart', x: 0, y: 18, w: 2, h: 12, static: false,
+    i: 'tradingChart', x: 0, y: 18, w: 2, h: 12, static: false,
   },
   {
     i: 'userOrders', x: 0, y: 30, w: 2, h: 11, static: false,
@@ -59,7 +59,7 @@ const layoutMd = [
   userBalanceLayout.md,
   buySellLayout.md,
   {
-    i: 'chart', x: 0, y: 0, w: 7, h: 10, static: false,
+    i: 'tradingChart', x: 0, y: 0, w: 7, h: 10, static: false,
   },
   {
     i: 'userOrders', x: 3.5, y: 19, w: 6.5, h: 11, static: false,
@@ -73,7 +73,7 @@ const layoutLg = [
   userBalanceLayout.lg,
   buySellLayout.lg,
   {
-    i: 'chart', x: 3, y: 0, w: 6, h: 14, static: false,
+    i: 'tradingChart', x: 3, y: 0, w: 6, h: 14, static: false,
   },
   {
     i: 'userOrders', x: 3, y: 14, w: 6, h: 11, static: false,
@@ -87,7 +87,7 @@ const layoutLg2 = [
   userBalanceLayout.lg2,
   buySellLayout.lg2,
   {
-    i: 'chart', x: 5, y: 0, w: 14, h: 14, static: false,
+    i: 'tradingChart', x: 5, y: 0, w: 14, h: 14, static: false,
   },
   {
     i: 'userOrders', x: 5, y: 14, w: 14, h: 11, static: false,
@@ -101,7 +101,7 @@ const layoutLg3 = [
   userBalanceLayout.lg3,
   buySellLayout.lg3,
   {
-    i: 'chart', x: 2, y: 0, w: 8, h: 20, static: false,
+    i: 'tradingChart', x: 2, y: 0, w: 8, h: 20, static: false,
   },
   {
     i: 'userOrders', x: 2, y: 20, w: 8, h: 11, static: false,

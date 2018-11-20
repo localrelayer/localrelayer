@@ -20,9 +20,9 @@ const components = [
   'tradingHistory',
   'userBalance',
   'userOrders',
-  'chart',
   'orderBook',
   'buySell',
+  'tradingChart',
 ];
 
 /* Capitalize firts letter */

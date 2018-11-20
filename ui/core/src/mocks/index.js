@@ -9,10 +9,35 @@ import {
   Web3Wrapper,
 } from '@0x/web3-wrapper';
 import * as R from 'ramda';
+import moment from 'moment';
 import assetPairsMainJson from './assetPairs.main.json';
 import assetPairsKovanJson from './assetPairs.kovan.json';
 import assetPairsTestJson from './assetPairs.test.json';
 
+const resolutionsMap = {
+  1: {
+    startOf: 'minute',
+  },
+  10: {
+    startOf: 'minute',
+    round: 10,
+  },
+  30: {
+    startOf: 'minute',
+    round: 30,
+  },
+  60: {
+    startOf: 'hour',
+  },
+  D: {
+    startOf: 'day',
+  },
+};
+
+function nearestMinutes(interval, someMoment) {
+  const roundedMinutes = Math.round(someMoment.clone().minute() / interval) * interval;
+  return someMoment.clone().minute(roundedMinutes).second(0);
+}
 
 const assetPairsJson = {
   1: assetPairsMainJson,
@@ -232,20 +257,16 @@ export function mocksOrdersFactory({
       const sort = R.sortWith([
         (a, b) => {
           const aPrice = (
-            parseInt(a.order.takerAssetAmount, 10)
-            / parseInt(a.order.makerAssetAmount, 10)
+            parseInt(a.order.takerAssetAmount, 10) / parseInt(a.order.makerAssetAmount, 10)
           );
           const aTakerFeePrice = (
-            parseInt(a.order.takerFee, 10)
-            / parseInt(a.order.takerAssetAmount, 10)
+            parseInt(a.order.takerFee, 10) / parseInt(a.order.takerAssetAmount, 10)
           );
           const bPrice = (
-            parseInt(b.order.takerAssetAmount, 10)
-            / parseInt(b.order.makerAssetAmount, 10)
+            parseInt(b.order.takerAssetAmount, 10) / parseInt(b.order.makerAssetAmount, 10)
           );
           const bTakerFeePrice = (
-            parseInt(b.order.takerFee, 10)
-            / parseInt(b.order.takerAssetAmount, 10)
+            parseInt(b.order.takerFee, 10) / parseInt(b.order.takerAssetAmount, 10)
           );
           const aExpirationTimeSeconds = parseInt(a.expirationTimeSeconds, 10);
           const bExpirationTimeSeconds = parseInt(b.expirationTimeSeconds, 10);
@@ -311,12 +332,10 @@ export function mocksOrdersFactory({
       const sort = R.sortWith([
         (a, b) => {
           const aPrice = (
-            parseInt(a.order.takerAssetAmount, 10)
-            / parseInt(a.order.makerAssetAmount, 10)
+            parseInt(a.order.takerAssetAmount, 10) / parseInt(a.order.makerAssetAmount, 10)
           );
           const bPrice = (
-            parseInt(b.order.takerAssetAmount, 10)
-            / parseInt(b.order.makerAssetAmount, 10)
+            parseInt(b.order.takerAssetAmount, 10) / parseInt(b.order.makerAssetAmount, 10)
           );
           return bPrice - aPrice;
         },
@@ -361,6 +380,64 @@ export function mocksOrdersFactory({
           }))
         ),
       };
+    },
+    getBars({
+      from,
+      to,
+      resolution,
+      firstDataRequest,
+    }) {
+      console.log('API CALL TO LOAD BARS');
+      const res = resolutionsMap[resolution];
+      const start = moment.unix(from).startOf(res.startOf);
+      const end = moment.unix(to).startOf(res.startOf);
+      console.log(start, end);
+
+      if (!firstDataRequest && (start.isBefore('2016-03-24T01:14:00Z') || end.isAfter(new Date()))) {
+        return {};
+      }
+
+      const now = new Date();
+      const records = orders.map((o, i) => {
+        const randomDate = new Date(now - i * 60000 * 60 * 4);
+        return {
+          order: o.order,
+          metaData: {
+            completedAt: randomDate,
+          },
+        };
+      });
+
+      const bars = records.reduce((acc, o) => {
+        let period = moment(o.metaData.completedAt).utc();
+        if (res.round) {
+          period = nearestMinutes(res.round, period).unix();
+        } else {
+          period = period.startOf(res.startOf).unix();
+        }
+        const amount = o.order.takerAssetAmount;
+        const price = new BigNumber(o.order.takerAssetAmount).div(o.order.makerAssetAmount);
+
+        if (acc[period]) {
+          acc[period].volume += parseFloat(amount);
+          acc[period].low = acc[period].low > parseFloat(price)
+            ? parseFloat(price) : acc[period].low;
+          acc[period].high = acc[period].high < parseFloat(price)
+            ? parseFloat(price) : acc[period].high;
+          acc[period].close = parseFloat(price);
+        } else {
+          acc[period] = {
+            time: period * 1000,
+            open: parseFloat(price),
+            close: parseFloat(price),
+            volume: parseFloat(amount),
+            low: parseFloat(price),
+            high: parseFloat(price),
+          };
+        }
+        return acc;
+      }, {});
+      return bars;
     },
   };
 }
