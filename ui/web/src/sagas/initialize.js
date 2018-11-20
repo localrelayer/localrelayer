@@ -1,7 +1,11 @@
 // @flow
 import {
   assetDataUtils,
+  BigNumber,
 } from '0x.js';
+import {
+  Web3Wrapper,
+} from '@0x/web3-wrapper';
 import uuidv4 from 'uuid/v4';
 import * as eff from 'redux-saga/effects';
 
@@ -18,6 +22,8 @@ import {
   coreActions,
 } from 'instex-core';
 
+import moment from 'moment';
+
 import config from 'web-config';
 
 import {
@@ -31,6 +37,26 @@ import {
   getHistory,
 } from 'web-history';
 
+
+function* subscribeOnUpdateOrders(): Saga<void> {
+  const networkId = yield eff.select(getUiState('networkId'));
+  // const currentAssetPairId = yield eff.select(getUiState('currentAssetPairId'));
+  const requestId = uuidv4();
+
+  yield eff.put(uiActions.setUiState({
+    ordersSubscribeId: requestId,
+  }));
+  yield eff.put(coreActions.sendSocketMessage({
+    type: 'subscribe',
+    channel: 'orders',
+    requestId,
+    payload: {
+      // makerAssetData: currentAssetPairId.split('_')[0],
+      // takerAssetData: currentAssetPairId.split('_')[1],
+      networkId,
+    },
+  }));
+}
 
 function* subscribeOnCurrentTradingInfo(): Saga<void> {
   const networkId = yield eff.select(getUiState('networkId'));
@@ -84,6 +110,8 @@ function* setCurrentPair({
       });
       const currentAssetPairId = yield eff.select(getUiState('currentAssetPairId'));
       const tradingInfoSubscribeId = yield eff.select(getUiState('tradingInfoSubscribeId'));
+      const ordersSubscribeId = yield eff.select(getUiState('ordersSubscribeId'));
+
       yield eff.put(uiActions.setUiState({
         currentAssetPairId: assetPair.id,
         isCurrentPairListed: isListed,
@@ -98,6 +126,16 @@ function* setCurrentPair({
         }));
       }
       yield eff.fork(subscribeOnCurrentTradingInfo);
+
+      /* Unsubscribe after pair change */
+      if (currentAssetPairId && ordersSubscribeId) {
+        yield eff.put(coreActions.sendSocketMessage({
+          type: 'unsubscribe',
+          requestId: ordersSubscribeId,
+        }));
+      }
+      yield eff.fork(subscribeOnUpdateOrders);
+
       yield eff.fork(
         coreSagas.fetchTradingInfo,
         {
@@ -143,6 +181,54 @@ function* setCurrentPair({
   }
 }
 
+function* subscribeChartOnOrderUpdate() {
+  const { payload: { callback, assetPair } } = yield eff.take(
+    coreActions.actionTypes.TRADING_CHART_INITIALIZE_SUBSCRIBE,
+  );
+
+  while (true) {
+    const { payload: { order } } = yield eff.take(
+      coreActions.actionTypes.TRADING_CHART_SUBSCRIBE_ON_ORDER_CREATE,
+    );
+
+    const currentAssetPairId = yield eff.select(getUiState('currentAssetPairId'));
+    const [baseAssetData] = currentAssetPairId.split('_');
+
+    const [
+      price,
+      amount,
+    ] = (
+      order.makerAssetData === baseAssetData
+        ? [
+          new BigNumber(order.takerAssetAmount).div(order.makerAssetAmount),
+          order.makerAssetAmount,
+        ]
+        : [
+          new BigNumber(order.makerAssetAmount).div(order.takerAssetAmount),
+          order.takerAssetAmount,
+        ]
+    );
+
+    // Convert volume to normal unit amount
+    const volume = +Web3Wrapper.toUnitAmount(
+      new BigNumber(parseFloat(amount)),
+      assetPair.assetDataB.assetData.decimals,
+    );
+
+    const bar = {
+      volume,
+      time: moment(order.completedAt).unix() * 1000,
+      open: parseFloat(price),
+      close: parseFloat(price),
+      low: parseFloat(price),
+      high: parseFloat(price),
+    };
+
+    // console.log('bar', bar);
+    callback(bar);
+  }
+}
+
 function* takeChangeRoute({
   historyChannel,
   webRadioChannel,
@@ -181,6 +267,7 @@ function* socketConnect(): Saga<void> {
       delay = 0;
       if (isReconnect) {
         yield eff.fork(subscribeOnCurrentTradingInfo);
+        yield eff.fork(subscribeOnUpdateOrders);
       }
     }
     const onCloseChannel = socketCloseChannel(socket);
@@ -231,6 +318,8 @@ export function* initialize(): Saga<void> {
       networkId,
     },
   );
+
+  yield eff.fork(subscribeChartOnOrderUpdate);
 
   yield eff.put(uiActions.setUiState({
     isAppInitializing: false,
