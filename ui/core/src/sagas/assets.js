@@ -36,7 +36,7 @@ function* extractInfo(tokenContract) {
   });
 }
 
-/* At this moment the function support only ERC20 tokens */
+/* At this moment the function supports only ERC20 tokens */
 export function* getAssetAdditionalInfo({
   assetData,
   networkId,

@@ -168,6 +168,6 @@ function removeShadowedOrders() {
       );
     }
   });
-  redisSub.subscribe('orders');
+  redisSub.subscribe('orderWatcher');
   removeShadowedOrders();
 })();
