@@ -1,9 +1,10 @@
-import mainAssetPairs from '../../../ui/core/src/mocks/assetPairs.main';
-import kovanAssetPairs from '../../../ui/core/src/mocks/assetPairs.kovan';
-import testAssetPairs from '../../../ui/core/src/mocks/assetPairs.test';
+import 'module-alias/register';
+import mainAssetPairs from 'utils/seeds/assetPairs.main';
+import kovanAssetPairs from 'utils/seeds/assetPairs.kovan';
+import testAssetPairs from 'utils/seeds/assetPairs.test';
 import {
   AssetPair,
-} from '../../db';
+} from 'db';
 
 (async () => {
   const mainPairs = mainAssetPairs.map((pair) => {
@@ -21,4 +22,5 @@ import {
     return pair;
   });
   await AssetPair.insertMany(testPairs);
+  process.exit();
 })();

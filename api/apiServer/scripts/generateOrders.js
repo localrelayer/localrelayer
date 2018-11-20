@@ -7,6 +7,7 @@ import {
 } from '@0x/order-utils';
 import {
   NULL_ADDRESS,
+  GANACHE_CONTRACT_ADDRESSES,
   getOrderConfig,
   generateRandomMakerAssetAmount,
   generateRandomTakerAssetAmount,
@@ -28,7 +29,7 @@ import {
     takerAssetAmount: () => generateRandomTakerAssetAmount(18).toString(),
     makerAssetData: () => '0xf47261b0000000000000000000000000871dd7c2b4b25e1aa18728e9d5f2af4c4e431f5c', /* ZRX */
     takerAssetData: () => '0xf47261b00000000000000000000000000b1ba0af832d7c05fd64161e0db78e85978e8082', /* WETH */
-    exchangeAddress: () => randomEthereumAddress(),
+    exchangeAddress: () => GANACHE_CONTRACT_ADDRESSES.exchange,
     salt: () => generatePseudoRandomSalt().toString(),
     expirationTimeSeconds: () => getRandomFutureDateInSeconds().toString(),
     signature: () => randomEthereumAddress(),
