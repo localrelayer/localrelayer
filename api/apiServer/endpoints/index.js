@@ -225,7 +225,7 @@ standardRelayerApi.post('/order', async (ctx) => {
       }
 
       logger.debug(order);
-      redisClient.publish('orders', JSON.stringify(order));
+      redisClient.publish('orderWatcher', JSON.stringify(order));
       ctx.status = 201;
       ctx.message = 'OK';
       ctx.body = {};
