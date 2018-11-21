@@ -91,6 +91,7 @@ export function* fetchTradingHistory(opts = {}) {
 }
 
 function* postOrder({
+  formActions,
   order: {
     makerAddress,
     takerAddress,
@@ -116,20 +117,32 @@ function* postOrder({
     takerAssetData,
     expirationTimeSeconds,
   };
-  const orderConfig = yield eff.call(api.postOrderConfig, orderConfigRequest);
-  const order = {
-    salt: generatePseudoRandomSalt(),
-    ...orderConfigRequest,
-    ...orderConfig,
-  };
-  const signedOrder = yield eff.call(
-    signatureUtils.ecSignOrderAsync,
-    provider,
-    order,
-    makerAddress,
-  );
-  console.log(signedOrder, 'signed order from saga');
-  yield eff.call(api.postOrder, signedOrder, { networkId });
+  try {
+    const orderConfig = yield eff.call(
+      api.postOrderConfig,
+      orderConfigRequest,
+    );
+    const order = {
+      salt: generatePseudoRandomSalt(),
+      ...orderConfigRequest,
+      ...orderConfig,
+    };
+    const signedOrder = yield eff.call(
+      signatureUtils.ecSignOrderAsync,
+      provider,
+      order,
+      makerAddress,
+    );
+    yield eff.call(api.postOrder, signedOrder, { networkId });
+    formActions.resetForm({});
+  } catch (err) {
+    console.log(err);
+    formActions.setFieldError(
+      'balance',
+      'Backend validation failed',
+    );
+  }
+  formActions.setSubmitting(false);
 }
 
 export function* takePostOrder() {
