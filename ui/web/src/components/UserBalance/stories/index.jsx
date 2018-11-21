@@ -29,8 +29,14 @@ const UserBalanceStory = () => (
           balance: 0,
           isTradable: false,
         }]}
-        onToggle={() => {
-          console.log('onToggle');
+        onWithdraw={() => {
+          console.log('onWithdraw');
+        }}
+        onDeposit={() => {
+          console.log('onDeposit');
+        }}
+        onToggleTradable={() => {
+          console.log('onToggleTradable');
         }}
       />
     )}

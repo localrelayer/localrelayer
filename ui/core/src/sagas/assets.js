@@ -348,7 +348,7 @@ function* processDepositWithdraw(action) {
       contractWrappers.etherToken[`${action.method}Async`],
     ],
     etherToken.address,
-    Web3Wrapper.toBaseUnitAmount(new BigNumber(action.payload.amount), etherToken.decimals),
+    Web3Wrapper.toBaseUnitAmount(new BigNumber(action.amount), etherToken.decimals),
     selectedAccount,
     {
       // Default gas amount isn't enought for withdrawal

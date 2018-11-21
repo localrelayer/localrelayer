@@ -31,13 +31,13 @@ const UserBalanceContainer = (): Node => (
       <UserBalance
         assets={assets}
         balance={balance}
-        onToggle={
+        onToggleTradable={
           (isTradable, asset) => (
             dispatch(coreActions.setApprovalRequest(isTradable, asset))
           )
         }
-        deposit={amount => dispatch(coreActions.depositOrWithdrawRequest('deposit', amount))}
-        withdraw={amount => dispatch(coreActions.depositOrWithdrawRequest('withdraw', amount))}
+        onDeposit={amount => dispatch(coreActions.depositOrWithdrawRequest('deposit', amount))}
+        onWithdraw={amount => dispatch(coreActions.depositOrWithdrawRequest('withdraw', amount))}
       />
     )}
   </Component>
