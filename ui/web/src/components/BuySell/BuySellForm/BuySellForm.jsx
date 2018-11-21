@@ -33,10 +33,9 @@ const BuySellForm = ({
     onSubmit={(values, actions) => (
       onSubmitOrder({
         ...values,
+        formActions: actions,
         type,
       })
-      && actions.resetForm({})
-      && actions.setSubmitting(false)
     )}
     validate={(values) => {
       const errors = {};

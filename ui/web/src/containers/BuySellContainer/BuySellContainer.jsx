@@ -36,49 +36,51 @@ const BuySellContainer = (): Node => (
         onSubmitOrder={({
           amount,
           price,
+          formActions,
           type,
         }) => (
           dispatch(coreActions.postOrderRequest({
-            amount,
-            price,
-            makerAddress: makerAddress.toLowerCase(),
-            takerAddress: utils.NULL_ADDRESS,
-            makerAssetAmount: (
-              type === 'buy'
-                ? (
-                  utils.toBaseUnitAmount(
-                    new BigNumber(amount).times(price),
-                    currentAssetPair.assetDataA.assetData.decimals,
+            formActions,
+            order: {
+              makerAddress: makerAddress.toLowerCase(),
+              takerAddress: utils.NULL_ADDRESS,
+              makerAssetAmount: (
+                type === 'buy'
+                  ? (
+                    utils.toBaseUnitAmount(
+                      new BigNumber(amount).times(price),
+                      currentAssetPair.assetDataA.assetData.decimals,
+                    )
                   )
-                )
-                : (
-                  utils.toBaseUnitAmount(
-                    amount,
-                    currentAssetPair.assetDataB.assetData.decimals,
+                  : (
+                    utils.toBaseUnitAmount(
+                      amount,
+                      currentAssetPair.assetDataB.assetData.decimals,
+                    )
                   )
-                )
-            ),
-            takerAssetAmount: (
-              type === 'buy'
-                ? (
-                  utils.toBaseUnitAmount(
-                    amount,
-                    currentAssetPair.assetDataA.assetData.decimals,
+              ),
+              takerAssetAmount: (
+                type === 'buy'
+                  ? (
+                    utils.toBaseUnitAmount(
+                      amount,
+                      currentAssetPair.assetDataA.assetData.decimals,
+                    )
                   )
-                )
-                : (
-                  utils.toBaseUnitAmount(
-                    new BigNumber(amount).times(price),
-                    currentAssetPair.assetDataB.assetData.decimals,
+                  : (
+                    utils.toBaseUnitAmount(
+                      new BigNumber(amount).times(price),
+                      currentAssetPair.assetDataB.assetData.decimals,
+                    )
                   )
-                )
-            ),
-            makerAssetData: currentAssetPair.assetDataA.assetData.id,
-            takerAssetData: currentAssetPair.assetDataB.assetData.id,
-            expirationTimeSeconds: (
-              // + 1 year
-              new BigNumber(Math.floor(+Date.now() / 1000)).plus(3 * (10 ** 7))
-            ),
+              ),
+              makerAssetData: currentAssetPair.assetDataA.assetData.id,
+              takerAssetData: currentAssetPair.assetDataB.assetData.id,
+              expirationTimeSeconds: (
+                // + 1 year
+                new BigNumber(Math.floor(+Date.now() / 1000)).plus(3 * (10 ** 7))
+              ),
+            },
           }))
         )}
       />

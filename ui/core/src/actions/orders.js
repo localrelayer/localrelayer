@@ -18,7 +18,11 @@ export function tradingChartOrderCreated(order: Order) {
   };
 }
 
-export const postOrderRequest = order => ({
+export const postOrderRequest = ({
+  order,
+  formActions,
+}) => ({
   type: actionTypes.POST_ORDER_REQUEST,
   order,
+  formActions,
 });
