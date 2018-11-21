@@ -1,2 +1,2 @@
 export abiZRX from './abiZRX';
-export abiEOS from './abiEOS';
+export abiEOS from './abiBytes32';

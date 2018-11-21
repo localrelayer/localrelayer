@@ -20,8 +20,7 @@ import {
   cachedTokens,
 } from '../cache';
 import abiZRX from '../contracts/abiZRX';
-// https://etherscan.io/address/0x86fa049857e0209aa7d9e616f7eb3b3b78ecfdb0#code
-import abiEOS from '../contracts/abiEOS';
+import abiBytes32 from '../contracts/abiBytes32';
 import {
   actionTypes,
 } from '../actions';
@@ -54,7 +53,7 @@ export function* getAssetAdditionalInfo({
     };
   }/*
     we cannot decode some specific types of assets using ZRX ABI,
-    so in this case we have to use EOS ABI
+    so in this case we have to use another ABI with type 'bytes32' instead of 'string'
     https://ethereum.stackexchange.com/questions/37165/web3js-1-0-0-beta-24-the-returned-value-is-not-a-convertible-string
    */
   try {
@@ -73,7 +72,7 @@ export function* getAssetAdditionalInfo({
       decimals: parseInt(additionalInfo.decimals, 10),
     };
   } catch (error) {
-    const eosContract = new web3.eth.Contract(abiEOS, tokenAddress);
+    const eosContract = new web3.eth.Contract(abiBytes32, tokenAddress);
     const additionalInfo = yield eff.call(extractInfo, eosContract);
     const decodedInfo = yield eff.all({
       name: eff.call(web3.utils.hexToAscii, additionalInfo.name),

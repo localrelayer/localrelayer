@@ -1,5 +1,4 @@
 // @flow
-
 import {
   actionTypes,
 } from '.';
