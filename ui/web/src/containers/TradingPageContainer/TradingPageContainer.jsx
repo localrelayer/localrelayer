@@ -17,7 +17,7 @@ export default () => (
       <div key="assetPairCard">
         <AssetPairCardContainer />
       </div>
-      <TradingPageLayout.DottedBorder key="chart">
+      <TradingPageLayout.DottedBorder key="tradingChart">
         Chart
       </TradingPageLayout.DottedBorder>
       <div key="userBalance">

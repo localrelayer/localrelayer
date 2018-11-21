@@ -25,8 +25,8 @@ import type {
   ComponentType,
 } from 'react';
 
-import 'web-styles/main.less';
 import App from 'web-containers/AppContainer';
+import 'web-styles/main.less';
 import browserHistory from './history/browser';
 import store from './store';
 import config from './config';
