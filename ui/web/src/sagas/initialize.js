@@ -321,12 +321,8 @@ export function* initialize(): Saga<void> {
     },
   );
 
-  yield eff.fork(subscribeChartOnOrderUpdate);
-
-  yield eff.put(uiActions.setUiState({
-    isAppInitializing: false,
-  }));
   yield eff.join(fetchPairsTask);
+  yield eff.fork(subscribeChartOnOrderUpdate);
   yield eff.fork(
     setCurrentPair,
     {
@@ -335,9 +331,12 @@ export function* initialize(): Saga<void> {
       networkId,
     },
   );
+  yield eff.put(uiActions.setUiState({
+    isAppInitializing: false,
+  }));
   yield eff.fork(coreSagas.takeApproval);
   yield eff.fork(coreSagas.takeDepositAndWithdraw);
-
+  yield eff.fork(coreSagas.takePostOrder);
   let watchWalletTask;
   /* Web radio center */
   while (true) {

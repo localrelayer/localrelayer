@@ -4,10 +4,8 @@ import {
 
 import {
   coreSelectors as cs,
+  utils,
 } from 'instex-core';
-import {
-  Web3Wrapper,
-} from '@0x/web3-wrapper';
 import {
   BigNumber,
 } from '0x.js';
@@ -38,6 +36,37 @@ export const getCurrentAssetPair = createSelector(
   ),
 );
 
+export const getCurrentAssetPairWithBalance = createSelector(
+  [
+    getCurrentAssetPair,
+    cs.getWalletState('balance'),
+  ],
+  (
+    currentAssetPair,
+    balance,
+  ) => (
+    currentAssetPair
+      ? ({
+        ...currentAssetPair,
+        assetDataA: {
+          ...currentAssetPair.assetDataA,
+          balance: utils.toUnitAmount(
+            balance[currentAssetPair.assetDataA.assetData.address] || 0,
+            currentAssetPair.assetDataA.assetData.decimals,
+          ).toFixed(8),
+        },
+        assetDataB: {
+          ...currentAssetPair.assetDataB,
+          balance: utils.toUnitAmount(
+            balance[currentAssetPair.assetDataB.assetData.address] || 0,
+            currentAssetPair.assetDataB.assetData.decimals,
+          ).toFixed(8),
+        },
+      })
+      : null
+  ),
+);
+
 export const getAssetsWithBalanceAndAllowance = createSelector(
   [
     cs.getResourceMap('assets'),
@@ -54,8 +83,8 @@ export const getAssetsWithBalanceAndAllowance = createSelector(
     if (currentPairId) {
       return currentPairId.split('_').map((key) => {
         const asset = assets[key];
-        const assetFormattedBalance = Web3Wrapper.toUnitAmount(
-          new BigNumber(balance[asset.address] || 0),
+        const assetFormattedBalance = utils.toUnitAmount(
+          balance[asset.address] || 0,
           asset.decimals,
         ).toFixed(8);
         const isTradable = new BigNumber(allowance[asset.address] || 0).gt(0);

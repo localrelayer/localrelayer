@@ -17,12 +17,12 @@ import {
 } from '@0x/web3-wrapper';
 
 import {
-  GANACHE_CONTRACT_ADDRESSES,
   NULL_ADDRESS,
   ORDER_FIELDS,
   toBaseUnit,
   getOrderConfig,
   randomEthereumAddress,
+  getContractAddressesForNetwork,
   generateRandomMakerAssetAmount,
   generateRandomTakerAssetAmount,
   getRandomFutureDateInSeconds,
@@ -45,7 +45,7 @@ const testData = {
   takerAssetAmount: () => generateRandomTakerAssetAmount(18).toString(),
   makerAssetData: () => '0xf47261b0000000000000000000000000871dd7c2b4b25e1aa18728e9d5f2af4c4e431f5c', /* ZRX */
   takerAssetData: () => '0xf47261b00000000000000000000000000b1ba0af832d7c05fd64161e0db78e85978e8082', /* WETH */
-  exchangeAddress: () => GANACHE_CONTRACT_ADDRESSES.exchange,
+  exchangeAddress: () => getContractAddressesForNetwork(50).exchange,
   salt: () => generatePseudoRandomSalt().toString(),
   expirationTimeSeconds: () => getRandomFutureDateInSeconds().toString(),
   signature: () => randomEthereumAddress(),
@@ -254,7 +254,7 @@ describe('postOrder', () => {
       const networkId = 50;
       const web3Wrapper = new Web3Wrapper(web3ProviderEngine);
       const [makerAddress] = await web3Wrapper.getAvailableAddressesAsync();
-      const contractAddresses = GANACHE_CONTRACT_ADDRESSES;
+      const contractAddresses = getContractAddressesForNetwork(networkId);
       const contractWrappers = new ContractWrappers(
         web3ProviderEngine,
         {
@@ -311,7 +311,7 @@ describe('postOrder', () => {
       const networkId = 50;
       const web3Wrapper = new Web3Wrapper(web3ProviderEngine);
       const [makerAddress] = await web3Wrapper.getAvailableAddressesAsync();
-      const contractAddresses = GANACHE_CONTRACT_ADDRESSES;
+      const contractAddresses = getContractAddressesForNetwork(networkId);
       const contractWrappers = new ContractWrappers(
         web3ProviderEngine,
         {
@@ -401,7 +401,7 @@ describe('postOrder', () => {
       const networkId = 50;
       const web3Wrapper = new Web3Wrapper(web3ProviderEngine);
       const [makerAddress] = await web3Wrapper.getAvailableAddressesAsync();
-      const contractAddresses = GANACHE_CONTRACT_ADDRESSES;
+      const contractAddresses = getContractAddressesForNetwork(networkId);
       const contractWrappers = new ContractWrappers(
         web3ProviderEngine,
         {

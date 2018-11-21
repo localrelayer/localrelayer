@@ -1,34 +1,88 @@
 // @flow
 import React from 'react';
+import * as R from 'ramda';
 import {
   Icon,
 } from 'antd';
-import * as S from './styled';
+import {
+  uiActions,
+} from 'web-actions';
+import {
+  getUiState,
+} from 'web-selectors';
+import Component from 'web-components/ConnectComponent';
 import BuySellForm from './BuySellForm';
+import * as S from './styled';
 
-const BuySell = () => (
+type Props = {
+  currentAssetPair: any,
+  onSubmitOrder: Function,
+};
+
+const BuySell = ({
+  currentAssetPair,
+  onSubmitOrder,
+}: Props) => (
   <S.BuySell>
     <S.BuySellCard
       bordered={false}
     >
-      <S.BuySellTabs
-        animated={false}
-        defaultActiveKey="buy"
-        tabBarExtraContent={(
-          <S.TabsExtraContent>
-            <Icon type="wallet" />
-            {' '}
-            WETH 0
-          </S.TabsExtraContent>
-        )}
+      <Component
+        mapStateToProps={state => ({
+          currentBuySellTab: getUiState('currentBuySellTab')(state),
+        })}
       >
-        <S.BuySellTabs.TabPane tab="Buy" key="buy">
-          <BuySellForm type="buy" />
-        </S.BuySellTabs.TabPane>
-        <S.BuySellTabs.TabPane tab="Sell" key="sell">
-          <BuySellForm type="sell" />
-        </S.BuySellTabs.TabPane>
-      </S.BuySellTabs>
+        {({
+          currentBuySellTab,
+          dispatch,
+        }) => (
+          <S.BuySellTabs
+            animated={false}
+            defaultActiveKey={currentBuySellTab}
+            onChange={activeKey => dispatch(uiActions.setUiState({
+              currentBuySellTab: activeKey,
+            }))}
+            tabBarExtraContent={(
+              currentBuySellTab === 'buy'
+                ? (
+                  <S.TabsExtraContent>
+                    <Icon type="wallet" />
+                    {' '}
+                    {R.path(['assetDataA', 'assetData', 'symbol'], currentAssetPair)}
+                    {' '}
+                    {R.path(['assetDataA', 'balance'], currentAssetPair)}
+                  </S.TabsExtraContent>
+                )
+                : (
+                  <S.TabsExtraContent>
+                    <Icon type="wallet" />
+                    {' '}
+                    {R.path(['assetDataB', 'assetData', 'symbol'], currentAssetPair)}
+                    {' '}
+                    {R.path(['assetDataB', 'balance'], currentAssetPair)}
+                  </S.TabsExtraContent>
+                )
+            )}
+          >
+            <S.BuySellTabs.TabPane tab="Buy" key="buy">
+              <BuySellForm
+                type="buy"
+                onSubmitOrder={onSubmitOrder}
+                currentBalance={R.path(['assetDataB', 'balance'], currentAssetPair)}
+                currentBuySellTab={currentBuySellTab}
+              />
+            </S.BuySellTabs.TabPane>
+            <S.BuySellTabs.TabPane tab="Sell" key="sell">
+              <BuySellForm
+                type="sell"
+                onSubmitOrder={onSubmitOrder}
+                currentBalance={R.path(['assetDataA', 'balance'], currentAssetPair)}
+                currentBuySellTab={currentBuySellTab}
+              />
+            </S.BuySellTabs.TabPane>
+          </S.BuySellTabs>
+        )}
+      </Component>
     </S.BuySellCard>
   </S.BuySell>
 );

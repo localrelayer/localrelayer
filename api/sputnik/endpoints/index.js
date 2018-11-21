@@ -55,9 +55,15 @@ sputnikApi.get('/tradingHistory', async (ctx) => {
     $or: [{
       makerAssetData: baseAssetData,
       takerAssetData: quoteAssetData,
+      completedAt: {
+        $ne: null,
+      },
     }, {
       makerAssetData: quoteAssetData,
       takerAssetData: baseAssetData,
+      completedAt: {
+        $ne: null,
+      },
     }],
   })
     .limit(500)
