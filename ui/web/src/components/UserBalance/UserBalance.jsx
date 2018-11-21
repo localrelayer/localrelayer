@@ -24,14 +24,14 @@ import * as S from './styled';
 type Props = {
   assets: Array<Asset>,
   balance: String,
-  onToggle: Function,
-  withdraw: Function,
-  deposit: Function,
+  onToggleTradable: Function,
+  onWithdraw: Function,
+  onDeposit: Function,
 }
 
-const isNumber = n => !isNaN(+n) && isFinite(n);
+const isNumber = n => !isNaN(+n) && isFinite(n); /* eslint-disable-line */
 
-const getColumns = onToggle => [
+const getColumns = onToggleTradable => [
   {
     title: 'Token',
     dataIndex: 'symbol',
@@ -102,24 +102,18 @@ const getColumns = onToggle => [
         checkedChildren={(
           <Icon type="check" />
         )}
-        onChange={checked => onToggle(checked, record)}
+        onChange={checked => onToggleTradable(checked, record)}
       />
     ),
   },
 ];
 
-// DATA:
-// Tokens allowance
-// FUNCS:
-// Allowance
-// Deposit / Withdraw
-
 const UserBalance = ({
   assets,
-  onToggle,
+  onToggleTradable,
   balance,
-  deposit,
-  withdraw,
+  onDeposit,
+  onWithdraw,
 }: Props): Node => (
   <S.UserBalance>
     <S.Title>
@@ -171,14 +165,14 @@ const UserBalance = ({
               <S.UnwrapButton
                 type="primary"
                 disabled={touched && !isValid}
-                onClick={() => withdraw(values.amount) && resetForm({})}
+                onClick={() => onWithdraw(values.amount) && resetForm({})}
               >
                   Unwrap
               </S.UnwrapButton>
               <S.WrapButton
                 type="primary"
                 disabled={touched && !isValid}
-                onClick={() => deposit(values.amount) && resetForm({})}
+                onClick={() => onDeposit(values.amount) && resetForm({})}
               >
                 Wrap
               </S.WrapButton>
@@ -190,7 +184,7 @@ const UserBalance = ({
     <S.Table
       rowKey="symbol"
       dataSource={assets}
-      columns={getColumns(onToggle)}
+      columns={getColumns(onToggleTradable)}
     />
   </S.UserBalance>
 );
