@@ -8,6 +8,9 @@ import {
 import {
   Order,
 } from 'db';
+import {
+  constructOrderRecord,
+} from 'utils';
 
 
 const sortOrderbook = (a, b) => {
@@ -21,27 +24,6 @@ const sortOrderbook = (a, b) => {
     || aTakerFeePrice - bTakerFeePrice
     || aExpirationTimeSeconds - bExpirationTimeSeconds;
 };
-
-const constructOrderBookRecord = ({
-  _id,
-  makerAssetProxyId,
-  takerAssetProxyId,
-  isValid,
-  remainingFillableMakerAssetAmount,
-  remainingFillableTakerAssetAmount,
-  networkId,
-  orderHash,
-  ...order
-}) => ({
-  order,
-  metaData: {
-    isValid,
-    remainingFillableMakerAssetAmount,
-    remainingFillableTakerAssetAmount,
-    networkId,
-    orderHash,
-  },
-});
 
 export function createOrderBookEndpoint(standardRelayerApi) {
   standardRelayerApi.get('/orderbook', async (ctx) => {
@@ -82,13 +64,13 @@ export function createOrderBookEndpoint(standardRelayerApi) {
 
     const response = {
       bids: {
-        records: bidOrdersSorted.map(constructOrderBookRecord),
+        records: bidOrdersSorted.map(constructOrderRecord),
         page: parseInt(page, 10),
         perPage: parseInt(perPage, 10),
         total: bidOrders.length,
       },
       asks: {
-        records: askOrdersSorted.map(constructOrderBookRecord),
+        records: askOrdersSorted.map(constructOrderRecord),
         page: parseInt(page, 10),
         perPage: parseInt(perPage, 10),
         total: askOrders.length,
