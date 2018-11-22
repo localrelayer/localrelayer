@@ -51,6 +51,10 @@ async function watcherCreator(networkId) {
   );
 
   orderWatcher.subscribe(async (err, orderState) => {
+    console.log('=============');
+    console.log(err);
+    console.log(orderState);
+    console.log('=============');
     const {
       isValid,
       orderHash,
@@ -86,6 +90,8 @@ async function watcherCreator(networkId) {
         order.error = error;
 
         if (error === FILL_ERROR) {
+          order.remainingFillableMakerAssetAmount = '0';
+          order.remainingFillableTakerAssetAmount = '0';
           order.completedAt = new Date();
           const { tradingInfoRedisKey } = await collectTradingInfo(order, logger);
           redisClient.publish('tradingInfo', tradingInfoRedisKey);
@@ -95,17 +101,29 @@ async function watcherCreator(networkId) {
         const plainOrder = order.toObject();
         plainOrder.metaData = {
           isValid,
+          remainingFillableMakerAssetAmount: order.remainingFillableMakerAssetAmount,
+          remainingFillableTakerAssetAmount: order.remainingFillableTakerAssetAmount,
+          networkId: order.networkId,
+          ...(
+            order.completedAt
+              ? {
+                completedAt: order.completedAt,
+              }
+              : {}
+          ),
         };
         redisClient.publish('orders', JSON.stringify(plainOrder));
       }
     }
   });
 
-  orders.forEach((order) => {
-    orderWatcher.addOrderAsync(
-      transformBigNumberOrder(order.toObject()),
-    );
-  });
+  setTimeout(() => {
+    orders.forEach((order) => {
+      orderWatcher.addOrderAsync(
+        transformBigNumberOrder(order.toObject()),
+      );
+    });
+  }, 300);
 
   return orderWatcher;
 }
@@ -157,12 +175,17 @@ function removeShadowedOrders() {
 
   const redisSub = redisClient.duplicate();
   redisSub.on('message', async (channel, message) => {
+    redisClient.publish('orders', message);
     const {
       networkId,
       ...rawOrder
     } = JSON.parse(message);
     const order = clearOrderFields(rawOrder);
     if (!shadowedOrders.has(order.orderHash)) {
+      console.log('************');
+      console.log(order);
+      console.log(rawOrder);
+      console.log('************');
       await watchers[networkId].addOrderAsync(
         transformBigNumberOrder(order),
       );

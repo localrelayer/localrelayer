@@ -226,7 +226,21 @@ standardRelayerApi.post('/order', async (ctx) => {
       }
 
       logger.debug(order);
-      redisClient.publish('orderWatcher', JSON.stringify(order));
+      const {
+        isValid,
+        remainingFillableMakerAssetAmount,
+        remainingFillableTakerAssetAmount,
+      } = order;
+      redisClient.publish('orderWatcher', JSON.stringify({
+        ...order,
+        metaData: {
+          isValid,
+          networkId,
+          orderHash,
+          remainingFillableMakerAssetAmount,
+          remainingFillableTakerAssetAmount,
+        },
+      }));
       ctx.status = 201;
       ctx.message = 'OK';
       ctx.body = {};

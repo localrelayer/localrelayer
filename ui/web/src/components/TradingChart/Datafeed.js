@@ -1,24 +1,24 @@
 // @flow
-
 import type {
   AssetPair,
 } from 'instex-core/types';
-import type {
-  Dispatch,
-} from 'redux';
+
 import {
   assetDataUtils, BigNumber,
 } from '0x.js';
 import {
   api,
-  coreActions,
 } from 'instex-core';
 
 import {
   Web3Wrapper,
 } from '@0x/web3-wrapper';
 
-export const getDatafeed = (assetPair: AssetPair, dispatch: Dispatch) => ({
+
+export const getDatafeed = (
+  assetPair: AssetPair,
+  onSubscribeBars: Function,
+) => ({
   onReady: (cb: any) => {
     setTimeout(() => cb({
       supports_search: false,
@@ -49,8 +49,6 @@ export const getDatafeed = (assetPair: AssetPair, dispatch: Dispatch) => ({
       .encodeERC20AssetData(assetPair.assetDataA.assetData.address);
     const quoteAssetData = assetDataUtils
       .encodeERC20AssetData(assetPair.assetDataB.assetData.address);
-    // TODO: DELETE
-    await api.clearMockMethods();
     const data = await api.getBars({
       baseAssetData,
       quoteAssetData,
@@ -85,10 +83,20 @@ export const getDatafeed = (assetPair: AssetPair, dispatch: Dispatch) => ({
     setTimeout(() => onHistoryCallBack(bars, meta), 0);
   },
 
-  resolveSymbol: async (symbolName: string, onSymbolResolvedCallback: any) => {
+  resolveSymbol: async (
+    symbolName: string,
+    onSymbolResolvedCallback: any,
+  ) => {
+    /* Why setTimeout? */
     setTimeout(() => onSymbolResolvedCallback({
-      name: `${assetPair.assetDataA.assetData.symbol}/${assetPair.assetDataB.assetData.symbol}`,
-      description: `${assetPair.assetDataA.assetData.symbol}/${assetPair.assetDataB.assetData.symbol}`,
+      name: [
+        `${assetPair.assetDataA.assetData.symbol}`,
+        `${assetPair.assetDataB.assetData.symbol}`,
+      ].join('/'),
+      description: [
+        `${assetPair.assetDataA.assetData.symbol}`,
+        `${assetPair.assetDataB.assetData.symbol}`,
+      ].join('/'),
       session: '24x7',
       type: 'bitcoin',
       ticker: assetPair.id,
@@ -102,14 +110,17 @@ export const getDatafeed = (assetPair: AssetPair, dispatch: Dispatch) => ({
     }), 0);
   },
 
-  subscribeBars: async (symbolInfo: any, resolution: any, onRealtimeCallback: any) => {
-    dispatch(
-      coreActions.tradingChartSubscribeSocket(onRealtimeCallback, assetPair),
+  subscribeBars: async (
+    symbolInfo: any,
+    resolution: any,
+    chartBarCallback: any,
+  ) => {
+    onSubscribeBars(
+      chartBarCallback,
     );
   },
 
   unsubscribeBars: () => {
     console.log('unsubscribeBars');
   },
-
 });

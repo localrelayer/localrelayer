@@ -12,7 +12,12 @@ const TradingChartContainer = () => (
       assetPair: getCurrentAssetPair(state),
     })}
   >
-    {({ assetPair, dispatch }) => <TradingChart assetPair={assetPair} dispatch={dispatch} />}
+    {({ assetPair, dispatch }) => (
+      <TradingChart
+        assetPair={assetPair}
+        dispatch={dispatch}
+      />
+    )}
   </Component>
 );
 
