@@ -43,7 +43,7 @@ const getColumns = onToggleTradable => [
           {text}
         </Tooltip>
         {record.symbol === 'WETH' && (
-          <Popover
+          <Tooltip
             placement="bottom"
             title={(
               <div>
@@ -57,7 +57,7 @@ const getColumns = onToggleTradable => [
               }}
               type="question-circle-o"
             />
-          </Popover>
+          </Tooltip>
         )}
       </div>
     ),
@@ -68,17 +68,21 @@ const getColumns = onToggleTradable => [
     key: 'balance',
     render: (text, record) => (
       <div>
-        {text}
-        <Popover
+        {text.length > 6 ? text.slice(0, 6).concat(' ...') : text}
+        <Tooltip
           placement="bottom"
           title={(
             <div>
               <div>
-                Wallet balance:
+                <div>
+                  Wallet balance:
+                </div>
                 {record.balance}
               </div>
               <div>
-                In orders:
+                <div>
+                  In orders:
+                </div>
                 {record.balance}
               </div>
             </div>
@@ -90,7 +94,7 @@ const getColumns = onToggleTradable => [
             }}
             type="info-circle-o"
           />
-        </Popover>
+        </Tooltip>
       </div>
     ),
   },
@@ -158,6 +162,7 @@ const UserBalance = ({
                 addonAfter={<div>ETH</div>}
                 placeholder="Amount"
                 onChange={handleChange}
+                autoComplete="off"
               />
             </Form.Item>
           </S.Amount>

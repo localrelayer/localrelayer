@@ -1,8 +1,6 @@
 import styled from 'styled-components';
 import {
   Icon,
-  Popover,
-  Button,
   Table,
 } from 'antd';
 import * as colors from 'web-styles/colors';
@@ -43,51 +41,30 @@ export const Account = styled.div`
   cursor: pointer;
 `;
 
-export const TokensButton = styled(Button)`
-   .ant-btn-primary {
-  color: red !important;
-  background-color: red !important;
-  border-color: red !important;
-}
-`;
-
-export const TokensPopover = styled(Popover)`
- .ant-popover-inner {
-  background-color: red !important;
-}
- .ant-popover-arrow {
-  background-color: red !important;
-}
-`;
-
 export const TokensTable = styled(Table)`
+
 .ant-table {
-  border-bottom: 1px solid ${colors['component-background']};
-  border-top: 1px solid ${colors['component-background']};
+  margin-top: 10px;
+  width: 400px;
+  border: 1px solid ${colors['component-background']};
 }
 
 .ant-table-thead > tr > th {
-  background: ${colors['component-background']};
-  border-bottom: 1px solid ${colors['component-background']} !important;
-  color: white;
+  background-color: ${colors['popover-bg']} !important;
+  border: 1px solid ${colors['component-background']} !important;
+  color: ${colors.text};
   text-align: left;
-  width: 22%;
-}
-
-.ant-table-thead > tr > th:nth-child(1) {
-  width: 12%;
+  width: 33%;
 }
 
 .ant-table-tbody > tr > td {
+  padding: 0;
+  background-color: ${colors['popover-bg']} !important;
   color: white;
   font-size: 12px;
   text-align: left;
   cursor: pointer;
-  width: 22%;
-}
-
-.ant-table-tbody > tr > td:nth-child(1) {
-  width: 12%;
+  width: 33%;
 }
 
 .ant-table-tbody > tr:hover > td {
@@ -96,6 +73,10 @@ export const TokensTable = styled(Table)`
   .ant-table-tbody > tr > td {
     padding: 5px 5px;
   } 
+  
+  & .ant-table-placeholder {
+    background-color: ${colors['popover-bg']} !important;
+  }
 `;
 
 export const PopoverContent = styled.div`
@@ -104,21 +85,8 @@ export const PopoverContent = styled.div`
   justify-content: center;
   & .ant-input {
     background-color: ${colors['background-color-light']};
-    width: 100%;
+    width: 70%;
   border-radius: 4px 0 0 4px;
-  }
-  
-  & .ant-select {
-    background-color: ${colors['background-color-light']};
-    width: 30%;
-  }
-  
-  & .ant-select-selection {
-    background-color: ${colors['background-color-light']};
-  }
-  
-  & .ant-select-arrow {
-    color: white;
   }
 `;
 

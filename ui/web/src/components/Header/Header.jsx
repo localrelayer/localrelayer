@@ -4,6 +4,8 @@ import React, {
 } from 'react';
 import {
   Input,
+  Button,
+  Popover,
 } from 'antd';
 import * as S from './styled';
 import logo from '../../assets/logo5.png';
@@ -56,7 +58,7 @@ const Header = ({
         <S.HeaderIcon type="home" />
         Account
       </S.Account>
-      <S.TokensPopover
+      <Popover
         trigger="click"
         placement="bottom"
         content={(
@@ -88,13 +90,13 @@ const Header = ({
           </S.PopoverContent>
         )}
       >
-        <S.TokensButton type="primary">
+        <Button type="primary">
           Tokens(
           {currentAssetPairName}
           )
           <S.HeaderIcon type="down" />
-        </S.TokensButton>
-      </S.TokensPopover>
+        </Button>
+      </Popover>
     </S.Header>
   );
 };

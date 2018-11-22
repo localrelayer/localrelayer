@@ -3,6 +3,7 @@ import React from 'react';
 import * as R from 'ramda';
 import {
   Icon,
+  Tooltip,
 } from 'antd';
 import {
   uiActions,
@@ -50,7 +51,9 @@ const BuySell = ({
                     {' '}
                     {R.path(['assetDataA', 'assetData', 'symbol'], currentAssetPair)}
                     {' '}
-                    {R.path(['assetDataA', 'balance'], currentAssetPair)}
+                    <Tooltip title={R.path(['assetDataA', 'balance'], currentAssetPair)}>
+                      {R.path(['assetDataA', 'balance'], currentAssetPair)}
+                    </Tooltip>
                   </S.TabsExtraContent>
                 )
                 : (
@@ -59,7 +62,9 @@ const BuySell = ({
                     {' '}
                     {R.path(['assetDataB', 'assetData', 'symbol'], currentAssetPair)}
                     {' '}
-                    {R.path(['assetDataB', 'balance'], currentAssetPair)}
+                    <Tooltip title={R.path(['assetDataB', 'balance'], currentAssetPair)}>
+                      {R.path(['assetDataB', 'balance'], currentAssetPair)}
+                    </Tooltip>
                   </S.TabsExtraContent>
                 )
             )}
