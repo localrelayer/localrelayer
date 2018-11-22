@@ -9,14 +9,13 @@ import {
 import {
   createLogger,
 } from 'logger';
-import jobs from '../kueJobs';
-import {
-  collectOrder,
-  collectTradingInfo,
-} from '../collect';
 import {
   Order,
 } from 'db';
+import jobs from '../kueJobs';
+import {
+  collectTradingInfo,
+} from '../collect';
 
 
 const logger = createLogger(

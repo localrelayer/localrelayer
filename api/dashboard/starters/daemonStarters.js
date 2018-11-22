@@ -6,9 +6,6 @@ import {
   runGanacheServer,
 } from '../../ganacheServer';
 import {
-  subscribeEthEvents,
-} from '../../sputnik/subscribe';
-import {
   runFillQueueHandler,
 } from '../../sputnik/eventHandlers';
 import {
@@ -106,49 +103,7 @@ export const daemons = [{
       queue.shutdown(5000, ccb);
     };
   },
-},
-  /* {
-  id: 'fillQueueHandler',
-  name: 'Fill queue handler',
-  type: 'daemon',
-
-  run(cb) {
-    if (dashboardConfig.fillQueueHandler.forkProcess) {
-      return daemonStarter(
-        'fillQueueHandler',
-        cb,
-        'npm run fillQueueHandler',
-      );
-    }
-    const queue = runFillQueueHandler();
-    cb();
-    return (ccb) => {
-      queue.shutdown(5000, ccb);
-    };
-  },
 }, {
-  id: 'sputnikSubscribe',
-  name: 'Sputnik subscribe',
-  type: 'daemon',
-
-  run(cb) {
-    if (dashboardConfig.sputnikSubscribe.forkProcess) {
-      return daemonStarter(
-        'sputnikSubscribe',
-        cb,
-        `ETH_NETWORKS=${dashboardConfig.sputnikSubscribe.ethNetworks.join(',')} npm run sputnik`,
-      );
-    }
-    const subscriptions = subscribeEthEvents(
-      dashboardConfig.sputnikSubscribe.ethNetworks,
-    );
-    cb();
-    return (ccb) => {
-      subscriptions.forEach(s => s());
-      ccb();
-    };
-  },
-}*/ {
   id: 'ganacheServer',
   name: 'Ganache server',
   type: 'daemon',
