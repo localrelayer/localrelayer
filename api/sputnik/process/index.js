@@ -7,6 +7,7 @@ export const calculateTradingInfo = ({
   makerAssetAmount,
   takerAssetAmount,
   currentTradingInfo = {},
+  orderType,
 }) => {
   const {
     minPrice: prevMinPrice = 0,
@@ -16,18 +17,34 @@ export const calculateTradingInfo = ({
     firstOrderPrice,
   } = currentTradingInfo;
 
-  const lastPrice = new BigNumber(takerAssetAmount).div(new BigNumber(makerAssetAmount));
+  const [
+    lastPrice,
+    assetAAmount,
+    assetBAmount,
+  ] = (
+    orderType === 'ask'
+      ? [
+        new BigNumber(takerAssetAmount).div(makerAssetAmount).toFixed(8),
+        makerAssetAmount,
+        takerAssetAmount,
+      ]
+      : [
+        new BigNumber(makerAssetAmount).div(takerAssetAmount).toFixed(8),
+        takerAssetAmount,
+        makerAssetAmount,
+      ]
+  );
 
   const minPrice = BigNumber.min(lastPrice, prevMinPrice).toNumber() || lastPrice;
   const maxPrice = BigNumber.max(lastPrice, prevMaxPrice).toNumber() || lastPrice;
 
   const assetAVolume = prevAssetAVolume
-    ? new BigNumber(makerAssetAmount).plus(prevAssetAVolume)
-    : makerAssetAmount;
+    ? new BigNumber(assetAAmount).plus(prevAssetAVolume)
+    : assetAAmount;
 
   const assetBVolume = prevAssetBVolume
-    ? new BigNumber(takerAssetAmount).plus(prevAssetBVolume)
-    : takerAssetAmount;
+    ? new BigNumber(assetBAmount).plus(prevAssetBVolume)
+    : assetBAmount;
 
   const change24 = firstOrderPrice
     ? new BigNumber(lastPrice)
