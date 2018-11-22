@@ -106,7 +106,8 @@ export const daemons = [{
       queue.shutdown(5000, ccb);
     };
   },
-}, {
+},
+  /* {
   id: 'fillQueueHandler',
   name: 'Fill queue handler',
   type: 'daemon',
@@ -147,7 +148,7 @@ export const daemons = [{
       ccb();
     };
   },
-}, {
+}*/ {
   id: 'ganacheServer',
   name: 'Ganache server',
   type: 'daemon',

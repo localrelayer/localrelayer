@@ -74,8 +74,24 @@ const BuySellContainer = (): Node => (
                     )
                   )
               ),
-              makerAssetData: currentAssetPair.assetDataA.assetData.id,
-              takerAssetData: currentAssetPair.assetDataB.assetData.id,
+              makerAssetData: (
+                type === 'buy'
+                  ? (
+                    currentAssetPair.assetDataB.assetData.id
+                  )
+                  : (
+                    currentAssetPair.assetDataA.assetData.id
+                  )
+              ),
+              takerAssetData: (
+                type === 'buy'
+                  ? (
+                    currentAssetPair.assetDataA.assetData.id
+                  )
+                  : (
+                    currentAssetPair.assetDataB.assetData.id
+                  )
+              ),
               expirationTimeSeconds: (
                 // + 1 year
                 new BigNumber(Math.floor(+Date.now() / 1000)).plus(3 * (10 ** 7))

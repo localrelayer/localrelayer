@@ -134,11 +134,11 @@ export function runWebSocketServer() {
   const redisSRA = redisClient.duplicate();
   redisSRA.on('message', async (channel, message) => {
     logger.debug(message);
+    const order = JSON.parse(message);
 
     wss.clients.forEach((client) => {
       Object.keys(client.subscriptions).forEach((subId) => {
         const sub = client.subscriptions[subId];
-        const order = JSON.parse(message);
 
         if (
           sub.channel === 'orders'
@@ -148,8 +148,16 @@ export function runWebSocketServer() {
           && shouldExistAndEqual(sub.payload.takerAssetProxyId, order.takerAssetProxyId)
           && shouldExistAndEqual(sub.payload.makerAssetAddress, order.makerAssetAddress)
           && shouldExistAndEqual(sub.payload.takerAssetAddress, order.takerAssetAddress)
-          && shouldExistAndEqual(sub.payload.makerAssetData, order.makerAssetData)
-          && shouldExistAndEqual(sub.payload.takerAssetData, order.takerAssetData)
+          && (
+            (
+              shouldExistAndEqual(sub.payload.makerAssetData, order.makerAssetData)
+              || shouldExistAndEqual(sub.payload.makerAssetData, order.takerAssetData)
+            )
+            || (
+              shouldExistAndEqual(sub.payload.takerAssetData, order.takerAssetData)
+              || shouldExistAndEqual(sub.payload.takerAssetData, order.makerAssetData)
+            )
+          )
           && (
             shouldExistAndEqual(sub.payload.traderAssetData, order.makerAssetData)
             || shouldExistAndEqual(sub.payload.traderAssetData, order.makerAssetData)
