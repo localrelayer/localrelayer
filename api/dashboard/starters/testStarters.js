@@ -59,14 +59,14 @@ export const tests = [
       );
     },
   }, {
-    id: 'checkOrderWatch',
-    name: 'check order watch',
+    id: 'checkOrderWatcherEvents',
+    name: 'sputnik - orderWatcher events',
     type: 'test',
 
     run(cb) {
       return testStarter(
         cb,
-        'apiServer/test/checkOrderWatch.test.js',
+        'sputnik/tests/checkOrderWatcherEvents.test.js',
       );
     },
   },
