@@ -54,10 +54,12 @@ export const Table = styled(AntdTable).attrs({
 })`
   border: none;
   .ant-table-thead > tr > th {
+    padding: 0 5px 5px 5px;
     background: ${colors['component-background']};
     border-bottom: 1px solid ${colors['component-background']} !important;
     color: ${colors.text};
     text-align: left;
+    width: 33%;
   }
   
   .ant-table-tbody > tr > td {
@@ -68,6 +70,7 @@ export const Table = styled(AntdTable).attrs({
     cursor: pointer;
     padding: 5px 5px;
 }
+
   .ant-table-tbody > tr:hover > td {
     background: ${colors['item-hover-bg']};
   }
