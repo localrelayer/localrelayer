@@ -8,6 +8,7 @@ import BuySellContainer from 'web-containers/BuySellContainer';
 import UserBalanceContainer from 'web-containers/UserBalanceContainer';
 import UserOrdersContainer from 'web-containers/UserOrdersContainer';
 import TradingHistoryContainer from 'web-containers/TradingHistoryContainer';
+import TradingChartContainer from 'web-containers/TradingChartContainer';
 
 
 export default () => (
@@ -17,9 +18,9 @@ export default () => (
       <div key="assetPairCard">
         <AssetPairCardContainer />
       </div>
-      <TradingPageLayout.DottedBorder key="tradingChart">
-        Chart
-      </TradingPageLayout.DottedBorder>
+      <div key="tradingChart">
+        <TradingChartContainer />
+      </div>
       <div key="userBalance">
         <UserBalanceContainer />
       </div>

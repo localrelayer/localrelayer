@@ -75,6 +75,8 @@ async function watcherCreator(networkId) {
         isValid,
         remainingFillableMakerAssetAmount,
         remainingFillableTakerAssetAmount,
+        orderHash: order.orderHash,
+        networkId: order.networkId,
       };
       redisClient.publish('orders', JSON.stringify(plainOrder));
     } else {
@@ -98,6 +100,7 @@ async function watcherCreator(networkId) {
           isValid,
           remainingFillableMakerAssetAmount: order.remainingFillableMakerAssetAmount,
           remainingFillableTakerAssetAmount: order.remainingFillableTakerAssetAmount,
+          orderHash: order.orderHash,
           networkId: order.networkId,
           ...(
             order.completedAt

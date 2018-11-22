@@ -126,10 +126,13 @@ function* setCurrentPair({
       yield eff.fork(subscribeOnCurrentTradingInfo);
 
       /* Unsubscribe after pair change */
-      if (currentAssetPairId && ordersSubscribeId) {
+      if (
+        currentAssetPairId
+        && ordersSubscribeId
+      ) {
         yield eff.put(coreActions.sendSocketMessage({
           type: 'unsubscribe',
-          requestId: ordersSubscribeId,
+          ordersSubscribeId,
         }));
       }
       yield eff.fork(subscribeOnUpdateOrders);
@@ -188,6 +191,11 @@ function* takeUpdateOrder(socketChannel) {
 
   while (true) {
     const data = yield eff.take(socketChannel);
+    const actions = createActionCreators('read', {
+      resourceType: 'orders',
+      requestKey: 'orders',
+      mergeListIds: true,
+    });
     if (
       data.channel === 'orders'
       && data.type === 'update'
@@ -200,7 +208,12 @@ function* takeUpdateOrder(socketChannel) {
           data.payload,
         );
       } else {
-        console.log('Delete the order');
+        yield eff.put(actions.succeeded({
+          resources: [{
+            id: data.payload.metaData.orderHash,
+            ...data.payload,
+          }],
+        }));
       }
     }
 
@@ -209,15 +222,13 @@ function* takeUpdateOrder(socketChannel) {
       && data.type === 'update'
       && data.payload.metaData.isValid === true
     ) {
-      console.log('Determine bid or ask and put to the list');
       const currentAssetPairId = yield eff.select(getUiState('currentAssetPairId'));
       const [baseAssetData] = currentAssetPairId.split('_');
-      console.log(currentAssetPairId);
-      console.log(baseAssetData);
-      const actions = createActionCreators('read', {
-        resourceType: 'orders',
-        requestKey: 'orders',
-        mergeListIds: true,
+      yield eff.put(actions.succeeded({
+        resources: [{
+          id: data.payload.metaData.orderHash,
+          ...data.payload,
+        }],
         list: (
           baseAssetData === data.payload.makerAssetData
             ? (
@@ -227,12 +238,6 @@ function* takeUpdateOrder(socketChannel) {
               'bids'
             )
         ),
-      });
-      yield eff.put(actions.succeeded({
-        resources: [{
-          id: data.payload.metaData.orderHash,
-          ...data.payload,
-        }],
       }));
     }
   }
