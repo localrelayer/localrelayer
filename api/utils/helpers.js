@@ -63,3 +63,24 @@ export function getContractAddressesForNetwork(networkId) {
   const contractAddresses = getContractAddressesForNetworkOrThrow(networkId);
   return contractAddresses;
 }
+
+export const constructOrderRecord = ({
+  _id,
+  makerAssetProxyId,
+  takerAssetProxyId,
+  isValid,
+  remainingFillableMakerAssetAmount,
+  remainingFillableTakerAssetAmount,
+  networkId,
+  orderHash,
+  ...order
+}) => ({
+  order,
+  metaData: {
+    isValid,
+    remainingFillableMakerAssetAmount,
+    remainingFillableTakerAssetAmount,
+    networkId,
+    orderHash,
+  },
+});
