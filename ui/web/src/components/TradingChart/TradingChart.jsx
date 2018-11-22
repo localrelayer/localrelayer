@@ -9,10 +9,14 @@ import type {
   Dispatch,
 } from 'redux';
 
+import colors from 'web-styles/colors';
+import {
+  chartActions,
+} from 'web-actions';
 import {
   getDatafeed,
 } from './Datafeed';
-import colors from '../../assets/styles/colors';
+
 
 type Props = {
   assetPair: AssetPair,
@@ -27,27 +31,28 @@ const getParameterByName = (name) => {
 };
 
 
-/**
- * Trading Chart
- * @version 1.0.0
- * @author [Tim Reznich](https://github.com/imbaniac)
- */
 export default class extends Component<Props> {
   componentDidMount() {
     const { assetPair, dispatch } = this.props;
     if (assetPair) {
-      this.initalizedChartWidget(assetPair, dispatch);
+      this.initalizeChartWidget(assetPair, dispatch);
     }
   }
 
   componentWillReceiveProps(nextProps: Props) {
-    const { assetPair, dispatch } = this.props;
+    const {
+      assetPair,
+      dispatch,
+    } = this.props;
     if (nextProps.assetPair && (nextProps.assetPair.id !== assetPair?.id)) {
-      this.initalizedChartWidget(nextProps.assetPair, dispatch);
+      this.initalizeChartWidget(nextProps.assetPair, dispatch);
     }
   }
 
-  initalizedChartWidget = (assetPair: AssetPair, dispatch: Dispatch) => {
+  initalizeChartWidget = (
+    assetPair: AssetPair,
+    dispatch: Dispatch,
+  ) => {
     // eslint-disable-next-line
     const widget = new window.TradingView.widget({
       // debug: true,
@@ -56,7 +61,19 @@ export default class extends Component<Props> {
       height: '100%',
       width: '100%',
       container_id: 'chart_container',
-      datafeed: getDatafeed(assetPair, dispatch),
+      datafeed: (
+        getDatafeed(
+          assetPair,
+          (chartBarCallback) => {
+            dispatch(
+              chartActions.subscribeOnChangeChartBar(
+                chartBarCallback,
+                assetPair,
+              ),
+            );
+          },
+        )
+      ),
       library_path: 'charting_library/',
       locale: getParameterByName('lang') || 'en',
       disabled_features: [

@@ -1,13 +1,10 @@
 // @flow
 import {
   assetDataUtils,
-  BigNumber,
 } from '0x.js';
-import {
-  Web3Wrapper,
-} from '@0x/web3-wrapper';
 import uuidv4 from 'uuid/v4';
 import * as eff from 'redux-saga/effects';
+import createActionCreators from 'redux-resource-action-creators';
 
 import {
   eventChannel,
@@ -23,10 +20,7 @@ import {
   api,
 } from 'instex-core';
 
-import moment from 'moment';
-
 import config from 'web-config';
-
 import {
   actionTypes,
   uiActions,
@@ -37,11 +31,14 @@ import {
 import {
   getHistory,
 } from 'web-history';
+import {
+  takeSubscribeOnChangeChartBar,
+} from './chart';
 
 
 function* subscribeOnUpdateOrders(): Saga<void> {
   const networkId = yield eff.select(getUiState('networkId'));
-  // const currentAssetPairId = yield eff.select(getUiState('currentAssetPairId'));
+  const currentAssetPairId = yield eff.select(getUiState('currentAssetPairId'));
   const requestId = uuidv4();
 
   yield eff.put(uiActions.setUiState({
@@ -52,8 +49,8 @@ function* subscribeOnUpdateOrders(): Saga<void> {
     channel: 'orders',
     requestId,
     payload: {
-      // makerAssetData: currentAssetPairId.split('_')[0],
-      // takerAssetData: currentAssetPairId.split('_')[1],
+      makerAssetData: currentAssetPairId.split('_')[0],
+      takerAssetData: currentAssetPairId.split('_')[1],
       networkId,
     },
   }));
@@ -182,51 +179,62 @@ function* setCurrentPair({
   }
 }
 
-function* subscribeChartOnOrderUpdate() {
-  const { payload: { callback, assetPair } } = yield eff.take(
-    coreActions.actionTypes.TRADING_CHART_INITIALIZE_SUBSCRIBE,
+function* takeUpdateOrder(socketChannel) {
+  const orderFillChannel = yield eff.call(channel);
+  yield eff.fork(
+    takeSubscribeOnChangeChartBar,
+    orderFillChannel,
   );
 
   while (true) {
-    const { payload: { order } } = yield eff.take(
-      coreActions.actionTypes.TRADING_CHART_SUBSCRIBE_ON_ORDER_CREATE,
-    );
+    const data = yield eff.take(socketChannel);
+    if (
+      data.channel === 'orders'
+      && data.type === 'update'
+      && data.payload.metaData.isValid === false
+    ) {
+      if (data.payload.metaData.completedAt) {
+        /* Move or put the order to the trading history */
+        yield eff.put(
+          orderFillChannel,
+          data.payload,
+        );
+      } else {
+        console.log('Delete the order');
+      }
+    }
 
-    const currentAssetPairId = yield eff.select(getUiState('currentAssetPairId'));
-    const [baseAssetData] = currentAssetPairId.split('_');
-
-    const [
-      price,
-      amount,
-    ] = (
-      order.makerAssetData === baseAssetData
-        ? [
-          new BigNumber(order.takerAssetAmount).div(order.makerAssetAmount),
-          order.makerAssetAmount,
-        ]
-        : [
-          new BigNumber(order.makerAssetAmount).div(order.takerAssetAmount),
-          order.takerAssetAmount,
-        ]
-    );
-
-    // Convert volume to normal unit amount
-    const volume = +Web3Wrapper.toUnitAmount(
-      new BigNumber(parseFloat(amount)),
-      assetPair.assetDataB.assetData.decimals,
-    );
-
-    const bar = {
-      volume,
-      time: moment(order.completedAt).unix() * 1000,
-      open: parseFloat(price),
-      close: parseFloat(price),
-      low: parseFloat(price),
-      high: parseFloat(price),
-    };
-
-    // console.log('bar', bar);
-    callback(bar);
+    if (
+      data.channel === 'orders'
+      && data.type === 'update'
+      && data.payload.metaData.isValid === true
+    ) {
+      console.log('Determine bid or ask and put to the list');
+      const currentAssetPairId = yield eff.select(getUiState('currentAssetPairId'));
+      const [baseAssetData] = currentAssetPairId.split('_');
+      console.log(currentAssetPairId);
+      console.log(baseAssetData);
+      const actions = createActionCreators('read', {
+        resourceType: 'orders',
+        requestKey: 'orders',
+        mergeListIds: true,
+        list: (
+          baseAssetData === data.payload.makerAssetData
+            ? (
+              'asks'
+            )
+            : (
+              'bids'
+            )
+        ),
+      });
+      yield eff.put(actions.succeeded({
+        resources: [{
+          id: data.payload.metaData.orderHash,
+          ...data.payload,
+        }],
+      }));
+    }
   }
 }
 
@@ -248,22 +256,11 @@ function* takeChangeRoute({
   }
 }
 
-function socketCloseChannel(socket) {
-  return eventChannel((emit) => {
-    socket.onclose = (data) => emit(data); /* eslint-disable-line */
-    socket.onerror = (data) => emit(data); /* eslint-disable-line */
-    return () => {};
-  });
-}
-
-function* socketConnect(): Saga<void> {
+function* socketConnect(socketChannel): Saga<void> {
   let isReconnect = false;
   let delay = 0;
   while (true) {
-    const socket = yield eff.call(
-      coreSagas.socketConnect,
-      config.socketUrl,
-    );
+    const socket = new WebSocket(config.socketUrl);
     if (socket.readyState === 1) {
       delay = 0;
       if (isReconnect) {
@@ -271,9 +268,17 @@ function* socketConnect(): Saga<void> {
         yield eff.fork(subscribeOnUpdateOrders);
       }
     }
-    const onCloseChannel = socketCloseChannel(socket);
-    const task = yield eff.fork(coreSagas.handleSocketIO, socket);
-    yield eff.take(onCloseChannel);
+    const [
+      task,
+      closeSocketChannel,
+    ] = yield eff.call(
+      coreSagas.handleSocketIO,
+      {
+        socket,
+        socketChannel,
+      },
+    );
+    yield eff.take(closeSocketChannel);
     yield eff.cancel(task);
     yield eff.delay(delay);
     if (delay < 5000) {
@@ -293,13 +298,13 @@ export function* initialize(): Saga<void> {
     networkId,
   }));
   const webRadioChannel = yield eff.call(channel);
+  const socketChannel = yield eff.call(channel);
   const fetchPairsTask = yield eff.fork(
     coreSagas.fetchAssetPairs,
     {
       networkId,
     },
   );
-  yield eff.fork(socketConnect);
 
   const history = getHistory(historyType);
   const historyChannel = eventChannel(
@@ -313,6 +318,10 @@ export function* initialize(): Saga<void> {
     ),
   );
   yield eff.fork(
+    socketConnect,
+    socketChannel,
+  );
+  yield eff.fork(
     takeChangeRoute,
     {
       historyChannel,
@@ -322,7 +331,10 @@ export function* initialize(): Saga<void> {
   );
 
   yield eff.join(fetchPairsTask);
-  yield eff.fork(subscribeChartOnOrderUpdate);
+  yield eff.fork(
+    takeUpdateOrder,
+    socketChannel,
+  );
   yield eff.fork(
     setCurrentPair,
     {

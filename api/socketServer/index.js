@@ -20,10 +20,6 @@ import {
   ORDER_FIELDS,
 } from 'utils';
 
-import {
-  metaFields,
-} from '../apiServer/endpoints';
-
 
 const logger = createLogger(
   'socketServer',
@@ -74,6 +70,7 @@ export function runWebSocketServer() {
     ws.on('message', (message) => {
       logger.debug(`received: ${message}`);
       const data = JSON.parse(message);
+      console.log(data);
 
       if (
         data.type === 'subscribe'
@@ -164,7 +161,6 @@ export function runWebSocketServer() {
             [
               ...ORDER_FIELDS,
               'metaData',
-              'completedAt',
             ],
           );
 

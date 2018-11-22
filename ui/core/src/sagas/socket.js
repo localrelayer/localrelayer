@@ -8,80 +8,41 @@ import type {
   Saga,
 } from 'redux-saga';
 
-import {
-  tradingChartOrderCreated,
-} from '../actions/orders';
 import * as actionTypes from '../actions/actionTypes';
 
 
-export function socketConnect(socketUrl): Promise<*> {
-  console.log('_______');
-  console.log('Socket connecting...', socketUrl);
-  const socket = new WebSocket(socketUrl);
-  return new Promise((resolve) => {
-    socket.onerror = (err) => {
-      console.log('Socket connect error');
-      console.log(err);
-      console.log('_______');
-      resolve(socket);
-    };
-    socket.onopen = () => {
-      console.log('Socket connected');
-      console.log('_______');
-      resolve(socket);
-    };
-  });
-}
-
-function subscribe(socket) {
+function newMessageChannelCreator(socket) {
   return eventChannel((emit) => {
     socket.onmessage = message => emit(message.data); /* eslint-disable-line */
     return () => {};
   });
 }
 
-function* read(socket) {
-  const channel = yield eff.call(subscribe, socket);
+function* read({
+  socket,
+  socketChannel,
+}) {
+  const newMessageChannel = yield eff.call(newMessageChannelCreator, socket);
   while (true) {
-    const message = yield eff.take(channel);
+    const message = yield eff.take(newMessageChannel);
     const data = JSON.parse(message);
 
     console.warn('Message from socket');
     console.log(data);
+    yield eff.put(
+      socketChannel,
+      data,
+    );
 
     if (data.channel === 'tradingInfo') {
       const tradingInfoActions = createActionCreators('read', {
         resourceType: 'tradingInfo',
         requestKey: 'socketTradingInfo',
-        mergeListIds: true,
       });
       yield eff.put(tradingInfoActions.succeeded({
         resources: data.payload,
       }));
     }
-
-    if (data.channel === 'orders') {
-      yield eff.put(tradingChartOrderCreated(data.payload));
-    }
-
-    /*
-    if (data.orders) {
-      const resources = R.flatten(data.orders);
-      const ordersActions = createActionCreators('read', {
-        resourceType: 'orders',
-        requestKey: 'orders',
-        lists: ['tradingHistory'],
-        mergeListIds: true,
-        prepend: resources.length === 1,
-      });
-      yield eff.put(ordersActions.succeeded({
-        resources: resources.map(r => ({
-          id: r.orderHash,
-          ...r,
-        })),
-      }));
-    }
-    */
   }
 }
 
@@ -94,7 +55,42 @@ function* write(socket) {
   }
 }
 
-export function* handleSocketIO(socket): Saga<void> {
-  yield eff.fork(read, socket);
-  yield eff.fork(write, socket);
+function* takeReadWrite({
+  socket,
+  socketChannel,
+}): Saga<void> {
+  yield eff.fork(
+    read,
+    {
+      socket,
+      socketChannel,
+    },
+  );
+  yield eff.fork(
+    write,
+    socket,
+  );
+}
+
+export function* handleSocketIO({
+  socket,
+  socketChannel,
+}): Saga<void> {
+  const task = yield eff.fork(
+    takeReadWrite,
+    {
+      socket,
+      socketChannel,
+    },
+  );
+  return [
+    task,
+    eventChannel((emit) => {
+      socket.onclose = (data) => emit(data); /* eslint-disable-line */
+      socket.onerror = (data) => emit(data); /* eslint-disable-line */
+      return () => {
+        socket.close();
+      };
+    }),
+  ];
 }

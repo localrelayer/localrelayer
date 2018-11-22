@@ -21,7 +21,6 @@ export function* fetchOrderBook(opts = {}) {
   const actions = createActionCreators('read', {
     resourceType: 'orders',
     requestKey: 'orders',
-    list: 'orders',
     mergeListIds: true,
   });
   try {
