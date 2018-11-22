@@ -2,42 +2,35 @@ import {
   coRedisClient,
 } from 'redisClient';
 import {
-  Order,
+  AssetPair,
 } from 'db';
 
 import {
   calculateTradingInfo,
 } from '../process';
 
-
-export async function collectOrder(data) {
-  const order = new Order(data);
-  const savedOrder = await order.save();
-  return savedOrder;
-}
-
 export async function collectTradingInfo(order, logger) {
   const {
     networkId,
-    makerAssetData: assetDataA,
-    takerAssetData: assetDataB,
+    makerAssetData,
+    takerAssetData,
     makerAssetAmount,
     takerAssetAmount,
   } = order;
 
   const existingPairs = [{
-    pair: `${assetDataA}_${assetDataB}`,
+    pair: `${makerAssetData}_${takerAssetData}`,
     data: await coRedisClient.get([
-      assetDataA,
-      assetDataB,
+      makerAssetData,
+      takerAssetData,
       networkId,
       'tradingInfo',
     ].join('_')),
   }, {
-    pair: `${assetDataB}_${assetDataA}`,
+    pair: `${takerAssetData}_${makerAssetData}`,
     data: await coRedisClient.get([
-      assetDataB,
-      assetDataA,
+      takerAssetData,
+      makerAssetData,
       networkId,
       'tradingInfo',
     ].join('_')),
@@ -51,16 +44,26 @@ export async function collectTradingInfo(order, logger) {
     pair,
     data,
   } = existingPairs.find(d => d.data) || {
-    pair: `${assetDataA}_${assetDataB}`,
+    pair: `${makerAssetData}_${takerAssetData}`,
     data: null,
   };
+
   const tradingInfoRedisKey = `${pair}_${networkId}_tradingInfo`;
   logger.info('Previous data', data ? JSON.parse(data) : data);
+
+  const askPair = await AssetPair.find({
+    'assetDataA.assetData': makerAssetData,
+    'assetDataB.assetData': takerAssetData,
+    networkId,
+  });
+
+  const orderType = askPair.length ? 'ask' : 'bid';
 
   const tradingInfo = calculateTradingInfo({
     makerAssetAmount,
     takerAssetAmount,
     currentTradingInfo: data ? JSON.parse(data) : undefined,
+    orderType,
   });
 
   await coRedisClient.set(
