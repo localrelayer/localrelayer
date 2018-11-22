@@ -24,6 +24,9 @@ import {
   createPostOrderEndpoint,
 } from './postOrder';
 import {
+  createOrderBookEndpoint,
+} from './orderBook';
+import {
   FEE_RECIPIENT,
 } from '../../scenarios/utils/constants';
 
@@ -32,6 +35,7 @@ const standardRelayerApi = new Router({
   prefix: '/v2',
 });
 createPostOrderEndpoint(standardRelayerApi);
+createOrderBookEndpoint(standardRelayerApi);
 
 export const metaFields = [
   'networkId',
@@ -48,122 +52,6 @@ export const fieldsToSkip = [
   ...metaFields,
 ];
 
-
-export const sortOrderbook = (a, b) => {
-  const aPrice = new BigNumber(a.takerAssetAmount).div(a.makerAssetAmount);
-  const aTakerFeePrice = new BigNumber(a.takerFee).div(a.takerAssetAmount);
-  const bPrice = new BigNumber(b.takerAssetAmount).div(b.makerAssetAmount);
-  const bTakerFeePrice = new BigNumber(b.takerFee).div(b.takerAssetAmount);
-  const aExpirationTimeSeconds = parseInt(a.expirationTimeSeconds, 10);
-  const bExpirationTimeSeconds = parseInt(b.expirationTimeSeconds, 10);
-  return aPrice - bPrice
-    || aTakerFeePrice - bTakerFeePrice
-    || aExpirationTimeSeconds - bExpirationTimeSeconds;
-};
-
-standardRelayerApi.post('/order_config', (ctx) => {
-  logger.debug('HTTP: POST order config');
-  const orderConfigRequest = ctx.request.body;
-  if (!validator.isValid(orderConfigRequest, schemas.relayerApiOrderConfigPayloadSchema)) {
-    ctx.status = 400;
-    ctx.message = 'Validation error';
-    ctx.body = getValidationErrors(
-      orderConfigRequest,
-      schemas.relayerApiOrderConfigPayloadSchema,
-    );
-  } else {
-    ctx.status = 200;
-    ctx.message = 'The additional fields necessary in order to submit an order to the relayer.';
-    ctx.body = getOrderConfig();
-  }
-});
-
-standardRelayerApi.get('/orderbook', async (ctx) => {
-  logger.debug('HTTP: GET orderbook');
-  const {
-    baseAssetData,
-    quoteAssetData,
-    page = 1,
-    perPage = 100,
-    networkId = 1,
-  } = ctx.query;
-
-  const bidOrders = await Order.find({
-    takerAssetData: baseAssetData,
-    makerAssetData: quoteAssetData,
-    isValid: true,
-    signature: { $exists: true },
-    completedAt: { $exists: false },
-    networkId,
-  })
-    .select(`-${fieldsToSkip.join(' -')}`)
-    .skip(perPage * (page - 1))
-    .limit(parseInt(perPage, 10))
-    .lean();
-  const askOrders = await Order.find({
-    takerAssetData: quoteAssetData,
-    makerAssetData: baseAssetData,
-    isValid: true,
-    signature: { $exists: true },
-    completedAt: { $exists: false },
-    networkId,
-  })
-    .select(`-${fieldsToSkip.join(' -')}`)
-    .skip(perPage * (page - 1))
-    .limit(parseInt(perPage, 10))
-    .lean();
-  const askOrdersSorted = askOrders.sort(sortOrderbook);
-  const bidOrdersSorted = bidOrders.sort(sortOrderbook);
-  const bidApiOrders = bidOrdersSorted.map((order) => {
-    const {
-      isValid,
-      remainingFillableMakerAssetAmount,
-      remainingFillableTakerAssetAmount,
-      ...orderMetaOmitted
-    } = order;
-    return {
-      order: orderMetaOmitted,
-      metaData: {
-        isValid: order.isValid,
-        remainingFillableMakerAssetAmount: order.remainingFillableMakerAssetAmount,
-        remainingFillableTakerAssetAmount: order.remainingFillableTakerAssetAmount,
-      },
-    };
-  });
-  const askApiOrders = askOrdersSorted.map((order) => {
-    const {
-      isValid,
-      remainingFillableMakerAssetAmount,
-      remainingFillableTakerAssetAmount,
-      ...orderMetaOmitted
-    } = order;
-    return {
-      order: orderMetaOmitted,
-      metaData: {
-        isValid: order.isValid,
-        remainingFillableMakerAssetAmount: order.remainingFillableMakerAssetAmount,
-        remainingFillableTakerAssetAmount: order.remainingFillableTakerAssetAmount,
-      },
-    };
-  });
-  const response = {
-    bids: {
-      records: bidApiOrders,
-      page: parseInt(page, 10),
-      perPage: parseInt(perPage, 10),
-      total: bidOrders.length,
-    },
-    asks: {
-      records: askApiOrders,
-      page: parseInt(page, 10),
-      perPage: parseInt(perPage, 10),
-      total: askOrders.length,
-    },
-  };
-  ctx.status = 200;
-  ctx.message = 'The sorted order book for the specified asset pair.';
-  ctx.body = response;
-});
 
 standardRelayerApi.get('/order/:orderHash', async (ctx) => {
   logger.debug('HTTP: GET ORDER BY HASH');
@@ -191,6 +79,23 @@ standardRelayerApi.get('/order/:orderHash', async (ctx) => {
   ctx.status = 200;
   ctx.message = 'The order and meta info associated with the orderHash';
   ctx.body = response;
+});
+
+standardRelayerApi.post('/order_config', (ctx) => {
+  logger.debug('HTTP: POST order config');
+  const orderConfigRequest = ctx.request.body;
+  if (!validator.isValid(orderConfigRequest, schemas.relayerApiOrderConfigPayloadSchema)) {
+    ctx.status = 400;
+    ctx.message = 'Validation error';
+    ctx.body = getValidationErrors(
+      orderConfigRequest,
+      schemas.relayerApiOrderConfigPayloadSchema,
+    );
+  } else {
+    ctx.status = 200;
+    ctx.message = 'The additional fields necessary in order to submit an order to the relayer.';
+    ctx.body = getOrderConfig();
+  }
 });
 
 // TODO: decide what to do with this endpoint
