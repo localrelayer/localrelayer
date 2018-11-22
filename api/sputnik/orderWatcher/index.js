@@ -39,11 +39,6 @@ const shadowedOrders = new Map();
 
 async function watcherCreator(networkId) {
   const web3ProviderEngine = initWeb3ProviderEngine(networkId);
-  const orders = await Order.find({
-    networkId,
-    isValid: true,
-    completedAt: null,
-  });
   const orderWatcher = new OrderWatcher(
     web3ProviderEngine,
     networkId,
@@ -117,13 +112,15 @@ async function watcherCreator(networkId) {
     }
   });
 
-  setTimeout(() => {
-    orders.forEach((order) => {
-      orderWatcher.addOrderAsync(
-        transformBigNumberOrder(order.toObject()),
-      );
-    });
-  }, 300);
+  const orders = await Order.find({
+    networkId,
+    completedAt: null,
+  });
+  orders.forEach((order) => {
+    orderWatcher.addOrderAsync(
+      transformBigNumberOrder(order.toObject()),
+    );
+  });
 
   return orderWatcher;
 }

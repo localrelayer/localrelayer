@@ -300,6 +300,7 @@ standardRelayerApi.get('/orderbook', async (ctx) => {
   const bidOrders = await Order.find({
     takerAssetData: baseAssetData,
     makerAssetData: quoteAssetData,
+    isValid: true,
     signature: { $exists: true },
     completedAt: { $exists: false },
     networkId,
@@ -311,6 +312,7 @@ standardRelayerApi.get('/orderbook', async (ctx) => {
   const askOrders = await Order.find({
     takerAssetData: quoteAssetData,
     makerAssetData: baseAssetData,
+    isValid: true,
     signature: { $exists: true },
     completedAt: { $exists: false },
     networkId,
