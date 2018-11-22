@@ -32,12 +32,20 @@ export function* fetchOrderBook(opts = {}) {
         ...opts,
       },
     );
-    const asks = response.asks.records.map(({ order }) => ({
+    const asks = response.asks.records.map(({
+      order,
+      metaData,
+    }) => ({
       id: orderHashUtils.getOrderHashHex(order),
+      metaData,
       ...order,
     }));
-    const bids = response.bids.records.map(({ order }) => ({
+    const bids = response.bids.records.map(({
+      order,
+      metaData,
+    }) => ({
       id: orderHashUtils.getOrderHashHex(order),
+      metaData,
       ...order,
     }));
 

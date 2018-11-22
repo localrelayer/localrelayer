@@ -71,14 +71,18 @@ async function watcherCreator(networkId) {
       await order.save();
       /* do not spread plainOrder object, it will emit lot of extra keys */
       const plainOrder = order.toObject();
-      plainOrder.metaData = {
+      const metaData = {
         isValid,
         remainingFillableMakerAssetAmount,
         remainingFillableTakerAssetAmount,
         orderHash: order.orderHash,
         networkId: order.networkId,
       };
-      redisClient.publish('orders', JSON.stringify(plainOrder));
+      redisClient.publish('orders', JSON.stringify({
+        order: plainOrder,
+        metaData,
+      }));
+      plainOrder.metaData = metaData;
     } else {
       const { error } = orderState;
       if (!shadowedOrders.has(orderHash)) {
@@ -93,10 +97,9 @@ async function watcherCreator(networkId) {
           const { tradingInfoRedisKey } = await collectTradingInfo(order, logger);
           redisClient.publish('tradingInfo', tradingInfoRedisKey);
         }
-        await order.save();
         /* do not spread plainOrder object, it will emit lot of extra keys */
         const plainOrder = order.toObject();
-        plainOrder.metaData = {
+        const metaData = {
           isValid,
           remainingFillableMakerAssetAmount: order.remainingFillableMakerAssetAmount,
           remainingFillableTakerAssetAmount: order.remainingFillableTakerAssetAmount,
@@ -110,7 +113,12 @@ async function watcherCreator(networkId) {
               : {}
           ),
         };
-        redisClient.publish('orders', JSON.stringify(plainOrder));
+        redisClient.publish('orders', JSON.stringify({
+          order: plainOrder,
+          metaData,
+        }));
+        plainOrder.metaData = metaData;
+        await order.save();
       }
     }
   });

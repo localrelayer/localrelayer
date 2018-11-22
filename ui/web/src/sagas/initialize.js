@@ -211,7 +211,8 @@ function* takeUpdateOrder(socketChannel) {
         yield eff.put(actions.succeeded({
           resources: [{
             id: data.payload.metaData.orderHash,
-            ...data.payload,
+            metaData: data.payload.metaData,
+            ...data.payload.order,
           }],
         }));
       }
@@ -227,7 +228,8 @@ function* takeUpdateOrder(socketChannel) {
       yield eff.put(actions.succeeded({
         resources: [{
           id: data.payload.metaData.orderHash,
-          ...data.payload,
+          metaData: data.payload.metaData,
+          ...data.payload.order,
         }],
         list: (
           baseAssetData === data.payload.makerAssetData
