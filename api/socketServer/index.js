@@ -16,8 +16,7 @@ import {
   createLogger,
 } from 'logger';
 import {
-  clearObjectKeys,
-  ORDER_FIELDS,
+  clearOrderFields,
 } from 'utils';
 
 
@@ -134,16 +133,18 @@ export function runWebSocketServer() {
   const redisSRA = redisClient.duplicate();
   redisSRA.on('message', async (channel, message) => {
     logger.debug(message);
-    const order = JSON.parse(message);
+    const {
+      order,
+      metaData,
+    } = JSON.parse(message);
 
     wss.clients.forEach((client) => {
       Object.keys(client.subscriptions).forEach((subId) => {
         const sub = client.subscriptions[subId];
-
         if (
           sub.channel === 'orders'
           && validator.isValid(sub.payload, schemas.relayerApiOrdersChannelSubscribePayloadSchema)
-          && order.networkId === (sub.payload.networkId || 1)
+          && metaData.networkId === (sub.payload.networkId || 1)
           && shouldExistAndEqual(sub.payload.makerAssetProxyId, order.makerAssetProxyId)
           && shouldExistAndEqual(sub.payload.takerAssetProxyId, order.takerAssetProxyId)
           && shouldExistAndEqual(sub.payload.makerAssetAddress, order.makerAssetAddress)
@@ -164,19 +165,15 @@ export function runWebSocketServer() {
           )
         ) {
           logger.debug('SEND!!!');
-          const clearOrder = clearObjectKeys(
-            order,
-            [
-              ...ORDER_FIELDS,
-              'metaData',
-            ],
-          );
-
+          const clearOrder = clearOrderFields(order);
           client.send(JSON.stringify({
             type: 'update',
             channel: 'orders',
             requestId: sub.requestId,
-            payload: clearOrder,
+            payload: {
+              order: clearOrder,
+              metaData,
+            },
           }));
         }
       });

@@ -131,7 +131,7 @@ export function createPostOrderEndpoint(standardRelayerApi) {
           remainingFillableTakerAssetAmount,
         } = order;
         redisClient.publish('orderWatcher', JSON.stringify({
-          ...order,
+          order,
           metaData: {
             isValid,
             networkId,

@@ -122,13 +122,11 @@ standardRelayerApi.get('/orderbook', async (ctx) => {
       ...orderMetaOmitted
     } = order;
     return {
-      order: {
-        ...orderMetaOmitted,
-        metaData: {
-          isValid: order.isValid,
-          remainingFillableMakerAssetAmount: order.remainingFillableMakerAssetAmount,
-          remainingFillableTakerAssetAmount: order.remainingFillableTakerAssetAmount,
-        },
+      order: orderMetaOmitted,
+      metaData: {
+        isValid: order.isValid,
+        remainingFillableMakerAssetAmount: order.remainingFillableMakerAssetAmount,
+        remainingFillableTakerAssetAmount: order.remainingFillableTakerAssetAmount,
       },
     };
   });
@@ -140,13 +138,11 @@ standardRelayerApi.get('/orderbook', async (ctx) => {
       ...orderMetaOmitted
     } = order;
     return {
-      order: {
-        ...orderMetaOmitted,
-        metaData: {
-          isValid: order.isValid,
-          remainingFillableMakerAssetAmount: order.remainingFillableMakerAssetAmount,
-          remainingFillableTakerAssetAmount: order.remainingFillableTakerAssetAmount,
-        },
+      order: orderMetaOmitted,
+      metaData: {
+        isValid: order.isValid,
+        remainingFillableMakerAssetAmount: order.remainingFillableMakerAssetAmount,
+        remainingFillableTakerAssetAmount: order.remainingFillableTakerAssetAmount,
       },
     };
   });
