@@ -232,7 +232,7 @@ function* takeUpdateOrder(socketChannel) {
           ...data.payload.order,
         }],
         list: (
-          baseAssetData === data.payload.makerAssetData
+          baseAssetData === data.payload.order.makerAssetData
             ? (
               'asks'
             )

@@ -185,16 +185,12 @@ function removeShadowedOrders() {
   redisSub.on('message', async (channel, message) => {
     redisClient.publish('orders', message);
     const {
-      networkId,
-      ...rawOrder
+      order: rawOrder,
+      metaData,
     } = JSON.parse(message);
     const order = clearOrderFields(rawOrder);
-    if (!shadowedOrders.has(order.orderHash)) {
-      console.log('************');
-      console.log(order);
-      console.log(rawOrder);
-      console.log('************');
-      await watchers[networkId].addOrderAsync(
+    if (!shadowedOrders.has(metaData.orderHash)) {
+      await watchers[metaData.networkId].addOrderAsync(
         transformBigNumberOrder(order),
       );
     }

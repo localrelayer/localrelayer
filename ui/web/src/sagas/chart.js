@@ -22,7 +22,10 @@ function* takeFillOrderAndCalculateChartBar({
   assetPair,
 }) {
   while (true) {
-    const order = yield eff.take(orderFillChannel);
+    const {
+      order,
+      metaData,
+    } = yield eff.take(orderFillChannel);
 
     const currentAssetPairId = yield eff.select(getUiState('currentAssetPairId'));
     const [baseAssetData] = currentAssetPairId.split('_');
@@ -51,7 +54,7 @@ function* takeFillOrderAndCalculateChartBar({
     const bar = {
       volume,
       /* TODO: Remove moment */
-      time: moment(order.completedAt).unix() * 1000,
+      time: moment(metaData.completedAt).unix() * 1000,
       open: parseFloat(price),
       close: parseFloat(price),
       low: parseFloat(price),

@@ -16,12 +16,6 @@ export const calculateTradingInfo = ({
     firstOrderPrice,
   } = currentTradingInfo;
 
-  console.log('→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→');
-  console.log(makerAssetAmount);
-  console.log(takerAssetAmount);
-  console.log(currentTradingInfo);
-  console.log('←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←');
-
   const lastPrice = new BigNumber(takerAssetAmount).div(new BigNumber(makerAssetAmount));
 
   const minPrice = BigNumber.min(lastPrice, prevMinPrice).toNumber() || lastPrice;
