@@ -94,8 +94,19 @@ async function watcherCreator(networkId) {
           order.remainingFillableMakerAssetAmount = '0';
           order.remainingFillableTakerAssetAmount = '0';
           order.completedAt = new Date();
-          const { tradingInfoRedisKey } = await collectTradingInfo(order, logger);
-          redisClient.publish('tradingInfo', tradingInfoRedisKey);
+          try {
+            const {
+              tradingInfoRedisKeyMakerTaker,
+              tradingInfoRedisKeyTakerMaker,
+            } = await collectTradingInfo(order, logger);
+
+            redisClient.publish(
+              'tradingInfo',
+              `${tradingInfoRedisKeyMakerTaker}^${tradingInfoRedisKeyTakerMaker}`,
+            );
+          } catch (e) {
+            logger.error(e);
+          }
         }
         /* do not spread plainOrder object, it will emit lot of extra keys */
         const plainOrder = order.toObject();
