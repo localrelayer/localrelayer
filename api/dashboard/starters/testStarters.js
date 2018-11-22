@@ -18,7 +18,7 @@ function testStarter(cb, testFilesPath) {
   const child = exec([
     'DASHBOARD_PARENT=true',
     `LOG_LEVEL=${dashboardConfig.fgProcessLogLevel}`,
-    'NODE_ENV=development mocha',
+    'NODE_ENV=test mocha',
     testFilesPath,
     '--require @babel/register',
     '--require module-alias/register',
