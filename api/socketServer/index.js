@@ -92,7 +92,13 @@ export function runWebSocketServer() {
 
   const redisSub = redisClient.duplicate();
   redisSub.on('message', async (channel, message) => {
-    const tradingInfo = JSON.parse(await coRedisClient.get(message));
+    const [tradingInfoRedisKeyMakerTaker, tradingInfoRedisKeyTakerMaker] = message.split('^');
+    const tradingInfoMakerTaker = JSON.parse(
+      await coRedisClient.get(tradingInfoRedisKeyMakerTaker),
+    );
+    const tradingInfoTakerMaker = JSON.parse(
+      await coRedisClient.get(tradingInfoRedisKeyTakerMaker),
+    );
 
     wss.clients.forEach((client) => {
       Object.keys(client.subscriptions).forEach((subId) => {
@@ -102,14 +108,14 @@ export function runWebSocketServer() {
           && (
             sub.payload.pairs.some(
               pair => (
-                pair.networkId === tradingInfo.networkId
+                pair.networkId === tradingInfoMakerTaker.networkId
                 && (
                   (
-                    pair.assetDataA === tradingInfo.assetDataA
-                    && pair.assetDataB === tradingInfo.assetDataB
+                    pair.assetDataA === tradingInfoMakerTaker.assetDataA
+                    && pair.assetDataB === tradingInfoMakerTaker.assetDataB
                   ) || (
-                    pair.assetDataB === tradingInfo.assetDataA
-                    && pair.assetDataA === tradingInfo.assetDataB
+                    pair.assetDataA === tradingInfoTakerMaker.assetDataA
+                    && pair.assetDataB === tradingInfoTakerMaker.assetDataB
                   )
                 )),
             )
@@ -121,7 +127,8 @@ export function runWebSocketServer() {
             channel: 'tradingInfo',
             requestId: sub.requestId,
             payload: [
-              tradingInfo,
+              tradingInfoMakerTaker,
+              tradingInfoTakerMaker,
             ],
           }));
         }

@@ -1,9 +1,6 @@
 import {
   coRedisClient,
 } from 'redisClient';
-import {
-  AssetPair,
-} from 'db';
 
 import {
   calculateTradingInfo,
@@ -18,7 +15,7 @@ export async function collectTradingInfo(order, logger) {
     takerAssetAmount,
   } = order;
 
-  const existingPairs = [{
+  const makerTaker = {
     pair: `${makerAssetData}_${takerAssetData}`,
     data: await coRedisClient.get([
       makerAssetData,
@@ -26,7 +23,9 @@ export async function collectTradingInfo(order, logger) {
       networkId,
       'tradingInfo',
     ].join('_')),
-  }, {
+  };
+
+  const takerMaker = {
     pair: `${takerAssetData}_${makerAssetData}`,
     data: await coRedisClient.get([
       takerAssetData,
@@ -34,53 +33,56 @@ export async function collectTradingInfo(order, logger) {
       networkId,
       'tradingInfo',
     ].join('_')),
-  }];
-  if (existingPairs.filter(d => d.data).length === 2) {
-    logger.debug(existingPairs);
-    throw Error('Duplicate pair key!');
-  }
-
-  const {
-    pair,
-    data,
-  } = existingPairs.find(d => d.data) || {
-    pair: `${makerAssetData}_${takerAssetData}`,
-    data: null,
   };
 
-  const tradingInfoRedisKey = `${pair}_${networkId}_tradingInfo`;
-  logger.info('Previous data', data ? JSON.parse(data) : data);
+  const tradingInfoRedisKeyMakerTaker = `${makerTaker.pair}_${networkId}_tradingInfo`;
+  const tradingInfoRedisKeyTakerMaker = `${takerMaker.pair}_${networkId}_tradingInfo`;
 
-  const askPair = await AssetPair.find({
-    'assetDataA.assetData': makerAssetData,
-    'assetDataB.assetData': takerAssetData,
-    networkId,
+  logger.info('Previous data Maker/Taker', makerTaker.data ? JSON.parse(makerTaker.data) : makerTaker.data);
+  logger.info('Previous data Taker/Maker', takerMaker.data ? JSON.parse(takerMaker.data) : takerMaker.data);
+
+  const tradingInfoMakerTaker = calculateTradingInfo({
+    assetAAmount: makerAssetAmount,
+    assetBAmount: takerAssetAmount,
+    currentTradingInfo: makerTaker.data ? JSON.parse(makerTaker.data) : undefined,
   });
 
-  const orderType = askPair.length ? 'ask' : 'bid';
-
-  const tradingInfo = calculateTradingInfo({
-    makerAssetAmount,
-    takerAssetAmount,
-    currentTradingInfo: data ? JSON.parse(data) : undefined,
-    orderType,
+  const tradingInfoTakerMaker = calculateTradingInfo({
+    assetAAmount: takerAssetAmount,
+    assetBAmount: makerAssetAmount,
+    currentTradingInfo: takerMaker.data ? JSON.parse(takerMaker.data) : undefined,
   });
 
   await coRedisClient.set(
-    tradingInfoRedisKey,
+    tradingInfoRedisKeyMakerTaker,
     JSON.stringify({
-      ...tradingInfo,
-      id: pair,
+      ...tradingInfoMakerTaker,
+      id: makerTaker.pair,
       networkId,
-      assetDataA: pair.split('_')[0],
-      assetDataB: pair.split('_')[1],
+      assetDataA: makerAssetData,
+      assetDataB: takerAssetData,
+    }),
+    'EX',
+    60 * 60 * 24,
+  );
+
+  await coRedisClient.set(
+    tradingInfoRedisKeyTakerMaker,
+    JSON.stringify({
+      ...tradingInfoTakerMaker,
+      id: takerMaker.pair,
+      networkId,
+      assetDataA: takerAssetData,
+      assetDataB: makerAssetData,
     }),
     'EX',
     60 * 60 * 24,
   );
 
   return {
-    tradingInfo,
-    tradingInfoRedisKey,
+    tradingInfoMakerTaker,
+    tradingInfoTakerMaker,
+    tradingInfoRedisKeyMakerTaker,
+    tradingInfoRedisKeyTakerMaker,
   };
 }
