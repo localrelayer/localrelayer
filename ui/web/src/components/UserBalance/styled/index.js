@@ -59,8 +59,24 @@ export const Table = styled(AntdTable).attrs({
     border-bottom: 1px solid ${colors['component-background']} !important;
     color: ${colors.text};
     text-align: left;
-    width: 33%;
   }
+    .ant-table-thead > tr > th:nth-child(1) {
+    width: ${props => (props.isTradingPage ? '25%' : '20%')};
+  }
+    .ant-table-thead > tr > th:nth-child(2) {
+    width: ${props => (props.isTradingPage ? '50%' : '25%')};
+  }
+      .ant-table-thead > tr > th:last-child {
+    width: ${props => (props.isTradingPage ? '25%' : '15%')};
+  }
+  
+      .ant-table-tbody > tr > td:last-child {
+    text-align: ${props => (props.isTradingPage ? 'right' : 'left')}; 
+}
+
+    .ant-table-thead > tr > th:last-child {
+    text-align: ${props => (props.isTradingPage ? 'right' : 'left')}; 
+}
   
   .ant-table-tbody > tr > td {
     border-bottom: 1px solid ${colors['component-background']};
@@ -71,7 +87,13 @@ export const Table = styled(AntdTable).attrs({
     padding: 5px 5px;
 }
 
+
+
   .ant-table-tbody > tr:hover > td {
     background: ${colors['item-hover-bg']};
+  }
+  
+    & .ant-table-placeholder {
+    border-color: ${colors['popover-bg']} !important;
   }
 `;

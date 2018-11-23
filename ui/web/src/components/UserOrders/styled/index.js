@@ -5,7 +5,7 @@ import {
 import * as colors from 'web-styles/colors';
 
 export const UserOrders = styled.div`
-  display: absolute;
+  position: absolute;
   height: 100%;
   width: 100%;
   background-color: ${colors['component-background']};
@@ -29,26 +29,29 @@ export const UserOrdersTable = styled(Table)`
     border-bottom: 1px solid ${colors['component-background']} !important;
     color: white;
     text-align: left;
-    width: 16%;
+    width: 13%;
   }
   
-  .ant-table-thead > tr > th:nth-last-child(2) {
-    width: 10%;
-  }
-
+  .ant-table-tbody > tr:nth-child(2) {
+      background-color: #330000 !important;
+    }
+   
+    .ant-table-tbody > tr:nth-child(2):hover > td {
+      background-color: #330000 !important;
+    }
+   .ant-table-tbody > tr:hover > td {
+      background-color: ${colors['component-background']} !important;
+    } 
+  
   .ant-table-tbody > tr > td {
     border: none;
-    color: white;
+    color: white; 
     font-size: 12px;
     text-align: left;
     cursor: pointer;
-    width: 16%;
+   width: 13%;
   }
   
-  .ant-table-tbody > tr > td:nth-last-child(2) {
-    width: 10%;
-  }
-
   .ant-table-tbody > tr > td:nth-child(3) {
     color: ${colors.green};
   }

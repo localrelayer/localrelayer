@@ -3,7 +3,6 @@ import React from 'react';
 import {
   Icon,
   Tooltip,
-  Popover,
   Switch,
   Button,
   Input,
@@ -27,6 +26,7 @@ type Props = {
   onToggleTradable: Function,
   onWithdraw: Function,
   onDeposit: Function,
+  isTradingPage: Boolean,
 }
 
 // use +n !== 0 because empty string (or spaced string) converts to 0
@@ -68,7 +68,7 @@ const getColumns = onToggleTradable => [
     key: 'balance',
     render: (text, record) => (
       <div>
-        {text.length > 6 ? text.slice(0, 6).concat(' ...') : text}
+        {text.length > 14 ? text.slice(0, 14) : text}
         <Tooltip
           placement="bottom"
           title={(
@@ -113,7 +113,55 @@ const getColumns = onToggleTradable => [
   },
 ];
 
+const getUserProfileColumns = (onToggleTradable) => {
+  const columns = getColumns(onToggleTradable).slice();
+  columns.splice(1, 0, {
+    title: 'Token',
+    dataIndex: 'token',
+    key: 'token',
+    render: (text, record) => (
+      <div>
+        <Tooltip title={record.name}>
+          {record.name}
+        </Tooltip>
+      </div>
+    ),
+  });
+  columns.splice(0, 1, {
+    title: 'Symbol',
+    dataIndex: 'symbol',
+    key: 'symbol',
+    render: (text, record) => (
+      <div>
+        <Tooltip title={record.name}>
+          {text}
+        </Tooltip>
+        {record.symbol === 'WETH' && (
+          <Tooltip
+            placement="bottom"
+            title={(
+              <div>
+                Wrapping ETH allows you to trade directly with alt tokens
+              </div>
+            )}
+          >
+            <Icon
+              style={{
+                marginLeft: 5,
+              }}
+              type="question-circle-o"
+            />
+          </Tooltip>
+        )}
+      </div>
+    ),
+  });
+  return columns;
+};
+
+
 const UserBalance = ({
+  isTradingPage,
   assets,
   onToggleTradable,
   balance,
@@ -188,9 +236,11 @@ const UserBalance = ({
       )}
     </Formik>
     <S.Table
+      isTradingPage={isTradingPage}
       rowKey="symbol"
       dataSource={assets}
-      columns={getColumns(onToggleTradable)}
+      columns={isTradingPage ? getColumns(onToggleTradable)
+        : getUserProfileColumns(onToggleTradable)}
     />
   </S.UserBalance>
 );

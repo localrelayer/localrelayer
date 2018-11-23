@@ -1,6 +1,7 @@
 // @flow
 import React from 'react';
 import {
+  Icon,
   Tooltip,
 } from 'antd';
 import * as S from './styled';
@@ -58,9 +59,22 @@ const columns = [{
   dataIndex: 'status',
   key: 'status',
   render: (text: string) => (
-    <Tooltip title={text}>
-      {text}
-    </Tooltip>
+    text === 'Shadow' ? (
+      <Tooltip title="This order is shadowed read docs for more info">
+        {text}
+        <Icon
+          style={{
+            marginLeft: 5,
+          }}
+          type="info-circle-o"
+        />
+      </Tooltip>
+    )
+      : (
+        <Tooltip title={text}>
+          {text}
+        </Tooltip>
+      )
   ),
 }, {
   title: 'Action',
