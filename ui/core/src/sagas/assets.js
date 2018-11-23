@@ -171,7 +171,6 @@ export function* fetchTradingInfo(opts = { networkId: 1 }) {
   const actions = createActionCreators('read', {
     resourceType: 'tradingInfo',
     requestKey: 'apiTradingInfo',
-    mergeListIds: true,
   });
   try {
     yield eff.put(actions.pending());

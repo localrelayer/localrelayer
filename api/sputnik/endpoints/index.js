@@ -107,7 +107,7 @@ sputnikApi.post('/tradingInfo', async (ctx) => {
   );
   ctx.status = 200;
   ctx.body = {
-    records: pairsTradingInfo,
+    records: pairsTradingInfo.filter(p => p !== null),
   };
 });
 
