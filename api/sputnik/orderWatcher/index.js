@@ -3,6 +3,9 @@ import {
   OrderWatcher,
 } from '@0x/order-watcher';
 import {
+  ExchangeContractErrs,
+} from '@0x/types';
+import {
   Order,
 } from 'db';
 import {
@@ -18,10 +21,6 @@ import {
   ETH_NETWORKS_NAME_MAP,
   GANACHE_CONTRACT_ADDRESSES,
 } from 'utils';
-import {
-  checkShadowedOrdersInSeconds,
-  shadowedOrderslifeTimeinMs,
-} from 'config';
 
 import {
   collectTradingInfo,
@@ -38,7 +37,13 @@ const logger = createLogger(
 );
 logger.debug('orderWatcher logger was created');
 
-const FILL_ERROR = 'ORDER_REMAINING_FILL_AMOUNT_ZERO';
+const FILL_ERROR = ExchangeContractErrs.OrderRemainingFillAmountZero;
+const CLOSE_ORDER_ERRORS = [
+  ExchangeContractErrs.OrderFillExpired,
+  ExchangeContractErrs.OrderCancelled,
+  ExchangeContractErrs.OrderRemainingFillAmountZero,
+  ExchangeContractErrs.OrderFillRoundingError,
+];
 const shadowedOrders = new Map();
 
 async function watcherCreator(networkId) {
@@ -86,7 +91,6 @@ async function watcherCreator(networkId) {
         order: plainOrder,
         metaData,
       }));
-      plainOrder.metaData = metaData;
     } else {
       const { error } = orderState;
       if (!shadowedOrders.has(orderHash)) {
@@ -132,7 +136,7 @@ async function watcherCreator(networkId) {
           order: plainOrder,
           metaData,
         }));
-        plainOrder.metaData = metaData;
+        order.isShadowed = !CLOSE_ORDER_ERRORS.includes(error);
         await order.save();
       }
     }
@@ -141,6 +145,19 @@ async function watcherCreator(networkId) {
   const orders = await Order.find({
     networkId,
     completedAt: null,
+    $and: [
+      {
+        $or: [
+          {
+            isValid: true,
+          },
+          {
+            isValid: false,
+            isShadowed: true,
+          },
+        ],
+      },
+    ],
   });
   orders.forEach((order) => {
     orderWatcher.addOrderAsync(
@@ -149,35 +166,6 @@ async function watcherCreator(networkId) {
   });
 
   return orderWatcher;
-}
-
-function removeShadowedOrders() {
-  const now = Date.now();
-  const orderHashes = [];
-  /* shadowedOrders is Set, map functions is not exist */
-  for (const [orderHash, shadowedAt] of shadowedOrders) { /* eslint-disable-line */
-    if (
-      (shadowedAt + shadowedOrderslifeTimeinMs) < now
-    ) {
-      orderHashes.push(orderHash);
-    }
-  }
-  if (orderHashes.length) {
-    Order.deleteMany({
-      $or: (
-        orderHashes.reduce((acc, orderHash) => ([
-          ...acc,
-          {
-            orderHash,
-          },
-        ]), [])
-      ),
-    });
-  }
-  setTimeout(
-    removeShadowedOrders,
-    checkShadowedOrdersInSeconds,
-  );
 }
 
 (async () => {
@@ -224,5 +212,4 @@ function removeShadowedOrders() {
   });
   redisSub.subscribe('orderWatcher');
   redisTestSub.subscribe('testingOrderWatcher');
-  removeShadowedOrders();
 })();

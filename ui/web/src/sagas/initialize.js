@@ -207,15 +207,14 @@ function* takeUpdateOrder(socketChannel) {
           orderFillChannel,
           data.payload,
         );
-      } else {
-        yield eff.put(actions.succeeded({
-          resources: [{
-            id: data.payload.metaData.orderHash,
-            metaData: data.payload.metaData,
-            ...data.payload.order,
-          }],
-        }));
       }
+      yield eff.put(actions.succeeded({
+        resources: [{
+          id: data.payload.metaData.orderHash,
+          metaData: data.payload.metaData,
+          ...data.payload.order,
+        }],
+      }));
     }
 
     if (
