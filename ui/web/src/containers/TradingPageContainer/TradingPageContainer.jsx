@@ -22,7 +22,7 @@ export default () => (
         <TradingChartContainer />
       </div>
       <div key="userBalance">
-        <UserBalanceContainer />
+        <UserBalanceContainer isTradingPage />
       </div>
       <div key="orderBook">
         <OrderBookContainer />

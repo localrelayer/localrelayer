@@ -8,11 +8,21 @@ import {
 } from '@storybook/addon-knobs';
 
 import TradingPageLayout from 'web-components/TradingPageLayout';
+import UserProfileLayout from 'web-components/UserProfileLayout';
 import UserOrdersContainer from '..';
 
 
-const UserOrdersContainerStory = () => (
+const UserOrdersTradingPageContainerStory = () => (
   <TradingPageLayout.Preview
+    hideRest={boolean('Hide preview layout', false)}
+    userOrders={(
+      <UserOrdersContainer />
+    )}
+  />
+);
+
+const UserOrdersUserProfileContainerStory = () => (
+  <UserProfileLayout.Preview
     hideRest={boolean('Hide preview layout', false)}
     userOrders={(
       <UserOrdersContainer />
@@ -23,15 +33,10 @@ const UserOrdersContainerStory = () => (
 storiesOf('Containers|UserOrdersContainer', module)
   .addDecorator(withKnobs)
   .add(
-    'default',
-    UserOrdersContainerStory,
+    'trading page',
+    UserOrdersTradingPageContainerStory,
   )
   .add(
-    'full screen',
-    UserOrdersContainerStory,
-    {
-      options: {
-        goFullScreen: true,
-      },
-    },
+    'user profile page',
+    UserOrdersUserProfileContainerStory,
   );
