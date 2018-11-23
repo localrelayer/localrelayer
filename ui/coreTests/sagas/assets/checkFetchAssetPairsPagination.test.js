@@ -68,8 +68,7 @@ describe('fetchAssetPair pagination', () => {
     const perPage = 10;
     const pagesCount = Math.ceil(assetPairs.total / perPage);
     const spy = sinon.spy(api, 'getAssetPairs');
-    const saga = await
-    runSaga({
+    await runSaga({
       dispatch: () => ({}),
       getState: () => ({}),
     }, coreSagas.fetchAssetPairs, {
@@ -91,8 +90,7 @@ describe('fetchAssetPair pagination', () => {
     // ensure that perPage > total
     const perPage = assetPairs.total + 1;
     const spy = sinon.spy(api, 'getAssetPairs');
-    const saga = await
-    runSaga({
+    await runSaga({
       dispatch: () => ({}),
       getState: () => ({}),
     }, coreSagas.fetchAssetPairs, {

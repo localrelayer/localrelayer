@@ -38,8 +38,22 @@ export async function collectTradingInfo(order, logger) {
   const tradingInfoRedisKeyMakerTaker = `${makerTaker.pair}_${networkId}_tradingInfo`;
   const tradingInfoRedisKeyTakerMaker = `${takerMaker.pair}_${networkId}_tradingInfo`;
 
-  logger.info('Previous data Maker/Taker', makerTaker.data ? JSON.parse(makerTaker.data) : makerTaker.data);
-  logger.info('Previous data Taker/Maker', takerMaker.data ? JSON.parse(takerMaker.data) : takerMaker.data);
+  logger.info(
+    'Previous data Maker/Taker',
+    (
+      makerTaker.data
+        ? JSON.parse(makerTaker.data)
+        : makerTaker.data
+    ),
+  );
+  logger.info(
+    'Previous data Taker/Maker',
+    (
+      takerMaker.data
+        ? JSON.parse(takerMaker.data)
+        : takerMaker.data
+    ),
+  );
 
   const tradingInfoMakerTaker = calculateTradingInfo({
     assetAAmount: makerAssetAmount,
