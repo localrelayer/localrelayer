@@ -18,6 +18,10 @@ import {
   ETH_NETWORKS_NAME_MAP,
   GANACHE_CONTRACT_ADDRESSES,
 } from 'utils';
+import {
+  checkShadowedOrdersInSeconds,
+  shadowedOrderslifeTimeinMs,
+} from 'config';
 
 import {
   collectTradingInfo,
@@ -150,8 +154,11 @@ async function watcherCreator(networkId) {
 function removeShadowedOrders() {
   const now = Date.now();
   const orderHashes = [];
+  /* shadowedOrders is Set, map functions is not exist */
   for (const [orderHash, shadowedAt] of shadowedOrders) { /* eslint-disable-line */
-    if (shadowedAt + 600 * 1000 < now) {
+    if (
+      (shadowedAt + shadowedOrderslifeTimeinMs) < now
+    ) {
       orderHashes.push(orderHash);
     }
   }
@@ -167,7 +174,10 @@ function removeShadowedOrders() {
       ),
     });
   }
-  setTimeout(removeShadowedOrders, 300);
+  setTimeout(
+    removeShadowedOrders,
+    checkShadowedOrdersInSeconds,
+  );
 }
 
 (async () => {
