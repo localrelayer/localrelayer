@@ -18,6 +18,8 @@ import {
   initWeb3ProviderEngine,
   transformBigNumberOrder,
   clearOrderFields,
+  clearOrderWithMetaFields,
+  constructOrderRecord,
   ETH_NETWORKS_NAME_MAP,
   GANACHE_CONTRACT_ADDRESSES,
 } from 'utils';
@@ -80,18 +82,14 @@ async function watcherCreator(networkId) {
       await order.save();
       /* do not spread plainOrder object, it will emit lot of extra keys */
       const plainOrder = order.toObject();
-      const metaData = {
-        isValid,
-        isShadowed: false,
-        remainingFillableMakerAssetAmount,
-        remainingFillableTakerAssetAmount,
-        orderHash: order.orderHash,
-        networkId: order.networkId,
-      };
-      redisClient.publish('orders', JSON.stringify({
-        order: plainOrder,
-        metaData,
-      }));
+      redisClient.publish(
+        'orders',
+        JSON.stringify(
+          constructOrderRecord(
+            clearOrderWithMetaFields(plainOrder),
+          ),
+        ),
+      );
     } else {
       const { error } = orderState;
       if (!shadowedOrders.has(orderHash)) {
@@ -100,7 +98,7 @@ async function watcherCreator(networkId) {
         order.error = error;
         order.isShadowed = !CLOSE_ORDER_ERRORS.includes(error);
         if (CLOSE_ORDER_ERRORS.includes(error)) {
-          order.completedAt = new Date();
+          order.completedAt = new Date().toISOString();
         }
 
         if (error === FILL_ERROR) {
@@ -122,26 +120,14 @@ async function watcherCreator(networkId) {
         }
         /* do not spread plainOrder object, it will emit lot of extra keys */
         const plainOrder = order.toObject();
-        const metaData = {
-          isValid,
-          isShadowed: order.isShadowed,
-          remainingFillableMakerAssetAmount: order.remainingFillableMakerAssetAmount,
-          remainingFillableTakerAssetAmount: order.remainingFillableTakerAssetAmount,
-          orderHash: order.orderHash,
-          networkId: order.networkId,
-          error,
-          ...(
-            order.completedAt
-              ? {
-                completedAt: order.completedAt,
-              }
-              : {}
+        redisClient.publish(
+          'orders',
+          JSON.stringify(
+            constructOrderRecord(
+              clearOrderWithMetaFields(plainOrder),
+            ),
           ),
-        };
-        redisClient.publish('orders', JSON.stringify({
-          order: plainOrder,
-          metaData,
-        }));
+        );
         await order.save();
       }
     }

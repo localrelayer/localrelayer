@@ -8,6 +8,7 @@ import {
 import {
   NULL_ADDRESS,
   ORDER_FIELDS,
+  ORDER_META_FIELDS,
   GANACHE_CONTRACT_ADDRESSES,
 } from './constants';
 
@@ -53,7 +54,20 @@ export const clearObjectKeys = (obj, keys) => (
 );
 
 export const clearOrderFields = order => (
-  clearObjectKeys(order, ORDER_FIELDS)
+  clearObjectKeys(
+    order,
+    ORDER_FIELDS,
+  )
+);
+
+export const clearOrderWithMetaFields = order => (
+  clearObjectKeys(
+    order,
+    [
+      ...ORDER_FIELDS,
+      ...ORDER_META_FIELDS,
+    ],
+  )
 );
 
 export function getContractAddressesForNetwork(networkId) {
@@ -69,18 +83,26 @@ export const constructOrderRecord = ({
   makerAssetProxyId,
   takerAssetProxyId,
   isValid,
+  isShadowed,
   remainingFillableMakerAssetAmount,
   remainingFillableTakerAssetAmount,
   networkId,
   orderHash,
+  createdAt,
+  completedAt,
+  error,
   ...order
 }) => ({
   order,
   metaData: {
     isValid,
+    isShadowed,
     remainingFillableMakerAssetAmount,
     remainingFillableTakerAssetAmount,
     networkId,
     orderHash,
+    createdAt,
+    completedAt,
+    error,
   },
 });

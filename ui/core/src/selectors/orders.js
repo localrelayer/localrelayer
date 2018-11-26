@@ -5,9 +5,10 @@ import {
 import {
   createSelector,
 } from 'reselect';
+
 import {
-  Web3Wrapper,
-} from '@0x/web3-wrapper';
+  utils,
+} from 'instex-core';
 import {
   getResourceMappedList,
   getResourceMap,
@@ -35,34 +36,6 @@ export const getTokensInfoMock = createSelector(
   ),
 );
 
-export const getOpenOrders = createSelector(
-  [
-    getResourceMappedList('orders', 'userOrders'),
-    getResourceMap('assets'),
-  ],
-  (
-    orders,
-    assets,
-  ) => (
-    orders.map(order => ({
-      ...order,
-      amount: Web3Wrapper.toUnitAmount(
-        new BigNumber(order.makerAssetAmount), assets[order.makerAssetData].decimals,
-      ).toFixed(6),
-      total: Web3Wrapper.toUnitAmount(
-        new BigNumber(order.takerAssetAmount), assets[order.takerAssetData].decimals,
-      ).toFixed(6),
-      price: (
-        new BigNumber(order.takerAssetAmount).div(order.makerAssetAmount)
-      ).toFixed(6),
-      key: order.id,
-      date: new Date().toLocaleDateString('en-US'),
-      status: 'Done',
-      action: 'Buy',
-      pair: `${assets[order.makerAssetData].symbol}/${assets[order.takerAssetData].symbol}`,
-    }))
-  ),
-);
 
 export const getTradingHistory = createSelector(
   [
@@ -72,11 +45,13 @@ export const getTradingHistory = createSelector(
   (orders, assets) => (
     orders.map(order => ({
       ...order,
-      amount: Web3Wrapper.toUnitAmount(
-        new BigNumber(order.makerAssetAmount), assets[order.makerAssetData].decimals,
+      amount: utils.toUnitAmount(
+        order.makerAssetAmount,
+        assets[order.makerAssetData].decimals,
       ).toFixed(8),
-      total: Web3Wrapper.toUnitAmount(
-        new BigNumber(order.takerAssetAmount), assets[order.takerAssetData].decimals,
+      total: utils.toUnitAmount(
+        order.takerAssetAmount,
+        assets[order.takerAssetData].decimals,
       ).toFixed(8),
       price: (
         new BigNumber(order.takerAssetAmount).div(order.makerAssetAmount)
@@ -95,11 +70,13 @@ export const getBidOrders = createSelector(
   (orders, assets) => (
     orders.filter(o => o.metaData.isValid).map(order => ({
       ...order,
-      amount: Web3Wrapper.toUnitAmount(
-        new BigNumber(order.makerAssetAmount), assets[order.makerAssetData].decimals,
+      amount: utils.toUnitAmount(
+        order.makerAssetAmount,
+        assets[order.makerAssetData].decimals,
       ).toFixed(8),
-      total: Web3Wrapper.toUnitAmount(
-        new BigNumber(order.takerAssetAmount), assets[order.takerAssetData].decimals,
+      total: utils.toUnitAmount(
+        order.takerAssetAmount,
+        assets[order.takerAssetData].decimals,
       ).toFixed(8),
       price: (
         new BigNumber(order.takerAssetAmount).div(order.makerAssetAmount)
@@ -116,11 +93,13 @@ export const getAskOrders = createSelector(
   (orders, assets) => (
     orders.filter(o => o.metaData.isValid).map(order => ({
       ...order,
-      amount: Web3Wrapper.toUnitAmount(
-        new BigNumber(order.makerAssetAmount), assets[order.makerAssetData].decimals,
+      amount: utils.toUnitAmount(
+        order.makerAssetAmount,
+        assets[order.makerAssetData].decimals,
       ).toFixed(8),
-      total: Web3Wrapper.toUnitAmount(
-        new BigNumber(order.takerAssetAmount), assets[order.takerAssetData].decimals,
+      total: utils.toUnitAmount(
+        order.takerAssetAmount,
+        assets[order.takerAssetData].decimals,
       ).toFixed(8),
       price: (
         new BigNumber(order.takerAssetAmount).div(order.makerAssetAmount)
