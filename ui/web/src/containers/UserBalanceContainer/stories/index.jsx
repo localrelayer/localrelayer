@@ -8,14 +8,24 @@ import {
 } from '@storybook/addon-knobs';
 
 import TradingPageLayout from 'web-components/TradingPageLayout';
+import UserProfileLayout from 'web-components/UserProfileLayout';
 import UserBalanceContainer from '..';
 
 
-const UserBalanceContainerStory = () => (
+const UserBalanceTradingPageContainerStory = () => (
   <TradingPageLayout.Preview
     hideRest={boolean('Hide preview layout', false)}
     userBalance={(
-      <UserBalanceContainer />
+      <UserBalanceContainer isTradingPage />
+    )}
+  />
+);
+
+const UserBalanceUserProfileContainerStory = () => (
+  <UserProfileLayout.Preview
+    hideRest={boolean('Hide preview layout', false)}
+    userBalance={(
+      <UserBalanceContainer isTradingPage={false} />
     )}
   />
 );
@@ -23,15 +33,10 @@ const UserBalanceContainerStory = () => (
 storiesOf('Containers|UserBalanceContainer', module)
   .addDecorator(withKnobs)
   .add(
-    'default',
-    UserBalanceContainerStory,
+    'trading page',
+    UserBalanceTradingPageContainerStory,
   )
   .add(
-    'full screen',
-    UserBalanceContainerStory,
-    {
-      options: {
-        goFullScreen: true,
-      },
-    },
+    'user profile page',
+    UserBalanceUserProfileContainerStory,
   );

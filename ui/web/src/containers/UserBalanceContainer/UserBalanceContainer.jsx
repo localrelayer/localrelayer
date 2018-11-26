@@ -15,8 +15,12 @@ import {
   coreActions,
 } from 'instex-core';
 
+type Props = {
+  isTradingPage: Boolean,
+}
 
-const UserBalanceContainer = (): Node => (
+
+const UserBalanceContainer = ({ isTradingPage }: Props): Node => (
   <Component
     mapStateToProps={state => ({
       assets: getAssetsWithBalanceAndAllowance(state),
@@ -29,6 +33,7 @@ const UserBalanceContainer = (): Node => (
       dispatch,
     }) => (
       <UserBalance
+        isTradingPage={isTradingPage}
         assets={assets}
         balance={balance}
         onToggleTradable={

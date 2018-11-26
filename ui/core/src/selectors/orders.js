@@ -48,13 +48,13 @@ export const getOpenOrders = createSelector(
       ...order,
       amount: Web3Wrapper.toUnitAmount(
         new BigNumber(order.makerAssetAmount), assets[order.makerAssetData].decimals,
-      ).toFixed(8),
+      ).toFixed(6),
       total: Web3Wrapper.toUnitAmount(
         new BigNumber(order.takerAssetAmount), assets[order.takerAssetData].decimals,
-      ).toFixed(8),
+      ).toFixed(6),
       price: (
         new BigNumber(order.takerAssetAmount).div(order.makerAssetAmount)
-      ).toFixed(8),
+      ).toFixed(6),
       key: order.id,
       date: new Date().toLocaleDateString('en-US'),
       status: 'Done',
