@@ -1,5 +1,9 @@
 export const multipleLists = resourceType => (state, action) => {
-  const { resources, lists = [], prepend } = action;
+  const {
+    resources,
+    lists = [],
+    prepend,
+  } = action;
 
   if (action.resourceType !== resourceType) {
     return state;

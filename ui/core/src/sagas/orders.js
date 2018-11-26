@@ -97,6 +97,38 @@ export function* fetchTradingHistory(opts = {}) {
   }
 }
 
+export function* fetchUserOrders(opts = {}) {
+  const actions = createActionCreators('read', {
+    resourceType: 'orders',
+    requestKey: 'userOrders',
+    list: 'userOrders',
+    mergeListIds: false,
+  });
+  try {
+    yield eff.put(actions.pending());
+    const response = yield eff.call(
+      api.getOpenOrders,
+      {
+        ...opts,
+      },
+    );
+    console.log(response);
+    const orders = response.records.map(order => ({
+      id: orderHashUtils.getOrderHashHex(order),
+      ...order,
+    }));
+
+    yield eff.put(actions.succeeded({
+      resources: orders,
+    }));
+  } catch (err) {
+    console.log(err);
+    yield eff.put(actions.succeeded({
+      resources: [],
+    }));
+  }
+}
+
 function* postOrder({
   formActions,
   order: {

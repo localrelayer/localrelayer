@@ -37,19 +37,14 @@ export const getTokensInfoMock = createSelector(
 
 export const getOpenOrders = createSelector(
   [
-    getResourceMappedList('orders', 'asks'),
-    getResourceMappedList('orders', 'bids'),
+    getResourceMappedList('orders', 'userOrders'),
     getResourceMap('assets'),
   ],
   (
-    asks,
-    bids,
+    orders,
     assets,
   ) => (
-    [
-      ...asks,
-      ...bids,
-    ].map(order => ({
+    orders.map(order => ({
       ...order,
       amount: Web3Wrapper.toUnitAmount(
         new BigNumber(order.makerAssetAmount), assets[order.makerAssetData].decimals,

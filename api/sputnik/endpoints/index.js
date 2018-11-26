@@ -74,6 +74,54 @@ sputnikApi.get('/tradingHistory', async (ctx) => {
   };
 });
 
+sputnikApi.get('/openOrders', async (ctx) => {
+  const {
+    baseAssetData,
+    quoteAssetData,
+    traderAddress,
+  } = ctx.request.query;
+  const baseQuery = {
+    $and: [
+      {
+        $or: [
+          {
+            isValid: true,
+          },
+          {
+            isValid: false,
+            isShadowed: true,
+          },
+        ],
+      },
+      {
+        $or: [
+          {
+            makerAddress: traderAddress,
+          },
+          {
+            takerAddress: traderAddress,
+          },
+        ],
+      },
+    ],
+  };
+  const orders = await Order.find({
+    $or: [{
+      makerAssetData: baseAssetData,
+      takerAssetData: quoteAssetData,
+      ...baseQuery,
+    }, {
+      makerAssetData: quoteAssetData,
+      takerAssetData: baseAssetData,
+      ...baseQuery,
+    }],
+  });
+  ctx.status = 200;
+  ctx.body = {
+    records: orders,
+  };
+});
+
 sputnikApi.post('/tradingInfo', async (ctx) => {
   const { pairs } = ctx.request.body;
   const idPairs = pairs.map(p => [

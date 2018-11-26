@@ -77,7 +77,7 @@ const UserOrders = ({ orders }: Props) => (
   <S.UserOrders>
     <S.Title>
       <div>
-      Opened orders
+      Your open orders
       </div>
     </S.Title>
     <S.UserOrdersTable

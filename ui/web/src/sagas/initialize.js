@@ -2,6 +2,9 @@
 import {
   assetDataUtils,
 } from '0x.js';
+import {
+  ExchangeContractErrs,
+} from '@0x/types';
 import uuidv4 from 'uuid/v4';
 import * as eff from 'redux-saga/effects';
 import createActionCreators from 'redux-resource-action-creators';
@@ -155,6 +158,19 @@ function* setCurrentPair({
           quoteAssetData: assetPair.assetDataB.assetData,
         },
       );
+      const accounts = yield eff.call(web3.eth.getAccounts);
+      const selectedAccount = accounts.length ? accounts[0].toLowerCase() : null;
+      if (selectedAccount) {
+        yield eff.fork(
+          coreSagas.fetchUserOrders,
+          {
+            networkId,
+            baseAssetData: assetPair.assetDataA.assetData,
+            quoteAssetData: assetPair.assetDataB.assetData,
+            traderAddress: selectedAccount,
+          },
+        );
+      }
       yield eff.fork(
         coreSagas.fetchTradingHistory,
         {
@@ -188,27 +204,49 @@ function* takeUpdateOrder(socketChannel) {
     takeSubscribeOnChangeChartBar,
     orderFillChannel,
   );
+  const actions = createActionCreators('read', {
+    resourceType: 'orders',
+    requestKey: 'orders',
+    mergeListIds: true,
+  });
+
+  const accounts = yield eff.call(web3.eth.getAccounts);
+  const traderAddress = accounts.length ? accounts[0].toLowerCase() : null;
 
   while (true) {
+    const lists = [];
     const data = yield eff.take(socketChannel);
-    const actions = createActionCreators('read', {
-      resourceType: 'orders',
-      requestKey: 'orders',
-      mergeListIds: true,
-    });
+
+    /* Determine whether the order should be placed to userOrders list */
+    if (
+      data.channel === 'orders'
+      && data.type === 'update'
+      && (
+        data.payload.metaData.isValid === true
+        || data.payload.metaData.isShadowed === true
+      )
+      && (
+        data.payload.order.makerAddress === traderAddress
+        || data.payload.order.takerAddress === traderAddress
+      )
+    ) {
+      lists.push('userOrders');
+    }
+
     if (
       data.channel === 'orders'
       && data.type === 'update'
       && data.payload.metaData.isValid === false
     ) {
-      if (data.payload.metaData.completedAt) {
-        /* Move or put the order to the trading history */
+      if (data.payload.metaData.error === ExchangeContractErrs.OrderRemainingFillAmountZero) {
+        lists.push('tradingHistory');
         yield eff.put(
           orderFillChannel,
           data.payload,
         );
       }
       yield eff.put(actions.succeeded({
+        lists,
         resources: [{
           id: data.payload.metaData.orderHash,
           metaData: data.payload.metaData,
@@ -224,21 +262,22 @@ function* takeUpdateOrder(socketChannel) {
     ) {
       const currentAssetPairId = yield eff.select(getUiState('currentAssetPairId'));
       const [baseAssetData] = currentAssetPairId.split('_');
+      lists.push((
+        baseAssetData === data.payload.order.makerAssetData
+          ? (
+            'asks'
+          )
+          : (
+            'bids'
+          )
+      ));
       yield eff.put(actions.succeeded({
+        lists,
         resources: [{
           id: data.payload.metaData.orderHash,
           metaData: data.payload.metaData,
           ...data.payload.order,
         }],
-        list: (
-          baseAssetData === data.payload.order.makerAssetData
-            ? (
-              'asks'
-            )
-            : (
-              'bids'
-            )
-        ),
       }));
     }
   }
