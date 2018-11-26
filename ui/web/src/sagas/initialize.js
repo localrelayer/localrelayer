@@ -19,6 +19,7 @@ import {
 
 import {
   coreSagas,
+  coreSelectors,
   coreActions,
   api,
 } from 'instex-core';
@@ -158,8 +159,9 @@ function* setCurrentPair({
           quoteAssetData: assetPair.assetDataB.assetData,
         },
       );
-      const accounts = yield eff.call(web3.eth.getAccounts);
-      const selectedAccount = accounts.length ? accounts[0].toLowerCase() : null;
+      const selectedAccount = yield eff.select(
+        coreSelectors.getWalletState('selectedAccount'),
+      );
       if (selectedAccount) {
         yield eff.fork(
           coreSagas.fetchUserOrders,
@@ -210,9 +212,7 @@ function* takeUpdateOrder(socketChannel) {
     mergeListIds: true,
   });
 
-  const accounts = yield eff.call(web3.eth.getAccounts);
-  const traderAddress = accounts.length ? accounts[0].toLowerCase() : null;
-
+  const traderAddress = yield eff.select(coreSelectors.getWalletState('selectedAccount'));
   while (true) {
     const lists = [];
     const data = yield eff.take(socketChannel);
@@ -339,6 +339,14 @@ export function* initialize(): Saga<void> {
   console.log('Web initialize saga');
 
   const networkId = yield eff.call(web3.eth.net.getId);
+  const accounts = yield eff.call(web3.eth.getAccounts);
+  const selectedAccount = accounts.length ? accounts[0].toLowerCase() : null;
+  yield eff.put(
+    coreActions.setWalletState({
+      networkId,
+      selectedAccount,
+    }),
+  );
   yield eff.put(uiActions.setUiState({
     networkId,
   }));
