@@ -49,6 +49,7 @@ export function createOrdersEndpoint(standardRelayerApi) {
     const {
       traderAssetData,
       traderAddress,
+      includeShadowed = false,
       networkId = 1,
       page = 1,
       perPage = 100,
@@ -57,6 +58,26 @@ export function createOrdersEndpoint(standardRelayerApi) {
     const orders = await Order.find({
       networkId,
       ...baseQuery,
+      ...(
+        includeShadowed
+          ? ({
+            $and: [
+              {
+                $or: [
+                  {
+                    isValid: true,
+                  },
+                  {
+                    isValid: false,
+                    isShadowed: true,
+                  },
+                ],
+              },
+            ],
+          }) : {
+            isValid: true,
+          }
+      ),
       ...(
         traderAssetData
           ? ({

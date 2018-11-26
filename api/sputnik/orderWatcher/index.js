@@ -63,7 +63,6 @@ async function watcherCreator(networkId) {
       isValid,
       orderHash,
     } = orderState;
-    console.log(orderState);
     const order = await Order.findOne({
       orderHash,
     });
@@ -77,11 +76,13 @@ async function watcherCreator(networkId) {
       } = orderState.orderRelevantState;
       order.remainingFillableMakerAssetAmount = remainingFillableMakerAssetAmount;
       order.remainingFillableTakerAssetAmount = remainingFillableTakerAssetAmount;
+      order.isShadowed = false;
       await order.save();
       /* do not spread plainOrder object, it will emit lot of extra keys */
       const plainOrder = order.toObject();
       const metaData = {
         isValid,
+        isShadowed: false,
         remainingFillableMakerAssetAmount,
         remainingFillableTakerAssetAmount,
         orderHash: order.orderHash,
@@ -97,11 +98,14 @@ async function watcherCreator(networkId) {
         shadowedOrders.set(orderHash, Date.now());
 
         order.error = error;
+        order.isShadowed = !CLOSE_ORDER_ERRORS.includes(error);
+        if (CLOSE_ORDER_ERRORS.includes(error)) {
+          order.completedAt = new Date();
+        }
 
         if (error === FILL_ERROR) {
           order.remainingFillableMakerAssetAmount = '0';
           order.remainingFillableTakerAssetAmount = '0';
-          order.completedAt = new Date();
           try {
             const {
               tradingInfoRedisKeyMakerTaker,
@@ -120,10 +124,12 @@ async function watcherCreator(networkId) {
         const plainOrder = order.toObject();
         const metaData = {
           isValid,
+          isShadowed: order.isShadowed,
           remainingFillableMakerAssetAmount: order.remainingFillableMakerAssetAmount,
           remainingFillableTakerAssetAmount: order.remainingFillableTakerAssetAmount,
           orderHash: order.orderHash,
           networkId: order.networkId,
+          error,
           ...(
             order.completedAt
               ? {
@@ -136,7 +142,6 @@ async function watcherCreator(networkId) {
           order: plainOrder,
           metaData,
         }));
-        order.isShadowed = !CLOSE_ORDER_ERRORS.includes(error);
         await order.save();
       }
     }
@@ -144,7 +149,6 @@ async function watcherCreator(networkId) {
 
   const orders = await Order.find({
     networkId,
-    completedAt: null,
     $and: [
       {
         $or: [

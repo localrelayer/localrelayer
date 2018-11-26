@@ -9,6 +9,7 @@ function apiFactory() {
     ['getOrderBook', '/v2/orderbook'],
     ['getOrderConfig', '/v2/order-config'],
     ['getTradingHistory', '/sputnik/tradingHistory'],
+    ['getOpenOrders', '/sputnik/openOrders'],
     ['getBars', '/sputnik/bars'],
   ];
   let apiUrl = '';
