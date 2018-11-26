@@ -36,7 +36,6 @@ const getColumns = onToggleTradable => [
   {
     title: 'Token',
     dataIndex: 'symbol',
-    key: 'symbol',
     render: (text, record) => (
       <div>
         <Tooltip title={record.name}>
@@ -65,7 +64,6 @@ const getColumns = onToggleTradable => [
   {
     title: 'Balance',
     dataIndex: 'balance',
-    key: 'balance',
     render: (text, record) => (
       <div>
         {text.length > 14 ? text.slice(0, 14) : text}

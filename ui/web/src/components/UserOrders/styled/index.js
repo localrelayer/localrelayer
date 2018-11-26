@@ -31,12 +31,10 @@ export const UserOrdersTable = styled(Table)`
     text-align: left;
     width: 13%;
   }
-  
-  .ant-table-tbody > tr:nth-child(2) {
+    .ant-table-tbody > tr.shadowed {
       background-color: #330000 !important;
     }
-   
-    .ant-table-tbody > tr:nth-child(2):hover > td {
+    .ant-table-tbody > tr.shadowed:hover > td {
       background-color: #330000 !important;
     }
    .ant-table-tbody > tr:hover > td {

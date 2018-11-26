@@ -12,16 +12,14 @@ type Props = {
 const columns = [{
   title: 'Pair',
   dataIndex: 'pair',
-  key: 'pair',
   render: (text: string) => (
     <Tooltip title={text}>
       {text}
     </Tooltip>
   ),
 }, {
-  title: 'Date',
-  dataIndex: 'date',
-  key: 'date',
+  title: 'Created',
+  dataIndex: 'metaData.createdAt',
   render: (text: string) => (
     <Tooltip title={text}>
       {text}
@@ -30,7 +28,6 @@ const columns = [{
 }, {
   title: 'Price',
   dataIndex: 'price',
-  key: 'price',
   render: (text: string) => (
     <Tooltip title={text}>
       {text}
@@ -39,7 +36,6 @@ const columns = [{
 }, {
   title: 'Amount',
   dataIndex: 'amount',
-  key: 'amount',
   render: (text: string) => (
     <Tooltip title={text}>
       {text}
@@ -48,7 +44,6 @@ const columns = [{
 }, {
   title: 'Total',
   dataIndex: 'total',
-  key: 'total',
   render: (text: string) => (
     <Tooltip title={text}>
       {text}
@@ -56,23 +51,22 @@ const columns = [{
   ),
 }, {
   title: 'Status',
-  dataIndex: 'status',
   key: 'status',
-  render: (text: string) => (
-    text === 'Shadow' ? (
-      <Tooltip title="This order is shadowed read docs for more info">
-        {text}
-        <Icon
-          style={{
-            marginLeft: 5,
-          }}
-          type="info-circle-o"
-        />
-      </Tooltip>
-    )
-      : (
-        <Tooltip title={text}>
-          {text}
+  render: (text, record) => (
+    record.metaData.isShadowed
+      ? (
+        <Tooltip title="This order is shadowed read docs for more info">
+          Unpublished
+          <Icon
+            style={{
+              marginLeft: 5,
+            }}
+            type="info-circle-o"
+          />
+        </Tooltip>
+      ) : (
+        <Tooltip title="Published">
+          Published
         </Tooltip>
       )
   ),
@@ -96,6 +90,15 @@ const UserOrders = ({ orders }: Props) => (
     </S.Title>
     <S.UserOrdersTable
       size="small"
+      rowKey="id"
+      onRow={record => ({
+        ...(
+          record.metaData.isShadowed
+            ? {
+              className: 'shadowed',
+            } : {}
+        ),
+      })}
       columns={columns}
       dataSource={orders}
       pagination={false}

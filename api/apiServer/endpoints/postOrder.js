@@ -18,6 +18,7 @@ import {
   initWeb3ProviderEngine,
   getContractAddressesForNetwork,
   transformBigNumberOrder,
+  constructOrderRecord,
   validator,
   validateOrderConfig,
   validateExpirationTimeSeconds,
@@ -109,6 +110,7 @@ export function createPostOrderEndpoint(standardRelayerApi) {
           isValid: true,
           remainingFillableMakerAssetAmount: submittedOrder.makerAssetAmount,
           remainingFillableTakerAssetAmount: submittedOrder.takerAssetAmount,
+          createdAt: new Date().toISOString(),
           orderHash,
           networkId,
         };
@@ -125,21 +127,7 @@ export function createPostOrderEndpoint(standardRelayerApi) {
         }
 
         logger.debug(order);
-        const {
-          isValid,
-          remainingFillableMakerAssetAmount,
-          remainingFillableTakerAssetAmount,
-        } = order;
-        redisClient.publish('orderWatcher', JSON.stringify({
-          order,
-          metaData: {
-            isValid,
-            networkId,
-            orderHash,
-            remainingFillableMakerAssetAmount,
-            remainingFillableTakerAssetAmount,
-          },
-        }));
+        redisClient.publish('orderWatcher', JSON.stringify(constructOrderRecord(order)));
         ctx.status = 201;
         ctx.message = 'OK';
         ctx.body = {};

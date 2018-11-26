@@ -4,6 +4,9 @@ import moment from 'moment';
 import {
   BigNumber,
 } from '0x.js';
+import {
+  ExchangeContractErrs,
+} from '@0x/types';
 
 import {
   Order,
@@ -11,6 +14,9 @@ import {
 import {
   coRedisClient,
 } from 'redisClient';
+import {
+  constructOrderRecord,
+} from 'utils';
 import {
   logger,
 } from 'apiLogger';
@@ -55,22 +61,19 @@ sputnikApi.get('/tradingHistory', async (ctx) => {
     $or: [{
       makerAssetData: baseAssetData,
       takerAssetData: quoteAssetData,
-      completedAt: {
-        $ne: null,
-      },
+      error: ExchangeContractErrs.OrderRemainingFillAmountZero,
     }, {
       makerAssetData: quoteAssetData,
       takerAssetData: baseAssetData,
-      completedAt: {
-        $ne: null,
-      },
+      error: ExchangeContractErrs.OrderRemainingFillAmountZero,
     }],
   })
     .limit(500)
-    .sort('-completedAt');
+    .sort('-completedAt')
+    .lean();
   ctx.status = 200;
   ctx.body = {
-    records: orders,
+    records: orders.map(constructOrderRecord),
   };
 });
 
@@ -115,10 +118,11 @@ sputnikApi.get('/openOrders', async (ctx) => {
       takerAssetData: baseAssetData,
       ...baseQuery,
     }],
-  });
+  })
+    .lean();
   ctx.status = 200;
   ctx.body = {
-    records: orders,
+    records: orders.map(constructOrderRecord),
   };
 });
 

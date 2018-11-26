@@ -80,9 +80,10 @@ export function* fetchTradingHistory(opts = {}) {
         ...opts,
       },
     );
-    const orders = response.records.map(order => ({
+    const orders = response.records.map(({ order, metaData }) => ({
       id: orderHashUtils.getOrderHashHex(order),
       ...order,
+      metaData,
     }));
 
     yield eff.put(actions.succeeded({
@@ -112,10 +113,10 @@ export function* fetchUserOrders(opts = {}) {
         ...opts,
       },
     );
-    console.log(response);
-    const orders = response.records.map(order => ({
+    const orders = response.records.map(({ order, metaData }) => ({
       id: orderHashUtils.getOrderHashHex(order),
       ...order,
+      metaData,
     }));
 
     yield eff.put(actions.succeeded({

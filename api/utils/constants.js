@@ -18,6 +18,7 @@ export const ETH_NETWORKS_NAME_MAP = {
   test: 50,
 };
 
+/* Order fields which required for 0x protocol */
 export const ORDER_FIELDS = [
   'makerAddress',
   'takerAddress',
@@ -33,4 +34,16 @@ export const ORDER_FIELDS = [
   'salt',
   'expirationTimeSeconds',
   'signature',
+];
+
+export const ORDER_META_FIELDS = [
+  'isValid',
+  'isShadowed',
+  'remainingFillableMakerAssetAmount',
+  'remainingFillableTakerAssetAmount',
+  'networkId',
+  'orderHash',
+  'createdAt',
+  'completedAt',
+  'error',
 ];
