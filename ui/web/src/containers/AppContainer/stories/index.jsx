@@ -80,4 +80,43 @@ storiesOf('Containers|AppContainer', module)
     () => (
       <AppContainerStory />
     ),
+  )
+  .add(
+    '/ZRX-WETH',
+    () => (
+      <AppContainerStory
+        route="/ZRX-WETH"
+      />
+    ),
+  )
+  .add(
+    '/ABX-WETH - using addresses',
+    () => (
+      <AppContainerStory
+        route={[
+          '/0x9a794dc1939f1d78fa48613b89b8f9d0a20da00e',
+          '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+        ].join('-')}
+      />
+    ),
+  )
+  .add(
+    '/WRONG-WETH - wrong addresses',
+    () => (
+      <AppContainerStory
+        route={[
+          '/FAKE',
+          'WETH',
+        ].join('-')}
+      />
+    ),
+  )
+  .add(
+    'full screen',
+    () => <AppContainerStory />,
+    {
+      options: {
+        goFullScreen: true,
+      },
+    },
   );

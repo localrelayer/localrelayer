@@ -3,7 +3,6 @@ import {
 } from '0x.js';
 import {
   generatePseudoRandomSalt,
-  orderHashUtils,
 } from '@0x/order-utils';
 import {
   Web3Wrapper,
@@ -173,13 +172,11 @@ export function mocksOrdersFactory({
           exchangeAddress: randomEthereumAddress(),
           ...predefinedOrder,
         };
-        /* It's a hash of the order but we will use at as signature in mock */
-        const orderHashHex = orderHashUtils.getOrderHashHex(randomOrder);
         return {
           value: {
             type,
             order: {
-              signature: orderHashHex,
+              signature: generatePseudoRandomSalt().toString(),
               ...randomOrder,
             },
           },
