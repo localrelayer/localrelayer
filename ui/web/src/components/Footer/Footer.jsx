@@ -15,15 +15,6 @@ import {
   AlignRight,
 } from '../SharedStyles';
 
-type Props = {
-
-};
-
-/**
- * Footer
- * @version 1.0.0
- * @author [Tim Reznich](https://github.com/imbaniac)
- */
 
 const Footer = (): Node => (
   <FooterContainer>
