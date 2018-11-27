@@ -6,34 +6,34 @@ import * as colors from 'web-styles/colors';
 
 
 export const TradingHistoryTable = styled(Table)`
- height: 90%;
-.ant-table {
-  border: none;
-}
-
-.ant-table-thead > tr > th {
-  background: ${colors['component-background']};
-  border: 1px solid ${colors['component-background']} !important;
-  color: white;
-  text-align: left;
-  width: 13%;
-}
-
-.ant-table-tbody > tr > td {
-  border: none;
-  color: white;
-  font-size: 12px;
-  text-align: left;
-  cursor: pointer;
-  width: 13%;
-}
-
-.ant-table-tbody > tr:hover > td {
-  background: ${colors['item-hover-bg']};
+  height: 90%;
+  .ant-table {
+    border: none;
   }
+  
+  .ant-table-thead > tr > th {
+    background: ${colors['component-background']};
+    border: 1px solid ${colors['component-background']} !important;
+    color: white;
+    text-align: left;
+    width: 13%;
+  }
+  
   .ant-table-tbody > tr > td {
-    padding: 5px 5px;
-  } 
+    border: none;
+    color: white;
+    font-size: 12px;
+    text-align: left;
+    cursor: pointer;
+    width: 13%;
+  }
+
+  .ant-table-tbody > tr:hover > td {
+    background-color: ${colors['item-hover-bg']} !important;
+    }
+    .ant-table-tbody > tr > td {
+      padding: 5px 5px;
+    } 
 `;
 
 export const TradingHistory = styled.div`
