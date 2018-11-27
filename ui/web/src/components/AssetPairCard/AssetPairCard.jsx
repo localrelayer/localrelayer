@@ -54,17 +54,19 @@ const AssetPairCard = ({
         )}
         description={(
           <S.AssetPrice>
-            <div>
+            <S.HighLowBlock>
               <div>
                 High:
+                {' '}
                 {tradingInfo.maxPrice || '--'}
               </div>
               <div>
                 Low:
+                {' '}
                 {tradingInfo.minPrice || '--'}
               </div>
-            </div>
-            <div>
+            </S.HighLowBlock>
+            <S.ChangeVolumeBlock>
               <S.PriceChange>
                 {isPositive
                   ? (
@@ -80,9 +82,10 @@ const AssetPairCard = ({
               </S.PriceChange>
               <div>
                 Volume:
-                {tradingInfo.assetAVolume ? tradingInfo.assetAVolume : 0}
+                {' '}
+                {tradingInfo.assetAVolume ? tradingInfo.assetAVolume.slice(0, 16) : 0}
               </div>
-            </div>
+            </S.ChangeVolumeBlock>
           </S.AssetPrice>
         )}
       />
