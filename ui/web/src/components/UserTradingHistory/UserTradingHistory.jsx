@@ -52,7 +52,7 @@ const columns = [
         <ColoredSpan
           color={record.type === 'ask' ? colors.red : colors.green}
         >
-          {text.toFixed(6)}
+          {parseFloat(text).toFixed(6)}
         </ColoredSpan>
       </Tooltip>
     ),
@@ -63,7 +63,7 @@ const columns = [
     key: 'amount',
     render: (text: string) => (
       <Tooltip title={text}>
-        {text.toFixed(6)}
+        {parseFloat(text).toFixed(6)}
       </Tooltip>
     ),
   },
@@ -73,7 +73,7 @@ const columns = [
     key: 'total',
     render: (text: string) => (
       <Tooltip title={text}>
-        {text.toFixed(6)}
+        {parseFloat(text).toFixed(6)}
       </Tooltip>
     ),
   },
