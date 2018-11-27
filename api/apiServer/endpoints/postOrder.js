@@ -37,9 +37,13 @@ export function createPostOrderEndpoint(standardRelayerApi) {
     const web3ProviderEngine = initWeb3ProviderEngine(networkId);
 
     async function endPoint() {
+      /* if orderConfig is provide for testing reasons
+        don't validate it by field comparing
+      */
+      const { isCustomConfig } = ctx.query;
       const submittedOrder = ctx.request.body;
-      const orderConfigErrors = validateOrderConfig(submittedOrder);
-
+      /* type of isCustomConfig is string but it's OK we check for existence */
+      const orderConfigErrors = isCustomConfig ? [] : validateOrderConfig(submittedOrder);
       if (
         validator.isValid(submittedOrder, schemas.signedOrderSchema)
         && validateExpirationTimeSeconds(submittedOrder.expirationTimeSeconds)
