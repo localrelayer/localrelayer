@@ -60,24 +60,21 @@ export const Table = styled(AntdTable).attrs({
     color: ${colors.text};
     text-align: left;
   }
-    .ant-table-thead > tr > th:nth-child(1) {
+  .ant-table-thead > tr > th:nth-child(1) {
     width: ${props => (props.isTradingPage ? '25%' : '20%')};
   }
-    .ant-table-thead > tr > th:nth-child(2) {
+  .ant-table-thead > tr > th:nth-child(2) {
     width: ${props => (props.isTradingPage ? '50%' : '25%')};
   }
-      .ant-table-thead > tr > th:last-child {
+  .ant-table-thead > tr > th:last-child {
     width: ${props => (props.isTradingPage ? '25%' : '15%')};
   }
-  
-      .ant-table-tbody > tr > td:last-child {
+  .ant-table-tbody > tr > td:last-child {
     text-align: ${props => (props.isTradingPage ? 'right' : 'left')}; 
-}
-
-    .ant-table-thead > tr > th:last-child {
+  }
+  .ant-table-thead > tr > th:last-child {
     text-align: ${props => (props.isTradingPage ? 'right' : 'left')}; 
-}
-  
+} 
   .ant-table-tbody > tr > td {
     border-bottom: 1px solid ${colors['component-background']};
     color: ${colors.text};
@@ -87,10 +84,8 @@ export const Table = styled(AntdTable).attrs({
     padding: 5px 5px;
 }
 
-
-
   .ant-table-tbody > tr:hover > td {
-    background: ${colors['item-hover-bg']};
+    background-color: ${colors['item-hover-bg']} !important;
   }
   
     & .ant-table-placeholder {
