@@ -20,6 +20,9 @@ const dataSource = [{
   total: 0.003674,
   status: 'Done',
   action: 'Buy',
+  metaData: {
+    isShadowed: true,
+  },
 }, {
   key: '2',
   pair: 'ZRX/WETH',
@@ -29,6 +32,9 @@ const dataSource = [{
   total: 0.003614,
   status: 'Shadow',
   action: 'Sell',
+  metaData: {
+    isShadowed: false,
+  },
 }, {
   key: '3',
   pair: 'ETH/WETH',
@@ -38,6 +44,9 @@ const dataSource = [{
   total: 341.0004,
   status: 'Done',
   action: 'Buy',
+  metaData: {
+    isShadowed: false,
+  },
 }];
 
 const UserOrdersTradingPageStory = () => (
