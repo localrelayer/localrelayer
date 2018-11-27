@@ -71,6 +71,7 @@ export default class extends Component<Props> {
 
   initalizeChartWidget = (
     assetPair: AssetPair,
+    networkId: any,
     dispatch: Dispatch,
   ) => {
     // eslint-disable-next-line
@@ -84,6 +85,7 @@ export default class extends Component<Props> {
       datafeed: (
         getDatafeed(
           assetPair,
+          networkId,
           (chartBarCallback) => {
             dispatch(
               chartActions.subscribeOnChangeChartBar(

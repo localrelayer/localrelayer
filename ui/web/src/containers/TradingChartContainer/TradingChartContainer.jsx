@@ -11,7 +11,7 @@ const TradingChartContainer = () => (
   <Component
     mapStateToProps={state => ({
       assetPair: getCurrentAssetPair(state),
-      networkId: getUiState('networkId'),
+      networkId: getUiState('networkId')(state),
     })}
   >
     {({

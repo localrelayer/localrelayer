@@ -36,7 +36,7 @@ export function* fetchOrderBook(opts = {}) {
       order,
       metaData,
     }) => ({
-      id: orderHashUtils.getOrderHashHex(order),
+      id: order.signature,
       metaData,
       ...order,
     }));
@@ -44,7 +44,7 @@ export function* fetchOrderBook(opts = {}) {
       order,
       metaData,
     }) => ({
-      id: orderHashUtils.getOrderHashHex(order),
+      id: order.signature,
       metaData,
       ...order,
     }));
@@ -81,7 +81,7 @@ export function* fetchTradingHistory(opts = {}) {
       },
     );
     const orders = response.records.map(({ order, metaData }) => ({
-      id: orderHashUtils.getOrderHashHex(order),
+      id: order.signature,
       ...order,
       metaData,
     }));
@@ -114,7 +114,7 @@ export function* fetchUserOrders(opts = {}) {
       },
     );
     const orders = response.records.map(({ order, metaData }) => ({
-      id: orderHashUtils.getOrderHashHex(order),
+      id: order.signature,
       ...order,
       metaData,
     }));
