@@ -38,11 +38,11 @@ export const assetPair = {
     },
   },
   tradingInfo: {
-    assetAVolume: '10001',
-    change24: -50,
-    lastPrice: '5',
-    maxPrice: '10',
-    minPrice: '5',
+    assetAVolume: '42440000000000000000.00000000',
+    change24: '-99.50',
+    lastPrice: '0.00250000',
+    maxPrice: '0.50000000',
+    minPrice: '0.00250000',
   },
 };
 
