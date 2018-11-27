@@ -26,9 +26,9 @@ export const CardTitle = styled.div`
 
 export const AssetPrice = styled.div`
   display: flex;
-  font-size: 0.8rem;
-  align-items: flex-end;
-  justify-content: space-between;
+  width: 100%;
+  font-size: 0.75rem;
+  line-height: 200%;
 `;
 
 export const BaseAssetAddress = styled.a`
@@ -46,7 +46,20 @@ export const LastPrice = styled.div`
 `;
 
 export const PriceChange = styled.div`
+  font-size: 0.95rem;  
+`;
+
+
+export const HighLowBlock = styled.div`
   display: flex;
-  justify-content: flex-end;
-  font-size: 1rem;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 40%;
+`;
+
+export const ChangeVolumeBlock = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  width: 60%;
 `;
