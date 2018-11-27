@@ -17,6 +17,7 @@ import {
 
 export const getDatafeed = (
   assetPair: AssetPair,
+  networkId: any,
   onSubscribeBars: Function,
 ) => ({
   onReady: (cb: any) => {
@@ -50,6 +51,7 @@ export const getDatafeed = (
     const quoteAssetData = assetDataUtils
       .encodeERC20AssetData(assetPair.assetDataB.assetData.address);
     const data = await api.getBars({
+      networkId,
       baseAssetData,
       quoteAssetData,
       from,

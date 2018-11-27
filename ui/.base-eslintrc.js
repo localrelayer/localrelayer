@@ -8,6 +8,7 @@ module.exports = {
     web3: true,
     Web3: true,
     WebSocket: true,
+    perfomance: true,
   },
   extends: [
     'airbnb',
