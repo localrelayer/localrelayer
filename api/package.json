@@ -47,7 +47,8 @@
     "plantAssetPairs:dev": "NODE_ENV=development npm run plantAssetPairs",
     "plantAssetPairs:test": "NODE_ENV=test npm run plantAssetPairs",
     "plantAssetPairs:prod": "NODE_ENV=production npm run plantAssetPairs",
-    "generateOrders": "NODE_ENV=development babel-node apiServer/scripts/generateOrders.js"
+    "generateOrders": "NODE_ENV=development babel-node apiServer/scripts/generateOrders.js",
+    "emulator": "NODE_ENV=development babel-node ./tradingEmulator"
   },
   "_moduleAliases": {
     "db": "./db",

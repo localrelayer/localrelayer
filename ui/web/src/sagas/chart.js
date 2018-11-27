@@ -46,7 +46,7 @@ function* takeFillOrderAndCalculateChartBar({
 
     // Convert volume to normal unit amount
     const volume = +Web3Wrapper.toUnitAmount(
-      new BigNumber(parseFloat(amount)),
+      new BigNumber(amount),
       assetPair.assetDataB.assetData.decimals,
     );
 

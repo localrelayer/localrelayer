@@ -4,7 +4,8 @@ import type {
 } from 'instex-core/types';
 
 import {
-  assetDataUtils, BigNumber,
+  assetDataUtils,
+  BigNumber,
 } from '0x.js';
 import {
   api,
@@ -68,7 +69,7 @@ export const getDatafeed = (
     const bars = Object.keys(barsData).map((a) => {
       // Convert volume to normal unit amount
       const volume = +Web3Wrapper.toUnitAmount(
-        new BigNumber(barsData[a].volume),
+        new BigNumber(barsData[a].volume.toString()),
         assetPair.assetDataB.assetData.decimals,
       );
 
