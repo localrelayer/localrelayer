@@ -1,5 +1,5 @@
 import {
-  exec,
+  spawn,
 } from 'child_process';
 
 import {
@@ -15,13 +15,22 @@ const fgProcessOutputHandler = (data) => {
 };
 
 function scenarioStarter(cb, scenarioFilePath) {
-  const child = exec([
-    'DASHBOARD_PARENT=true',
-    `LOG_LEVEL=${dashboardConfig.fgProcessLogLevel}`,
-    'NODE_ENV=development',
+  const cwd = process.cwd();
+  const child = spawn(
     'babel-node',
-    scenarioFilePath,
-  ].join(' '));
+    [scenarioFilePath],
+    {
+      cwd,
+      shell: true,
+      env: {
+        ...process.env,
+        NODE_ENV: 'development',
+        DASHBOARD_PARENT: 'true',
+        ETH_NETWORKS: dashboardConfig.orderWatcher.ethNetworks.join(','),
+        LOG_LEVEL: dashboardConfig.fgProcessLogLevel,
+      },
+    },
+  );
   cb(child);
   child.stderr.on('data', fgProcessOutputHandler);
   child.stdout.on('data', fgProcessOutputHandler);
