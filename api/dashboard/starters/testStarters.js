@@ -1,5 +1,5 @@
 import {
-  exec,
+  spawn,
 } from 'child_process';
 
 import {
@@ -10,22 +10,34 @@ import dashboardConfig from '../.config';
 
 
 const fgProcessOutputHandler = (data) => {
-  fgProcessLoggerWidget.insertBottom(data);
+  fgProcessLoggerWidget.insertBottom(data.toString('utf8'));
   screen.render();
 };
 
 function testStarter(cb, testFilesPath) {
-  const child = exec([
-    'DASHBOARD_PARENT=true',
-    `LOG_LEVEL=${dashboardConfig.fgProcessLogLevel}`,
-    'NODE_ENV=test mocha',
-    testFilesPath,
-    '--require @babel/register',
-    '--require module-alias/register',
-    '--timeout 10000',
-    '--colors',
-    '--exit',
-  ].join(' '));
+  const cwd = process.cwd();
+  const child = spawn(
+    'mocha',
+    [
+      testFilesPath,
+      '--require @babel/register',
+      '--require module-alias/register',
+      '--timeout 10000',
+      '--colors',
+      '--exit',
+    ],
+    {
+      cwd,
+      shell: true,
+      env: {
+        ...process.env,
+        NODE_ENV: 'test',
+        DASHBOARD_PARENT: 'true',
+        ETH_NETWORKS: dashboardConfig.orderWatcher.ethNetworks.join(','),
+        LOG_LEVEL: dashboardConfig.fgProcessLogLevel,
+      },
+    },
+  );
   cb(child);
   child.stderr.on('data', fgProcessOutputHandler);
   child.stdout.on('data', fgProcessOutputHandler);
@@ -66,7 +78,7 @@ export const tests = [
     run(cb) {
       return testStarter(
         cb,
-        'sputnik/tests/checkOrderWatcherEvents.test.js',
+        'sputnik/tests/orderWatcher.test.js',
       );
     },
   },

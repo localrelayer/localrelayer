@@ -1,5 +1,5 @@
 import {
-  exec,
+  spawn,
 } from 'child_process';
 
 import {
@@ -24,18 +24,29 @@ import dashboardConfig from '../.config';
 
 const daemonProcessOutputHandler = processId => (data) => {
   if (supervisorWidget.selectedForLogs === processId) {
-    daemonLoggerWidget.insertBottom(data);
+    daemonLoggerWidget.insertBottom(data.toString('utf8'));
     screen.render();
   }
 };
 
 function daemonStarter(processId, cb, cmd) {
-  const child = exec([
-    'NODE_ENV=development',
-    'DASHBOARD_PARENT=true',
-    `LOG_LEVEL=${dashboardConfig[processId].logLevel}`,
-    cmd,
-  ].join(' '));
+  const cwd = process.cwd();
+  const [command, ...commandArgs] = cmd.split(' ');
+  const child = spawn(
+    command,
+    commandArgs,
+    {
+      cwd,
+      shell: true,
+      env: {
+        ...process.env,
+        NODE_ENV: 'development',
+        DASHBOARD_PARENT: 'true',
+        ETH_NETWORKS: dashboardConfig.orderWatcher.ethNetworks.join(','),
+        LOG_LEVEL: dashboardConfig[processId].logLevel,
+      },
+    },
+  );
   cb(child);
   child.stderr.on('data', daemonProcessOutputHandler(processId));
   child.stdout.on('data', daemonProcessOutputHandler(processId));
@@ -94,7 +105,7 @@ export const daemons = [{
       return daemonStarter(
         'orderWatcher',
         cb,
-        `ETH_NETWORKS=${dashboardConfig.orderWatcher.ethNetworks.join(',')} npm run orderWatcher`,
+        'npm run orderWatcher',
       );
     }
     const queue = runFillQueueHandler();

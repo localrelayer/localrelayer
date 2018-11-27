@@ -1,4 +1,7 @@
 /* this test should never be stopped during executing */
+import {
+  spawn,
+} from 'child_process';
 import chai from 'chai';
 import {
   signatureUtils,
@@ -27,7 +30,6 @@ import {
   generateRandomMakerAssetAmount,
   generateRandomTakerAssetAmount,
   getRandomFutureDateInSeconds,
-  setMakerFeeForTest,
 } from 'utils';
 import {
   request,
@@ -77,6 +79,27 @@ const createOrder = (
       takerAssetAmount,
     })
 );
+function startOrderWatcher() {
+  const cwd = process.cwd();
+  const child = spawn(
+    'babel-node',
+    ['sputnik/orderWatcher'],
+    {
+      cwd,
+      shell: true,
+      env: {
+        ...process.env,
+        NODE_ENV: 'test',
+        DASHBOARD_PARENT: 'true',
+        ETH_NETWORKS: 'test',
+      },
+    },
+  );
+  return () => {
+    child.kill('SIGINT');
+  };
+}
+const stopOrderWatcher = startOrderWatcher();
 
 describe('orderWatcher events', () => {
   before(async () => {
@@ -164,6 +187,8 @@ describe('orderWatcher events', () => {
   after(async () => {
     /* message to delete orders from mongo and watcher */
     redisClient.publish('testingOrderWatcher', JSON.stringify(ordersHashes));
+    delay(3000);
+    stopOrderWatcher();
   });
 
   it('should fetch fully filled order with appropriate error and completedAt fields', async () => {
@@ -208,7 +233,7 @@ describe('orderWatcher events', () => {
     await web3Wrapper.awaitTransactionMinedAsync(txHash);
     const orderHash = orderHashUtils.getOrderHashHex(order);
     // need delay because watcher modify order not immediately
-    await delay(2000);
+    await delay(3000);
     const fetchedOrder = await Order.findOne({
       orderHash,
     }, {
@@ -272,7 +297,7 @@ describe('orderWatcher events', () => {
     await web3Wrapper.awaitTransactionMinedAsync(txHash);
     const orderHash = orderHashUtils.getOrderHashHex(order);
     // need delay because watcher modify order not immediately
-    await delay(2000);
+    await delay(3000);
     const fetchedOrder = await Order.findOne({
       orderHash,
     }, {
@@ -342,7 +367,7 @@ describe('orderWatcher events', () => {
         zrxBalanceMaker,
       );
       // need delay because watcher modify order not immediately
-      await delay(2000);
+      await delay(3000);
       const fetchedOrder = await Order.findOne({
         orderHash,
       }, {
@@ -401,17 +426,15 @@ describe('orderWatcher events', () => {
     /* swap maker and taker */
     order.makerAssetData = '0xf47261b00000000000000000000000000b1ba0af832d7c05fd64161e0db78e85978e8082';
     order.takerAssetData = '0xf47261b0000000000000000000000000871dd7c2b4b25e1aa18728e9d5f2af4c4e431f5c';
-    /* save current makerFee and set another for test */
-    const oldMakerFeeValue = getOrderConfig().makerFee;
-    setMakerFeeForTest('1000');
-    order.makerFee = getOrderConfig().makerFee;
+    /* set some fee gt zero for testing */
+    order.makerFee = '1000';
     const signedOrder = await signatureUtils.ecSignOrderAsync(
       web3ProviderEngine,
       order,
       makerAddress,
     );
     const response = await request
-      .post(`/v2/order?networkId=${networkId}`)
+      .post(`/v2/order?networkId=${networkId}&isCustomConfig=${true}`)
       .send(signedOrder);
     const zrxBalanceMaker = await contractWrappers.erc20Token.getBalanceAsync(
       contractAddresses.zrxToken,
@@ -427,7 +450,7 @@ describe('orderWatcher events', () => {
         zrxBalanceMaker,
       );
       // need delay because watcher modify order not immediately
-      await delay(2000);
+      await delay(3000);
       const fetchedOrder = await Order.findOne({
         orderHash,
       }, {
@@ -452,8 +475,6 @@ describe('orderWatcher events', () => {
         makerAddress,
         zrxBalanceMaker,
       );
-      /* set old makerFee Value */
-      setMakerFeeForTest(oldMakerFeeValue);
     }
   });
 
@@ -504,7 +525,7 @@ describe('orderWatcher events', () => {
         new BigNumber(0),
       );
       // need delay because watcher modify order not immediately
-      await delay(2000);
+      await delay(3000);
       const fetchedOrder = await Order.findOne({
         orderHash,
       }, {
@@ -562,17 +583,15 @@ describe('orderWatcher events', () => {
     /* swap maker and taker */
     order.makerAssetData = '0xf47261b00000000000000000000000000b1ba0af832d7c05fd64161e0db78e85978e8082';
     order.takerAssetData = '0xf47261b0000000000000000000000000871dd7c2b4b25e1aa18728e9d5f2af4c4e431f5c';
-    /* save current makerFee and set another for test */
-    const oldMakerFeeValue = getOrderConfig().makerFee;
-    setMakerFeeForTest('1000');
-    order.makerFee = getOrderConfig().makerFee;
+    /* set some fee gt zero for testing */
+    order.makerFee = '1000';
     const signedOrder = await signatureUtils.ecSignOrderAsync(
       web3ProviderEngine,
       order,
       makerAddress,
     );
     const response = await request
-      .post(`/v2/order?networkId=${networkId}`)
+      .post(`/v2/order?networkId=${networkId}&isCustomConfig=${true}`)
       .send(signedOrder);
     /* get current ZRX proxy allowance */
     const zrxProxyAllowance = await contractWrappers.erc20Token.getProxyAllowanceAsync(
@@ -588,7 +607,7 @@ describe('orderWatcher events', () => {
         new BigNumber(0),
       );
       // need delay because watcher modify order not immediately
-      await delay(2000);
+      await delay(5000);
       const fetchedOrder = await Order.findOne({
         orderHash,
       }, {
@@ -612,8 +631,6 @@ describe('orderWatcher events', () => {
         makerAddress,
         zrxProxyAllowance,
       );
-      /* set old makerFee Value */
-      setMakerFeeForTest(oldMakerFeeValue);
     }
   });
 
@@ -656,7 +673,7 @@ describe('orderWatcher events', () => {
     await web3Wrapper.awaitTransactionMinedAsync(txHash);
     const orderHash = orderHashUtils.getOrderHashHex(order);
     // need delay because watcher modify order not immediately
-    await delay(2000);
+    await delay(3000);
     const fetchedOrder = await Order.findOne({
       orderHash,
     }, {
@@ -767,7 +784,7 @@ describe('orderWatcher events', () => {
     await web3Wrapper.awaitTransactionMinedAsync(txHash);
     const orderHash = orderHashUtils.getOrderHashHex(order);
     // need delay because watcher modify order not immediately
-    await delay(2000);
+    await delay(3000);
     const fetchedOrder = await Order.findOne({
       orderHash,
     }, {
