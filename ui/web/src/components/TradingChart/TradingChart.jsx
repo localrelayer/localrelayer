@@ -20,6 +20,7 @@ import {
 
 type Props = {
   assetPair: AssetPair,
+  networkId: any,
   dispatch: Dispatch,
 };
 
@@ -33,9 +34,20 @@ const getParameterByName = (name) => {
 
 export default class extends Component<Props> {
   componentDidMount() {
-    const { assetPair, dispatch } = this.props;
-    if (assetPair) {
-      this.initalizeChartWidget(assetPair, dispatch);
+    const {
+      assetPair,
+      networkId,
+      dispatch,
+    } = this.props;
+    if (
+      assetPair
+      && networkId
+    ) {
+      this.initalizeChartWidget(
+        assetPair,
+        networkId,
+        dispatch,
+      );
     }
   }
 
@@ -44,8 +56,16 @@ export default class extends Component<Props> {
       assetPair,
       dispatch,
     } = this.props;
-    if (nextProps.assetPair && (nextProps.assetPair.id !== assetPair?.id)) {
-      this.initalizeChartWidget(nextProps.assetPair, dispatch);
+    if (
+      nextProps.assetPair
+      && nextProps.networkId
+      && (nextProps.assetPair.id !== assetPair?.id)
+    ) {
+      this.initalizeChartWidget(
+        nextProps.assetPair,
+        nextProps.networkId,
+        dispatch,
+      );
     }
   }
 

@@ -5,6 +5,8 @@ import {
 
 import config from 'web-config';
 
+const mocks = {};
+
 api.setApiUrl(config.apiUrl);
 api.setMockMethods({
   getAssetPairs(args) {
@@ -14,16 +16,19 @@ api.setMockMethods({
   },
   getOrderBook({ queryParameters }) {
     const {
-      baseAssetData = '0xf47261b0000000000000000000000000e41d2489571d322189246dafa5ebde1f4699f498', /* ZRX */
-      quoteAssetData = '0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2', /* WETH */
-      networkId = 1,
+      baseAssetData,
+      quoteAssetData,
+      networkId,
     } = queryParameters;
-    return new Promise(r => r(
-      coreMocks.mocksOrdersFactory({
+    if (!mocks[`${networkId}_${baseAssetData}_${quoteAssetData}`]) {
+      mocks[`${networkId}_${baseAssetData}_${quoteAssetData}`] = coreMocks.mocksOrdersFactory({
         networkId,
         assetDataA: baseAssetData,
         assetDataB: quoteAssetData,
-      }).getOrderBook({
+      });
+    }
+    return new Promise(r => r(
+      mocks[`${networkId}_${baseAssetData}_${quoteAssetData}`].getOrderBook({
         networkId,
         baseAssetData,
         quoteAssetData,
@@ -32,16 +37,19 @@ api.setMockMethods({
   },
   getTradingHistory({ queryParameters }) {
     const {
-      baseAssetData = '0xf47261b0000000000000000000000000e41d2489571d322189246dafa5ebde1f4699f498', /* ZRX */
-      quoteAssetData = '0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2', /* WETH */
-      networkId = 1,
+      baseAssetData,
+      quoteAssetData,
+      networkId,
     } = queryParameters;
-    return new Promise(r => r(
-      coreMocks.mocksOrdersFactory({
+    if (!mocks[`${networkId}_${baseAssetData}_${quoteAssetData}`]) {
+      mocks[`${networkId}_${baseAssetData}_${quoteAssetData}`] = coreMocks.mocksOrdersFactory({
         networkId,
         assetDataA: baseAssetData,
         assetDataB: quoteAssetData,
-      }).getTradingHistory({
+      });
+    }
+    return new Promise(r => r(
+      mocks[`${networkId}_${baseAssetData}_${quoteAssetData}`].getTradingHistory({
         networkId,
         baseAssetData,
         quoteAssetData,
@@ -51,23 +59,25 @@ api.setMockMethods({
   getBars(args) {
     const {
       queryParameters: {
-        baseAssetData = '0xf47261b0000000000000000000000000e41d2489571d322189246dafa5ebde1f4699f498', /* ZRX */
-        quoteAssetData = '0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2', /* WETH */
+        networkId,
+        baseAssetData,
+        quoteAssetData,
         from,
         to,
         resolution,
         firstDataRequest,
       },
     } = args;
-    return new Promise(r => r(
-      coreMocks.mocksOrdersFactory({
+    if (!mocks[`${networkId}_${baseAssetData}_${quoteAssetData}`]) {
+      mocks[`${networkId}_${baseAssetData}_${quoteAssetData}`] = coreMocks.mocksOrdersFactory({
+        networkId,
         assetDataA: baseAssetData,
         assetDataB: quoteAssetData,
-        qty: {
-          bids: 100,
-          asks: 100,
-        },
-      }).getBars({
+      });
+    }
+    return new Promise(r => r(
+      mocks[`${networkId}_${baseAssetData}_${quoteAssetData}`].getBars({
+        networkId,
         from,
         to,
         resolution,

@@ -388,14 +388,6 @@ export function* initialize(): Saga<void> {
     takeUpdateOrder,
     socketChannel,
   );
-  yield eff.fork(
-    setCurrentPair,
-    {
-      location: history.location,
-      webRadioChannel,
-      networkId,
-    },
-  );
   yield eff.put(uiActions.setUiState({
     isAppInitializing: false,
   }));
