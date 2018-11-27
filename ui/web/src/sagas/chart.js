@@ -6,7 +6,6 @@ import {
   Web3Wrapper,
 } from '@0x/web3-wrapper';
 import * as eff from 'redux-saga/effects';
-import moment from 'moment';
 
 import {
   actionTypes,
@@ -53,8 +52,8 @@ function* takeFillOrderAndCalculateChartBar({
 
     const bar = {
       volume,
-      /* TODO: Remove moment */
-      time: moment(metaData.completedAt).unix() * 1000,
+      // time: moment(metaData.completedAt).unix() * 1000,
+      time: new Date(metaData.completedAt).getTime(),
       open: parseFloat(price),
       close: parseFloat(price),
       low: parseFloat(price),

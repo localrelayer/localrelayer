@@ -20,6 +20,12 @@ import {
 import {
   layout as buySellLayout,
 } from 'web-components/BuySell';
+import {
+  layout as userOrdersLayout,
+} from 'web-components/UserOrders';
+import {
+  layout as tradingChartLayout,
+} from 'web-components/TradingChart';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -29,14 +35,9 @@ const layoutXs = [
   orderBookLayout.xs,
   userBalanceLayout.xs,
   buySellLayout.xs,
-  {
-    i: 'userOrders', x: 0, y: 34, w: 1, h: 11, static: false,
-  },
-  {
-    i: 'tradingChart', x: 0, y: 0, w: 0, h: 0, static: false,
-  },
+  userOrdersLayout.xs,
+  tradingChartLayout.xs,
 ];
-
 
 const layoutSm = [
   assetPairCardLayout.sm,
@@ -44,12 +45,8 @@ const layoutSm = [
   orderBookLayout.sm,
   userBalanceLayout.sm,
   buySellLayout.sm,
-  {
-    i: 'tradingChart', x: 0, y: 18, w: 2, h: 12, static: false,
-  },
-  {
-    i: 'userOrders', x: 0, y: 30, w: 2, h: 11, static: false,
-  },
+  userOrdersLayout.sm,
+  tradingChartLayout.sm,
 ];
 
 const layoutMd = [
@@ -58,12 +55,8 @@ const layoutMd = [
   orderBookLayout.md,
   userBalanceLayout.md,
   buySellLayout.md,
-  {
-    i: 'tradingChart', x: 0, y: 0, w: 7, h: 10, static: false,
-  },
-  {
-    i: 'userOrders', x: 3.5, y: 19, w: 6.5, h: 11, static: false,
-  },
+  userOrdersLayout.md,
+  tradingChartLayout.md,
 ];
 
 const layoutLg = [
@@ -72,12 +65,8 @@ const layoutLg = [
   orderBookLayout.lg,
   userBalanceLayout.lg,
   buySellLayout.lg,
-  {
-    i: 'tradingChart', x: 3, y: 0, w: 6, h: 14, static: false,
-  },
-  {
-    i: 'userOrders', x: 3, y: 14, w: 6, h: 11, static: false,
-  },
+  userOrdersLayout.lg,
+  tradingChartLayout.lg,
 ];
 
 const layoutLg2 = [
@@ -86,12 +75,8 @@ const layoutLg2 = [
   orderBookLayout.lg2,
   userBalanceLayout.lg2,
   buySellLayout.lg2,
-  {
-    i: 'tradingChart', x: 5, y: 0, w: 14, h: 14, static: false,
-  },
-  {
-    i: 'userOrders', x: 5, y: 14, w: 14, h: 11, static: false,
-  },
+  userOrdersLayout.lg2,
+  tradingChartLayout.lg2,
 ];
 
 const layoutLg3 = [
@@ -100,12 +85,8 @@ const layoutLg3 = [
   orderBookLayout.lg3,
   userBalanceLayout.lg3,
   buySellLayout.lg3,
-  {
-    i: 'tradingChart', x: 2, y: 0, w: 8, h: 20, static: false,
-  },
-  {
-    i: 'userOrders', x: 2, y: 20, w: 8, h: 11, static: false,
-  },
+  userOrdersLayout.lg3,
+  tradingChartLayout.lg3,
 ];
 
 type Props = {

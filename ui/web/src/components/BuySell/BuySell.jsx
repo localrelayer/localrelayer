@@ -1,6 +1,5 @@
 // @flow
 import React from 'react';
-import * as R from 'ramda';
 import {
   Icon,
   Tooltip,
@@ -49,10 +48,10 @@ const BuySell = ({
                   <S.TabsExtraContent>
                     <Icon type="wallet" />
                     {' '}
-                    {R.path(['assetDataA', 'assetData', 'symbol'], currentAssetPair)}
+                    {currentAssetPair?.assetDataA?.assetData?.symbol}
                     {' '}
-                    <Tooltip title={R.path(['assetDataA', 'balance'], currentAssetPair)}>
-                      {R.path(['assetDataA', 'balance'], currentAssetPair)}
+                    <Tooltip title={currentAssetPair?.assetDataA?.balance}>
+                      {currentAssetPair?.assetDataA?.balance}
                     </Tooltip>
                   </S.TabsExtraContent>
                 )
@@ -60,10 +59,10 @@ const BuySell = ({
                   <S.TabsExtraContent>
                     <Icon type="wallet" />
                     {' '}
-                    {R.path(['assetDataB', 'assetData', 'symbol'], currentAssetPair)}
+                    {currentAssetPair?.assetDataB?.assetData?.symbol}
                     {' '}
-                    <Tooltip title={R.path(['assetDataB', 'balance'], currentAssetPair)}>
-                      {R.path(['assetDataB', 'balance'], currentAssetPair)}
+                    <Tooltip title={currentAssetPair?.assetDataB?.balance}>
+                      {currentAssetPair?.assetDataB?.balance}
                     </Tooltip>
                   </S.TabsExtraContent>
                 )
@@ -73,7 +72,7 @@ const BuySell = ({
               <BuySellForm
                 type="buy"
                 onSubmitOrder={onSubmitOrder}
-                currentBalance={R.path(['assetDataB', 'balance'], currentAssetPair)}
+                currentBalance={currentAssetPair?.assetDataB?.balance}
                 currentBuySellTab={currentBuySellTab}
               />
             </S.BuySellTabs.TabPane>
@@ -81,7 +80,7 @@ const BuySell = ({
               <BuySellForm
                 type="sell"
                 onSubmitOrder={onSubmitOrder}
-                currentBalance={R.path(['assetDataA', 'balance'], currentAssetPair)}
+                currentBalance={currentAssetPair?.assetDataA?.balance}
                 currentBuySellTab={currentBuySellTab}
               />
             </S.BuySellTabs.TabPane>
