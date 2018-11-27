@@ -1,6 +1,5 @@
 import {
   generatePseudoRandomSalt,
-  orderHashUtils,
   signatureUtils,
   MetamaskSubprovider,
 } from '0x.js';

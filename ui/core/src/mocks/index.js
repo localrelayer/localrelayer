@@ -2,6 +2,9 @@ import {
   BigNumber,
 } from '0x.js';
 import {
+  ExchangeContractErrs,
+} from '@0x/types';
+import {
   generatePseudoRandomSalt,
 } from '@0x/order-utils';
 import {
@@ -350,7 +353,14 @@ export function mocksOrdersFactory({
               ...o.order,
             },
             metaData: {
+              isValid: false,
+              isShadowed: false,
+              remainingFillableMakerAssetAmount: '0',
+              remainingFillableTakerAssetAmount: '0',
+              networkId,
+              createdAt: new Date(now - (i * 5) * 60000).toString(),
               completedAt: new Date(now - i * 60000).toString(),
+              error: ExchangeContractErrs.OrderRemainingFillAmountZero,
             },
           }))
         ),

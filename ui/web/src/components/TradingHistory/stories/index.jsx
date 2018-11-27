@@ -1,3 +1,4 @@
+// @flow
 import React from 'react';
 import {
   storiesOf,
@@ -10,6 +11,7 @@ import {
 import TradingPageLayout from 'web-components/TradingPageLayout';
 import 'web-styles/main.less';
 import TradingHistory from '..';
+
 
 const defaultOrders = [{
   key: '1',
@@ -28,15 +30,18 @@ const defaultOrders = [{
   amount: 89.43245661,
 }];
 
-const TradingHistoryStory = () => (
+type Props = {
+  emptyList: boolean,
+};
+
+const TradingHistoryStory = ({ emptyList = false }: Props) => (
   <TradingPageLayout.Preview
     hideRest={boolean('Hide preview layout', false)}
     tradingHistory={(
-      <TradingHistory orders={defaultOrders} />
+      <TradingHistory orders={emptyList ? [] : defaultOrders} />
     )}
   />
 );
-
 
 storiesOf('Components|TradingHistory', module)
   .addDecorator(withKnobs)
@@ -47,7 +52,22 @@ storiesOf('Components|TradingHistory', module)
   })
   .add(
     'default',
-    TradingHistoryStory,
+    () => (
+      <TradingHistoryStory />
+    ),
+    {
+      info: {
+        text: `
+          TradingHistory component meant to display current asset pair with last trading info.
+        `,
+      },
+    },
+  )
+  .add(
+    'with empty list',
+    () => (
+      <TradingHistoryStory emptyList />
+    ),
     {
       info: {
         text: `
@@ -58,7 +78,9 @@ storiesOf('Components|TradingHistory', module)
   )
   .add(
     'full screen',
-    TradingHistoryStory,
+    () => (
+      <TradingHistoryStory />
+    ),
     {
       options: {
         goFullScreen: true,

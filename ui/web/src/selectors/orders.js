@@ -47,7 +47,6 @@ export const getTradingHistory = createSelector(
   },
 );
 
-
 export const getOpenOrders = createSelector(
   [
     cs.getResourceMappedList('orders', 'userOrders'),

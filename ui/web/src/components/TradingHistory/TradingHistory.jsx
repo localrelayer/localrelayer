@@ -7,7 +7,6 @@ import {
 import {
   ColoredSpan,
 } from 'web-components/SharedStyledComponents';
-import moment from 'moment';
 import * as colors from 'web-styles/colors';
 import * as S from './styled';
 
@@ -20,15 +19,14 @@ const columns = [
     title: 'Date',
     dataIndex: 'completedAt',
     render: (text: string) => (
-      <Tooltip title={moment(text).format('ddd, MMM DD, YYYY hh:mm:ss A')}>
-        {moment(text).format('DD/MM/YYYY HH:mm')}
+      <Tooltip title={new Date(text).toLocaleString()}>
+        {new Date(text).toLocaleString()}
       </Tooltip>
     ),
   },
   {
     title: 'Price',
     dataIndex: 'price',
-    key: 'price',
     render: (text: string, record) => (
       <Tooltip title={text}>
         <ColoredSpan
@@ -42,7 +40,6 @@ const columns = [
   {
     title: 'Amount',
     dataIndex: 'amount',
-    key: 'amount',
     render: (text: string) => (
       <Tooltip title={text}>
         {text}
