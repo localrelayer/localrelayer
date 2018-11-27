@@ -182,12 +182,15 @@ describe('orderWatcher events', () => {
     console.log(`WETH maker allowance: ${wethAllowanceMaker}`);
     console.log(`ZRX taker allowance: ${zrxAllowanceTaker}`);
     console.log(`WETH taker allowance: ${wethAllowanceTaker}`);
+    /* waiting for orderWatcher starting */
+    await delay(2000);
   });
 
   after(async () => {
     /* message to delete orders from mongo and watcher */
     redisClient.publish('testingOrderWatcher', JSON.stringify(ordersHashes));
-    delay(3000);
+    /* waiting for clearing db and watcher cache before stopping */
+    await delay(2000);
     stopOrderWatcher();
   });
 
