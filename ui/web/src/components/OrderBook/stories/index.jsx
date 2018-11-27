@@ -1,3 +1,4 @@
+// @flow
 import React from 'react';
 import {
   storiesOf,
@@ -20,6 +21,10 @@ import TradingPageLayout from 'web-components/TradingPageLayout';
 import 'web-styles/main.less';
 import OrderBook from '..';
 
+
+type Props = {
+  emptyList: boolean,
+};
 
 const baseAssetData = '0xf47261b0000000000000000000000000e41d2489571d322189246dafa5ebde1f4699f498'; /* ZRX */
 const quoteAssetData = '0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'; /* WETH */
@@ -53,13 +58,13 @@ const allOrders = api.getOrderBook({
 const asks = allOrders.asks.records.map(orderSelector);
 const bids = allOrders.bids.records.map(orderSelector);
 
-const OrderBookStory = () => (
+const OrderBookStory = ({ emptyList = false }: Props) => (
   <TradingPageLayout.Preview
     hideRest={boolean('Hide preview layout', false)}
     orderBook={(
       <OrderBook
-        asks={asks}
-        bids={bids}
+        asks={emptyList ? [] : asks}
+        bids={emptyList ? [] : bids}
       />
     )}
   />
@@ -69,10 +74,21 @@ storiesOf('Components|OrderBook', module)
   .addDecorator(withKnobs)
   .add(
     'default',
-    OrderBookStory,
-  ).add(
+    () => (
+      <OrderBookStory />
+    ),
+  )
+  .add(
+    'with empty list',
+    () => (
+      <OrderBookStory emptyList />
+    ),
+  )
+  .add(
     'full screen',
-    OrderBookStory,
+    () => (
+      <OrderBookStory />
+    ),
     {
       options: {
         goFullScreen: true,

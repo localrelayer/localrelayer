@@ -14,6 +14,7 @@ import {
   getResourceMap,
 } from './resources';
 
+
 export const getTokensInfoMock = createSelector(
   [
     getResourceMappedList('orders', 'asks'),
@@ -36,7 +37,6 @@ export const getTokensInfoMock = createSelector(
   ),
 );
 
-
 export const getTradingHistory = createSelector(
   [
     getResourceMappedList('orders', 'tradingHistory'),
@@ -57,7 +57,7 @@ export const getTradingHistory = createSelector(
         new BigNumber(order.takerAssetAmount).div(order.makerAssetAmount)
       ).toFixed(8),
       key: order.id,
-      date: order.completedAt,
+      completedAt: order.metaData.completedAt,
     }))
   ),
 );
