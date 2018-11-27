@@ -1,6 +1,6 @@
 /* this test should never be stopped during executing */
 import {
-  exec,
+  spawn,
 } from 'child_process';
 import chai from 'chai';
 import {
@@ -80,13 +80,23 @@ const createOrder = (
     })
 );
 function startOrderWatcher() {
-  const child = exec([
-    'NODE_ENV=test',
-    'ETH_NETWORKS=test',
-    'cd ...; node_modules/@babel/node/bin/babel-node.js sputnik/orderWatcher',
-  ].join(' '));
+  const cwd = process.cwd();
+  const child = spawn(
+    'babel-node',
+    ['sputnik/orderWatcher'],
+    {
+      cwd,
+      shell: true,
+      env: {
+        ...process.env,
+        NODE_ENV: 'test',
+        DASHBOARD_PARENT: 'true',
+        ETH_NETWORKS: 'test',
+      },
+    },
+  );
   return () => {
-    child.kill('SIGKILL');
+    child.kill('SIGINT');
   };
 }
 const stopOrderWatcher = startOrderWatcher();
