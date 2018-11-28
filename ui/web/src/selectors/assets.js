@@ -24,7 +24,7 @@ export const getCurrentAssetPair = createSelector(
     tradingInfo,
     currentAssetPairId,
   ) => {
-    const assetPair = cs.constructAssetPair({
+    const assetPair = currentAssetPairId && cs.constructAssetPair({
       assetPair: assetPairs[currentAssetPairId],
       assets,
     });

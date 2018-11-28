@@ -38,7 +38,7 @@ export const assetPair = {
     },
   },
   tradingInfo: {
-    assetAVolume: '42440000000000000000.00000000',
+    assetAVolume: '42.44000000',
     change24: '-99.50',
     lastPrice: '0.00250000',
     maxPrice: '0.50000000',
