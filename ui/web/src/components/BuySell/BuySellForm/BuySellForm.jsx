@@ -16,6 +16,7 @@ type Props = {
   onSubmitOrder: Function,
   currentBalance: String,
   currentBuySellTab: String,
+  currentOrder: Object,
 }
 
 const isNumber = n => !isNaN(+n) && +n !== 0 && isFinite(n); /* eslint-disable-line */
@@ -25,10 +26,13 @@ const BuySellForm = ({
   onSubmitOrder,
   currentBalance,
   currentBuySellTab,
+  currentOrder,
 }: Props) => (
   <Formik
     isInitialValid
+    initialValues={currentOrder}
     validateOnBlur={false}
+    enableReinitialize
     validateOnChange
     onSubmit={(values, actions) => (
       onSubmitOrder({
@@ -49,12 +53,12 @@ const BuySellForm = ({
       } else if (!isNumber(values.price)) {
         errors.price = 'Amount should be a number';
       }
-      if (currentBuySellTab === 'buy'
+      if (currentBuySellTab === 'bid'
         && isNumber(values.amount)
         && isNumber(values.price)
         && currentBalance < new BigNumber(values.amount).times(values.price).toNumber()) {
         errors.balance = 'Insufficient balance';
-      } else if (currentBuySellTab === 'sell'
+      } else if (currentBuySellTab === 'ask'
         && isNumber(values.amount)
         && isNumber(values.price)
         && +currentBalance < +values.amount) {
@@ -81,7 +85,7 @@ const BuySellForm = ({
           setFieldTouched('price', true, true);
           setFieldTouched('amount', true, true);
         }}
-        buttonvalue={type === 'buy' ? 'Buy' : 'Sell'}
+        buttonvalue={type === 'bid' ? 'Buy' : 'Sell'}
       >
         <S.BuySellForm.Item
           validateStatus={touched.price && errors.price && 'error'}
@@ -174,7 +178,7 @@ const BuySellForm = ({
             htmlType="submit"
             disabled={!isValid && !isSubmitting}
           >
-            {type === 'buy' ? 'Buy' : 'Sell'}
+            {type === 'bid' ? 'Buy' : 'Sell'}
             {' '}
             ZRX
             {isSubmitting

@@ -6,18 +6,23 @@ import {
 
 import * as S from './styled';
 
-
 type Props = {
   order: any,
+  onClick: Function,
 };
 
-const OrderItem = ({ order }: Props) => (
+const OrderItem = ({
+  order,
+  onClick,
+}: Props) => (
   <Tooltip
     key={order.id}
-    title="some hint"
+    title="Click to take order"
     placement="bottom"
   >
-    <S.OrderItem>
+    <S.OrderItem
+      onClick={onClick}
+    >
       <div>
         {order.price}
       </div>

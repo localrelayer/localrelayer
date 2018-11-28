@@ -8,6 +8,9 @@ import type {
 import {
   coreSelectors as cs,
 } from 'instex-core';
+import {
+  uiActions,
+} from 'web-actions';
 import Component from 'web-components/ConnectComponent';
 import OrderBook from 'web-components/OrderBook';
 
@@ -22,10 +25,15 @@ const OrderBookContainer = (): Node => (
     {({
       asks,
       bids,
+      dispatch,
     }) => (
       <OrderBook
         asks={asks}
         bids={bids}
+        onOrderClick={(orderId, type) => dispatch(uiActions.setUiState({
+          currentOrderId: orderId,
+          currentBuySellTab: type,
+        }))}
       />
     )}
   </Component>

@@ -9,6 +9,7 @@ import {
 } from 'web-actions';
 import {
   getUiState,
+  getCurrentOrder,
 } from 'web-selectors';
 import Component from 'web-components/ConnectComponent';
 import BuySellForm from './BuySellForm';
@@ -30,32 +31,23 @@ const BuySell = ({
       <Component
         mapStateToProps={state => ({
           currentBuySellTab: getUiState('currentBuySellTab')(state),
+          currentOrder: getCurrentOrder(state),
         })}
       >
         {({
           currentBuySellTab,
+          currentOrder,
           dispatch,
         }) => (
           <S.BuySellTabs
             animated={false}
-            defaultActiveKey={currentBuySellTab}
+            activeKey={currentBuySellTab}
             onChange={activeKey => dispatch(uiActions.setUiState({
               currentBuySellTab: activeKey,
             }))}
             tabBarExtraContent={(
-              currentBuySellTab === 'buy'
+              currentBuySellTab === 'bid'
                 ? (
-                  <S.TabsExtraContent>
-                    <Icon type="wallet" />
-                    {' '}
-                    {currentAssetPair?.assetDataA?.assetData?.symbol}
-                    {' '}
-                    <Tooltip title={currentAssetPair?.assetDataA?.balance}>
-                      {currentAssetPair?.assetDataA?.balance}
-                    </Tooltip>
-                  </S.TabsExtraContent>
-                )
-                : (
                   <S.TabsExtraContent>
                     <Icon type="wallet" />
                     {' '}
@@ -66,22 +58,35 @@ const BuySell = ({
                     </Tooltip>
                   </S.TabsExtraContent>
                 )
+                : (
+                  <S.TabsExtraContent>
+                    <Icon type="wallet" />
+                    {' '}
+                    {currentAssetPair?.assetDataA?.assetData?.symbol}
+                    {' '}
+                    <Tooltip title={currentAssetPair?.assetDataA?.balance}>
+                      {currentAssetPair?.assetDataA?.balance}
+                    </Tooltip>
+                  </S.TabsExtraContent>
+                )
             )}
           >
-            <S.BuySellTabs.TabPane tab="Buy" key="buy">
+            <S.BuySellTabs.TabPane tab="Buy" key="bid">
               <BuySellForm
-                type="buy"
+                type="bid"
                 onSubmitOrder={onSubmitOrder}
                 currentBalance={currentAssetPair?.assetDataB?.balance}
                 currentBuySellTab={currentBuySellTab}
+                currentOrder={currentOrder}
               />
             </S.BuySellTabs.TabPane>
-            <S.BuySellTabs.TabPane tab="Sell" key="sell">
+            <S.BuySellTabs.TabPane tab="Sell" key="ask">
               <BuySellForm
-                type="sell"
+                type="ask"
                 onSubmitOrder={onSubmitOrder}
                 currentBalance={currentAssetPair?.assetDataA?.balance}
                 currentBuySellTab={currentBuySellTab}
+                currentOrder={currentOrder}
               />
             </S.BuySellTabs.TabPane>
           </S.BuySellTabs>

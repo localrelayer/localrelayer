@@ -8,11 +8,13 @@ import * as S from './styled';
 type Props = {
   asks: Array<any>,
   bids: Array<any>,
+  onOrderClick: Function,
 };
 
 const OrderBook = ({
   asks,
   bids,
+  onOrderClick,
 }: Props) => (
   <S.OrderBook>
     <S.Asks>
@@ -32,6 +34,7 @@ const OrderBook = ({
           <OrderItem
             key={order.id}
             order={order}
+            onClick={() => onOrderClick(order.id, 'bid')}
           />
         ))}
       </S.AsksItemsList>
@@ -45,6 +48,7 @@ const OrderBook = ({
           <OrderItem
             key={order.id}
             order={order}
+            onClick={() => onOrderClick(order.id, 'ask')}
           />
         ))}
       </S.BidsItemsList>

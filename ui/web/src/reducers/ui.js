@@ -18,7 +18,7 @@ const initialState: UiState = {
   isCurrentPairIssue: false,
 
   tradingInfoSubscribeId: null,
-  currentBuySellTab: 'buy',
+  currentBuySellTab: 'bid',
 };
 
 const mergeUiValues = (

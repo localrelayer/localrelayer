@@ -80,3 +80,36 @@ export const getOpenOrders = createSelector(
     }))
   ),
 );
+
+export const getType = (assetA, makerAssetData) => assetA === makerAssetData;
+
+export const getPrice = (type, makerAssetAmount, takerAssetAmount) => (
+  type === 'bid'
+    ? new BigNumber(takerAssetAmount).div(makerAssetAmount)
+    : new BigNumber(makerAssetAmount).div(takerAssetAmount));
+
+export const getCurrentOrder = createSelector(
+  [
+    getUiState('currentAssetPairId'),
+    getUiState('currentOrderId'),
+    cs.getResourceMap('assets'),
+    cs.getResourceMap('orders'),
+  ],
+  (
+    currentAssetPairId,
+    currentOrderId,
+    assets,
+    orders,
+  ) => (currentOrderId
+    ? {
+      amount: utils.toUnitAmount(
+        orders[currentOrderId].makerAssetAmount,
+        assets[orders[currentOrderId].makerAssetData].decimals,
+      ).toFixed(8),
+      price: getPrice(
+        getType(currentAssetPairId.split('_')[0], orders[currentOrderId].makerAssetData),
+        orders[currentOrderId].makerAssetAmount,
+        orders[currentOrderId].takerAssetAmount,
+      ),
+    } : {}),
+);
