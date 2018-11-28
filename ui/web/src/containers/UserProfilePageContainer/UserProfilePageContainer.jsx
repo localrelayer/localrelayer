@@ -6,7 +6,8 @@ import UserTradingHistoryContainer from 'web-containers/UserTradingHistoryContai
 import UserOrdersContainer from 'web-containers/UserOrdersContainer';
 import HeaderContainer from 'web-containers/HeaderContainer';
 
-const UserProfile = () => (
+
+const UserProfilePageContainer = () => (
   <div>
     <HeaderContainer />
     <UserProfileLayout>
@@ -23,4 +24,4 @@ const UserProfile = () => (
   </div>
 );
 
-export default UserProfile;
+export default UserProfilePageContainer;
