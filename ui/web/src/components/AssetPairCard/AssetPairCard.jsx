@@ -37,7 +37,7 @@ const AssetPairCard = ({
           <S.CardTitle>
             <S.AssetPairInfo>
               {assetDataA?.assetData?.symbol}
-              /
+              {assetDataA?.assetData?.symbol ? '/' : ''}
               {assetDataB?.assetData?.symbol}
               <S.BaseAssetAddress
                 target="_blank"

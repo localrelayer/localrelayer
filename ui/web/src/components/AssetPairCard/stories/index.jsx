@@ -1,3 +1,4 @@
+// @flow
 import React from 'react';
 import {
   storiesOf,
@@ -46,18 +47,25 @@ export const assetPair = {
   },
 };
 
-const AssetPairCardStory = () => (
+type Props = {
+  emptyInfo: boolean,
+};
+
+const AssetPairCardStory = ({ emptyInfo = false }: Props) => (
   <TradingPageLayout.Preview
     hideRest={boolean('Hide preview layout', false)}
     assetPairCard={(
       <AssetPairCard
         loading={boolean('Loading', false)}
-        assetPair={object('assetPair', assetPair)}
+        assetPair={(
+          emptyInfo
+            ? {}
+            : object('assetPair', assetPair)
+        )}
       />
     )}
   />
 );
-
 
 storiesOf('Components|AssetPairCard', module)
   .addDecorator(withKnobs)
@@ -68,7 +76,9 @@ storiesOf('Components|AssetPairCard', module)
   })
   .add(
     'default',
-    AssetPairCardStory,
+    () => (
+      <AssetPairCardStory />
+    ),
     {
       info: {
         text: `
@@ -78,8 +88,16 @@ storiesOf('Components|AssetPairCard', module)
     },
   )
   .add(
+    'with empty info',
+    () => (
+      <AssetPairCardStory emptyInfo />
+    ),
+  )
+  .add(
     'full screen',
-    AssetPairCardStory,
+    () => (
+      <AssetPairCardStory />
+    ),
     {
       options: {
         goFullScreen: true,
