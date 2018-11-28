@@ -42,10 +42,11 @@ const BuySellContainer = (): Node => (
           dispatch(coreActions.postOrderRequest({
             formActions,
             order: {
+              type,
               makerAddress: makerAddress.toLowerCase(),
               takerAddress: utils.NULL_ADDRESS,
               makerAssetAmount: (
-                type === 'buy'
+                type === 'bid'
                   ? (
                     utils.toBaseUnitAmount(
                       new BigNumber(amount).times(price),
@@ -60,7 +61,7 @@ const BuySellContainer = (): Node => (
                   )
               ),
               takerAssetAmount: (
-                type === 'buy'
+                type === 'bid'
                   ? (
                     utils.toBaseUnitAmount(
                       amount,
@@ -75,7 +76,7 @@ const BuySellContainer = (): Node => (
                   )
               ),
               makerAssetData: (
-                type === 'buy'
+                type === 'bid'
                   ? (
                     currentAssetPair.assetDataB.assetData.id
                   )
@@ -84,7 +85,7 @@ const BuySellContainer = (): Node => (
                   )
               ),
               takerAssetData: (
-                type === 'buy'
+                type === 'bid'
                   ? (
                     currentAssetPair.assetDataA.assetData.id
                   )

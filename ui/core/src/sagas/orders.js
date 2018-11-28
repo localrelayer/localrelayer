@@ -2,13 +2,14 @@ import {
   generatePseudoRandomSalt,
   signatureUtils,
   MetamaskSubprovider,
+  BigNumber,
 } from '0x.js';
 import * as eff from 'redux-saga/effects';
 import createActionCreators from 'redux-resource-action-creators';
 import {
   actionTypes,
 } from '../actions';
-
+import * as selectors from '../selectors';
 import api from '../api';
 import ethApi from '../ethApi';
 import {
@@ -139,47 +140,72 @@ function* postOrder({
     makerAssetAmount,
     takerAssetAmount,
     expirationTimeSeconds,
+    type,
   },
 }) {
   const web3 = ethApi.getWeb3();
   const networkId = yield eff.call(web3.eth.net.getId);
   const provider = new MetamaskSubprovider(web3.currentProvider);
-
+  const contractWrappers = ethApi.getWrappers(networkId);
   const exchangeAddress = getContractAddressesForNetwork(networkId).exchange;
-  const orderConfigRequest = {
-    exchangeAddress,
-    makerAddress,
-    takerAddress,
-    makerAssetAmount,
-    takerAssetAmount,
-    makerAssetData,
-    takerAssetData,
-    expirationTimeSeconds,
-  };
-  try {
-    const orderConfig = yield eff.call(
-      api.postOrderConfig,
-      orderConfigRequest,
+
+  const counterOrderType = type === 'bid' ? 'Ask' : 'Bid';
+  const orders = yield eff.select(selectors[`get${counterOrderType}Orders`]);
+  const taker = yield eff.select(selectors.getWalletState('selectedAccount'));
+
+  const matchedOrders = orders.filter(o => new BigNumber(o.makerAssetAmount).eq(takerAssetAmount)
+    && new BigNumber(o.takerAssetAmount).eq(makerAssetAmount));
+
+  // TODO: Not fully filled and batch fill
+
+  if (matchedOrders.length) {
+    const txHash = yield eff.call(
+      [
+        contractWrappers.exchange,
+        contractWrappers.exchange.fillOrderAsync,
+      ],
+      matchedOrders[0],
+      takerAssetAmount,
+      taker,
     );
-    const order = {
-      salt: generatePseudoRandomSalt(),
-      ...orderConfigRequest,
-      ...orderConfig,
-    };
-    const signedOrder = yield eff.call(
-      signatureUtils.ecSignOrderAsync,
-      provider,
-      order,
-      makerAddress,
-    );
-    yield eff.call(api.postOrder, signedOrder, { networkId });
+    console.log('FILLED WITH HASH', txHash);
     formActions.resetForm({});
-  } catch (err) {
-    console.log(err);
-    formActions.setFieldError(
-      'balance',
-      'Backend validation failed',
-    );
+  } else {
+    const orderConfigRequest = {
+      exchangeAddress,
+      makerAddress,
+      takerAddress,
+      makerAssetAmount,
+      takerAssetAmount,
+      makerAssetData,
+      takerAssetData,
+      expirationTimeSeconds,
+    };
+    try {
+      const orderConfig = yield eff.call(
+        api.postOrderConfig,
+        orderConfigRequest,
+      );
+      const order = {
+        salt: generatePseudoRandomSalt(),
+        ...orderConfigRequest,
+        ...orderConfig,
+      };
+      const signedOrder = yield eff.call(
+        signatureUtils.ecSignOrderAsync,
+        provider,
+        order,
+        makerAddress,
+      );
+      yield eff.call(api.postOrder, signedOrder, { networkId });
+      formActions.resetForm({});
+    } catch (err) {
+      console.log(err);
+      formActions.setFieldError(
+        'balance',
+        'Backend validation failed',
+      );
+    }
   }
   formActions.setSubmitting(false);
 }
