@@ -10,30 +10,53 @@ import TradingPageLayout from 'web-components/TradingPageLayout';
 import 'web-styles/main.less';
 import BuySell from '..';
 
+
+const assetPair = {
+  id: '0xe41d2489571d322189246dafa5ebde1f4699f498_0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+  assetDataA: {
+    minAmount: '0',
+    maxAmount: '10000000000000000000',
+    precision: 5,
+    assetData: {
+      address: '0xe41d2489571d322189246dafa5ebde1f4699f498',
+      name: '0x Protocol Token',
+      symbol: 'ZRX',
+      decimals: 18,
+    },
+  },
+  assetDataB: {
+    minAmount: '0',
+    maxAmount: '50000000000000000000',
+    precision: 5,
+    assetData: {
+      address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+      name: 'Wrapped Ether',
+      symbol: 'WETH',
+      decimals: 18,
+    },
+  },
+  tradingInfo: {
+    assetAVolume: '42.44000000',
+    change24: '-99.50',
+    lastPrice: '0.00250000',
+    maxPrice: '0.50000000',
+    minPrice: '0.00250000',
+  },
+};
+
 const BuySellStory = () => (
   <TradingPageLayout.Preview
     hideRest={boolean('Hide preview layout', false)}
     buySell={(
       <BuySell
-        balance={
-          {
-            '0x871dd7c2b4b25e1aa18728e9d5f2af4c4e431f5c': 9999990000000000000000000,
-            '0x0b1ba0af832d7c05fd64161e0db78e85978e8082': 20200000000000000000,
-          }
-        }
-        currentPairSymbols={
-          {
-            base: {
-              assetAddress: '0x871dd7c2b4b25e1aa18728e9d5f2af4c4e431f5c',
-              symbol: 'ZRX',
-            },
-            quote: {
-              assetAddress: '0x0b1ba0af832d7c05fd64161e0db78e85978e8082',
-              symbol: 'WETH',
-            },
-          }
-        }
-        onSubmitOrder={() => {}}
+        currentAssetPair={assetPair}
+        onSubmitOrder={({ formActions }) => {
+          console.log('onSubmitOrder');
+          setTimeout(() => {
+            formActions.resetForm({});
+            formActions.setSubmitting(false);
+          }, 1000);
+        }}
       />
     )}
   />
