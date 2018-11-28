@@ -9,6 +9,9 @@ import {
 import {
   BigNumber,
 } from '0x.js';
+import {
+  getUiState,
+} from './ui';
 
 
 export const getCurrentAssetPair = createSelector(
@@ -16,7 +19,7 @@ export const getCurrentAssetPair = createSelector(
     cs.getResourceMap('assets'),
     cs.getResourceMap('assetPairs'),
     cs.getResourceMap('tradingInfo'),
-    s => s.ui.currentAssetPairId,
+    getUiState('currentAssetPairId'),
   ],
   (
     assets,
@@ -82,7 +85,7 @@ export const getCurrentAssetPairWithBalance = createSelector(
 export const getAssetsWithBalanceAndAllowance = createSelector(
   [
     cs.getResourceMap('assets'),
-    s => s.ui.currentAssetPairId,
+    getUiState('currentAssetPairId'),
     cs.getWalletState('balance'),
     cs.getWalletState('allowance'),
   ],

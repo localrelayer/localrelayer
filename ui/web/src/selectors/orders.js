@@ -1,50 +1,95 @@
 import {
-  BigNumber,
-} from '0x.js';
-import {
   createSelector,
 } from 'reselect';
-
 import {
   coreSelectors as cs,
   utils,
 } from 'instex-core';
 import {
   getUiState,
-} from './ui';
-import {
-  getCurrentAssetPair,
 } from '.';
-
 
 export const getTradingHistory = createSelector(
   [
     cs.getTradingHistory,
-    getCurrentAssetPair,
+    cs.getResourceMap('assets'),
+    getUiState('currentAssetPairId'),
   ],
   (
     orders,
-    currentAssetPair,
-  ) => {
-    if (!currentAssetPair) {
-      return [];
-    }
+    assets,
+    currentAssetPairId,
+  ) => (
+    orders.map(order => ({
+      ...order,
+      amount: utils.toUnitAmount(
+        order.makerAssetAmount,
+        assets[order.makerAssetData].decimals,
+      ).toFixed(8),
+      total: utils.toUnitAmount(
+        order.takerAssetAmount,
+        assets[order.takerAssetData].decimals,
+      ).toFixed(8),
+      price: utils.getPrice(
+        utils.getType(currentAssetPairId.split('_')[0], order.makerAssetData),
+        order.makerAssetAmount,
+        order.takerAssetAmount,
+      ).toFixed(8),
+      key: order.id,
+      completedAt: order.metaData.completedAt,
+      type: utils.getType(currentAssetPairId.split('_')[0], order.makerAssetData),
+    }))
+  ),
+);
 
-    const baseAsset = currentAssetPair.assetDataA.assetData.address;
+export const getBidOrders = createSelector(
+  [
+    cs.getBidOrders,
+    cs.getResourceMap('assets'),
+  ],
+  (orders, assets) => (
+    orders.map(order => ({
+      ...order,
+      amount: utils.toUnitAmount(
+        order.makerAssetAmount,
+        assets[order.makerAssetData].decimals,
+      ).toFixed(8),
+      total: utils.toUnitAmount(
+        order.takerAssetAmount,
+        assets[order.takerAssetData].decimals,
+      ).toFixed(8),
+      price: utils.getPrice(
+        'bid',
+        order.makerAssetAmount,
+        order.takerAssetAmount,
+      ).toFixed(8),
+    }))
+  ),
+);
 
-    return (
-      orders
-        .map(
-          (order) => {
-            const makerAsset = order.makerAssetData;
-            return {
-              ...order,
-              type: makerAsset === baseAsset ? 'ask' : 'bid',
-            };
-          },
-        )
-    );
-  },
+export const getAskOrders = createSelector(
+  [
+    cs.getAskOrders,
+    cs.getResourceMap('assets'),
+  ],
+  (orders, assets) => (
+    orders.map(order => ({
+      ...order,
+      amount: utils.toUnitAmount(
+        order.makerAssetAmount,
+        assets[order.makerAssetData].decimals,
+      ).toFixed(8),
+      total: utils.toUnitAmount(
+        order.takerAssetAmount,
+        assets[order.takerAssetData].decimals,
+      ).toFixed(8),
+      price: utils.getPrice(
+        'ask',
+        order.makerAssetAmount,
+        order.takerAssetAmount,
+      ).toFixed(8),
+    }))
+  ),
 );
 
 export const getOpenOrders = createSelector(
@@ -69,8 +114,10 @@ export const getOpenOrders = createSelector(
         order.takerAssetAmount,
         assets[order.takerAssetData].decimals,
       ).toFixed(8),
-      price: (
-        new BigNumber(order.takerAssetAmount).div(order.makerAssetAmount)
+      price: utils.getPrice(
+        utils.getType(currentAssetPairId.split('_')[0], order.makerAssetData),
+        order.makerAssetAmount,
+        order.takerAssetAmount,
       ).toFixed(8),
       action: (
         (currentAssetPairId || '_').split('_')[0] === order.makerAssetData
@@ -80,13 +127,6 @@ export const getOpenOrders = createSelector(
     }))
   ),
 );
-
-export const getType = (assetA, makerAssetData) => assetA === makerAssetData;
-
-export const getPrice = (type, makerAssetAmount, takerAssetAmount) => (
-  type === 'bid'
-    ? new BigNumber(takerAssetAmount).div(makerAssetAmount)
-    : new BigNumber(makerAssetAmount).div(takerAssetAmount));
 
 export const getCurrentOrder = createSelector(
   [
@@ -106,10 +146,10 @@ export const getCurrentOrder = createSelector(
         orders[currentOrderId].makerAssetAmount,
         assets[orders[currentOrderId].makerAssetData].decimals,
       ).toFixed(8),
-      price: getPrice(
-        getType(currentAssetPairId.split('_')[0], orders[currentOrderId].makerAssetData),
+      price: utils.getPrice(
+        utils.getType(currentAssetPairId.split('_')[0], orders[currentOrderId].makerAssetData),
         orders[currentOrderId].makerAssetAmount,
         orders[currentOrderId].takerAssetAmount,
-      ),
+      ).toFixed(8),
     } : {}),
 );
