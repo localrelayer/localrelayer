@@ -35,13 +35,6 @@ export const assetPair = {
       decimals: 18,
     },
   },
-  tradingInfo: {
-    assetAVolume: '10001',
-    change24: -50,
-    lastPrice: '5',
-    maxPrice: '10',
-    minPrice: '5',
-  },
 };
 
 const TradingChartStory = () => (

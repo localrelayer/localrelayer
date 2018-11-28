@@ -1,7 +1,7 @@
 import React from 'react';
 
-import TradingPageLayout from 'web-components/TradingPageLayout';
 import HeaderContainer from 'web-containers/HeaderContainer';
+import TradingPageLayout from 'web-components/TradingPageLayout';
 import OrderBookContainer from 'web-containers/OrderBookContainer';
 import AssetPairCardContainer from 'web-containers/AssetPairCardContainer';
 import BuySellContainer from 'web-containers/BuySellContainer';

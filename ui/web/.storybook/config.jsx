@@ -115,9 +115,8 @@ function loadStories() {
   require('../src/components/TradingChart/stories');
   require('../src/containers/TradingChartContainer/stories');
   require('../src/containers/BuySellContainer/stories');
-  require('../src/components/UserProfile/stories');
   require('../src/components/UserTradingHistory/stories');
   require('../src/containers/UserTradingHistoryContainer/stories');
-  require('../src/containers/UserProfileContainer/stories');
+  require('../src/containers/UserProfilePageContainer/stories');
 }
 configure(loadStories, module);

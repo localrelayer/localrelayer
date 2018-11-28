@@ -15,6 +15,8 @@ import {
 import Component from 'web-components/ConnectComponent';
 import ConnectingToEthProvider from 'web-components/ConnectingToEthProvider';
 import TradingPageContainer from 'web-containers/TradingPageContainer';
+import UserProfilePageContainer from 'web-containers/UserProfilePageContainer';
+
 
 const AppContainer = () => (
   <Component
@@ -32,6 +34,11 @@ const AppContainer = () => (
               exact
               path="/:baseAsset-:quoteAsset"
               component={TradingPageContainer}
+            />
+            <Route
+              exact
+              path="/account"
+              component={UserProfilePageContainer}
             />
             <Route
               exact

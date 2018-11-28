@@ -5,20 +5,16 @@ import type {
 
 import {
   assetDataUtils,
-  BigNumber,
 } from '0x.js';
 import {
-  api,
+  utils,
 } from 'instex-core';
-
-import {
-  Web3Wrapper,
-} from '@0x/web3-wrapper';
 
 
 export const getDatafeed = (
   assetPair: AssetPair,
   networkId: any,
+  apiGetBars: Function,
   onSubscribeBars: Function,
 ) => ({
   onReady: (cb: any) => {
@@ -51,7 +47,7 @@ export const getDatafeed = (
       .encodeERC20AssetData(assetPair.assetDataA.assetData.address);
     const quoteAssetData = assetDataUtils
       .encodeERC20AssetData(assetPair.assetDataB.assetData.address);
-    const data = await api.getBars({
+    const data = await apiGetBars({
       networkId,
       baseAssetData,
       quoteAssetData,
@@ -68,8 +64,8 @@ export const getDatafeed = (
     const barsData = data.items || data;
     const bars = Object.keys(barsData).map((a) => {
       // Convert volume to normal unit amount
-      const volume = +Web3Wrapper.toUnitAmount(
-        new BigNumber(barsData[a].volume.toString()),
+      const volume = +utils.toUnitAmount(
+        barsData[a].volume.toString(),
         assetPair.assetDataB.assetData.decimals,
       );
 

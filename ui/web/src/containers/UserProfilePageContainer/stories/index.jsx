@@ -7,21 +7,21 @@ import {
 } from '@storybook/addon-knobs';
 import 'web-styles/main.less';
 
-import UserProfileContainer from '..';
+import UserProfilePageContainer from '..';
 
-const UserProfileContainerStory = () => (
-  <UserProfileContainer />
+const UserProfilePageContainerStory = () => (
+  <UserProfilePageContainer />
 );
 
-storiesOf('Containers|UserProfileContainer', module)
+storiesOf('Containers|UserProfilePageContainer', module)
   .addDecorator(withKnobs)
   .add(
     'default',
-    UserProfileContainerStory,
+    UserProfilePageContainerStory,
   )
   .add(
     'full screen',
-    UserProfileContainerStory,
+    UserProfilePageContainerStory,
     {
       options: {
         goFullScreen: true,

@@ -5,14 +5,8 @@ import React, {
 import type {
   AssetPair,
 } from 'instex-core/types';
-import type {
-  Dispatch,
-} from 'redux';
 
 import colors from 'web-styles/colors';
-import {
-  chartActions,
-} from 'web-actions';
 import {
   getDatafeed,
 } from './Datafeed';
@@ -21,7 +15,8 @@ import {
 type Props = {
   assetPair: AssetPair,
   networkId: any,
-  dispatch: Dispatch,
+  getBars: Function,
+  onSubscribeBars: Function,
 };
 
 const getParameterByName = (name) => {
@@ -37,7 +32,8 @@ export default class extends Component<Props> {
     const {
       assetPair,
       networkId,
-      dispatch,
+      getBars,
+      onSubscribeBars,
     } = this.props;
     if (
       assetPair
@@ -46,7 +42,8 @@ export default class extends Component<Props> {
       this.initalizeChartWidget(
         assetPair,
         networkId,
-        dispatch,
+        getBars,
+        onSubscribeBars,
       );
     }
   }
@@ -54,7 +51,8 @@ export default class extends Component<Props> {
   componentWillReceiveProps(nextProps: Props) {
     const {
       assetPair,
-      dispatch,
+      getBars,
+      onSubscribeBars,
     } = this.props;
     if (
       nextProps.assetPair
@@ -64,7 +62,8 @@ export default class extends Component<Props> {
       this.initalizeChartWidget(
         nextProps.assetPair,
         nextProps.networkId,
-        dispatch,
+        getBars,
+        onSubscribeBars,
       );
     }
   }
@@ -72,7 +71,8 @@ export default class extends Component<Props> {
   initalizeChartWidget = (
     assetPair: AssetPair,
     networkId: any,
-    dispatch: Dispatch,
+    getBars: Function,
+    onSubscribeBars: Function,
   ) => {
     // eslint-disable-next-line
     const widget = new window.TradingView.widget({
@@ -86,14 +86,8 @@ export default class extends Component<Props> {
         getDatafeed(
           assetPair,
           networkId,
-          (chartBarCallback) => {
-            dispatch(
-              chartActions.subscribeOnChangeChartBar(
-                chartBarCallback,
-                assetPair,
-              ),
-            );
-          },
+          getBars,
+          onSubscribeBars,
         )
       ),
       library_path: 'charting_library/',
