@@ -21,8 +21,8 @@ const columns = [{
   title: 'Created',
   dataIndex: 'metaData.createdAt',
   render: (text: string) => (
-    <Tooltip title={text}>
-      {text}
+    <Tooltip title={new Date(text).toLocaleString()}>
+      {new Date(text).toLocaleString()}
     </Tooltip>
   ),
 }, {
