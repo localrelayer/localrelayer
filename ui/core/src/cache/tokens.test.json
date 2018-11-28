@@ -10,5 +10,35 @@
     "name": "Wrapped Ether",
     "symbol": "WETH",
     "decimals": 18
+  },
+  "0x783ceb5c861448F0118e72E80bb387260370B181": {
+    "address": "0x783ceb5c861448F0118e72E80bb387260370B181",
+    "name": "Instex Coin",
+    "symbol": "IX",
+    "decimals": 18
+  },
+  "0xa03D516A9C576ba485AAD8911012f73bB6097C3d": {
+    "address": "0x783ceb5c861448F0118e72E80bb387260370B181",
+    "name": "Aragon",
+    "symbol": "ARG",
+    "decimals": 18
+  },
+  "0x47F85D4f1FB70ee6A4254D198cE0000C10c7D6Db": {
+    "address": "0x783ceb5c861448F0118e72E80bb387260370B181",
+    "name": "Dai",
+    "symbol": "DAI",
+    "decimals": 18
+  },
+  "0x86a63D61312292541F2ca9a7A4e4a928aA58d706": {
+    "address": "0x86a63D61312292541F2ca9a7A4e4a928aA58d706",
+    "name": "MonaCoin",
+    "symbol": "MON",
+    "decimals": 18
+  },
+  "0x7D93Af45153Bf872462e55e0F73AaEC2D0a58CfE": {
+    "address": "0x7D93Af45153Bf872462e55e0F73AaEC2D0a58CfE",
+    "name": "Insight Chain",
+    "symbol": "INB",
+    "decimals": 18
   }
 }
