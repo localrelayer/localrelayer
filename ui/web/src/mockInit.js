@@ -6,6 +6,20 @@ import {
 import config from 'web-config';
 
 const mocks = {};
+const memoizeMocks = ({
+  networkId,
+  baseAssetData,
+  quoteAssetData,
+  additionalKey = '',
+}) => {
+  if (!mocks[`${networkId}_${baseAssetData}_${quoteAssetData}_${additionalKey}`]) {
+    mocks[`${networkId}_${baseAssetData}_${quoteAssetData}`] = coreMocks.mocksOrdersFactory({
+      networkId,
+      assetDataA: baseAssetData,
+      assetDataB: quoteAssetData,
+    });
+  }
+};
 
 api.setApiUrl(config.apiUrl);
 api.setMockMethods({
@@ -20,19 +34,18 @@ api.setMockMethods({
       quoteAssetData,
       networkId,
     } = queryParameters;
-    if (!mocks[`${networkId}_${baseAssetData}_${quoteAssetData}`]) {
-      mocks[`${networkId}_${baseAssetData}_${quoteAssetData}`] = coreMocks.mocksOrdersFactory({
-        networkId,
-        assetDataA: baseAssetData,
-        assetDataB: quoteAssetData,
-      });
-    }
+    memoizeMocks({
+      networkId,
+      baseAssetData,
+      quoteAssetData,
+    });
     return new Promise(r => r(
-      mocks[`${networkId}_${baseAssetData}_${quoteAssetData}`].getOrderBook({
-        networkId,
-        baseAssetData,
-        quoteAssetData,
-      }),
+      mocks[`${networkId}_${baseAssetData}_${quoteAssetData}`]
+        .getOrderBook({
+          networkId,
+          baseAssetData,
+          quoteAssetData,
+        }),
     ));
   },
   getTradingHistory({ queryParameters }) {
@@ -41,19 +54,19 @@ api.setMockMethods({
       quoteAssetData,
       networkId,
     } = queryParameters;
-    if (!mocks[`${networkId}_${baseAssetData}_${quoteAssetData}`]) {
-      mocks[`${networkId}_${baseAssetData}_${quoteAssetData}`] = coreMocks.mocksOrdersFactory({
-        networkId,
-        assetDataA: baseAssetData,
-        assetDataB: quoteAssetData,
-      });
-    }
+    memoizeMocks({
+      networkId,
+      baseAssetData,
+      quoteAssetData,
+      additinalKey: 'tradingHistory',
+    });
     return new Promise(r => r(
-      mocks[`${networkId}_${baseAssetData}_${quoteAssetData}`].getTradingHistory({
-        networkId,
-        baseAssetData,
-        quoteAssetData,
-      }),
+      mocks[`${networkId}_${baseAssetData}_${quoteAssetData}`]
+        .getTradingHistory({
+          networkId,
+          baseAssetData,
+          quoteAssetData,
+        }),
     ));
   },
   getBars(args) {
@@ -68,21 +81,20 @@ api.setMockMethods({
         firstDataRequest,
       },
     } = args;
-    if (!mocks[`${networkId}_${baseAssetData}_${quoteAssetData}`]) {
-      mocks[`${networkId}_${baseAssetData}_${quoteAssetData}`] = coreMocks.mocksOrdersFactory({
-        networkId,
-        assetDataA: baseAssetData,
-        assetDataB: quoteAssetData,
-      });
-    }
+    memoizeMocks({
+      networkId,
+      baseAssetData,
+      quoteAssetData,
+    });
     return new Promise(r => r(
-      mocks[`${networkId}_${baseAssetData}_${quoteAssetData}`].getBars({
-        networkId,
-        from,
-        to,
-        resolution,
-        firstDataRequest,
-      }),
+      mocks[`${networkId}_${baseAssetData}_${quoteAssetData}`]
+        .getBars({
+          networkId,
+          from,
+          to,
+          resolution,
+          firstDataRequest,
+        }),
     ));
   },
 });
