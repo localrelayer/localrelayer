@@ -23,17 +23,29 @@ export const getCurrentAssetPair = createSelector(
     assetPairs,
     tradingInfo,
     currentAssetPairId,
-  ) => (
-    currentAssetPairId
+  ) => {
+    const assetPair = cs.constructAssetPair({
+      assetPair: assetPairs[currentAssetPairId],
+      assets,
+    });
+
+    return currentAssetPairId
       ? ({
-        ...cs.constructAssetPair({
-          assetPair: assetPairs[currentAssetPairId],
-          assets,
-        }),
-        tradingInfo: tradingInfo[currentAssetPairId],
+        ...assetPair,
+        tradingInfo: {
+          ...tradingInfo[currentAssetPairId],
+          assetAVolume: utils.toUnitAmount(
+            tradingInfo[currentAssetPairId]?.assetAVolume || 0,
+            assetPair.assetDataA.assetData.decimals,
+          ).toFixed(8),
+          assetBVolume: utils.toUnitAmount(
+            tradingInfo[currentAssetPairId]?.assetBVolume || 0,
+            assetPair.assetDataB.assetData.decimals,
+          ).toFixed(8),
+        },
       })
-      : null
-  ),
+      : null;
+  },
 );
 
 export const getCurrentAssetPairWithBalance = createSelector(
