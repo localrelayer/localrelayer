@@ -87,7 +87,6 @@ function* setCurrentPair({
   webRadioChannel,
   networkId,
 }) {
-  /* TODO: check if current pair changed, to avoid multiple invoiking for the same pair */
   const match = matchPath(location.pathname, {
     path: '/:baseAsset-:quoteAsset',
     exact: true,
@@ -111,86 +110,93 @@ function* setCurrentPair({
         quoteAsset: match.params.quoteAsset,
         networkId,
       });
+      const isCurrentPairIssue = yield eff.select(getUiState('isCurrentPairIssue'));
       const currentAssetPairId = yield eff.select(getUiState('currentAssetPairId'));
       const tradingInfoSubscribeId = yield eff.select(getUiState('tradingInfoSubscribeId'));
       const ordersSubscribeId = yield eff.select(getUiState('ordersSubscribeId'));
 
-      yield eff.put(uiActions.setUiState({
-        currentAssetPairId: assetPair.id,
-        isCurrentPairListed: isListed,
-        isCurrentPairIssue: false,
-      }));
-
-      /* Unsubscribe after pair change */
-      if (currentAssetPairId && tradingInfoSubscribeId) {
-        yield eff.put(coreActions.sendSocketMessage({
-          type: 'unsubscribe',
-          requestId: tradingInfoSubscribeId,
-        }));
-      }
-      yield eff.fork(subscribeOnCurrentTradingInfo);
-
-      /* Unsubscribe after pair change */
       if (
-        currentAssetPairId
-        && ordersSubscribeId
+        currentAssetPairId !== assetPair.id
+        || isCurrentPairIssue
       ) {
-        yield eff.put(coreActions.sendSocketMessage({
-          type: 'unsubscribe',
-          ordersSubscribeId,
+        console.log('SETCURRENTPAIR');
+        yield eff.put(uiActions.setUiState({
+          currentAssetPairId: assetPair.id,
+          isCurrentPairListed: isListed,
+          isCurrentPairIssue: false,
         }));
-      }
-      yield eff.fork(subscribeOnUpdateOrders);
 
-      yield eff.fork(
-        coreSagas.fetchTradingInfo,
-        {
-          pairs: [{
-            networkId,
-            assetDataA: assetPair.assetDataA.assetData,
-            assetDataB: assetPair.assetDataB.assetData,
-          }],
-        },
-      );
-      yield eff.fork(
-        coreSagas.fetchOrderBook,
-        {
-          networkId,
-          baseAssetData: assetPair.assetDataA.assetData,
-          quoteAssetData: assetPair.assetDataB.assetData,
-        },
-      );
-      const selectedAccount = yield eff.select(
-        coreSelectors.getWalletState('selectedAccount'),
-      );
-      if (selectedAccount) {
+        /* Unsubscribe after pair change */
+        if (currentAssetPairId && tradingInfoSubscribeId) {
+          yield eff.put(coreActions.sendSocketMessage({
+            type: 'unsubscribe',
+            requestId: tradingInfoSubscribeId,
+          }));
+        }
+        yield eff.fork(subscribeOnCurrentTradingInfo);
+
+        /* Unsubscribe after pair change */
+        if (
+          currentAssetPairId
+          && ordersSubscribeId
+        ) {
+          yield eff.put(coreActions.sendSocketMessage({
+            type: 'unsubscribe',
+            ordersSubscribeId,
+          }));
+        }
+        yield eff.fork(subscribeOnUpdateOrders);
+
         yield eff.fork(
-          coreSagas.fetchUserOrders,
+          coreSagas.fetchTradingInfo,
+          {
+            pairs: [{
+              networkId,
+              assetDataA: assetPair.assetDataA.assetData,
+              assetDataB: assetPair.assetDataB.assetData,
+            }],
+          },
+        );
+        yield eff.fork(
+          coreSagas.fetchOrderBook,
           {
             networkId,
             baseAssetData: assetPair.assetDataA.assetData,
             quoteAssetData: assetPair.assetDataB.assetData,
-            traderAddress: selectedAccount,
+          },
+        );
+        const selectedAccount = yield eff.select(
+          coreSelectors.getWalletState('selectedAccount'),
+        );
+        if (selectedAccount) {
+          yield eff.fork(
+            coreSagas.fetchUserOrders,
+            {
+              networkId,
+              baseAssetData: assetPair.assetDataA.assetData,
+              quoteAssetData: assetPair.assetDataB.assetData,
+              traderAddress: selectedAccount,
+            },
+          );
+        }
+        yield eff.fork(
+          coreSagas.fetchTradingHistory,
+          {
+            networkId,
+            baseAssetData: assetPair.assetDataA.assetData,
+            quoteAssetData: assetPair.assetDataB.assetData,
+          },
+        );
+        yield eff.put(
+          webRadioChannel,
+          {
+            sagaName: 'setCurrentPair',
+            message: {
+              assetPair,
+            },
           },
         );
       }
-      yield eff.fork(
-        coreSagas.fetchTradingHistory,
-        {
-          networkId,
-          baseAssetData: assetPair.assetDataA.assetData,
-          quoteAssetData: assetPair.assetDataB.assetData,
-        },
-      );
-      yield eff.put(
-        webRadioChannel,
-        {
-          sagaName: 'setCurrentPair',
-          message: {
-            assetPair,
-          },
-        },
-      );
     } catch (errors) {
       console.log(errors);
       yield eff.put(uiActions.setUiState({

@@ -33,9 +33,7 @@ class AppContainerStory extends React.Component<Props> {
       route,
       history,
     } = this.props;
-    if (route) {
-      history.push(route);
-    }
+    history.push(route);
   }
 
   componentWillUnmount() {
@@ -78,7 +76,9 @@ storiesOf('Containers|AppContainer', module)
   .add(
     '/ - index route',
     () => (
-      <AppContainerStory />
+      <AppContainerStory
+        route="/"
+      />
     ),
   )
   .add(
@@ -113,7 +113,11 @@ storiesOf('Containers|AppContainer', module)
   )
   .add(
     'full screen',
-    () => <AppContainerStory />,
+    () => (
+      <AppContainerStory
+        route="/"
+      />
+    ),
     {
       options: {
         goFullScreen: true,
