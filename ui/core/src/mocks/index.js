@@ -203,7 +203,9 @@ export function mocksOrdersFactory({
       )
       .map(o => ({
         order: o.order,
-        metaData: {},
+        metaData: {
+          isValid: true,
+        },
       }))
   );
   const allAsksOrders = (
@@ -215,7 +217,9 @@ export function mocksOrdersFactory({
       )
       .map(o => ({
         order: o.order,
-        metaData: {},
+        metaData: {
+          isValid: true,
+        },
       }))
   );
 

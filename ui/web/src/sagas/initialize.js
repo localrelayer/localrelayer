@@ -87,6 +87,7 @@ function* setCurrentPair({
   webRadioChannel,
   networkId,
 }) {
+  /* TODO: check if current pair changed, to avoid multiple invoiking for the same pair */
   const match = matchPath(location.pathname, {
     path: '/:baseAsset-:quoteAsset',
     exact: true,
