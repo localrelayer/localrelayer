@@ -370,6 +370,70 @@ export function mocksOrdersFactory({
         ),
       };
     },
+    getTradingInfo({
+      baseAssetData,
+      quoteAssetData,
+    }) {
+      const pairId = `${baseAssetData}_${quoteAssetData}`;
+      const bidOrders = allBidsOrders.map(orderObject => orderObject.order);
+      const calculatedTradingInfo = bidOrders.reduce((acc, order) => {
+        const lastPrice = new BigNumber(order.makerAssetAmount)
+          .div(order.takerAssetAmount).toFixed(8);
+        const minPrice = BigNumber.min(lastPrice, acc.minPrice).toNumber() || lastPrice;
+        const maxPrice = BigNumber.max(lastPrice, acc.maxPrice).toNumber() || lastPrice;
+
+        const assetAVolume = acc.assetAVolume
+          ? new BigNumber(order.makerAssetAmount).plus(acc.assetAVolume)
+          : order.makerAssetAmount;
+
+        const assetBVolume = acc.assetBVolume
+          ? new BigNumber(order.takerAssetAmount).plus(acc.assetBVolume)
+          : order.takerAssetAmount;
+
+        const change24 = acc.firstOrderPrice
+          ? new BigNumber(lastPrice)
+            .div(acc.firstOrderPrice)
+            .minus(1)
+            .times(100)
+            .toFixed(2)
+          : '0.00';
+        return {
+          assetAVolume,
+          assetBVolume,
+          change24,
+          lastPrice,
+          maxPrice,
+          minPrice,
+        };
+      }, {
+        minPrice: 0,
+        maxPrice: 0,
+        assetAVolume: 0,
+        assetBVolume: 0,
+        firstOrderPrice: 0,
+      });
+      const tradingInfo = {
+        lastPrice: new BigNumber(calculatedTradingInfo.lastPrice).toFixed(8),
+        minPrice: new BigNumber(calculatedTradingInfo.minPrice).toFixed(8),
+        maxPrice: new BigNumber(calculatedTradingInfo.maxPrice).toFixed(8),
+        assetAVolume: new BigNumber(calculatedTradingInfo.assetAVolume).toFixed(8),
+        assetBVolume: new BigNumber(calculatedTradingInfo.assetBVolume).toFixed(8),
+        change24: calculatedTradingInfo.change24,
+        firstOrderPrice: new BigNumber(calculatedTradingInfo.firstOrderPrice
+          || calculatedTradingInfo.lastPrice).toFixed(8),
+      };
+      return {
+        records: {
+          [pairId]: {
+            ...tradingInfo,
+            id: pairId,
+            assetDataA: baseAssetData,
+            assetDataB: quoteAssetData,
+            networkId,
+          },
+        },
+      };
+    },
 
     getBars() {
       return {};
