@@ -3,6 +3,9 @@ import React, {
   useState,
 } from 'react';
 import {
+  Link,
+} from 'react-router-dom';
+import {
   Input,
   Button,
   Popover,
@@ -47,16 +50,24 @@ const Header = ({
       ].join('/')
       : ''
   );
+  const currentLink = [
+    currentAssetPair.assetDataA.assetData.symbol,
+    currentAssetPair.assetDataB.assetData.symbol,
+  ].join('-');
   return (
     <S.Header>
       <S.InstexLogo src={logo} alt="logo" />
       <S.Trade>
         <S.HeaderIcon type="swap" />
-        Trade
+        <Link to={currentLink}>
+          Trade
+        </Link>
       </S.Trade>
       <S.Account>
         <S.HeaderIcon type="home" />
-        Account
+        <Link to="/account">
+          Account
+        </Link>
       </S.Account>
       <Popover
         trigger="click"
