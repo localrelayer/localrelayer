@@ -130,6 +130,53 @@ export function* fetchUserOrders(opts = {}) {
   }
 }
 
+function* matchOrder({
+  makerAssetAmount,
+  takerAssetAmount,
+  type,
+}) {
+  // BID order wants smallest (sorted by descending order)
+  // ASK order wants biggest (sorted by ascending order)
+  // So we want first order
+
+  // Order matched if
+
+  // BID:
+  // ask price < bid prices
+
+  // ASK:
+  // bid price < ask price
+
+  // matchedOrder < orderPrice
+  let price;
+  let matchedOrders = [];
+
+  console.log('ORDER', makerAssetAmount, takerAssetAmount);
+
+  if (type === 'bid') {
+    price = new BigNumber(makerAssetAmount).div(takerAssetAmount);
+    const askOrders = yield eff.select(selectors.getAskOrders);
+    matchedOrders = askOrders.filter((askOrder) => {
+      const matchedAskOrderPrice = new BigNumber(
+        askOrder.metaData.remainingFillableTakerAssetAmount,
+      ).div(askOrder.metaData.remainingFillableMakerAssetAmount);
+
+      return matchedAskOrderPrice.lte(price);
+    });
+  } else {
+    price = new BigNumber(takerAssetAmount).div(makerAssetAmount);
+    const bidOrders = yield eff.select(selectors.getBidOrders);
+    matchedOrders = bidOrders.filter((bidOrder) => {
+      const matchedBidOrderPrice = new BigNumber(
+        bidOrder.metaData.remainingFillableMakerAssetAmount,
+      ).div(bidOrder.metaData.remainingFillableTakerAssetAmount);
+
+      return matchedBidOrderPrice.lte(price);
+    });
+  }
+  return matchedOrders;
+}
+
 function* postOrder({
   formActions,
   order: {
@@ -148,27 +195,67 @@ function* postOrder({
   const provider = new MetamaskSubprovider(web3.currentProvider);
   const contractWrappers = ethApi.getWrappers(networkId);
   const exchangeAddress = getContractAddressesForNetwork(networkId).exchange;
-
-  const counterOrderType = type === 'bid' ? 'Ask' : 'Bid';
-  const orders = yield eff.select(selectors[`get${counterOrderType}Orders`]);
   const taker = yield eff.select(selectors.getWalletState('selectedAccount'));
 
-  const matchedOrders = orders.filter(o => new BigNumber(o.makerAssetAmount).eq(takerAssetAmount)
-    && new BigNumber(o.takerAssetAmount).eq(makerAssetAmount));
+  const matchedOrders = yield eff.call(matchOrder, {
+    makerAssetAmount,
+    takerAssetAmount,
+    type,
+  });
 
-  // TODO: Not fully filled and batch fill
+  let requiredAmount = new BigNumber(takerAssetAmount);
 
   if (matchedOrders.length) {
-    const txHash = yield eff.call(
-      [
-        contractWrappers.exchange,
-        contractWrappers.exchange.fillOrderAsync,
-      ],
-      matchedOrders[0],
-      takerAssetAmount,
-      taker,
-    );
-    console.log('FILLED WITH HASH', txHash);
+    const ordersToFill = [];
+    const takerAssetFillAmounts = [];
+    while (requiredAmount.gt(0) && matchedOrders.length) {
+      const order = matchedOrders.shift();
+      const existingAssetAmount = order.metaData.remainingFillableMakerAssetAmount;
+      const toBeFilledAmount = BigNumber.min(requiredAmount, existingAssetAmount);
+      requiredAmount = requiredAmount.minus(toBeFilledAmount);
+      ordersToFill.push(order);
+
+      const takerAmount = toBeFilledAmount
+        .times(order.metaData.remainingFillableTakerAssetAmount)
+        .div(order.metaData.remainingFillableMakerAssetAmount);
+      takerAssetFillAmounts.push(takerAmount);
+    }
+
+    try {
+      const txHash = yield eff.call(
+        [
+          contractWrappers.exchange,
+          contractWrappers.exchange.batchFillOrKillOrdersAsync,
+        ],
+        ordersToFill,
+        takerAssetFillAmounts,
+        taker,
+      );
+      console.log('FILLED WITH HASH', txHash);
+    } catch (e) {
+      console.log('TX FAILED', e);
+    }
+
+    if (requiredAmount.gt(0)) {
+      const newMakerAmount = new BigNumber(makerAssetAmount)
+        .times(requiredAmount)
+        .div(takerAssetAmount);
+
+      yield eff.call(postOrder, {
+        formActions,
+        order: {
+          makerAddress,
+          takerAddress,
+          makerAssetData,
+          takerAssetData,
+          makerAssetAmount: newMakerAmount,
+          takerAssetAmount: requiredAmount,
+          expirationTimeSeconds,
+          type,
+        },
+      });
+    }
+
     formActions.resetForm({});
   } else {
     const orderConfigRequest = {

@@ -62,5 +62,5 @@ export const getType = (baseAssetData, makerAssetData) => (
 
 export const getPrice = (type, makerAssetAmount, takerAssetAmount) => (
   type === 'bid'
-    ? new BigNumber(takerAssetAmount).div(makerAssetAmount)
-    : new BigNumber(makerAssetAmount).div(takerAssetAmount));
+    ? new BigNumber(makerAssetAmount).div(takerAssetAmount)
+    : new BigNumber(takerAssetAmount).div(makerAssetAmount));
