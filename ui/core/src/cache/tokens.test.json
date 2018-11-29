@@ -11,34 +11,1205 @@
     "symbol": "WETH",
     "decimals": 18
   },
-  "0x783ceb5c861448F0118e72E80bb387260370B181": {
-    "address": "0x783ceb5c861448F0118e72E80bb387260370B181",
-    "name": "Instex Coin",
-    "symbol": "IX",
+  "0xafabff5673ff9dbf330182ce1e536dbfbdb02719": {
+    "address": "0xafabff5673ff9dbf330182ce1e536dbfbdb02719",
+    "name": "Car",
+    "symbol": "MKJ",
     "decimals": 18
   },
-  "0xa03D516A9C576ba485AAD8911012f73bB6097C3d": {
-    "address": "0x783ceb5c861448F0118e72E80bb387260370B181",
-    "name": "Aragon",
-    "symbol": "ARG",
+  "0x36829d769ec23c53a36e9e371a667097016520d3": {
+    "address": "0x36829d769ec23c53a36e9e371a667097016520d3",
+    "name": "Ethiopian Birr",
+    "symbol": "BSR",
+    "decimals": 8
+  },
+  "0x79383b23594ab043a280c404ea7e57e5a31faada": {
+    "address": "0x79383b23594ab043a280c404ea7e57e5a31faada",
+    "name": "JBOD",
+    "symbol": "MLE",
     "decimals": 18
   },
-  "0x47F85D4f1FB70ee6A4254D198cE0000C10c7D6Db": {
-    "address": "0x783ceb5c861448F0118e72E80bb387260370B181",
-    "name": "Dai",
-    "symbol": "DAI",
+  "0x8b847ff4e2190906e3531e567e19178c59f23232": {
+    "address": "0x8b847ff4e2190906e3531e567e19178c59f23232",
+    "name": "Small Wooden Bacon",
+    "symbol": "UXP",
+    "decimals": 14
+  },
+  "0xc26e3957428ca14efa547a2e0b1a3645d0c1a030": {
+    "address": "0xc26e3957428ca14efa547a2e0b1a3645d0c1a030",
+    "name": "Malagasy Ariary",
+    "symbol": "GXW",
+    "decimals": 17
+  },
+  "0xec5674414706e86184faf1e7050760a329c54716": {
+    "address": "0xec5674414706e86184faf1e7050760a329c54716",
+    "name": "Concrete",
+    "symbol": "MHH",
     "decimals": 18
   },
-  "0x86a63D61312292541F2ca9a7A4e4a928aA58d706": {
-    "address": "0x86a63D61312292541F2ca9a7A4e4a928aA58d706",
-    "name": "MonaCoin",
-    "symbol": "MON",
+  "0x0e665c858b512750e7d58d424622686833ee2a1a": {
+    "address": "0x0e665c858b512750e7d58d424622686833ee2a1a",
+    "name": "Multi-layered",
+    "symbol": "NYL",
+    "decimals": 13
+  },
+  "0xe9cf5182bdc7ae7901db9e7927327d5f7bcc28a0": {
+    "address": "0xe9cf5182bdc7ae7901db9e7927327d5f7bcc28a0",
+    "name": "Bedfordshire",
+    "symbol": "MZV",
     "decimals": 18
   },
-  "0x7D93Af45153Bf872462e55e0F73AaEC2D0a58CfE": {
-    "address": "0x7D93Af45153Bf872462e55e0F73AaEC2D0a58CfE",
-    "name": "Insight Chain",
-    "symbol": "INB",
+  "0x4d221718e3f4069d961470041c59ed67d7b3754e": {
+    "address": "0x4d221718e3f4069d961470041c59ed67d7b3754e",
+    "name": "Inlet Coin",
+    "symbol": "WUI",
+    "decimals": 12
+  },
+  "0xd7f6c631b7459e2b4c121a779530ad5879dd5126": {
+    "address": "0xd7f6c631b7459e2b4c121a779530ad5879dd5126",
+    "name": "Multi-byte Token",
+    "symbol": "GMK",
+    "decimals": 18
+  },
+  "0xe6343e15643ff05fd7a6900e1ddc644d906d7430": {
+    "address": "0xe6343e15643ff05fd7a6900e1ddc644d906d7430",
+    "name": "Dominican Peso Token",
+    "symbol": "NZJ",
+    "decimals": 6
+  },
+  "0x45c21c46b9e07ef218cea8393d0bb106060a201d": {
+    "address": "0x45c21c46b9e07ef218cea8393d0bb106060a201d",
+    "name": "Metrics",
+    "symbol": "JXU",
+    "decimals": 18
+  },
+  "0x5c2a69972c5147d7dcf3acc77f4fe1515bde3124": {
+    "address": "0x5c2a69972c5147d7dcf3acc77f4fe1515bde3124",
+    "name": "Iowa Token",
+    "symbol": "ZRE",
+    "decimals": 18
+  },
+  "0x234b577cb7f67ba1797885920c2267b9e3a0f7e9": {
+    "address": "0x234b577cb7f67ba1797885920c2267b9e3a0f7e9",
+    "name": "Fresh Coin",
+    "symbol": "SGF",
+    "decimals": 18
+  },
+  "0xa0968a63b628d6a39f96d3a335efff7aa05be795": {
+    "address": "0xa0968a63b628d6a39f96d3a335efff7aa05be795",
+    "name": "Mexican Peso Mexican Unidad de Inversion (UDI)",
+    "symbol": "DNT",
+    "decimals": 18
+  },
+  "0xfbd50cdc1558b6b837297fd173df9ad7bba26520": {
+    "address": "0xfbd50cdc1558b6b837297fd173df9ad7bba26520",
+    "name": "Web",
+    "symbol": "DAM",
+    "decimals": 18
+  },
+  "0x0ed57b038ea518a709210e3d85dfff831371dc7e": {
+    "address": "0x0ed57b038ea518a709210e3d85dfff831371dc7e",
+    "name": "Checking Account",
+    "symbol": "HJX",
+    "decimals": 18
+  },
+  "0x54999d77a1f14540f33c16500c19c86b7c6badd4": {
+    "address": "0x54999d77a1f14540f33c16500c19c86b7c6badd4",
+    "name": "Personal Loan Account",
+    "symbol": "IWH",
+    "decimals": 18
+  },
+  "0x71d2b04a7bbd922cf1a8d54c55bc03086f3ad5ba": {
+    "address": "0x71d2b04a7bbd922cf1a8d54c55bc03086f3ad5ba",
+    "name": "Methodology",
+    "symbol": "YZG",
+    "decimals": 18
+  },
+  "0xc98e0a7b22073c30bfc33f36d05f8b5b50881500": {
+    "address": "0xc98e0a7b22073c30bfc33f36d05f8b5b50881500",
+    "name": "White",
+    "symbol": "GMD",
+    "decimals": 18
+  },
+  "0x87c8835b6e3267e56c191ccdbad8e25220c13d0c": {
+    "address": "0x87c8835b6e3267e56c191ccdbad8e25220c13d0c",
+    "name": "Louisiana",
+    "symbol": "KGR",
+    "decimals": 18
+  },
+  "0x41344d9326d91e66274362b71fbd75712f2fd025": {
+    "address": "0x41344d9326d91e66274362b71fbd75712f2fd025",
+    "name": "Digital",
+    "symbol": "XLL",
+    "decimals": 11
+  },
+  "0x68e34492d8a16f8eef6a3a191362f34de2708e27": {
+    "address": "0x68e34492d8a16f8eef6a3a191362f34de2708e27",
+    "name": "Cross-platform Coin",
+    "symbol": "WHW",
+    "decimals": 18
+  },
+  "0x4ceaed1421e991b2555fd5fec876b2078a566a7f": {
+    "address": "0x4ceaed1421e991b2555fd5fec876b2078a566a7f",
+    "name": "Data",
+    "symbol": "RGS",
+    "decimals": 18
+  },
+  "0x9fe6f79047eaf953918c5190a0e0ddd0f4aa3a05": {
+    "address": "0x9fe6f79047eaf953918c5190a0e0ddd0f4aa3a05",
+    "name": "Deposit",
+    "symbol": "BMF",
+    "decimals": 1
+  },
+  "0xef63d8bd54da4efc1d8a6c7d56e6acfe2ac75ffc": {
+    "address": "0xef63d8bd54da4efc1d8a6c7d56e6acfe2ac75ffc",
+    "name": "Mobile",
+    "symbol": "ONX",
+    "decimals": 18
+  },
+  "0x0734bb4a0544f16727fa58dc168eb8cf658f85c7": {
+    "address": "0x0734bb4a0544f16727fa58dc168eb8cf658f85c7",
+    "name": "Gloves",
+    "symbol": "CJD",
+    "decimals": 18
+  },
+  "0x782df5c16a46d9cc0384f50d91491f22e5b9a80c": {
+    "address": "0x782df5c16a46d9cc0384f50d91491f22e5b9a80c",
+    "name": "Assurance Coin",
+    "symbol": "AIM",
+    "decimals": 18
+  },
+  "0x173c6317e05355e0f72df9056dd56e870634f691": {
+    "address": "0x173c6317e05355e0f72df9056dd56e870634f691",
+    "name": "Indexing",
+    "symbol": "BQN",
+    "decimals": 18
+  },
+  "0x2ad2a4cb7f149bb987a5cea157e5b2e1e4abb1c2": {
+    "address": "0x2ad2a4cb7f149bb987a5cea157e5b2e1e4abb1c2",
+    "name": "Mississippi Coin",
+    "symbol": "TMS",
+    "decimals": 18
+  },
+  "0x3007353b2159e16bd42662f875b4c1780e80e130": {
+    "address": "0x3007353b2159e16bd42662f875b4c1780e80e130",
+    "name": "International",
+    "symbol": "SAJ",
+    "decimals": 18
+  },
+  "0x1a7c33102bbc5a89c6b49be08c58e542773f2022": {
+    "address": "0x1a7c33102bbc5a89c6b49be08c58e542773f2022",
+    "name": "Tasty Soft Shoes",
+    "symbol": "NYO",
+    "decimals": 18
+  },
+  "0x83b0ed63f5db2d9c4b061078d334def5de887a05": {
+    "address": "0x83b0ed63f5db2d9c4b061078d334def5de887a05",
+    "name": "Ball",
+    "symbol": "YBT",
+    "decimals": 18
+  },
+  "0xf8fe607775ab3bd32579d2cb62bad2ec4d675725": {
+    "address": "0xf8fe607775ab3bd32579d2cb62bad2ec4d675725",
+    "name": "Principal",
+    "symbol": "TDJ",
+    "decimals": 18
+  },
+  "0x9785e6e5038ec7a53dc0deb3fb572487ce176196": {
+    "address": "0x9785e6e5038ec7a53dc0deb3fb572487ce176196",
+    "name": "Adaptive Token",
+    "symbol": "RAK",
+    "decimals": 3
+  },
+  "0x90b4b96a8e394abe3d33f32f14d0ee03cb2b3fbf": {
+    "address": "0x90b4b96a8e394abe3d33f32f14d0ee03cb2b3fbf",
+    "name": "Violet",
+    "symbol": "OTU",
+    "decimals": 18
+  },
+  "0x3ef097c9e6cee9c8b0bf9517364d8f027afb8f2e": {
+    "address": "0x3ef097c9e6cee9c8b0bf9517364d8f027afb8f2e",
+    "name": "Invoice Token",
+    "symbol": "WTC",
+    "decimals": 18
+  },
+  "0x39df32b2af3e702238c623fe7763de503763a805": {
+    "address": "0x39df32b2af3e702238c623fe7763de503763a805",
+    "name": "Fresh Token",
+    "symbol": "CZZ",
+    "decimals": 18
+  },
+  "0x46030d48716e2cbeff93fafd1ae19ea335fd833f": {
+    "address": "0x46030d48716e2cbeff93fafd1ae19ea335fd833f",
+    "name": "Graphic Interface",
+    "symbol": "MWD",
+    "decimals": 18
+  },
+  "0x918974a460ebf3a252b6b31dd6ed280600710784": {
+    "address": "0x918974a460ebf3a252b6b31dd6ed280600710784",
+    "name": "Awesome Cotton Soap",
+    "symbol": "GWP",
+    "decimals": 18
+  },
+  "0x6d3bc19aab9ad11975428b6f38ee7e3422f91687": {
+    "address": "0x6d3bc19aab9ad11975428b6f38ee7e3422f91687",
+    "name": "Input Token",
+    "symbol": "VML",
+    "decimals": 18
+  },
+  "0xfc0eff1462bee6cc2daabf495060e6e2203d7a58": {
+    "address": "0xfc0eff1462bee6cc2daabf495060e6e2203d7a58",
+    "name": "Payment Coin",
+    "symbol": "MQG",
+    "decimals": 18
+  },
+  "0xa0f944512b86fa7228fdf8bded06f43da6a93a07": {
+    "address": "0xa0f944512b86fa7228fdf8bded06f43da6a93a07",
+    "name": "Soft",
+    "symbol": "DBT",
+    "decimals": 9
+  },
+  "0x82d529da9658be60d9beb85ac6d0362d8c2f067d": {
+    "address": "0x82d529da9658be60d9beb85ac6d0362d8c2f067d",
+    "name": "Plastic",
+    "symbol": "TBH",
+    "decimals": 18
+  },
+  "0x5c2b32151eda1f1db46092ae7017ab3a1ff4b7d4": {
+    "address": "0x5c2b32151eda1f1db46092ae7017ab3a1ff4b7d4",
+    "name": "24/365 Coin",
+    "symbol": "VOJ",
+    "decimals": 18
+  },
+  "0x5cf91e94d5af85e989da022e8f712e65cbdf0458": {
+    "address": "0x5cf91e94d5af85e989da022e8f712e65cbdf0458",
+    "name": "Personal Loan Account",
+    "symbol": "FIU",
+    "decimals": 18
+  },
+  "0xea48a120984d66bc8cf55bebab27763188b5e632": {
+    "address": "0xea48a120984d66bc8cf55bebab27763188b5e632",
+    "name": "Armenian Dram Token",
+    "symbol": "ILJ",
+    "decimals": 18
+  },
+  "0x509b9b0bc05a8bee57f547bd1dda61969481b0e6": {
+    "address": "0x509b9b0bc05a8bee57f547bd1dda61969481b0e6",
+    "name": "Personal Loan Account",
+    "symbol": "WTO",
+    "decimals": 18
+  },
+  "0x1806393d7c8bb2cfcb4b93c8fa81fad48d96c7e5": {
+    "address": "0x1806393d7c8bb2cfcb4b93c8fa81fad48d96c7e5",
+    "name": "Back-end",
+    "symbol": "MGT",
+    "decimals": 18
+  },
+  "0x7cdf70e5a13d4d2b6acde45d1f64a00aae398512": {
+    "address": "0x7cdf70e5a13d4d2b6acde45d1f64a00aae398512",
+    "name": "Buckinghamshire",
+    "symbol": "MAD",
+    "decimals": 18
+  },
+  "0xb277d3d8abf6e57ef75f6e44876ee05dd4e4b169": {
+    "address": "0xb277d3d8abf6e57ef75f6e44876ee05dd4e4b169",
+    "name": "Money Market Account",
+    "symbol": "CRZ",
+    "decimals": 18
+  },
+  "0x4f14c5c77aae31a818c7ac1ed2282fa913538f95": {
+    "address": "0x4f14c5c77aae31a818c7ac1ed2282fa913538f95",
+    "name": "Berkshire",
+    "symbol": "FBU",
+    "decimals": 10
+  },
+  "0xed2ffafbb691f39763f0ea8ddd86df103d059b95": {
+    "address": "0xed2ffafbb691f39763f0ea8ddd86df103d059b95",
+    "name": "Generate",
+    "symbol": "NLX",
+    "decimals": 18
+  },
+  "0x7521c24070ef68191896e4cd3e9224c12e6bd37b": {
+    "address": "0x7521c24070ef68191896e4cd3e9224c12e6bd37b",
+    "name": "Tasty Plastic Soap Coin",
+    "symbol": "XLO",
+    "decimals": 18
+  },
+  "0x500a1ca00a7566b1d8e18567e7cc34157105d04c": {
+    "address": "0x500a1ca00a7566b1d8e18567e7cc34157105d04c",
+    "name": "Withdrawal",
+    "symbol": "IUU",
+    "decimals": 18
+  },
+  "0x13e0da87dbd1880e5efe6a962b99c7ecf4ae0034": {
+    "address": "0x13e0da87dbd1880e5efe6a962b99c7ecf4ae0034",
+    "name": "Handcrafted Coin",
+    "symbol": "UFS",
+    "decimals": 18
+  },
+  "0x793c2bd7d9ea71ab4121f41ddd76e6b4dd6c493e": {
+    "address": "0x793c2bd7d9ea71ab4121f41ddd76e6b4dd6c493e",
+    "name": "Regional",
+    "symbol": "OQU",
+    "decimals": 18
+  },
+  "0xa85a9fc20c065c8433b4d8eeb0b1b9f6428ae587": {
+    "address": "0xa85a9fc20c065c8433b4d8eeb0b1b9f6428ae587",
+    "name": "Back-end Coin",
+    "symbol": "DKK",
+    "decimals": 18
+  },
+  "0x49167376ef617fc382831c381568f698d53afeaf": {
+    "address": "0x49167376ef617fc382831c381568f698d53afeaf",
+    "name": "Compressing",
+    "symbol": "QMA",
+    "decimals": 18
+  },
+  "0x95e510a0d1b8363e279b5d48624e11a822ef9eec": {
+    "address": "0x95e510a0d1b8363e279b5d48624e11a822ef9eec",
+    "name": "Practical Concrete Tuna",
+    "symbol": "HKT",
+    "decimals": 18
+  },
+  "0xb522376eec35200c894e94c288c6198707b15653": {
+    "address": "0xb522376eec35200c894e94c288c6198707b15653",
+    "name": "Crossing Token",
+    "symbol": "PXH",
+    "decimals": 18
+  },
+  "0x913e492467f80f88718a8ed9f7ccd992d2127aa4": {
+    "address": "0x913e492467f80f88718a8ed9f7ccd992d2127aa4",
+    "name": "Array Token",
+    "symbol": "PNZ",
+    "decimals": 18
+  },
+  "0x4f81355272466967e39a833e58f1905486f04b1c": {
+    "address": "0x4f81355272466967e39a833e58f1905486f04b1c",
+    "name": "Program Token",
+    "symbol": "AMB",
+    "decimals": 18
+  },
+  "0x918adc4595cac7db2dea9c607c9c5e78e9fc518a": {
+    "address": "0x918adc4595cac7db2dea9c607c9c5e78e9fc518a",
+    "name": "Turquoise",
+    "symbol": "QXR",
+    "decimals": 18
+  },
+  "0x74e0553e6871886e3c0e501cc42bd704efeb7dd1": {
+    "address": "0x74e0553e6871886e3c0e501cc42bd704efeb7dd1",
+    "name": "Supply-chains",
+    "symbol": "YWX",
+    "decimals": 18
+  },
+  "0x95f8674eca99926e4858c8b54606a13d028fb0cf": {
+    "address": "0x95f8674eca99926e4858c8b54606a13d028fb0cf",
+    "name": "Handmade",
+    "symbol": "UCP",
+    "decimals": 18
+  },
+  "0x7f2359091bea14af3f2192f0842dfb736857efc9": {
+    "address": "0x7f2359091bea14af3f2192f0842dfb736857efc9",
+    "name": "Usability",
+    "symbol": "NMQ",
+    "decimals": 18
+  },
+  "0x5cab8893a51eb53448d10a55d5e1dd9486c1a87d": {
+    "address": "0x5cab8893a51eb53448d10a55d5e1dd9486c1a87d",
+    "name": "Optimize Coin",
+    "symbol": "PIW",
+    "decimals": 18
+  },
+  "0xdc8a2f398e284e6ff14d6234efdd54e901e12da2": {
+    "address": "0xdc8a2f398e284e6ff14d6234efdd54e901e12da2",
+    "name": "Infomediaries Token",
+    "symbol": "WRT",
+    "decimals": 18
+  },
+  "0x1b41726919daa3e44d90ee9afef610faa9af57a5": {
+    "address": "0x1b41726919daa3e44d90ee9afef610faa9af57a5",
+    "name": "Firewall Token",
+    "symbol": "JVV",
+    "decimals": 18
+  },
+  "0x3886d1ae5c7053944660e81ef1f6ec8b47d3b91b": {
+    "address": "0x3886d1ae5c7053944660e81ef1f6ec8b47d3b91b",
+    "name": "Composite",
+    "symbol": "WNL",
+    "decimals": 18
+  },
+  "0x604548f23d53e1004297ef98d543cdaf8bc34014": {
+    "address": "0x604548f23d53e1004297ef98d543cdaf8bc34014",
+    "name": "Cambridgeshire",
+    "symbol": "UIT",
+    "decimals": 18
+  },
+  "0xfeafc39f783c236ca95d6d8e79bcd1e9564039ec": {
+    "address": "0xfeafc39f783c236ca95d6d8e79bcd1e9564039ec",
+    "name": "Incredible",
+    "symbol": "JEO",
+    "decimals": 18
+  },
+  "0x93f05e9183d5665b82cda7477b7092d848b4032d": {
+    "address": "0x93f05e9183d5665b82cda7477b7092d848b4032d",
+    "name": "Transmitting",
+    "symbol": "TCF",
+    "decimals": 18
+  },
+  "0x049cd1a10aba4c4a165c44871a8a03dcd63c5133": {
+    "address": "0x049cd1a10aba4c4a165c44871a8a03dcd63c5133",
+    "name": "Withdrawal Coin",
+    "symbol": "DRI",
+    "decimals": 0
+  },
+  "0x068ea704611f372d107928ed99a9015150cdfca2": {
+    "address": "0x068ea704611f372d107928ed99a9015150cdfca2",
+    "name": "Hack",
+    "symbol": "FAC",
+    "decimals": 18
+  },
+  "0xa433397d5a514cb1beb30b4cd926f52d71ced296": {
+    "address": "0xa433397d5a514cb1beb30b4cd926f52d71ced296",
+    "name": "Tactics",
+    "symbol": "IMR",
+    "decimals": 18
+  },
+  "0xa36f75e02bd9bdf36a089d3ef53ec95142061cc2": {
+    "address": "0xa36f75e02bd9bdf36a089d3ef53ec95142061cc2",
+    "name": "Virginia",
+    "symbol": "EEJ",
+    "decimals": 18
+  },
+  "0xd30bb584324d4a0dd404f571ffa1135a80096203": {
+    "address": "0xd30bb584324d4a0dd404f571ffa1135a80096203",
+    "name": "Metal",
+    "symbol": "CGO",
+    "decimals": 11
+  },
+  "0xfa974ddd4a2cfc1196186fce2eb5807ab2f6b441": {
+    "address": "0xfa974ddd4a2cfc1196186fce2eb5807ab2f6b441",
+    "name": "Red",
+    "symbol": "FIC",
+    "decimals": 18
+  },
+  "0x41836c53a622e076efa4f212edf7f18c5f7f9090": {
+    "address": "0x41836c53a622e076efa4f212edf7f18c5f7f9090",
+    "name": "Guyana Coin",
+    "symbol": "SHV",
+    "decimals": 10
+  },
+  "0xe23db3e041b0272628a15835bd8765682b8a5344": {
+    "address": "0xe23db3e041b0272628a15835bd8765682b8a5344",
+    "name": "Outdoors Token",
+    "symbol": "LTA",
+    "decimals": 18
+  },
+  "0xbeb949500861473add659f0aeb9c6f3ca3aeb6a5": {
+    "address": "0xbeb949500861473add659f0aeb9c6f3ca3aeb6a5",
+    "name": "Senior",
+    "symbol": "TKH",
+    "decimals": 18
+  },
+  "0x97ada5f7532de3376f2e98f88611b6900e4d670e": {
+    "address": "0x97ada5f7532de3376f2e98f88611b6900e4d670e",
+    "name": "Netherlands Antillian Guilder Coin",
+    "symbol": "YIR",
+    "decimals": 18
+  },
+  "0x92496031c4fbc14a203af026cbcbeaf9aeddf650": {
+    "address": "0x92496031c4fbc14a203af026cbcbeaf9aeddf650",
+    "name": "Fantastic",
+    "symbol": "ZDH",
+    "decimals": 18
+  },
+  "0x3ddca20f9d2c5bc2df9aae716a9d775c0dcd9d02": {
+    "address": "0x3ddca20f9d2c5bc2df9aae716a9d775c0dcd9d02",
+    "name": "Balanced",
+    "symbol": "HUO",
+    "decimals": 8
+  },
+  "0x375391af89a42e82d015dc48d4f4251f6b3f9f4b": {
+    "address": "0x375391af89a42e82d015dc48d4f4251f6b3f9f4b",
+    "name": "Internal",
+    "symbol": "SDR",
+    "decimals": 18
+  },
+  "0x62bacf2324146d8c90194d5c5fdb681a76a54ec8": {
+    "address": "0x62bacf2324146d8c90194d5c5fdb681a76a54ec8",
+    "name": "Syndicate Token",
+    "symbol": "AKG",
+    "decimals": 18
+  },
+  "0xa0073af53fa864c040e654c39ff8373549f3bed3": {
+    "address": "0xa0073af53fa864c040e654c39ff8373549f3bed3",
+    "name": "Future-proofed Coin",
+    "symbol": "SYR",
+    "decimals": 18
+  },
+  "0x88d456dddcb3462fe4c5eec02ac88445fa8fcd9e": {
+    "address": "0x88d456dddcb3462fe4c5eec02ac88445fa8fcd9e",
+    "name": "Bi-directional",
+    "symbol": "QWE",
+    "decimals": 18
+  },
+  "0xa8ca0494daee8fccc060ab7c3c403cb9cd7fe2d0": {
+    "address": "0xa8ca0494daee8fccc060ab7c3c403cb9cd7fe2d0",
+    "name": "Deposit",
+    "symbol": "CUG",
+    "decimals": 18
+  },
+  "0x789cecd6ebdba3d6b3a4d852b09ccac6deb461d7": {
+    "address": "0x789cecd6ebdba3d6b3a4d852b09ccac6deb461d7",
+    "name": "Developer Coin",
+    "symbol": "MQI",
+    "decimals": 18
+  },
+  "0xa04c492a68f04f707a63e070154d35eff419279e": {
+    "address": "0xa04c492a68f04f707a63e070154d35eff419279e",
+    "name": "Usability Token",
+    "symbol": "IQR",
+    "decimals": 15
+  },
+  "0xa6061e868cda3bf86986c3eb9491fac667906d23": {
+    "address": "0xa6061e868cda3bf86986c3eb9491fac667906d23",
+    "name": "Shoes",
+    "symbol": "GSI",
+    "decimals": 18
+  },
+  "0xa93f3ec9bdf352b26c28a17d45e9d5e0b50a4e10": {
+    "address": "0xa93f3ec9bdf352b26c28a17d45e9d5e0b50a4e10",
+    "name": "Rustic Plastic Towels",
+    "symbol": "ECD",
+    "decimals": 18
+  },
+  "0x46c143b8ab8cfd33e3ed97601f5d7f56dbbafb3d": {
+    "address": "0x46c143b8ab8cfd33e3ed97601f5d7f56dbbafb3d",
+    "name": "Granite Token",
+    "symbol": "BLU",
+    "decimals": 18
+  },
+  "0xea36b39dfea4b0a3b8f5b2160c422729495a9bef": {
+    "address": "0xea36b39dfea4b0a3b8f5b2160c422729495a9bef",
+    "name": "Extend",
+    "symbol": "GCK",
+    "decimals": 18
+  },
+  "0x09eff54487b4d2e40fa9cf423634ed77ff6b5f48": {
+    "address": "0x09eff54487b4d2e40fa9cf423634ed77ff6b5f48",
+    "name": "Practical",
+    "symbol": "VQF",
+    "decimals": 18
+  },
+  "0x9a77de14285ebd22c190ecbcec74ab040107acfb": {
+    "address": "0x9a77de14285ebd22c190ecbcec74ab040107acfb",
+    "name": "Pink",
+    "symbol": "MXQ",
+    "decimals": 18
+  },
+  "0x5ada24f6313a82a1f29cee5631dc0774230f09f4": {
+    "address": "0x5ada24f6313a82a1f29cee5631dc0774230f09f4",
+    "name": "Navigate",
+    "symbol": "GNK",
+    "decimals": 18
+  },
+  "0x42fb4c2ef5cb242cf6bdf11efa4ef8124c1c836e": {
+    "address": "0x42fb4c2ef5cb242cf6bdf11efa4ef8124c1c836e",
+    "name": "Withdrawal",
+    "symbol": "UZI",
+    "decimals": 18
+  },
+  "0x2abbe00be2cf9796ba719ccb984f144ca93e9dc6": {
+    "address": "0x2abbe00be2cf9796ba719ccb984f144ca93e9dc6",
+    "name": "Handmade Coin",
+    "symbol": "VJC",
+    "decimals": 6
+  },
+  "0xfd9c0d99a8d070b3cbc6221617c42dda438afb0a": {
+    "address": "0xfd9c0d99a8d070b3cbc6221617c42dda438afb0a",
+    "name": "Withdrawal Token",
+    "symbol": "PGB",
+    "decimals": 18
+  },
+  "0x32a2256bc792274a1cc6b72f848e1314de621e05": {
+    "address": "0x32a2256bc792274a1cc6b72f848e1314de621e05",
+    "name": "Cross-platform",
+    "symbol": "MZL",
+    "decimals": 18
+  },
+  "0xcef53b94f26ba0e8896dd8574eb3425d904c9e8a": {
+    "address": "0xcef53b94f26ba0e8896dd8574eb3425d904c9e8a",
+    "name": "Grey",
+    "symbol": "TRY",
+    "decimals": 18
+  },
+  "0x3dcd5523a4a27d219d8cfc53373f2004f09f5e73": {
+    "address": "0x3dcd5523a4a27d219d8cfc53373f2004f09f5e73",
+    "name": "Rustic",
+    "symbol": "EBP",
+    "decimals": 9
+  },
+  "0xdd87cbc8c1bb5d10817b1ce12e784fb7ef314090": {
+    "address": "0xdd87cbc8c1bb5d10817b1ce12e784fb7ef314090",
+    "name": "Manager Token",
+    "symbol": "DQP",
+    "decimals": 18
+  },
+  "0xcc1e80738c7e7bb68d52103303688b18614be6e6": {
+    "address": "0xcc1e80738c7e7bb68d52103303688b18614be6e6",
+    "name": "Computer Token",
+    "symbol": "MXH",
+    "decimals": 18
+  },
+  "0xe5e8e5a5f0754bc7b2e25d4caaee7194d9bdca33": {
+    "address": "0xe5e8e5a5f0754bc7b2e25d4caaee7194d9bdca33",
+    "name": "Reboot",
+    "symbol": "VCC",
+    "decimals": 18
+  },
+  "0x258b7a37705ed50bbef66ac083d2ffaa8961d0c5": {
+    "address": "0x258b7a37705ed50bbef66ac083d2ffaa8961d0c5",
+    "name": "Clothing Token",
+    "symbol": "WHC",
+    "decimals": 15
+  },
+  "0x8f4314a2f9d872ef32d0605f76a0957aa6b077bd": {
+    "address": "0x8f4314a2f9d872ef32d0605f76a0957aa6b077bd",
+    "name": "Metrics",
+    "symbol": "YWF",
+    "decimals": 18
+  },
+  "0x103ba204bd56529ec6849a72769f524607027d36": {
+    "address": "0x103ba204bd56529ec6849a72769f524607027d36",
+    "name": "Approach Coin",
+    "symbol": "SKI",
+    "decimals": 18
+  },
+  "0x6e8f2288cfdfefdb80bbd224cf88d41935fbde38": {
+    "address": "0x6e8f2288cfdfefdb80bbd224cf88d41935fbde38",
+    "name": "Gorgeous",
+    "symbol": "VHL",
+    "decimals": 18
+  },
+  "0x74e932e82619aa033381dc64e5e4692c3c1f196a": {
+    "address": "0x74e932e82619aa033381dc64e5e4692c3c1f196a",
+    "name": "Plains",
+    "symbol": "GWL",
+    "decimals": 18
+  },
+  "0x8a20fb4f23e63808fe9bc2cc5669dc982d0568f4": {
+    "address": "0x8a20fb4f23e63808fe9bc2cc5669dc982d0568f4",
+    "name": "Parsing Token",
+    "symbol": "JMA",
+    "decimals": 18
+  },
+  "0xe1997dcafcca4b6ea77f7e1cdf7836342869fca1": {
+    "address": "0xe1997dcafcca4b6ea77f7e1cdf7836342869fca1",
+    "name": "Virtual",
+    "symbol": "LRV",
+    "decimals": 18
+  },
+  "0xb91d5b6580213345fb4cce513780a820c003b216": {
+    "address": "0xb91d5b6580213345fb4cce513780a820c003b216",
+    "name": "Violet",
+    "symbol": "PWB",
+    "decimals": 18
+  },
+  "0xa9042cdf45f73da79aaac20ee98d55638c8e3498": {
+    "address": "0xa9042cdf45f73da79aaac20ee98d55638c8e3498",
+    "name": "Games Coin",
+    "symbol": "WIL",
+    "decimals": 18
+  },
+  "0x8b1496903fddb86f42c613164dc48a15011908db": {
+    "address": "0x8b1496903fddb86f42c613164dc48a15011908db",
+    "name": "Tasty",
+    "symbol": "YPP",
+    "decimals": 18
+  },
+  "0x420d061e529bea9051d208d6b3352f8e80ab11a0": {
+    "address": "0x420d061e529bea9051d208d6b3352f8e80ab11a0",
+    "name": "Open-source Coin",
+    "symbol": "WIK",
+    "decimals": 18
+  },
+  "0xaba0faae3d9807283924ec2539c57cd2fa187b20": {
+    "address": "0xaba0faae3d9807283924ec2539c57cd2fa187b20",
+    "name": "Cross-media",
+    "symbol": "OGS",
+    "decimals": 18
+  },
+  "0xf0eccd4eba700d4ebee3e044b9380fdd30f62b58": {
+    "address": "0xf0eccd4eba700d4ebee3e044b9380fdd30f62b58",
+    "name": "Cambridgeshire",
+    "symbol": "TMW",
+    "decimals": 18
+  },
+  "0x7a1d325fad57534ee7c1284bbf7daefc18077146": {
+    "address": "0x7a1d325fad57534ee7c1284bbf7daefc18077146",
+    "name": "Instruction set",
+    "symbol": "XZH",
+    "decimals": 18
+  },
+  "0x948732ea24e5a5d1a4684849b9d08189159eb2c6": {
+    "address": "0x948732ea24e5a5d1a4684849b9d08189159eb2c6",
+    "name": "Unbranded Fresh Shoes",
+    "symbol": "GUT",
+    "decimals": 18
+  },
+  "0xf28e263c50cb63ed2c77b6152ef599db5716ff72": {
+    "address": "0xf28e263c50cb63ed2c77b6152ef599db5716ff72",
+    "name": "Proactive",
+    "symbol": "PAL",
+    "decimals": 18
+  },
+  "0xa087e462a8655bd28c04cc6730277e8012e03320": {
+    "address": "0xa087e462a8655bd28c04cc6730277e8012e03320",
+    "name": "Savings Account Coin",
+    "symbol": "RXM",
+    "decimals": 18
+  },
+  "0x87e76994c88af9341ae625ea7df860f98758ac02": {
+    "address": "0x87e76994c88af9341ae625ea7df860f98758ac02",
+    "name": "Berkshire Coin",
+    "symbol": "JCN",
+    "decimals": 18
+  },
+  "0xb7b46c1d0152db8513f9f3c772a0f0e0b9ca8cc8": {
+    "address": "0xb7b46c1d0152db8513f9f3c772a0f0e0b9ca8cc8",
+    "name": "Vortals",
+    "symbol": "HVD",
+    "decimals": 18
+  },
+  "0xd54c507c370e1c16ea1a106cbde4fe1cd63b36ed": {
+    "address": "0xd54c507c370e1c16ea1a106cbde4fe1cd63b36ed",
+    "name": "Hard drive",
+    "symbol": "DXO",
+    "decimals": 12
+  },
+  "0x53a6cd431012c082c7d9fb74a4a51f79e1e0cef5": {
+    "address": "0x53a6cd431012c082c7d9fb74a4a51f79e1e0cef5",
+    "name": "Mindshare",
+    "symbol": "IYR",
+    "decimals": 18
+  },
+  "0x2ed93d44867f901ba89df8f49ccf98752b9c1fde": {
+    "address": "0x2ed93d44867f901ba89df8f49ccf98752b9c1fde",
+    "name": "Money Market Account Token",
+    "symbol": "NMM",
+    "decimals": 18
+  },
+  "0x2acf49e9aed94c81d00bdaea39362817c9dbbf88": {
+    "address": "0x2acf49e9aed94c81d00bdaea39362817c9dbbf88",
+    "name": "Practical Soft Towels",
+    "symbol": "BKU",
+    "decimals": 18
+  },
+  "0x8d6ffc5271bc24e13161f7a1cd86b2dfe8a5da3c": {
+    "address": "0x8d6ffc5271bc24e13161f7a1cd86b2dfe8a5da3c",
+    "name": "Robust",
+    "symbol": "ZGM",
+    "decimals": 18
+  },
+  "0xcbd046d34e26a0aa80433184541267b6c7e194e6": {
+    "address": "0xcbd046d34e26a0aa80433184541267b6c7e194e6",
+    "name": "Human-resource",
+    "symbol": "IVE",
+    "decimals": 18
+  },
+  "0x55996fd8e45683264318a024b2eef3a83f60112f": {
+    "address": "0x55996fd8e45683264318a024b2eef3a83f60112f",
+    "name": "B2B Coin",
+    "symbol": "PLI",
+    "decimals": 18
+  },
+  "0x80e1966e36e69fcdf5515814f7520160aba3261f": {
+    "address": "0x80e1966e36e69fcdf5515814f7520160aba3261f",
+    "name": "Massachusetts",
+    "symbol": "JLX",
+    "decimals": 18
+  },
+  "0xee8b265287ea8543109d2ee28b8f95a8862acaa9": {
+    "address": "0xee8b265287ea8543109d2ee28b8f95a8862acaa9",
+    "name": "Model",
+    "symbol": "WTQ",
+    "decimals": 4
+  },
+  "0x2aa065ccc42c87bac726ae6c997729b7884d40dc": {
+    "address": "0x2aa065ccc42c87bac726ae6c997729b7884d40dc",
+    "name": "24/7 Token",
+    "symbol": "EJH",
+    "decimals": 18
+  },
+  "0x96b9a2dd0954cf15e12e5fee7e342e86c8fcbe24": {
+    "address": "0x96b9a2dd0954cf15e12e5fee7e342e86c8fcbe24",
+    "name": "Infomediaries",
+    "symbol": "FOW",
+    "decimals": 18
+  },
+  "0x383ce624df64ab0f1682fbc33b14fa3932ced385": {
+    "address": "0x383ce624df64ab0f1682fbc33b14fa3932ced385",
+    "name": "Gloves",
+    "symbol": "DZT",
+    "decimals": 10
+  },
+  "0xf6158cabbbaaee5d1f7bc6e0a7c0d6404a174a2f": {
+    "address": "0xf6158cabbbaaee5d1f7bc6e0a7c0d6404a174a2f",
+    "name": "Rustic Concrete Towels",
+    "symbol": "BVF",
+    "decimals": 18
+  },
+  "0xdd948622e7e5569df5041dcddaeb7255f935e212": {
+    "address": "0xdd948622e7e5569df5041dcddaeb7255f935e212",
+    "name": "Rupiah",
+    "symbol": "VGY",
+    "decimals": 12
+  },
+  "0x1956762734da2708e865cf1a8f28592a41da79df": {
+    "address": "0x1956762734da2708e865cf1a8f28592a41da79df",
+    "name": "Leverage Token",
+    "symbol": "TWX",
+    "decimals": 18
+  },
+  "0x0f0ad350d9eacd03205a5c52e24187400ff82d58": {
+    "address": "0x0f0ad350d9eacd03205a5c52e24187400ff82d58",
+    "name": "Bermuda Coin",
+    "symbol": "PXB",
+    "decimals": 18
+  },
+  "0xc1b90ba33d91c14f39623e6175082c711af25cc8": {
+    "address": "0xc1b90ba33d91c14f39623e6175082c711af25cc8",
+    "name": "Handcrafted",
+    "symbol": "JBO",
+    "decimals": 18
+  },
+  "0x570524df7c661b3cc3f3d729b7b81eb70a1ba59a": {
+    "address": "0x570524df7c661b3cc3f3d729b7b81eb70a1ba59a",
+    "name": "Index",
+    "symbol": "XDL",
+    "decimals": 15
+  },
+  "0x5dacd4cbe257a1cec5fb68ffc36b91004d382467": {
+    "address": "0x5dacd4cbe257a1cec5fb68ffc36b91004d382467",
+    "name": "Throughput",
+    "symbol": "CNM",
+    "decimals": 18
+  },
+  "0x533cdb00d5c1b0753626b88f06df0b0f08285ecc": {
+    "address": "0x533cdb00d5c1b0753626b88f06df0b0f08285ecc",
+    "name": "Home Loan Account",
+    "symbol": "CIT",
+    "decimals": 18
+  },
+  "0x1adf30763fd8961d60cfecdaf56b4f3d079e0486": {
+    "address": "0x1adf30763fd8961d60cfecdaf56b4f3d079e0486",
+    "name": "Gloves Coin",
+    "symbol": "PPP",
+    "decimals": 18
+  },
+  "0x2ec986a49c3183d6df56e55ee550e9d98720b109": {
+    "address": "0x2ec986a49c3183d6df56e55ee550e9d98720b109",
+    "name": "Even-keeled",
+    "symbol": "ILR",
+    "decimals": 18
+  },
+  "0xb40ce53fb754e06986c9d7f2ac65fcf46c2d02c2": {
+    "address": "0xb40ce53fb754e06986c9d7f2ac65fcf46c2d02c2",
+    "name": "Senior Coin",
+    "symbol": "QEN",
+    "decimals": 18
+  },
+  "0xa01eb89072c5128616df58f80d8580c8df609526": {
+    "address": "0xa01eb89072c5128616df58f80d8580c8df609526",
+    "name": "Cross-platform Token",
+    "symbol": "CBM",
+    "decimals": 3
+  },
+  "0x1ed3e0889ef3e5f3a8c6cb94c5d644464f1acc72": {
+    "address": "0x1ed3e0889ef3e5f3a8c6cb94c5d644464f1acc72",
+    "name": "Czech Republic",
+    "symbol": "UWH",
+    "decimals": 18
+  },
+  "0xd51b72506a1c328780a8e91a566d099b561cdb30": {
+    "address": "0xd51b72506a1c328780a8e91a566d099b561cdb30",
+    "name": "Optimizing",
+    "symbol": "BPA",
+    "decimals": 12
+  },
+  "0xe39d9837f836c1393df927b2152cd68d08cc4a87": {
+    "address": "0xe39d9837f836c1393df927b2152cd68d08cc4a87",
+    "name": "Turquoise",
+    "symbol": "LFH",
+    "decimals": 18
+  },
+  "0x9fdf94e4a949fdc0bae4b92c86b5a3436cf6f232": {
+    "address": "0x9fdf94e4a949fdc0bae4b92c86b5a3436cf6f232",
+    "name": "Intranet",
+    "symbol": "OJQ",
+    "decimals": 18
+  },
+  "0xca2e19e18804dfe49244e9adfa949dff4901b0b1": {
+    "address": "0xca2e19e18804dfe49244e9adfa949dff4901b0b1",
+    "name": "Wooden",
+    "symbol": "GQG",
+    "decimals": 18
+  },
+  "0x9750475a722dd4438921f4cf947c40dacc5918a0": {
+    "address": "0x9750475a722dd4438921f4cf947c40dacc5918a0",
+    "name": "Reciprocal",
+    "symbol": "UEW",
+    "decimals": 18
+  },
+  "0x96e4fd5b4653ac1aa2b34d8d5fd7d95bac52168a": {
+    "address": "0x96e4fd5b4653ac1aa2b34d8d5fd7d95bac52168a",
+    "name": "Rustic",
+    "symbol": "PPK",
+    "decimals": 0
+  },
+  "0x83bbf2e1b1a94a7b691402433a31f527f63bdbea": {
+    "address": "0x83bbf2e1b1a94a7b691402433a31f527f63bdbea",
+    "name": "Hat Token",
+    "symbol": "HXU",
+    "decimals": 16
+  },
+  "0xf91aa6c8ed8913e0ad20e8a7f1ba39e9c4b957d1": {
+    "address": "0xf91aa6c8ed8913e0ad20e8a7f1ba39e9c4b957d1",
+    "name": "Data Coin",
+    "symbol": "OBL",
+    "decimals": 18
+  },
+  "0xe4bb8865d4f677e3f749a23d1ede2a33d02adaf2": {
+    "address": "0xe4bb8865d4f677e3f749a23d1ede2a33d02adaf2",
+    "name": "Salad",
+    "symbol": "JGO",
+    "decimals": 18
+  },
+  "0x3603998af5461f1156cf561c9d7e5aa65321c13b": {
+    "address": "0x3603998af5461f1156cf561c9d7e5aa65321c13b",
+    "name": "Metal",
+    "symbol": "UOD",
+    "decimals": 18
+  },
+  "0xb9b41ddc6e832192771324bd4c33ae3d8a967663": {
+    "address": "0xb9b41ddc6e832192771324bd4c33ae3d8a967663",
+    "name": "Shirt Token",
+    "symbol": "AJT",
+    "decimals": 18
+  },
+  "0x99527f43032beec604e674fa7c806d7f8179756e": {
+    "address": "0x99527f43032beec604e674fa7c806d7f8179756e",
+    "name": "E-business",
+    "symbol": "TWU",
+    "decimals": 18
+  },
+  "0xc73f96694a91d042480a50fc977c810230925661": {
+    "address": "0xc73f96694a91d042480a50fc977c810230925661",
+    "name": "Checking Account",
+    "symbol": "ESF",
+    "decimals": 18
+  },
+  "0x715c97293f07022462f06f2da629ffc98a165225": {
+    "address": "0x715c97293f07022462f06f2da629ffc98a165225",
+    "name": "Interface",
+    "symbol": "BAK",
+    "decimals": 18
+  },
+  "0x85b4e6e5e0142fcf62d8c6e5d59c5471cf18c855": {
+    "address": "0x85b4e6e5e0142fcf62d8c6e5d59c5471cf18c855",
+    "name": "Bike",
+    "symbol": "TYV",
+    "decimals": 18
+  },
+  "0x10be5c084def9bb9695334e89f066963629619c9": {
+    "address": "0x10be5c084def9bb9695334e89f066963629619c9",
+    "name": "Venezuela",
+    "symbol": "YCQ",
+    "decimals": 18
+  },
+  "0xa705feee6d6cba1df3fed46a93faca9f7a7e15c5": {
+    "address": "0xa705feee6d6cba1df3fed46a93faca9f7a7e15c5",
+    "name": "Tasty Steel Cheese Coin",
+    "symbol": "YLR",
+    "decimals": 0
+  },
+  "0xea994a6a5f5ccb336bb945794ef654ae12bdd71b": {
+    "address": "0xea994a6a5f5ccb336bb945794ef654ae12bdd71b",
+    "name": "Capacitor Coin",
+    "symbol": "YTM",
+    "decimals": 18
+  },
+  "0x2e3edf69072869727c8a51f96f4c14dbba0c291d": {
+    "address": "0x2e3edf69072869727c8a51f96f4c14dbba0c291d",
+    "name": "Gorgeous Token",
+    "symbol": "BUN",
+    "decimals": 3
+  },
+  "0x8744e4a6d8b09304ebb57018b894f551bde89497": {
+    "address": "0x8744e4a6d8b09304ebb57018b894f551bde89497",
+    "name": "Blue Token",
+    "symbol": "MGM",
+    "decimals": 6
+  },
+  "0x6c01081b8b73c00ff457e4bb37931c2d9b1068dd": {
+    "address": "0x6c01081b8b73c00ff457e4bb37931c2d9b1068dd",
+    "name": "Metal",
+    "symbol": "RPV",
+    "decimals": 18
+  },
+  "0x4e8712ba7ee2809103b9958e6935ea2d5e32b4da": {
+    "address": "0x4e8712ba7ee2809103b9958e6935ea2d5e32b4da",
+    "name": "Books Coin",
+    "symbol": "LGO",
+    "decimals": 18
+  },
+  "0x1b2c2afedb158366090d35ad61508e21f688afe1": {
+    "address": "0x1b2c2afedb158366090d35ad61508e21f688afe1",
+    "name": "6th generation Coin",
+    "symbol": "XYD",
+    "decimals": 17
+  },
+  "0x6a7657528bcb99e20a98b8ac72a4c5d0062e4c99": {
+    "address": "0x6a7657528bcb99e20a98b8ac72a4c5d0062e4c99",
+    "name": "Table",
+    "symbol": "QBG",
+    "decimals": 18
+  },
+  "0x00860cd76765b63cb5fcfc03f880ed60e65178bf": {
+    "address": "0x00860cd76765b63cb5fcfc03f880ed60e65178bf",
+    "name": "Embrace Coin",
+    "symbol": "YQM",
+    "decimals": 2
+  },
+  "0xfac273c5967b48e3fbe871fe194faee3b2fc45b5": {
+    "address": "0xfac273c5967b48e3fbe871fe194faee3b2fc45b5",
+    "name": "Dynamic Token",
+    "symbol": "LNR",
+    "decimals": 18
+  },
+  "0x1b473c38c1a4660afb353de7f53e2b45ef79cfc7": {
+    "address": "0x1b473c38c1a4660afb353de7f53e2b45ef79cfc7",
+    "name": "Gloves",
+    "symbol": "OJO",
+    "decimals": 18
+  },
+  "0x9b48247f5910a6c760c729b5ad5faef83728c3d1": {
+    "address": "0x9b48247f5910a6c760c729b5ad5faef83728c3d1",
+    "name": "Payment",
+    "symbol": "NYT",
+    "decimals": 6
+  },
+  "0xfee291018cae752eb5d541b979bcac8cc43cc2c7": {
+    "address": "0xfee291018cae752eb5d541b979bcac8cc43cc2c7",
+    "name": "Colorado Token",
+    "symbol": "KZV",
+    "decimals": 18
+  },
+  "0xfd6bd8e957f957449a03c151c5995218976fa471": {
+    "address": "0xfd6bd8e957f957449a03c151c5995218976fa471",
+    "name": "Soap",
+    "symbol": "HAZ",
+    "decimals": 18
+  },
+  "0x31f3e12cde0314048b27cf6d584770c93f568c22": {
+    "address": "0x31f3e12cde0314048b27cf6d584770c93f568c22",
+    "name": "Metal",
+    "symbol": "KXU",
+    "decimals": 18
+  },
+  "0x2a997a6580adca90503eed4365f26b129a7840f4": {
+    "address": "0x2a997a6580adca90503eed4365f26b129a7840f4",
+    "name": "Pitcairn Islands",
+    "symbol": "YXZ",
+    "decimals": 18
+  },
+  "0x71c813ee8b103fee0a35113c11df077527a651a8": {
+    "address": "0x71c813ee8b103fee0a35113c11df077527a651a8",
+    "name": "Parsing Coin",
+    "symbol": "KCT",
+    "decimals": 18
+  },
+  "0x0fa83d0b5de1206e0bc2fbae76c10508fb78e661": {
+    "address": "0x0fa83d0b5de1206e0bc2fbae76c10508fb78e661",
+    "name": "Generate Token",
+    "symbol": "PMN",
+    "decimals": 18
+  },
+  "0xd6a7db43cce80462c8d96fa379e7a8524b40758b": {
+    "address": "0xd6a7db43cce80462c8d96fa379e7a8524b40758b",
+    "name": "Kenyan Shilling Token",
+    "symbol": "ZCQ",
+    "decimals": 18
+  },
+  "0x47b1715ed0fc08cf10ce253c3b2bc74671e94d80": {
+    "address": "0x47b1715ed0fc08cf10ce253c3b2bc74671e94d80",
+    "name": "Refined Steel Pants",
+    "symbol": "FGG",
+    "decimals": 18
+  },
+  "0x96831724a123b94a4c7b6ab166f7d0133cef3aba": {
+    "address": "0x96831724a123b94a4c7b6ab166f7d0133cef3aba",
+    "name": "Legacy Coin",
+    "symbol": "JWE",
+    "decimals": 18
+  },
+  "0xd467c5e1a896f8f743b951970350896799d93232": {
+    "address": "0xd467c5e1a896f8f743b951970350896799d93232",
+    "name": "Chicken",
+    "symbol": "IQL",
+    "decimals": 18
+  },
+  "0x12c3a29d11ce84737e80a8058f4976b54f87fc3c": {
+    "address": "0x12c3a29d11ce84737e80a8058f4976b54f87fc3c",
+    "name": "Olive Token",
+    "symbol": "SWU",
+    "decimals": 18
+  },
+  "0x9a37f9d025ced0a6f4b137e8954542ec94eab796": {
+    "address": "0x9a37f9d025ced0a6f4b137e8954542ec94eab796",
+    "name": "Dynamic",
+    "symbol": "JED",
+    "decimals": 14
+  },
+  "0xabf827005dcd1c51c3ffbfb2e818feea7ca95cb8": {
+    "address": "0xabf827005dcd1c51c3ffbfb2e818feea7ca95cb8",
+    "name": "Home Loan Account Coin",
+    "symbol": "BWS",
+    "decimals": 18
+  },
+  "0x1774bae524ca35840936d208558d305a941e9b97": {
+    "address": "0x1774bae524ca35840936d208558d305a941e9b97",
+    "name": "Tasty Steel Mouse Token",
+    "symbol": "GLI",
+    "decimals": 18
+  },
+  "0x9c588433cb5baf9ff11f9ead6cd57a05c8263a43": {
+    "address": "0x9c588433cb5baf9ff11f9ead6cd57a05c8263a43",
+    "name": "Programming",
+    "symbol": "ZHY",
+    "decimals": 18
+  },
+  "0xede679d5c5507a4ba09da869f0fa61287ae7b13a": {
+    "address": "0xede679d5c5507a4ba09da869f0fa61287ae7b13a",
+    "name": "Portals",
+    "symbol": "HEI",
+    "decimals": 18
+  },
+  "0xb26bfbef781ad294dbc438e2ebf97f2779b629d2": {
+    "address": "0xb26bfbef781ad294dbc438e2ebf97f2779b629d2",
+    "name": "Payment Token",
+    "symbol": "LXX",
+    "decimals": 18
+  },
+  "0x84ccee7bc65a673edb89b11f79e441810450818b": {
+    "address": "0x84ccee7bc65a673edb89b11f79e441810450818b",
+    "name": "Program",
+    "symbol": "UPE",
+    "decimals": 18
+  },
+  "0xaf687f4a81735c55156b4f9ddbee1f32e220e65c": {
+    "address": "0xaf687f4a81735c55156b4f9ddbee1f32e220e65c",
+    "name": "Morph",
+    "symbol": "VPI",
     "decimals": 18
   }
 }
+
