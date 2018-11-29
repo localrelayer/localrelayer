@@ -1,6 +1,7 @@
 // @flow
 import {
   assetDataUtils,
+  BigNumber,
 } from '0x.js';
 import {
   ExchangeContractErrs,
@@ -240,10 +241,16 @@ function* takeUpdateOrder(socketChannel) {
       lists.push('userOrders');
     }
 
+    // FIXME: no filledTakerAssetAmount in websocket response
     if (
       data.channel === 'orders'
       && data.type === 'update'
-      && data.payload.metaData.isValid === false
+      && (
+        data.payload.metaData.isValid === false
+        || new BigNumber(
+          data.payload.metaData.filledTakerAssetAmount || 0,
+        ).gt(0)
+      )
     ) {
       if (data.payload.metaData.error === ExchangeContractErrs.OrderRemainingFillAmountZero) {
         lists.push('tradingHistory');
@@ -252,14 +259,6 @@ function* takeUpdateOrder(socketChannel) {
           data.payload,
         );
       }
-      yield eff.put(actions.succeeded({
-        lists,
-        resources: [{
-          id: data.payload.metaData.orderHash,
-          metaData: data.payload.metaData,
-          ...data.payload.order,
-        }],
-      }));
     }
 
     if (
@@ -278,15 +277,16 @@ function* takeUpdateOrder(socketChannel) {
             'bids'
           )
       ));
-      yield eff.put(actions.succeeded({
-        lists,
-        resources: [{
-          id: data.payload.metaData.orderHash,
-          metaData: data.payload.metaData,
-          ...data.payload.order,
-        }],
-      }));
     }
+
+    yield eff.put(actions.succeeded({
+      lists,
+      resources: [{
+        id: data.payload.metaData.orderHash,
+        metaData: data.payload.metaData,
+        ...data.payload.order,
+      }],
+    }));
   }
 }
 

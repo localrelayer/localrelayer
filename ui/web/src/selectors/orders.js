@@ -6,6 +6,9 @@ import {
   utils,
 } from 'instex-core';
 import {
+  BigNumber,
+} from '0x.js';
+import {
   getUiState,
 } from '.';
 
@@ -19,27 +22,49 @@ export const getTradingHistory = createSelector(
     orders,
     assets,
     currentAssetPairId,
-  ) => (
-    orders.map(order => ({
-      ...order,
-      amount: utils.toUnitAmount(
-        order.makerAssetAmount,
-        assets[order.makerAssetData].decimals,
-      ).toFixed(8),
-      total: utils.toUnitAmount(
-        order.takerAssetAmount,
+  ) => orders.map((order) => {
+    const orderType = utils.getType(currentAssetPairId.split('_')[0], order.makerAssetData);
+
+    const filledMakerAssetAmount = new BigNumber(
+      order.takerAssetAmount,
+    )
+      .times(order.metaData.filledTakerAssetAmount)
+      .div(order.takerAssetAmount);
+
+    const amount = orderType === 'bid'
+      ? utils.toUnitAmount(
+        order.metaData.filledTakerAssetAmount,
         assets[order.takerAssetData].decimals,
-      ).toFixed(8),
+      ).toFixed(8)
+      : utils.toUnitAmount(
+        filledMakerAssetAmount,
+        assets[order.makerAssetData].decimals,
+      ).toFixed(8);
+
+    const total = orderType === 'bid'
+      ? utils.toUnitAmount(
+        filledMakerAssetAmount,
+        assets[order.makerAssetData].decimals,
+      ).toFixed(8)
+      : utils.toUnitAmount(
+        order.metaData.filledTakerAssetAmount,
+        assets[order.takerAssetData].decimals,
+      ).toFixed(8);
+
+    return {
+      ...order,
+      amount,
+      total,
       price: utils.getPrice(
-        utils.getType(currentAssetPairId.split('_')[0], order.makerAssetData),
+        orderType,
         order.makerAssetAmount,
         order.takerAssetAmount,
       ).toFixed(8),
       key: order.id,
       completedAt: order.metaData.completedAt,
-      type: utils.getType(currentAssetPairId.split('_')[0], order.makerAssetData),
-    }))
-  ),
+      type: orderType,
+    };
+  }),
 );
 
 export const getBidOrders = createSelector(

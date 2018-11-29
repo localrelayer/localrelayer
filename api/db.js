@@ -37,6 +37,7 @@ const orderSchema = mongoose.Schema({
   error: { type: String },
   remainingFillableMakerAssetAmount: { type: String },
   remainingFillableTakerAssetAmount: { type: String },
+  filledTakerAssetAmount: { type: String },
   createdAt: { type: Date },
   completedAt: { type: Date },
 }, { versionKey: false });

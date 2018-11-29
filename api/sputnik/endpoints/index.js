@@ -66,6 +66,8 @@ sputnikApi.get('/tradingHistory', async (ctx) => {
       makerAssetData: quoteAssetData,
       takerAssetData: baseAssetData,
       error: ExchangeContractErrs.OrderRemainingFillAmountZero,
+    }, {
+      filledTakerAssetAmount: { $ne: 0 },
     }],
   })
     .limit(500)
