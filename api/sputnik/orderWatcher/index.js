@@ -75,9 +75,13 @@ async function watcherCreator(networkId) {
       const {
         remainingFillableMakerAssetAmount,
         remainingFillableTakerAssetAmount,
+        filledTakerAssetAmount,
       } = orderState.orderRelevantState;
       order.remainingFillableMakerAssetAmount = remainingFillableMakerAssetAmount;
       order.remainingFillableTakerAssetAmount = remainingFillableTakerAssetAmount;
+
+      order.filledTakerAssetAmount = filledTakerAssetAmount;
+
       order.isShadowed = false;
       await order.save();
       /* do not spread plainOrder object, it will emit lot of extra keys */

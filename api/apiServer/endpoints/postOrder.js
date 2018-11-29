@@ -114,6 +114,7 @@ export function createPostOrderEndpoint(standardRelayerApi) {
           isValid: true,
           remainingFillableMakerAssetAmount: submittedOrder.makerAssetAmount,
           remainingFillableTakerAssetAmount: submittedOrder.takerAssetAmount,
+          filledTakerAssetAmount: 0,
           createdAt: new Date().toISOString(),
           orderHash,
           networkId,

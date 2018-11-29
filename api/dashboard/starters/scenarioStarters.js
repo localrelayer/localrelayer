@@ -10,7 +10,7 @@ import dashboardConfig from '../.config';
 
 
 const fgProcessOutputHandler = (data) => {
-  fgProcessLoggerWidget.insertBottom(data);
+  fgProcessLoggerWidget.insertBottom(data.toString('utf8'));
   screen.render();
 };
 
