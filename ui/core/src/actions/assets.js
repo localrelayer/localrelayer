@@ -22,10 +22,11 @@ export const setApprovalRequest = (isTradable: boolean, asset: Asset) => ({
   asset,
 });
 
-export const depositOrWithdrawRequest = (method: string, amount: string) => ({
+export const depositOrWithdrawRequest = (method: string, amount: string, formActions: Object) => ({
   type: actionTypes.DEPOSIT_WITHDRAW_REQUEST,
   method,
   amount,
+  formActions,
 });
 
 export const withdrawRequest = (amount: string) => ({

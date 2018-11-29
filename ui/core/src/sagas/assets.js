@@ -340,19 +340,24 @@ function* processDepositWithdraw(action) {
     fieldName: 'symbol',
     value: 'WETH',
   }));
-  yield eff.call(
-    [
-      contractWrappers.etherToken,
-      contractWrappers.etherToken[`${action.method}Async`],
-    ],
-    etherToken.address,
-    Web3Wrapper.toBaseUnitAmount(new BigNumber(action.amount), etherToken.decimals),
-    selectedAccount,
-    {
+  try {
+    yield eff.call(
+      [
+        contractWrappers.etherToken,
+        contractWrappers.etherToken[`${action.method}Async`],
+      ],
+      etherToken.address,
+      Web3Wrapper.toBaseUnitAmount(new BigNumber(action.amount), etherToken.decimals),
+      selectedAccount,
+      {
       // Default gas amount isn't enought for withdrawal
-      gasLimit: 100000,
-    },
-  );
+        gasLimit: 100000,
+      },
+    );
+  } catch (e) {
+    console.log(e);
+  }
+  action.formActions.resetForm({});
 }
 
 export function* takeApproval() {

@@ -217,14 +217,14 @@ const UserBalance = ({
               <S.UnwrapButton
                 type="primary"
                 disabled={touched && !isValid}
-                onClick={() => onWithdraw(values.amount) && resetForm({})}
+                onClick={() => onWithdraw(values.amount, { resetForm })}
               >
                   Unwrap
               </S.UnwrapButton>
               <S.WrapButton
                 type="primary"
                 disabled={touched && !isValid}
-                onClick={() => onDeposit(values.amount) && resetForm({})}
+                onClick={() => onDeposit(values.amount, { resetForm })}
               >
                 Wrap
               </S.WrapButton>

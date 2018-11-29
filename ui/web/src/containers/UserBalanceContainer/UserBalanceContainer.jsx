@@ -41,8 +41,16 @@ const UserBalanceContainer = ({ isTradingPage }: Props): Node => (
             dispatch(coreActions.setApprovalRequest(isTradable, asset))
           )
         }
-        onDeposit={amount => dispatch(coreActions.depositOrWithdrawRequest('deposit', amount))}
-        onWithdraw={amount => dispatch(coreActions.depositOrWithdrawRequest('withdraw', amount))}
+        onDeposit={
+          (amount, formActions) => dispatch(
+            coreActions.depositOrWithdrawRequest('deposit', amount, formActions),
+          )
+        }
+        onWithdraw={
+          (amount, formActions) => dispatch(
+            coreActions.depositOrWithdrawRequest('withdraw', amount, formActions),
+          )
+        }
       />
     )}
   </Component>
