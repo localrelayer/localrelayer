@@ -51,17 +51,17 @@ export const getBidOrders = createSelector(
     orders.map(order => ({
       ...order,
       amount: utils.toUnitAmount(
-        order.makerAssetAmount,
-        assets[order.makerAssetData].decimals,
+        order.metaData.remainingFillableTakerAssetAmount,
+        assets[order.takerAssetData].decimals,
       ).toFixed(8),
       total: utils.toUnitAmount(
-        order.takerAssetAmount,
-        assets[order.takerAssetData].decimals,
+        order.metaData.remainingFillableMakerAssetAmount,
+        assets[order.makerAssetData].decimals,
       ).toFixed(8),
       price: utils.getPrice(
         'bid',
-        order.makerAssetAmount,
-        order.takerAssetAmount,
+        order.metaData.remainingFillableMakerAssetAmount,
+        order.metaData.remainingFillableTakerAssetAmount,
       ).toFixed(8),
     }))
   ),
@@ -76,17 +76,17 @@ export const getAskOrders = createSelector(
     orders.map(order => ({
       ...order,
       amount: utils.toUnitAmount(
-        order.makerAssetAmount,
+        order.metaData.remainingFillableMakerAssetAmount,
         assets[order.makerAssetData].decimals,
       ).toFixed(8),
       total: utils.toUnitAmount(
-        order.takerAssetAmount,
+        order.metaData.remainingFillableTakerAssetAmount,
         assets[order.takerAssetData].decimals,
       ).toFixed(8),
       price: utils.getPrice(
         'ask',
-        order.makerAssetAmount,
-        order.takerAssetAmount,
+        order.metaData.remainingFillableMakerAssetAmount,
+        order.metaData.remainingFillableTakerAssetAmount,
       ).toFixed(8),
     }))
   ),
@@ -103,28 +103,44 @@ export const getOpenOrders = createSelector(
     currentAssetPairId,
     assets,
   ) => (
-    orders.map(order => ({
-      ...order,
-      pair: `${assets[order.makerAssetData].symbol}/${assets[order.takerAssetData].symbol}`,
-      amount: utils.toUnitAmount(
-        order.makerAssetAmount,
-        assets[order.makerAssetData].decimals,
-      ).toFixed(8),
-      total: utils.toUnitAmount(
-        order.takerAssetAmount,
-        assets[order.takerAssetData].decimals,
-      ).toFixed(8),
-      price: utils.getPrice(
-        utils.getType(currentAssetPairId.split('_')[0], order.makerAssetData),
-        order.makerAssetAmount,
-        order.takerAssetAmount,
-      ).toFixed(8),
-      action: (
-        (currentAssetPairId || '_').split('_')[0] === order.makerAssetData
-          ? 'Sell'
-          : 'Buy'
-      ),
-    }))
+    orders.map((order) => {
+      const orderType = utils.getType(currentAssetPairId.split('_')[0], order.makerAssetData);
+
+      const amount = orderType === 'bid'
+        ? utils.toUnitAmount(
+          order.metaData.remainingFillableTakerAssetAmount,
+          assets[order.takerAssetData].decimals,
+        ).toFixed(8)
+        : utils.toUnitAmount(
+          order.metaData.remainingFillableMakerAssetAmount,
+          assets[order.makerAssetData].decimals,
+        ).toFixed(8);
+
+      const total = orderType === 'bid'
+        ? utils.toUnitAmount(
+          order.metaData.remainingFillableMakerAssetAmount,
+          assets[order.makerAssetData].decimals,
+        ).toFixed(8)
+        : utils.toUnitAmount(
+          order.metaData.remainingFillableTakerAssetAmount,
+          assets[order.takerAssetData].decimals,
+        ).toFixed(8);
+
+      return { ...order,
+        pair: `${assets[order.makerAssetData].symbol}/${assets[order.takerAssetData].symbol}`,
+        amount,
+        total,
+        price: utils.getPrice(
+          orderType,
+          order.metaData.remainingFillableMakerAssetAmount,
+          order.metaData.remainingFillableTakerAssetAmount,
+        ).toFixed(8),
+        action: (
+          (currentAssetPairId || '_').split('_')[0] === order.makerAssetData
+            ? 'Sell'
+            : 'Buy'
+        ) };
+    })
   ),
 );
 
@@ -140,16 +156,24 @@ export const getCurrentOrder = createSelector(
     currentOrderId,
     assets,
     orders,
-  ) => (currentOrderId
-    ? {
-      amount: utils.toUnitAmount(
-        orders[currentOrderId].makerAssetAmount,
-        assets[orders[currentOrderId].makerAssetData].decimals,
-      ).toFixed(8),
-      price: utils.getPrice(
-        utils.getType(currentAssetPairId.split('_')[0], orders[currentOrderId].makerAssetData),
-        orders[currentOrderId].makerAssetAmount,
-        orders[currentOrderId].takerAssetAmount,
-      ).toFixed(8),
-    } : {}),
+  ) => {
+    if (currentOrderId) {
+      const orderType = utils.getType(currentAssetPairId.split('_')[0], orders[currentOrderId].makerAssetData);
+
+      return {
+        amount: utils.toUnitAmount(
+          orderType === 'bid'
+            ? orders[currentOrderId].metaData.remainingFillableTakerAssetAmount
+            : orders[currentOrderId].metaData.remainingFillableMakerAssetAmount,
+          assets[orders[currentOrderId].makerAssetData].decimals,
+        ).toFixed(8),
+        price: utils.getPrice(
+          orderType,
+          orders[currentOrderId].metaData.remainingFillableMakerAssetAmount,
+          orders[currentOrderId].metaData.remainingFillableTakerAssetAmount,
+        ).toFixed(8),
+      };
+    }
+    return {};
+  },
 );

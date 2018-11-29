@@ -50,13 +50,13 @@ const BuySellContainer = (): Node => (
                   ? (
                     utils.toBaseUnitAmount(
                       new BigNumber(amount).times(price),
-                      currentAssetPair.assetDataA.assetData.decimals,
+                      currentAssetPair.assetDataB.assetData.decimals,
                     )
                   )
                   : (
                     utils.toBaseUnitAmount(
                       amount,
-                      currentAssetPair.assetDataB.assetData.decimals,
+                      currentAssetPair.assetDataA.assetData.decimals,
                     )
                   )
               ),

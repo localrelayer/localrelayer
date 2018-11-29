@@ -11,13 +11,7 @@ export const getTradingHistory = createSelector(
   [
     getResourceMappedList('orders', 'tradingHistory'),
   ],
-  orders => (
-    orders.map(order => ({
-      ...order,
-      key: order.id,
-      completedAt: order.metaData.completedAt,
-    }))
-  ),
+  orders => orders,
 );
 
 export const getBidOrders = createSelector(
