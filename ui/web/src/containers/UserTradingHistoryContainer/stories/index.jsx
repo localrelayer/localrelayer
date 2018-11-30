@@ -7,12 +7,12 @@ import {
   boolean,
 } from '@storybook/addon-knobs';
 
-import UserProfileLayout from 'web-components/UserProfileLayout';
+import UserProfilePageLayout from 'web-components/UserProfilePageLayout';
 import UserTradingHistoryContainer from '..';
 
 
 const UserTradingHistoryContainerStory = () => (
-  <UserProfileLayout.Preview
+  <UserProfilePageLayout.Preview
     hideRest={boolean('Hide preview layout', false)}
     userTradingHistory={(
       <UserTradingHistoryContainer />

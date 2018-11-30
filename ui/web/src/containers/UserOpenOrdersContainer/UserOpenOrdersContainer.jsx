@@ -9,20 +9,20 @@ import {
   getOpenOrders,
 } from 'web-selectors';
 import Component from 'web-components/ConnectComponent';
-import UserOrders from 'web-components/UserOrders';
+import UserOpenOrders from 'web-components/UserOpenOrders';
 
-const UserOrdersContainer = (): Node => (
+const UserOpenOrdersContainer = (): Node => (
   <Component
     mapStateToProps={state => ({
       orders: getOpenOrders(state),
     })}
   >
     {({ orders }) => (
-      <UserOrders
+      <UserOpenOrders
         orders={orders}
       />
     )}
   </Component>
 );
 
-export default UserOrdersContainer;
+export default UserOpenOrdersContainer;

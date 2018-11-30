@@ -1,26 +1,26 @@
 import React from 'react';
 
-import UserProfileLayout from 'web-components/UserProfileLayout';
+import UserProfilePageLayout from 'web-components/UserProfilePageLayout';
 import UserBalanceContainer from 'web-containers/UserBalanceContainer';
 import UserTradingHistoryContainer from 'web-containers/UserTradingHistoryContainer';
-import UserOrdersContainer from 'web-containers/UserOrdersContainer';
+import UserOpenOrdersContainer from 'web-containers/UserOpenOrdersContainer';
 import HeaderContainer from 'web-containers/HeaderContainer';
 
 
 const UserProfilePageContainer = () => (
   <div>
     <HeaderContainer />
-    <UserProfileLayout>
+    <UserProfilePageLayout>
       <div key="userBalance">
         <UserBalanceContainer isTradingPage={false} />
       </div>
-      <div key="userTradingHistory">
+      <div key="tradingHistory">
         <UserTradingHistoryContainer />
       </div>
-      <div key="userOrders">
-        <UserOrdersContainer />
+      <div key="userOpenOrders">
+        <UserOpenOrdersContainer />
       </div>
-    </UserProfileLayout>
+    </UserProfilePageLayout>
   </div>
 );
 

@@ -4,17 +4,20 @@ import {
   Tooltip,
   Icon,
 } from 'antd';
+
 import {
   ColoredSpan,
 } from 'web-components/SharedStyledComponents';
 import * as colors from 'web-styles/colors';
 import * as S from './styled';
 
+
 type Props = {
   orders: Array<any>,
+  isTradingPage: boolean,
 }
 
-const columns = [
+const getColumns = isTradingPage => [
   {
     title: 'Date',
     dataIndex: 'completedAt',
@@ -24,13 +27,43 @@ const columns = [
       </Tooltip>
     ),
   },
+  ...(
+    !isTradingPage ? [{
+      title: 'Type',
+      dataIndex: 'type',
+      render: text => (
+        <div>
+          <Tooltip title={text}>
+            {text}
+          </Tooltip>
+        </div>
+      ),
+    }, {
+      title: 'Pair',
+      dataIndex: 'pair',
+      render: text => (
+        <div>
+          <Tooltip title={text}>
+            {text}
+          </Tooltip>
+        </div>
+      ),
+    }] : []
+  ),
   {
     title: 'Price',
     dataIndex: 'price',
-    render: (text: string, record) => (
+    render: (
+      text: string,
+      record: any,
+    ) => (
       <Tooltip title={text}>
         <ColoredSpan
-          color={record.type === 'ask' ? colors.red : colors.green}
+          color={(
+            record.type === 'ask'
+              ? colors.red
+              : colors.green
+          )}
         >
           {text}
         </ColoredSpan>
@@ -46,12 +79,39 @@ const columns = [
       </Tooltip>
     ),
   },
+  ...(
+    !isTradingPage ? [{
+      title: 'Total',
+      dataIndex: 'total',
+      render: text => (
+        <div>
+          <Tooltip title={text}>
+            {text}
+          </Tooltip>
+        </div>
+      ),
+    }, {
+      title: 'Status',
+      dataIndex: 'status',
+      render: text => (
+        <div>
+          <Tooltip title={text}>
+            {text}
+          </Tooltip>
+        </div>
+      ),
+    }] : []
+  ),
+  /* TODO: link to the etherscan */
   {
     render: () => <Icon type="select" />,
   },
 ];
 
-const TradingHistory = ({ orders }: Props) => (
+const TradingHistory = ({
+  orders,
+  isTradingPage,
+}: Props) => (
   <S.TradingHistory>
     <S.Title>
       <div>
@@ -60,7 +120,7 @@ const TradingHistory = ({ orders }: Props) => (
     </S.Title>
     <S.TradingHistoryTable
       size="small"
-      columns={columns}
+      columns={getColumns(isTradingPage)}
       pagination={false}
       dataSource={orders}
       scroll={{ y: 340 }}

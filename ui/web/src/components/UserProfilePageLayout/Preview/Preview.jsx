@@ -5,7 +5,7 @@ import type {
   Node,
 } from 'react';
 
-import UserProfileLayout from '..';
+import UserProfilePageLayout from '..';
 
 import {
   DottedBorder,
@@ -16,9 +16,9 @@ type Props = {
 };
 
 const components = [
-  'userTradingHistory',
+  'tradingHistory',
   'userBalance',
-  'userOrders',
+  'userOpenOrders',
 ];
 
 /* Capitalize firts letter */
@@ -26,8 +26,8 @@ function cfl(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-const UserProfileLayoutPreview = (props: Props): Node => (
-  <UserProfileLayout>
+const UserProfilePageLayoutPreview = (props: Props): Node => (
+  <UserProfilePageLayout>
     {components.map(c => (
       props[c]
         ? (
@@ -48,7 +48,7 @@ const UserProfileLayoutPreview = (props: Props): Node => (
           </DottedBorder>
         )
     ))}
-  </UserProfileLayout>
+  </UserProfilePageLayout>
 );
 
-export default UserProfileLayoutPreview;
+export default UserProfilePageLayoutPreview;

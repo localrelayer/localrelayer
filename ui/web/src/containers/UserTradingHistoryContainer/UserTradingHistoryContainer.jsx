@@ -7,7 +7,7 @@ import {
   getTradingHistory,
 } from 'web-selectors';
 import Component from 'web-components/ConnectComponent';
-import UserTradingHistory from 'web-components/UserTradingHistory';
+import TradingHistory from 'web-components/TradingHistory';
 
 const UserTradingHistoryContainer = (): Node => (
   <Component
@@ -16,7 +16,7 @@ const UserTradingHistoryContainer = (): Node => (
     })}
   >
     {({ orders }) => (
-      <UserTradingHistory
+      <TradingHistory
         orders={orders}
       />
     )}

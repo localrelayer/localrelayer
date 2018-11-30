@@ -8,7 +8,7 @@ import {
 } from '@storybook/addon-knobs';
 
 import TradingPageLayout from 'web-components/TradingPageLayout';
-import UserProfileLayout from 'web-components/UserProfileLayout';
+import UserProfilePageLayout from 'web-components/UserProfilePageLayout';
 import UserBalanceContainer from '..';
 
 
@@ -22,7 +22,7 @@ const UserBalanceTradingPageContainerStory = () => (
 );
 
 const UserBalanceUserProfileContainerStory = () => (
-  <UserProfileLayout.Preview
+  <UserProfilePageLayout.Preview
     hideRest={boolean('Hide preview layout', false)}
     userBalance={(
       <UserBalanceContainer isTradingPage={false} />
