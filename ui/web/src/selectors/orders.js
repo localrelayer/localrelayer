@@ -25,9 +25,7 @@ export const getTradingHistory = createSelector(
   ) => orders.map((order) => {
     const orderType = utils.getType(currentAssetPairId.split('_')[0], order.makerAssetData);
 
-    const filledMakerAssetAmount = new BigNumber(
-      order.takerAssetAmount,
-    )
+    const filledMakerAssetAmount = new BigNumber(order.makerAssetAmount)
       .times(order.metaData.filledTakerAssetAmount)
       .div(order.takerAssetAmount)
       .toFixed(8);
@@ -87,8 +85,8 @@ export const getBidOrders = createSelector(
       ).toFixed(8),
       price: utils.getPrice(
         'bid',
-        order.metaData.remainingFillableMakerAssetAmount,
-        order.metaData.remainingFillableTakerAssetAmount,
+        order.makerAssetAmount,
+        order.takerAssetAmount,
       ).toFixed(8),
     }))
   ),
@@ -112,8 +110,8 @@ export const getAskOrders = createSelector(
       ).toFixed(8),
       price: utils.getPrice(
         'ask',
-        order.metaData.remainingFillableMakerAssetAmount,
-        order.metaData.remainingFillableTakerAssetAmount,
+        order.makerAssetAmount,
+        order.takerAssetAmount,
       ).toFixed(8),
     }))
   ),
@@ -159,8 +157,8 @@ export const getOpenOrders = createSelector(
         total,
         price: utils.getPrice(
           orderType,
-          order.metaData.remainingFillableMakerAssetAmount,
-          order.metaData.remainingFillableTakerAssetAmount,
+          order.makerAssetAmount,
+          order.takerAssetAmount,
         ).toFixed(8),
         action: (
           (currentAssetPairId || '_').split('_')[0] === order.makerAssetData

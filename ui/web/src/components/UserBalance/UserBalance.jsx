@@ -186,7 +186,7 @@ const UserBalance = ({
                   !isValid
                   || !values?.amount?.length
                 }
-                onClick={() => onWithdraw(values.amount) && resetForm({})}
+                onClick={() => onWithdraw(values.amount, { resetForm })}
               >
                   Unwrap
               </S.UnwrapButton>
@@ -196,7 +196,7 @@ const UserBalance = ({
                   !isValid
                   || !values?.amount?.length
                 }
-                onClick={() => onDeposit(values.amount) && resetForm({})}
+                onClick={() => onDeposit(values.amount, { resetForm })}
               >
                 Wrap
               </S.WrapButton>

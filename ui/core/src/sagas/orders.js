@@ -14,6 +14,7 @@ import api from '../api';
 import ethApi from '../ethApi';
 import {
   getContractAddressesForNetwork,
+  transformBigNumberOrder,
 } from '../utils';
 
 
@@ -135,6 +136,9 @@ function* matchOrder({
   takerAssetAmount,
   type,
 }) {
+  const web3 = ethApi.getWeb3();
+  const networkId = yield eff.call(web3.eth.net.getId);
+  const contractWrappers = ethApi.getWrappers(networkId);
   // BID order wants smallest (sorted by descending order)
   // ASK order wants biggest (sorted by ascending order)
   // So we want first order
@@ -154,23 +158,40 @@ function* matchOrder({
   if (type === 'bid') {
     price = new BigNumber(makerAssetAmount).div(takerAssetAmount);
     const askOrders = yield eff.select(selectors.getAskOrders);
-    matchedOrders = askOrders.filter((askOrder) => {
+    matchedOrders = yield eff.all(askOrders.filter(async (askOrder) => {
       const matchedAskOrderPrice = new BigNumber(
         askOrder.metaData.remainingFillableTakerAssetAmount,
       ).div(askOrder.metaData.remainingFillableMakerAssetAmount);
+      let isValid = false;
+      try {
+        await contractWrappers.exchange.validateOrderFillableOrThrowAsync(transformBigNumberOrder(askOrder));
+        isValid = true;
+      } catch (err) {
+        console.log('MATCHED NOT VALID', err);
+        isValid = false;
+      }
 
-      return matchedAskOrderPrice.lte(price);
-    });
+      return isValid && matchedAskOrderPrice.lte(price);
+    }));
   } else {
     price = new BigNumber(takerAssetAmount).div(makerAssetAmount);
     const bidOrders = yield eff.select(selectors.getBidOrders);
-    matchedOrders = bidOrders.filter((bidOrder) => {
+    matchedOrders = yield eff.all(bidOrders.filter(async (bidOrder) => {
       const matchedBidOrderPrice = new BigNumber(
         bidOrder.metaData.remainingFillableMakerAssetAmount,
       ).div(bidOrder.metaData.remainingFillableTakerAssetAmount);
 
-      return matchedBidOrderPrice.lte(price);
-    });
+      let isValid = false;
+      try {
+        await contractWrappers.exchange.validateOrderFillableOrThrowAsync(transformBigNumberOrder(bidOrder));
+        isValid = true;
+      } catch (err) {
+        console.log('MATCHED NOT VALID', err);
+        isValid = false;
+      }
+
+      return isValid && matchedBidOrderPrice.lte(price);
+    }));
   }
   return matchedOrders;
 }
@@ -202,8 +223,6 @@ function* postOrder({
   });
 
   let requiredAmount = new BigNumber(takerAssetAmount);
-
-  console.log(matchedOrders);
 
   if (matchedOrders.length) {
     const ordersToFill = [];
@@ -288,6 +307,19 @@ function* postOrder({
         order,
         makerAddress,
       );
+
+      try {
+        yield eff.call(
+          [
+            contractWrappers.exchange,
+            contractWrappers.exchange.validateOrderFillableOrThrowAsync,
+          ],
+          transformBigNumberOrder(signedOrder),
+        );
+      } catch (err) {
+        console.log('NOT VALID', err);
+      }
+
       yield eff.call(api.postOrder, signedOrder, { networkId });
       formActions.resetForm({});
     } catch (err) {

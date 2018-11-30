@@ -254,8 +254,11 @@ function* takeUpdateOrder(socketChannel) {
         ));
       }
 
+      console.log('Lists', lists);
+
       yield eff.put(actions.succeeded({
         lists,
+        // prepend: true,
         resources: [{
           id: data.payload.order.signature,
           metaData: data.payload.metaData,
