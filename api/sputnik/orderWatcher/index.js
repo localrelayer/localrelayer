@@ -83,7 +83,9 @@ async function watcherCreator(networkId) {
 
       order.remainingFillableMakerAssetAmount = remainingFillableMakerAssetAmount;
       order.remainingFillableTakerAssetAmount = remainingFillableTakerAssetAmount;
-      order.filledTakerAssetAmount = filledTakerAssetAmount;
+      order.filledTakerAssetAmount = new BigNumber(
+        filledTakerAssetAmount,
+      ).add(order.filledTakerAssetAmount);
 
       if (new BigNumber(filledTakerAssetAmount).gt(0)) {
         order.lastFilledAt = new Date();
@@ -115,6 +117,7 @@ async function watcherCreator(networkId) {
         if (error === FILL_ERROR) {
           order.remainingFillableMakerAssetAmount = '0';
           order.remainingFillableTakerAssetAmount = '0';
+          order.filledTakerAssetAmount = order.takerAssetAmount;
           order.lastFilledAt = new Date();
           try {
             const {
