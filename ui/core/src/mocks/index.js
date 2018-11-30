@@ -11,7 +11,6 @@ import {
   Web3Wrapper,
 } from '@0x/web3-wrapper';
 import * as R from 'ramda';
-
 import assetPairsMainJson from './assetPairs.main.json';
 import assetPairsKovanJson from './assetPairs.kovan.json';
 import assetPairsTestJson from './assetPairs.test.json';
@@ -435,8 +434,111 @@ export function mocksOrdersFactory({
       };
     },
 
-    getBars() {
-      return {};
+    getBars({
+      resolution,
+      baseAssetData,
+      from,
+    }) {
+      const nearestMinutes = (period, interval) => {
+        const date = new Date(period);
+        const roundedMinutes = Math.round(
+          date.getMinutes() / interval,
+        ) * interval;
+        date.setHours(date.getHours(), roundedMinutes, 0, 0);
+        return date;
+      };
+      const startOf = (period, unit) => {
+        const date = new Date(period);
+        switch (unit) {
+          case 'minute':
+            date.setMinutes(date.getMinutes(), 0, 0);
+            break;
+          case 'hour':
+            date.setHours(date.getHours(), 0, 0, 0);
+            break;
+          case 'day':
+            date.setHours(0, 0, 0, 0);
+            break;
+          default: break;
+        }
+        return date;
+      };
+      const generatePastUTCDate = () => {
+        const randNum = num => Math.floor((Math.random() * num));
+        const date = new Date();
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1;
+        const yesterday = date.getDate() - 1;
+        return `${year}-${month}-${yesterday}T${randNum(2)}${randNum(9)}:${randNum(6)}0:00.000Z`;
+      };
+      const resolutionsMap = {
+        1: {
+          startOf: 'minute',
+        },
+        10: {
+          startOf: 'minute',
+          round: 10,
+        },
+        30: {
+          startOf: 'minute',
+          round: 30,
+        },
+        60: {
+          startOf: 'hour',
+        },
+        D: {
+          startOf: 'day',
+        },
+      };
+      const allOrders = allBidsOrders.map(orderObject => orderObject.order)
+        .concat(allAsksOrders.map(orderObject => orderObject.order));
+      const res = resolutionsMap[resolution];
+      const oldestOrderMock = Math.floor(new Date().setDate(new Date().getDate() - 2) / 1000);
+      // don't try to retrieve orders older than the oldest one
+      const feed = from < oldestOrderMock ? {}
+        : allOrders.reduce((acc, order) => {
+          let period = generatePastUTCDate();
+          if (res.round) {
+            period = Math.floor(+nearestMinutes(period, res.round) / 1000);
+          } else {
+            period = Math.floor(+startOf(period, res.startOf) / 1000);
+          }
+          const [
+            price,
+            amount,
+          ] = (
+            order.makerAssetData === baseAssetData
+              ? [
+                new BigNumber(order.takerAssetAmount).div(order.makerAssetAmount),
+                order.makerAssetAmount,
+              ]
+              : [
+                new BigNumber(order.makerAssetAmount).div(order.takerAssetAmount),
+                order.takerAssetAmount,
+              ]
+          );
+          if (acc[period]) {
+            acc[period].volume += parseFloat(amount);
+            acc[period].low = acc[period].low > parseFloat(price)
+              ? parseFloat(price) : acc[period].low;
+            acc[period].high = acc[period].high < parseFloat(price)
+              ? parseFloat(price) : acc[period].high;
+            acc[period].close = parseFloat(price);
+          } else {
+            acc[period] = {
+              time: period * 1000,
+              open: parseFloat(price),
+              close: parseFloat(price),
+              volume: parseFloat(amount),
+              low: parseFloat(price),
+              high: parseFloat(price),
+            };
+          }
+          return acc;
+        }, {});
+      return {
+        items: feed,
+      };
     },
   };
 }
