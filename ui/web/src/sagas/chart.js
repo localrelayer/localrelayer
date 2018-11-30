@@ -53,7 +53,7 @@ function* takeFillOrderAndCalculateChartBar({
     const bar = {
       volume,
       // time: moment(metaData.completedAt).unix() * 1000,
-      time: new Date(metaData.completedAt).getTime(),
+      time: new Date(metaData.lastFilledAt).getTime(),
       open: parseFloat(price),
       close: parseFloat(price),
       low: parseFloat(price),

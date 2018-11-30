@@ -34,6 +34,7 @@ import {
     expirationTimeSeconds: () => getRandomFutureDateInSeconds().toString(),
     signature: () => randomEthereumAddress(),
     completedAt: () => new Date(+(new Date()) - Math.floor(Math.random() * 10000000000)),
+    lastFilledAt: () => new Date(+(new Date()) - Math.floor(Math.random() * 10000000000)),
   };
   const orders = Array(ordersQty).fill().map(
     () => {

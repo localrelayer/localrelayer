@@ -40,6 +40,7 @@ const orderSchema = mongoose.Schema({
   filledTakerAssetAmount: { type: String },
   createdAt: { type: Date },
   completedAt: { type: Date },
+  lastFilledAt: { type: Date },
 }, { versionKey: false });
 
 const assetDataSchema = mongoose.Schema({

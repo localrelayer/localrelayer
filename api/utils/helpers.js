@@ -81,6 +81,7 @@ export const constructOrderRecord = ({
   remainingFillableMakerAssetAmount,
   remainingFillableTakerAssetAmount,
   filledTakerAssetAmount,
+  lastFilledAt,
   networkId,
   orderHash,
   createdAt,
@@ -99,6 +100,7 @@ export const constructOrderRecord = ({
     orderHash,
     createdAt,
     completedAt,
+    lastFilledAt,
     error,
   },
 });

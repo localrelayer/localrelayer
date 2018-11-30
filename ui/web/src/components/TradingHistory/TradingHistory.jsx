@@ -18,15 +18,6 @@ type Props = {
 }
 
 const getColumns = isTradingPage => [
-  {
-    title: 'Date',
-    dataIndex: 'completedAt',
-    render: (text: string) => (
-      <Tooltip title={new Date(text).toLocaleString()}>
-        {new Date(text).toLocaleString()}
-      </Tooltip>
-    ),
-  },
   ...(
     !isTradingPage ? [{
       title: 'Type',
@@ -102,6 +93,15 @@ const getColumns = isTradingPage => [
       ),
     }] : []
   ),
+  {
+    title: 'Date',
+    dataIndex: 'lastFilledAt',
+    render: (text: string) => (
+      <Tooltip title={new Date(text).toLocaleString()}>
+        {new Date(text).toLocaleString()}
+      </Tooltip>
+    ),
+  },
   /* TODO: link to the etherscan */
   {
     render: () => <Icon type="select" />,
