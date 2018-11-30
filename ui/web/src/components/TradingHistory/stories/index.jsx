@@ -9,6 +9,7 @@ import {
 } from '@storybook/addon-knobs';
 
 import TradingPageLayout from 'web-components/TradingPageLayout';
+import UserProfilePageLayout from 'web-components/UserProfilePageLayout';
 import 'web-styles/main.less';
 import TradingHistory from '..';
 
@@ -31,17 +32,31 @@ const defaultOrders = [{
 }];
 
 type Props = {
+  isTradingPage: boolean,
   emptyList: boolean,
 };
 
-const TradingHistoryStory = ({ emptyList = false }: Props) => (
-  <TradingPageLayout.Preview
-    hideRest={boolean('Hide preview layout', false)}
-    tradingHistory={(
-      <TradingHistory orders={emptyList ? [] : defaultOrders} />
-    )}
-  />
-);
+const TradingHistoryStory = ({
+  isTradingPage = false,
+  emptyList = false,
+}: Props) => {
+  const PreviewComponent = (
+    isTradingPage
+      ? TradingPageLayout.Preview
+      : UserProfilePageLayout.Preview
+  );
+  return (
+    <PreviewComponent
+      hideRest={boolean('Hide preview layout', false)}
+      tradingHistory={(
+        <TradingHistory
+          isTradingPage={isTradingPage}
+          orders={emptyList ? [] : defaultOrders}
+        />
+      )}
+    />
+  );
+};
 
 storiesOf('Components|TradingHistory', module)
   .addDecorator(withKnobs)
@@ -51,7 +66,36 @@ storiesOf('Components|TradingHistory', module)
     },
   })
   .add(
-    'default',
+    'trading page',
+    () => (
+      <TradingHistoryStory isTradingPage />
+    ),
+    {
+      info: {
+        text: `
+          TradingHistory component meant to display current asset pair with last trading info.
+        `,
+      },
+    },
+  )
+  .add(
+    'trading page with empty list',
+    () => (
+      <TradingHistoryStory
+        isTradingPage
+        emptyList
+      />
+    ),
+    {
+      info: {
+        text: `
+          TradingHistory component meant to display current asset pair with last trading info.
+        `,
+      },
+    },
+  )
+  .add(
+    'profile page',
     () => (
       <TradingHistoryStory />
     ),
@@ -64,7 +108,7 @@ storiesOf('Components|TradingHistory', module)
     },
   )
   .add(
-    'with empty list',
+    'profile page with empty list',
     () => (
       <TradingHistoryStory emptyList />
     ),
@@ -77,7 +121,18 @@ storiesOf('Components|TradingHistory', module)
     },
   )
   .add(
-    'full screen',
+    'trading page full screen',
+    () => (
+      <TradingHistoryStory isTradingPage />
+    ),
+    {
+      options: {
+        goFullScreen: true,
+      },
+    },
+  )
+  .add(
+    'profile page full screen',
     () => (
       <TradingHistoryStory />
     ),

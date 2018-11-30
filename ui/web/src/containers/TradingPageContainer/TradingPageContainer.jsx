@@ -6,7 +6,7 @@ import OrderBookContainer from 'web-containers/OrderBookContainer';
 import AssetPairCardContainer from 'web-containers/AssetPairCardContainer';
 import BuySellContainer from 'web-containers/BuySellContainer';
 import UserBalanceContainer from 'web-containers/UserBalanceContainer';
-import UserOrdersContainer from 'web-containers/UserOrdersContainer';
+import UserOpenOrdersContainer from 'web-containers/UserOpenOrdersContainer';
 import TradingHistoryContainer from 'web-containers/TradingHistoryContainer';
 import TradingChartContainer from 'web-containers/TradingChartContainer';
 
@@ -30,8 +30,8 @@ export default () => (
       <div key="buySell">
         <BuySellContainer />
       </div>
-      <div key="userOrders">
-        <UserOrdersContainer />
+      <div key="userOpenOrders">
+        <UserOpenOrdersContainer />
       </div>
       <div key="tradingHistory">
         <TradingHistoryContainer />

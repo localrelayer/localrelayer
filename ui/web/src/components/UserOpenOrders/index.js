@@ -1,9 +1,9 @@
 // @flow
-import UserOrders from './UserOrders';
+import UserOpenOrders from './UserOpenOrders';
 
-export default UserOrders;
+export default UserOpenOrders;
 
-const layoutName = 'userOrders';
+const layoutName = 'userOpenOrders';
 export const layout = {
   xs: {
     i: layoutName,

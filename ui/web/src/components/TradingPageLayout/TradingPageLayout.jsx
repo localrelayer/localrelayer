@@ -21,8 +21,8 @@ import {
   layout as buySellLayout,
 } from 'web-components/BuySell';
 import {
-  layout as userOrdersLayout,
-} from 'web-components/UserOrders';
+  layout as userOpenOrdersLayout,
+} from 'web-components/UserOpenOrders';
 import {
   layout as tradingChartLayout,
 } from 'web-components/TradingChart';
@@ -35,7 +35,7 @@ const layoutXs = [
   orderBookLayout.xs,
   userBalanceLayout.xs,
   buySellLayout.xs,
-  userOrdersLayout.xs,
+  userOpenOrdersLayout.xs,
   tradingChartLayout.xs,
 ];
 
@@ -45,7 +45,7 @@ const layoutSm = [
   orderBookLayout.sm,
   userBalanceLayout.sm,
   buySellLayout.sm,
-  userOrdersLayout.sm,
+  userOpenOrdersLayout.sm,
   tradingChartLayout.sm,
 ];
 
@@ -55,7 +55,7 @@ const layoutMd = [
   orderBookLayout.md,
   userBalanceLayout.md,
   buySellLayout.md,
-  userOrdersLayout.md,
+  userOpenOrdersLayout.md,
   tradingChartLayout.md,
 ];
 
@@ -65,7 +65,7 @@ const layoutLg = [
   orderBookLayout.lg,
   userBalanceLayout.lg,
   buySellLayout.lg,
-  userOrdersLayout.lg,
+  userOpenOrdersLayout.lg,
   tradingChartLayout.lg,
 ];
 
@@ -75,7 +75,7 @@ const layoutLg2 = [
   orderBookLayout.lg2,
   userBalanceLayout.lg2,
   buySellLayout.lg2,
-  userOrdersLayout.lg2,
+  userOpenOrdersLayout.lg2,
   tradingChartLayout.lg2,
 ];
 
@@ -85,7 +85,7 @@ const layoutLg3 = [
   orderBookLayout.lg3,
   userBalanceLayout.lg3,
   buySellLayout.lg3,
-  userOrdersLayout.lg3,
+  userOpenOrdersLayout.lg3,
   tradingChartLayout.lg3,
 ];
 

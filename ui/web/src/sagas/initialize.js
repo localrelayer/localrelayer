@@ -98,6 +98,9 @@ function* setCurrentPair({
       quoteAsset: 'WETH',
     },
   };
+  console.log('**********');
+  console.log(match);
+  console.log('**********');
   if (
     match
     || location.pathname === '/'
@@ -120,7 +123,6 @@ function* setCurrentPair({
         currentAssetPairId !== assetPair.id
         || isCurrentPairIssue
       ) {
-        console.log('SETCURRENTPAIR');
         yield eff.put(uiActions.setUiState({
           currentAssetPairId: assetPair.id,
           isCurrentPairListed: isListed,
@@ -166,20 +168,6 @@ function* setCurrentPair({
             quoteAssetData: assetPair.assetDataB.assetData,
           },
         );
-        const selectedAccount = yield eff.select(
-          coreSelectors.getWalletState('selectedAccount'),
-        );
-        if (selectedAccount) {
-          yield eff.fork(
-            coreSagas.fetchUserOrders,
-            {
-              networkId,
-              baseAssetData: assetPair.assetDataA.assetData,
-              quoteAssetData: assetPair.assetDataB.assetData,
-              traderAddress: selectedAccount,
-            },
-          );
-        }
         yield eff.fork(
           coreSagas.fetchTradingHistory,
           {
@@ -297,6 +285,9 @@ function* takeChangeRoute({
 }) {
   while (true) {
     const { location } = yield eff.take(historyChannel);
+    console.log('---------');
+    console.log(location);
+    console.log('---------');
     yield eff.fork(
       setCurrentPair,
       {
@@ -357,6 +348,13 @@ export function* initialize(): Saga<void> {
   yield eff.put(uiActions.setUiState({
     networkId,
   }));
+  yield eff.fork(
+    coreSagas.fetchUserOrders,
+    {
+      networkId,
+      traderAddress: selectedAccount,
+    },
+  );
   const webRadioChannel = yield eff.call(channel);
   const socketChannel = yield eff.call(channel);
   const fetchPairsTask = yield eff.fork(

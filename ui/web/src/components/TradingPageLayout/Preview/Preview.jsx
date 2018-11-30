@@ -19,7 +19,7 @@ const components = [
   'assetPairCard',
   'tradingHistory',
   'userBalance',
-  'userOrders',
+  'userOpenOrders',
   'orderBook',
   'buySell',
   'tradingChart',

@@ -1,3 +1,4 @@
+// @flow
 import React from 'react';
 import {
   storiesOf,
@@ -7,75 +8,61 @@ import {
   boolean,
 } from '@storybook/addon-knobs';
 
+import {
+  coreCache,
+} from 'instex-core';
 import TradingPageLayout from 'web-components/TradingPageLayout';
-import UserProfileLayout from 'web-components/UserProfileLayout';
+import UserProfilePageLayout from 'web-components/UserProfilePageLayout';
 import 'web-styles/main.less';
 import UserBalance from '..';
 
 
-const UserBalanceTradingPageStory = () => (
-  <TradingPageLayout.Preview
-    hideRest={boolean('Hide preview layout', false)}
-    userBalance={(
-      <UserBalance
-        balance={3}
-        assets={[{
-          symbol: 'WETH',
-          fullBalance: 200,
-          balance: 100,
-          isTradable: true,
-        }, {
-          symbol: 'ZRX',
-          fullBalance: 0,
-          balance: 0,
-          isTradable: false,
-        }]}
-        onWithdraw={() => {
-          console.log('onWithdraw');
-        }}
-        onDeposit={() => {
-          console.log('onDeposit');
-        }}
-        onToggleTradable={() => {
-          console.log('onToggleTradable');
-        }}
-      />
-    )}
-  />
-);
+type Props = {
+  isTradingPage: boolean,
+};
 
-const UserBalanceUserProfileStory = () => (
-  <UserProfileLayout.Preview
-    hideRest={boolean('Hide preview layout', false)}
-    userBalance={(
-      <UserBalance
-        balance={3}
-        assets={[{
-          symbol: 'WETH',
-          name: 'Wrapped Eth',
-          fullBalance: 200,
-          balance: 100,
-          isTradable: true,
-        }, {
-          symbol: 'ZRX',
-          name: '0x Protocol',
-          fullBalance: 0,
-          balance: 0,
-          isTradable: false,
-        }]}
-        onWithdraw={() => {
-          console.log('onWithdraw');
-        }}
-        onDeposit={() => {
-          console.log('onDeposit');
-        }}
-        onToggleTradable={() => {
-          console.log('onToggleTradable');
-        }}
-      />
-    )}
-  />
-);
+const allAssets = Object.values(coreCache.cachedTokens[1]).map(asset => ({
+  ...asset,
+  fullBalance: 200,
+  balance: 100,
+  isTradable: true,
+}));
+
+const UserBalanceStory = ({ isTradingPage = false }: Props) => {
+  const PreviewComponent = (
+    isTradingPage
+      ? TradingPageLayout.Preview
+      : UserProfilePageLayout.Preview
+  );
+  return (
+    <PreviewComponent
+      hideRest={boolean('Hide preview layout', false)}
+      userBalance={(
+        <UserBalance
+          isTradingPage={isTradingPage}
+          balance={3}
+          assets={(
+            isTradingPage
+              ? [
+                allAssets.find(a => a.symbol === 'ZRX'),
+                allAssets.find(a => a.symbol === 'WETH'),
+              ]
+              : allAssets
+          )}
+          onWithdraw={() => {
+            console.log('onWithdraw');
+          }}
+          onDeposit={() => {
+            console.log('onDeposit');
+          }}
+          onToggleTradable={() => {
+            console.log('onToggleTradable');
+          }}
+        />
+      )}
+    />
+  );
+};
 
 storiesOf('Components|UserBalance', module)
   .addDecorator(withKnobs)
@@ -86,7 +73,9 @@ storiesOf('Components|UserBalance', module)
   })
   .add(
     'trading page',
-    UserBalanceTradingPageStory,
+    () => (
+      <UserBalanceStory isTradingPage />
+    ),
     {
       info: {
         text: `
@@ -97,5 +86,7 @@ storiesOf('Components|UserBalance', module)
   )
   .add(
     'user profile page',
-    UserBalanceUserProfileStory,
+    () => (
+      <UserBalanceStory />
+    ),
   );

@@ -20,6 +20,7 @@ const TradingHistoryContainer = (): Node => (
   >
     {({ orders }) => (
       <TradingHistory
+        isTradingPage
         orders={orders}
       />
     )}

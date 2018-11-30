@@ -4,7 +4,7 @@ import {
 } from 'antd';
 import * as colors from 'web-styles/colors';
 
-export const UserOrders = styled.div`
+export const UserOpenOrders = styled.div`
   position: absolute;
   height: 100%;
   width: 100%;
@@ -18,7 +18,7 @@ export const Title = styled.div`
   font-size: 20px;
 `;
 
-export const UserOrdersTable = styled(Table)`
+export const UserOpenOrdersTable = styled(Table)`
    height: 90%;
   .ant-table {
     border: none;

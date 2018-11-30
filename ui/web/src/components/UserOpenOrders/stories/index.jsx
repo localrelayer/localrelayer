@@ -8,12 +8,13 @@ import {
   boolean,
 } from '@storybook/addon-knobs';
 import TradingPageLayout from 'web-components/TradingPageLayout';
-import UserProfileLayout from 'web-components/UserProfileLayout';
+import UserProfilePageLayout from 'web-components/UserProfilePageLayout';
 import 'web-styles/main.less';
-import UserOrders from '..';
+import UserOpenOrders from '..';
 
 const now = new Date();
 const defaultOrders = [{
+  id: '1',
   pair: 'ZRX/WETH',
   price: 0.003212,
   amount: 1.12344,
@@ -25,6 +26,7 @@ const defaultOrders = [{
     isShadowed: true,
   },
 }, {
+  id: '2',
   pair: 'ZRX/WETH',
   price: 0.003212,
   amount: 1.12434,
@@ -36,6 +38,7 @@ const defaultOrders = [{
     isShadowed: false,
   },
 }, {
+  id: '3',
   pair: 'ETH/WETH',
   price: 340.4122,
   amount: 1.00004,
@@ -49,49 +52,55 @@ const defaultOrders = [{
 }];
 
 type Props = {
+  isTradingPage: boolean,
   emptyList: boolean,
 };
 
-const UserOrdersTradingPageStory = ({ emptyList = false }: Props) => (
-  <TradingPageLayout.Preview
-    hideRest={boolean('Hide preview layout', false)}
-    userOrders={(
-      <UserOrders orders={emptyList ? [] : defaultOrders} />
-    )}
-  />
-);
-const UserOrdersUserProfileStory = ({ emptyList = false }: Props) => (
-  <UserProfileLayout.Preview
-    hideRest={boolean('Hide preview layout', false)}
-    userOrders={(
-      <UserOrders orders={emptyList ? [] : defaultOrders} />
-    )}
-  />
-);
+const UserOpenOrdersStory = ({
+  isTradingPage = false,
+  emptyList = false,
+}: Props) => {
+  const PreviewComponent = (
+    isTradingPage
+      ? TradingPageLayout.Preview
+      : UserProfilePageLayout.Preview
+  );
+  return (
+    <PreviewComponent
+      hideRest={boolean('Hide preview layout', false)}
+      userOpenOrders={(
+        <UserOpenOrders orders={emptyList ? [] : defaultOrders} />
+      )}
+    />
+  );
+};
 
-storiesOf('Components|UserOrders', module)
+storiesOf('Components|UserOpenOrders', module)
   .addDecorator(withKnobs)
   .add(
     'trading page',
     () => (
-      <UserOrdersTradingPageStory />
+      <UserOpenOrdersStory isTradingPage />
     ),
   )
   .add(
     'trading page with empty list',
     () => (
-      <UserOrdersTradingPageStory emptyList />
+      <UserOpenOrdersStory
+        isTradingPage
+        emptyList
+      />
     ),
   )
   .add(
     'user profile page',
     () => (
-      <UserOrdersUserProfileStory />
+      <UserOpenOrdersStory />
     ),
   )
   .add(
     'user profile page with empty list',
     () => (
-      <UserOrdersUserProfileStory emptyList />
+      <UserOpenOrdersStory emptyList />
     ),
   );

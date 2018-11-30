@@ -13,10 +13,10 @@ const layoutXs = [
     i: 'userBalance', x: 0, y: 0, w: 1, h: 5, static: true,
   },
   {
-    i: 'userOrders', x: 0, y: 5, w: 1, h: 5, static: true,
+    i: 'userOpenOrders', x: 0, y: 5, w: 1, h: 5, static: true,
   },
   {
-    i: 'userTradingHistory', x: 0, y: 10, w: 1, h: 5, static: true,
+    i: 'tradingHistory', x: 0, y: 10, w: 1, h: 5, static: true,
   },
 ];
 
@@ -26,10 +26,10 @@ const layoutSm = [
     i: 'userBalance', x: 0, y: 0, w: 2, h: 11, static: true,
   },
   {
-    i: 'userOrders', x: 0, y: 11, w: 2, h: 11, static: true,
+    i: 'userOpenOrders', x: 0, y: 11, w: 2, h: 11, static: true,
   },
   {
-    i: 'userTradingHistory', x: 0, y: 22, w: 2, h: 11, static: true,
+    i: 'tradingHistory', x: 0, y: 22, w: 2, h: 11, static: true,
   },
 ];
 
@@ -38,10 +38,10 @@ const layoutMd = [
     i: 'userBalance', x: 0, y: 0, w: 5, h: 22, static: true,
   },
   {
-    i: 'userOrders', x: 5, y: 0, w: 5, h: 11, static: true,
+    i: 'userOpenOrders', x: 5, y: 0, w: 5, h: 11, static: true,
   },
   {
-    i: 'userTradingHistory', x: 5, y: 11, w: 5, h: 11, static: true,
+    i: 'tradingHistory', x: 5, y: 11, w: 5, h: 11, static: true,
   },
 ];
 
@@ -50,10 +50,10 @@ const layoutLg = [
     i: 'userBalance', x: 0, y: 0, w: 6, h: 22, static: true,
   },
   {
-    i: 'userOrders', x: 6, y: 0, w: 6, h: 11, static: true,
+    i: 'userOpenOrders', x: 6, y: 0, w: 6, h: 11, static: true,
   },
   {
-    i: 'userTradingHistory', x: 6, y: 10, w: 6, h: 11, static: true,
+    i: 'tradingHistory', x: 6, y: 10, w: 6, h: 11, static: true,
   },
 ];
 
@@ -62,10 +62,10 @@ const layoutLg2 = [
     i: 'userBalance', x: 0, y: 0, w: 12, h: 22, static: true,
   },
   {
-    i: 'userOrders', x: 12, y: 0, w: 12, h: 11, static: true,
+    i: 'userOpenOrders', x: 12, y: 0, w: 12, h: 11, static: true,
   },
   {
-    i: 'userTradingHistory', x: 12, y: 11, w: 12, h: 11, static: true,
+    i: 'tradingHistory', x: 12, y: 11, w: 12, h: 11, static: true,
   },
 ];
 
@@ -74,10 +74,10 @@ const layoutLg3 = [
     i: 'userBalance', x: 0, y: 0, w: 6, h: 22, static: true,
   },
   {
-    i: 'userOrders', x: 6, y: 0, w: 6, h: 11, static: true,
+    i: 'userOpenOrders', x: 6, y: 0, w: 6, h: 11, static: true,
   },
   {
-    i: 'userTradingHistory', x: 6, y: 11, w: 6, h: 11, static: true,
+    i: 'tradingHistory', x: 6, y: 11, w: 6, h: 11, static: true,
   },
 ];
 
@@ -85,7 +85,7 @@ type Props = {
   children: React.Node,
 };
 
-const UserProfileLayout = ({ children }: Props) => (
+const UserProfilePageLayout = ({ children }: Props) => (
   <ResponsiveReactGridLayout
     layouts={{
       xs: layoutXs,
@@ -120,4 +120,4 @@ const UserProfileLayout = ({ children }: Props) => (
   </ResponsiveReactGridLayout>
 );
 
-export default UserProfileLayout;
+export default UserProfilePageLayout;

@@ -26,13 +26,16 @@ type Props = {
   onToggleTradable: Function,
   onWithdraw: Function,
   onDeposit: Function,
-  isTradingPage: Boolean,
+  isTradingPage: boolean,
 }
 
 // use +n !== 0 because empty string (or spaced string) converts to 0
 const isNumber = n => !isNaN(+n) && +n !== 0 && isFinite(n); /* eslint-disable-line */
 
-const getColumns = onToggleTradable => [
+const getColumns = (
+  onToggleTradable,
+  isTradingPage,
+) => [
   {
     title: 'Token',
     dataIndex: 'symbol',
@@ -61,6 +64,19 @@ const getColumns = onToggleTradable => [
       </div>
     ),
   },
+  ...(
+    !isTradingPage ? [{
+      title: 'Name',
+      dataIndex: 'name',
+      render: text => (
+        <div>
+          <Tooltip title={text}>
+            {text}
+          </Tooltip>
+        </div>
+      ),
+    }] : []
+  ),
   {
     title: 'Balance',
     dataIndex: 'balance',
@@ -111,53 +127,6 @@ const getColumns = onToggleTradable => [
   },
 ];
 
-const getUserProfileColumns = (onToggleTradable) => {
-  const columns = getColumns(onToggleTradable).slice();
-  columns.splice(1, 0, {
-    title: 'Token',
-    dataIndex: 'token',
-    key: 'token',
-    render: (text, record) => (
-      <div>
-        <Tooltip title={record.name}>
-          {record.name}
-        </Tooltip>
-      </div>
-    ),
-  });
-  columns.splice(0, 1, {
-    title: 'Symbol',
-    dataIndex: 'symbol',
-    key: 'symbol',
-    render: (text, record) => (
-      <div>
-        <Tooltip title={record.name}>
-          {text}
-        </Tooltip>
-        {record.symbol === 'WETH' && (
-          <Tooltip
-            placement="bottom"
-            title={(
-              <div>
-                Wrapping ETH allows you to trade directly with alt tokens
-              </div>
-            )}
-          >
-            <Icon
-              style={{
-                marginLeft: 5,
-              }}
-              type="question-circle-o"
-            />
-          </Tooltip>
-        )}
-      </div>
-    ),
-  });
-  return columns;
-};
-
-
 const UserBalance = ({
   isTradingPage,
   assets,
@@ -180,9 +149,7 @@ const UserBalance = ({
       isInitialValid
       validate={(values) => {
         const errors = {};
-        if (!values.amount) {
-          errors.amount = 'Required';
-        } else if (!isNumber(values.amount)) {
+        if (values.amount.length && !isNumber(values.amount)) {
           errors.amount = 'Amount should be a number';
         }
         return errors;
@@ -194,7 +161,6 @@ const UserBalance = ({
         resetForm,
         errors,
         isValid,
-        touched,
       }) => (
         <S.WrappingBar>
           <S.Amount>
@@ -216,15 +182,21 @@ const UserBalance = ({
             <Button.Group>
               <S.UnwrapButton
                 type="primary"
-                disabled={touched && !isValid}
-                onClick={() => onWithdraw(values.amount, { resetForm })}
+                disabled={
+                  !isValid
+                  || !values?.amount?.length
+                }
+                onClick={() => onWithdraw(values.amount) && resetForm({})}
               >
                   Unwrap
               </S.UnwrapButton>
               <S.WrapButton
                 type="primary"
-                disabled={touched && !isValid}
-                onClick={() => onDeposit(values.amount, { resetForm })}
+                disabled={
+                  !isValid
+                  || !values?.amount?.length
+                }
+                onClick={() => onDeposit(values.amount) && resetForm({})}
               >
                 Wrap
               </S.WrapButton>
@@ -235,10 +207,12 @@ const UserBalance = ({
     </Formik>
     <S.Table
       isTradingPage={isTradingPage}
-      rowKey="symbol"
+      rowKey="address"
       dataSource={assets}
-      columns={isTradingPage ? getColumns(onToggleTradable)
-        : getUserProfileColumns(onToggleTradable)}
+      columns={getColumns(
+        onToggleTradable,
+        isTradingPage,
+      )}
     />
   </S.UserBalance>
 );

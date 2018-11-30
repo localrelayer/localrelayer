@@ -97,15 +97,17 @@ function loadStories() {
   require('../src/containers/AssetPairCardContainer/stories');
   require('../src/components/TradingHistory/stories');
   require('../src/components/TradingPageLayout/stories');
+  require('../src/components/UserProfilePageLayout/stories');
   require('../src/containers/AppContainer/stories');
   require('../src/components/ConnectingToEthProvider/stories');
   require('../src/components/OrderBook/stories');
   require('../src/containers/OrderBookContainer/stories');
   require('../src/components/TradingHistory/stories');
   require('../src/containers/TradingHistoryContainer/stories');
+  require('../src/containers/UserTradingHistoryContainer/stories');
   require('../src/labStories/uiWalletViewer/index');
-  require('../src/components/UserOrders/stories');
-  require('../src/containers/UserOrdersContainer/stories');
+  require('../src/components/UserOpenOrders/stories');
+  require('../src/containers/UserOpenOrdersContainer/stories');
   require('../src/components/BuySell/stories');
   require('../src/components/UserBalance/stories');
   require('../src/containers/UserBalanceContainer/stories');
@@ -115,8 +117,6 @@ function loadStories() {
   require('../src/components/TradingChart/stories');
   require('../src/containers/TradingChartContainer/stories');
   require('../src/containers/BuySellContainer/stories');
-  require('../src/components/UserTradingHistory/stories');
-  require('../src/containers/UserTradingHistoryContainer/stories');
   require('../src/containers/UserProfilePageContainer/stories');
 }
 configure(loadStories, module);

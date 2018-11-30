@@ -80,12 +80,8 @@ sputnikApi.get('/tradingHistory', async (ctx) => {
 });
 
 sputnikApi.get('/openOrders', async (ctx) => {
-  const {
-    baseAssetData,
-    quoteAssetData,
-    traderAddress,
-  } = ctx.request.query;
-  const baseQuery = {
+  const { traderAddress } = ctx.request.query;
+  const orders = await Order.find({
     $and: [
       {
         $or: [
@@ -109,17 +105,6 @@ sputnikApi.get('/openOrders', async (ctx) => {
         ],
       },
     ],
-  };
-  const orders = await Order.find({
-    $or: [{
-      makerAssetData: baseAssetData,
-      takerAssetData: quoteAssetData,
-      ...baseQuery,
-    }, {
-      makerAssetData: quoteAssetData,
-      takerAssetData: baseAssetData,
-      ...baseQuery,
-    }],
   })
     .lean();
   ctx.status = 200;

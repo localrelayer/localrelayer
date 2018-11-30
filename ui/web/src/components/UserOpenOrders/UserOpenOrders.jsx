@@ -4,11 +4,18 @@ import {
   Icon,
   Tooltip,
 } from 'antd';
+
+import {
+  ColoredSpan,
+} from 'web-components/SharedStyledComponents';
+import * as colors from 'web-styles/colors';
 import * as S from './styled';
+
 
 type Props = {
   orders: Array<any>,
 }
+
 const columns = [{
   title: 'Pair',
   dataIndex: 'pair',
@@ -28,9 +35,20 @@ const columns = [{
 }, {
   title: 'Price',
   dataIndex: 'price',
-  render: (text: string) => (
+  render: (
+    text: string,
+    record: any,
+  ) => (
     <Tooltip title={text}>
-      {text}
+      <ColoredSpan
+        color={(
+          record.action === 'Sell'
+            ? colors.red
+            : colors.green
+        )}
+      >
+        {text}
+      </ColoredSpan>
     </Tooltip>
   ),
 }, {
@@ -81,14 +99,14 @@ const columns = [{
   ),
 }];
 
-const UserOrders = ({ orders }: Props) => (
-  <S.UserOrders>
+const UserOpenOrders = ({ orders }: Props) => (
+  <S.UserOpenOrders>
     <S.Title>
       <div>
       Your open orders
       </div>
     </S.Title>
-    <S.UserOrdersTable
+    <S.UserOpenOrdersTable
       size="small"
       rowKey="id"
       onRow={record => ({
@@ -104,7 +122,7 @@ const UserOrders = ({ orders }: Props) => (
       pagination={false}
       scroll={{ y: 340 }}
     />
-  </S.UserOrders>
+  </S.UserOpenOrders>
 );
 
-export default UserOrders;
+export default UserOpenOrders;
