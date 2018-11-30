@@ -90,10 +90,12 @@ api.setMockMethods({
       mocks[`${networkId}_${baseAssetData}_${quoteAssetData}`]
         .getBars({
           networkId,
-          from,
-          to,
           resolution,
           firstDataRequest,
+          baseAssetData,
+          quoteAssetData,
+          from,
+          to,
         }),
     ));
   },
