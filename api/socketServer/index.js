@@ -121,7 +121,7 @@ export function runWebSocketServer() {
             )
           )
         ) {
-          logger.debug('SEND!!!');
+          logger.debug('SEND TRADING INFO!!!');
           client.send(JSON.stringify({
             type: 'update',
             channel: 'tradingInfo',
@@ -139,6 +139,7 @@ export function runWebSocketServer() {
 
   const redisSRA = redisClient.duplicate();
   redisSRA.on('message', async (channel, message) => {
+    logger.debug('ORDER');
     logger.debug(message);
     const {
       order,
@@ -168,10 +169,13 @@ export function runWebSocketServer() {
           )
           && (
             shouldExistAndEqual(sub.payload.traderAssetData, order.makerAssetData)
-            || shouldExistAndEqual(sub.payload.traderAssetData, order.makerAssetData)
+            || shouldExistAndEqual(sub.payload.traderAssetData, order.takerAssetData)
           )
         ) {
-          logger.debug('SEND!!!');
+          logger.debug('SEND ORDER!!!');
+          logger.debug(order);
+          logger.debug(metaData);
+
           const clearOrder = clearOrderFields(order);
           client.send(JSON.stringify({
             type: 'update',

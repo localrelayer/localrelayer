@@ -42,6 +42,7 @@ export const ORDER_META_FIELDS = [
   'remainingFillableMakerAssetAmount',
   'remainingFillableTakerAssetAmount',
   'filledTakerAssetAmount',
+  'lastFilledAt',
   'networkId',
   'orderHash',
   'createdAt',

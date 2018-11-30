@@ -364,6 +364,8 @@ export function mocksOrdersFactory({
               networkId,
               createdAt: new Date(now - (i * 5) * 60000).toString(),
               completedAt: new Date(now - i * 60000).toString(),
+              lastFilledAt: new Date(now - i * 60000).toString(),
+              filledTakerAssetAmount: o.order.takerAssetAmount,
               error: ExchangeContractErrs.OrderRemainingFillAmountZero,
             },
           }))

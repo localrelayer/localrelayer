@@ -151,8 +151,6 @@ function* matchOrder({
   let price;
   let matchedOrders = [];
 
-  console.log('ORDER', makerAssetAmount, takerAssetAmount);
-
   if (type === 'bid') {
     price = new BigNumber(makerAssetAmount).div(takerAssetAmount);
     const askOrders = yield eff.select(selectors.getAskOrders);
@@ -205,6 +203,8 @@ function* postOrder({
 
   let requiredAmount = new BigNumber(takerAssetAmount);
 
+  console.log(matchedOrders);
+
   if (matchedOrders.length) {
     const ordersToFill = [];
     const takerAssetFillAmounts = [];
@@ -215,11 +215,15 @@ function* postOrder({
       requiredAmount = requiredAmount.minus(toBeFilledAmount);
       ordersToFill.push(order);
 
-      const takerAmount = toBeFilledAmount
+      // TODO: Danger toFixed(0) CHECK LATER
+      const takerAmount = new BigNumber(toBeFilledAmount
         .times(order.metaData.remainingFillableTakerAssetAmount)
-        .div(order.metaData.remainingFillableMakerAssetAmount);
+        .div(order.metaData.remainingFillableMakerAssetAmount)
+        .toFixed(0));
       takerAssetFillAmounts.push(takerAmount);
     }
+
+    console.log(ordersToFill, takerAssetFillAmounts);
 
     try {
       const txHash = yield eff.call(

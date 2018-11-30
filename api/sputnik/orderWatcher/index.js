@@ -25,6 +25,9 @@ import {
 } from 'utils';
 
 import {
+  BigNumber,
+} from '0x.js';
+import {
   collectTradingInfo,
 } from '../collect';
 
@@ -77,10 +80,14 @@ async function watcherCreator(networkId) {
         remainingFillableTakerAssetAmount,
         filledTakerAssetAmount,
       } = orderState.orderRelevantState;
+
       order.remainingFillableMakerAssetAmount = remainingFillableMakerAssetAmount;
       order.remainingFillableTakerAssetAmount = remainingFillableTakerAssetAmount;
-
       order.filledTakerAssetAmount = filledTakerAssetAmount;
+
+      if (new BigNumber(filledTakerAssetAmount).gt(0)) {
+        order.lastFilledAt = new Date();
+      }
 
       order.isShadowed = false;
       await order.save();
@@ -108,6 +115,7 @@ async function watcherCreator(networkId) {
         if (error === FILL_ERROR) {
           order.remainingFillableMakerAssetAmount = '0';
           order.remainingFillableTakerAssetAmount = '0';
+          order.lastFilledAt = new Date();
           try {
             const {
               tradingInfoRedisKeyMakerTaker,

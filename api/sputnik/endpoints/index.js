@@ -71,7 +71,7 @@ sputnikApi.get('/tradingHistory', async (ctx) => {
     }],
   })
     .limit(500)
-    .sort('-completedAt')
+    .sort('-lastFilledAt')
     .lean();
   ctx.status = 200;
   ctx.body = {
@@ -172,15 +172,15 @@ sputnikApi.get('/bars', async (ctx) => {
         makerAssetData: quoteAssetData,
         takerAssetData: baseAssetData,
       }],
-      completedAt: { $gt: start, $lt: end.add(1, 'day') },
+      lastFilledAt: { $gt: start, $lt: end.add(1, 'day') },
     }],
-  }).sort({ completedAt: -1 });
+  }).sort({ lastFilledAt: -1 });
 
   logger.debug('RECORDS');
   logger.debug(records);
 
   const bars = records.reduce((acc, order) => {
-    let period = moment(order.completedAt).utc();
+    let period = moment(order.lastFilledAt).utc();
     if (res.round) {
       period = nearestMinutes(res.round, period).unix();
     } else {

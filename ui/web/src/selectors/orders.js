@@ -29,7 +29,8 @@ export const getTradingHistory = createSelector(
       order.takerAssetAmount,
     )
       .times(order.metaData.filledTakerAssetAmount)
-      .div(order.takerAssetAmount);
+      .div(order.takerAssetAmount)
+      .toFixed(8);
 
     const amount = orderType === 'bid'
       ? utils.toUnitAmount(
@@ -62,6 +63,7 @@ export const getTradingHistory = createSelector(
       ).toFixed(8),
       key: order.id,
       completedAt: order.metaData.completedAt,
+      lastFilledAt: order.metaData.lastFilledAt,
       type: orderType,
     };
   }),
