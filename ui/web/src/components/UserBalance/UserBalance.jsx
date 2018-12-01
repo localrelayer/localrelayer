@@ -125,6 +125,28 @@ const getColumns = (
       />
     ),
   },
+  ...(
+    !isTradingPage ? [{
+      key: 'wallet_watchAsset',
+      render: (text, record) => (
+        <Icon
+          type="wallet"
+          onClick={() => {
+            window.web3.currentProvider.sendAsync({
+              method: 'wallet_watchAsset',
+              params: {
+                type: 'ERC20',
+                options: {
+                  ...record,
+                },
+              },
+              id: Math.round(Math.random() * 100000),
+            });
+          }}
+        />
+      ),
+    }] : []
+  ),
 ];
 
 const UserBalance = ({

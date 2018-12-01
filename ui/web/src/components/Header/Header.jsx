@@ -42,18 +42,12 @@ const Header = ({
 }: Props) => {
   const [searchText, setSearchText] = useState('');
   const s = searchText.toLowerCase();
-  const currentAssetPairName = (
-    currentAssetPair
-      ? [
-        currentAssetPair.assetDataA.assetData.symbol,
-        currentAssetPair.assetDataB.assetData.symbol,
-      ].join('/')
-      : ''
-  );
-  const currentLink = [
-    currentAssetPair.assetDataA.assetData.symbol,
-    currentAssetPair.assetDataB.assetData.symbol,
-  ].join('-');
+  const currentAssetPairSymbols = [
+    currentAssetPair?.assetDataA?.assetData?.symbol || 'ZRX',
+    currentAssetPair?.assetDataB?.assetData?.symbol || 'WETH',
+  ];
+  const currentAssetPairName = currentAssetPairSymbols.join('/');
+  const currentLink = currentAssetPairSymbols.join('/');
   return (
     <S.Header>
       <S.InstexLogo src={logo} alt="logo" />
