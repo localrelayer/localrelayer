@@ -10,6 +10,9 @@ import {
 import TradingPageLayout from 'web-components/TradingPageLayout';
 import 'web-styles/main.less';
 import TradingChart from '..';
+import {
+  api,
+} from 'instex-core';
 
 export const assetPair = {
   id: '0xe41d2489571d322189246dafa5ebde1f4699f498_0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
@@ -37,11 +40,33 @@ export const assetPair = {
   },
 };
 
+const onSubscribeBars = (chartBarCallback) => {
+  setInterval(() => {
+    // 1 min ago
+    const time = new Date() - 60000;
+    const getRand = () => (Math.random() * 5).toFixed(6);
+    const bar = {
+      volume: getRand(),
+      time: +time,
+      open: getRand(),
+      close: getRand(),
+      low: getRand(),
+      high: getRand(),
+    };
+    chartBarCallback(bar);
+  }, 1000);
+};
+
 const TradingChartStory = () => (
   <TradingPageLayout.Preview
     hideRest={boolean('Hide preview layout', false)}
     tradingChart={(
-      <TradingChart assetPair={assetPair} />
+      <TradingChart
+        assetPair={assetPair}
+        networkId={1}
+        getBars={api.getBars}
+        onSubscribeBars={(onSubscribeBars)}
+      />
     )}
   />
 );

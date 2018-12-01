@@ -40,7 +40,12 @@ const OrderBook = ({
       </S.AsksItemsList>
     </S.Asks>
     <S.Spread>
-      Spread: 0.234234234
+      Spread:
+      {' '}
+      { asks.length && bids.length
+        ? (asks[0].price - bids[0].price).toFixed(8)
+        : '0.00000000'
+      }
     </S.Spread>
     <S.Bids>
       <S.BidsItemsList>
