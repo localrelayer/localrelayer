@@ -58,7 +58,7 @@ api.setMockMethods({
       networkId,
       baseAssetData,
       quoteAssetData,
-      additinalKey: 'tradingHistory',
+      additionalKey: 'tradingHistory',
     });
     return new Promise(r => r(
       mocks[`${networkId}_${baseAssetData}_${quoteAssetData}`]
@@ -90,10 +90,32 @@ api.setMockMethods({
       mocks[`${networkId}_${baseAssetData}_${quoteAssetData}`]
         .getBars({
           networkId,
-          from,
-          to,
           resolution,
           firstDataRequest,
+          baseAssetData,
+          quoteAssetData,
+          from,
+          to,
+        }),
+    ));
+  },
+  getTradingInfo({ bodyParameters }) {
+    const {
+      networkId,
+      assetDataA: baseAssetData,
+      assetDataB: quoteAssetData,
+    } = bodyParameters.pairs[0];
+    memoizeMocks({
+      networkId,
+      baseAssetData,
+      quoteAssetData,
+    });
+    return new Promise(r => r(
+      mocks[`${networkId}_${baseAssetData}_${quoteAssetData}`]
+        .getTradingInfo({
+          networkId,
+          baseAssetData,
+          quoteAssetData,
         }),
     ));
   },
