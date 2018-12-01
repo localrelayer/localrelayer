@@ -37,11 +37,19 @@ export const getResourceMeta = (
   )
 );
 
+export function getResourceAllIds<T: ResourceType >(
+  resourceType: T,
+): (State) => Array<ID> {
+  return state => (
+    Object.keys(state[resourceType].resources)
+  );
+}
+
 const resourceSelectors = {};
 
 export const getResourceMappedList = (
   resourceName: string,
-  listName: string,
+  listName: string = 'allResources',
 ) => {
   if (resourceSelectors[resourceName]) {
     return resourceSelectors[`${resourceName}${listName}`];
@@ -49,7 +57,11 @@ export const getResourceMappedList = (
   resourceSelectors[`${resourceName}${listName}`] = (
     createSelector(
       [
-        getResourceIds(resourceName, listName),
+        (
+          listName === 'allResources'
+            ? getResourceAllIds(resourceName)
+            : getResourceIds(resourceName, listName)
+        ),
         getResourceMap(resourceName),
       ],
       (ids = [], map) => ids.map(id => map[id]),

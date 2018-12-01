@@ -83,41 +83,85 @@ function* subscribeOnCurrentTradingInfo(): Saga<void> {
   }));
 }
 
-function* setCurrentPair({
+function* initializeRoute({
   location,
   webRadioChannel,
   networkId,
 }) {
-  const match = matchPath(location.pathname, {
-    path: '/:baseAsset-:quoteAsset',
-    exact: true,
-    strict: false,
-  }) || {
-    params: {
-      baseAsset: 'ZRX',
-      quoteAsset: 'WETH',
-    },
-  };
-  console.log('**********');
-  console.log(match);
-  console.log('**********');
-  if (
-    match
-    || location.pathname === '/'
-  ) {
+  yield eff.put(uiActions.setUiState({
+    pathname: location.pathname,
+  }));
+  const matchTradingPage = (
+    location.pathname === '/'
+      ? ({
+        params: {
+          baseAsset: 'ZRX',
+          quoteAsset: 'WETH',
+        },
+      })
+      : (
+        matchPath(location.pathname, {
+          path: '/:baseAsset-:quoteAsset',
+          exact: true,
+          strict: false,
+        })
+      )
+  );
+  const matchProfilePage = location.pathname === '/account';
+
+  const tradingInfoSubscribeId = yield eff.select(getUiState('tradingInfoSubscribeId'));
+  const ordersSubscribeId = yield eff.select(getUiState('ordersSubscribeId'));
+
+  if (matchProfilePage) {
+    yield eff.put(uiActions.setUiState({
+      tradingInfoSubscribeId: null,
+      ordersSubscribeId: null,
+    }));
+    if (tradingInfoSubscribeId) {
+      yield eff.put(coreActions.sendSocketMessage({
+        type: 'unsubscribe',
+        requestId: tradingInfoSubscribeId,
+      }));
+    }
+    if (ordersSubscribeId) {
+      yield eff.put(coreActions.sendSocketMessage({
+        type: 'unsubscribe',
+        ordersSubscribeId,
+      }));
+    }
+    /*
+    yield eff.fork(
+      coreSagas.fetchTradingHistory,
+      {
+        networkId,
+      },
+    );
+    */
+    const allAssets = yield eff.select(coreSelectors.getResourceMappedList('assets'));
+    yield eff.put(
+      webRadioChannel,
+      {
+        messageType: 'runWalletWatcher',
+        message: {
+          delay: 5000,
+          tokens: allAssets.map(asset => asset.address),
+        },
+      },
+    );
+  }
+
+  if (matchTradingPage) {
     try {
       const {
         assetPair,
         isListed,
       } = yield eff.call(coreSagas.checkAssetPair, {
-        baseAsset: match.params.baseAsset,
-        quoteAsset: match.params.quoteAsset,
+        baseAsset: matchTradingPage.params.baseAsset,
+        quoteAsset: matchTradingPage.params.quoteAsset,
         networkId,
       });
       const isCurrentPairIssue = yield eff.select(getUiState('isCurrentPairIssue'));
       const currentAssetPairId = yield eff.select(getUiState('currentAssetPairId'));
-      const tradingInfoSubscribeId = yield eff.select(getUiState('tradingInfoSubscribeId'));
-      const ordersSubscribeId = yield eff.select(getUiState('ordersSubscribeId'));
 
       if (
         currentAssetPairId !== assetPair.id
@@ -130,7 +174,7 @@ function* setCurrentPair({
         }));
 
         /* Unsubscribe after pair change */
-        if (currentAssetPairId && tradingInfoSubscribeId) {
+        if (tradingInfoSubscribeId) {
           yield eff.put(coreActions.sendSocketMessage({
             type: 'unsubscribe',
             requestId: tradingInfoSubscribeId,
@@ -139,10 +183,7 @@ function* setCurrentPair({
         yield eff.fork(subscribeOnCurrentTradingInfo);
 
         /* Unsubscribe after pair change */
-        if (
-          currentAssetPairId
-          && ordersSubscribeId
-        ) {
+        if (ordersSubscribeId) {
           yield eff.put(coreActions.sendSocketMessage({
             type: 'unsubscribe',
             ordersSubscribeId,
@@ -176,12 +217,23 @@ function* setCurrentPair({
             quoteAssetData: assetPair.assetDataB.assetData,
           },
         );
+
+        const { tokenAddress: tokenA } = assetDataUtils.decodeAssetDataOrThrow(
+          assetPair.assetDataA.assetData,
+        );
+        const { tokenAddress: tokenB } = assetDataUtils.decodeAssetDataOrThrow(
+          assetPair.assetDataB.assetData,
+        );
         yield eff.put(
           webRadioChannel,
           {
-            sagaName: 'setCurrentPair',
+            messageType: 'runWalletWatcher',
             message: {
-              assetPair,
+              delay: 5000,
+              tokens: [
+                tokenA,
+                tokenB,
+              ],
             },
           },
         );
@@ -280,7 +332,7 @@ function* takeChangeRoute({
     console.log(location);
     console.log('---------');
     yield eff.fork(
-      setCurrentPair,
+      initializeRoute,
       {
         location,
         webRadioChannel,
@@ -385,7 +437,7 @@ export function* initialize(): Saga<void> {
     socketChannel,
   );
   yield eff.fork(
-    setCurrentPair,
+    initializeRoute,
     {
       location: history.location,
       webRadioChannel,
@@ -402,30 +454,18 @@ export function* initialize(): Saga<void> {
   /* Web radio center */
   while (true) {
     const {
-      sagaName,
+      messageType,
       message,
     } = yield eff.take(webRadioChannel);
 
-    switch (sagaName) {
-      case 'setCurrentPair': {
+    switch (messageType) {
+      case 'runWalletWatcher': {
         if (watchWalletTask) {
           yield eff.cancel(watchWalletTask);
         }
-        const { tokenAddress: tokenA } = assetDataUtils.decodeAssetDataOrThrow(
-          message.assetPair.assetDataA.assetData,
-        );
-        const { tokenAddress: tokenB } = assetDataUtils.decodeAssetDataOrThrow(
-          message.assetPair.assetDataB.assetData,
-        );
         watchWalletTask = yield eff.fork(
           coreSagas.watchWallet,
-          {
-            delay: 5000,
-            tokens: [
-              tokenA,
-              tokenB,
-            ],
-          },
+          message,
         );
         break;
       }

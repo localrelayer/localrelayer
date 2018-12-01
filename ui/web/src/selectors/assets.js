@@ -85,31 +85,42 @@ export const getCurrentAssetPairWithBalance = createSelector(
 export const getAssetsWithBalanceAndAllowance = createSelector(
   [
     cs.getResourceMap('assets'),
+    cs.getResourceMappedList('assets'),
     getUiState('currentAssetPairId'),
+    getUiState('pathname'),
     cs.getWalletState('balance'),
     cs.getWalletState('allowance'),
   ],
   (
-    assets,
+    assetsResources,
+    allAssets,
     currentPairId,
+    currentPathname,
     balance,
     allowance,
   ) => {
-    if (currentPairId) {
-      return currentPairId.split('_').map((key) => {
-        const asset = assets[key];
-        const assetFormattedBalance = utils.toUnitAmount(
-          balance[asset.address] || 0,
-          asset.decimals,
-        ).toFixed(8);
-        const isTradable = new BigNumber(allowance[asset.address] || 0).gt(0);
-        return {
-          ...asset,
-          balance: assetFormattedBalance,
-          isTradable,
-        };
-      });
-    }
-    return [];
+    const assets = (
+      currentPathname === '/account'
+        ? (
+          allAssets
+        )
+        : (
+          (currentPairId || '').split('_')
+            .filter(exist => exist)
+            .map(key => assetsResources[key])
+        )
+    );
+    return assets.map((asset) => {
+      const assetFormattedBalance = utils.toUnitAmount(
+        balance[asset.address] || 0,
+        asset.decimals,
+      ).toFixed(8);
+      const isTradable = new BigNumber(allowance[asset.address] || 0).gt(0);
+      return {
+        ...asset,
+        balance: assetFormattedBalance,
+        isTradable,
+      };
+    });
   },
 );

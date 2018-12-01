@@ -11,6 +11,7 @@ import type {
 
 const initialState: UiState = {
   isAppInitializing: true,
+  pathname: null,
   networkId: null,
 
   currentAssetPairId: null,
