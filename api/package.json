@@ -43,6 +43,7 @@
     "scenario:executeTransactionCancelOrder": "NODE_ENV=development nodemon --exec babel-node scenarios/executeTransactionCancelOrder.js",
     "test": "NODE_ENV=test mocha --require @babel/register --require module-alias/register --exit",
     "test:api": "npm run test apiServer/test/*.test.js",
+    "transferBetweenWallets": "babel-node apiServer/scripts/transferBetweenWallets.js",
     "plantAssetPairs": "babel-node apiServer/scripts/loadAssetPairs.js",
     "plantAssetPairs:dev": "NODE_ENV=development npm run plantAssetPairs",
     "plantAssetPairs:test": "NODE_ENV=test npm run plantAssetPairs",

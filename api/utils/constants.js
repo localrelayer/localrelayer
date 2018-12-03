@@ -49,3 +49,13 @@ export const ORDER_META_FIELDS = [
   'completedAt',
   'error',
 ];
+
+export const TEST_WALLET_1 = {
+  mnemonic: 'stereo cheese harsh ordinary scrub media chair beauty artist poet ranch attack',
+  wilder: '0x8449d9bc71bf910c8d22a3443953ec303e73759d',
+  joshua: '0xfef5930dd4f9dfb74f667f2da4f47b665c6af5f5',
+};
+
+export const TEST_WALLET_2 = {
+  mnemonic: 'concert load couple harbor equip island argue ramp clarify fence smart topic',
+};
