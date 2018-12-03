@@ -45,6 +45,18 @@ export const AsksItemsList = styled.div`
   & > div > div:nth-child(1) {
   color: ${colors.red};
   }
+  & > div {
+  background-color: ${colors['component-background']} !important;
+  }
+  &:hover > div {
+  background-color: ${colors['item-hover-bg']} !important;
+  }
+  & > div:hover {
+  background-color: ${colors['item-hover-bg']} !important;
+  }
+  & > div:hover ~ div {
+  background-color: ${colors['component-background']} !important;
+  }
 `;
 
 export const BidsItemsList = styled.div`
@@ -52,7 +64,19 @@ export const BidsItemsList = styled.div`
   flex-direction: column;
   overflow: auto;
   height: 100%;
-    & > div > div:nth-child(1) {
+  & > div > div:nth-child(1) {
   color: ${colors.green};
+  }
+  & > div {
+  background-color: ${colors['component-background']} !important;
+  }
+  &:hover > div {
+  background-color: ${colors['item-hover-bg']} !important;
+  }
+  & > div:hover {
+  background-color: ${colors['item-hover-bg']} !important;
+  }
+  & > div:hover ~ div {
+  background-color: ${colors['component-background']} !important;
   }
 `;
