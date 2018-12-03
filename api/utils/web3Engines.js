@@ -4,6 +4,12 @@ import {
 } from '0x.js';
 
 
+Web3ProviderEngine.prototype.unshiftProvider = function unshiftProvider(source) {
+  const self = this;
+  self._providers.unshift(source);
+  source.setEngine(this);
+};
+
 export const initWeb3ProviderEngine = (
   networkId,
   afterStart = true,
