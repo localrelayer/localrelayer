@@ -12,6 +12,7 @@ import type {
 const initialState: UiState = {
   isAppInitializing: true,
   pathname: null,
+  historyType: null,
   networkId: null,
 
   currentAssetPairId: null,

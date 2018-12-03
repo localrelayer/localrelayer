@@ -27,19 +27,24 @@ const TradingChartContainer = () => (
       networkId,
       dispatch,
     }) => (
-      <TradingChart
-        assetPair={assetPair}
-        networkId={networkId}
-        getBars={api.getBars}
-        onSubscribeBars={(chartBarCallback) => {
-          dispatch(
-            chartActions.subscribeOnChangeChartBar(
-              chartBarCallback,
-              assetPair,
-            ),
-          );
-        }}
-      />
+      assetPair
+        ? (
+          <TradingChart
+            assetPair={assetPair}
+            networkId={networkId}
+            getBars={api.getBars}
+            onSubscribeBars={(chartBarCallback) => {
+              dispatch(
+                chartActions.subscribeOnChangeChartBar(
+                  chartBarCallback,
+                  assetPair,
+                ),
+              );
+            }}
+          />
+        ) : (
+          <div>Loading...</div>
+        )
     )}
   </Component>
 );

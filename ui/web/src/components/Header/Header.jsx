@@ -10,12 +10,14 @@ import {
   Button,
   Popover,
 } from 'antd';
+
 import * as S from './styled';
 import logo from '../../assets/logo5.png';
 
 type Props = {
   listedAssetPairs: Array<any>,
   currentAssetPair: any,
+  onPairClick: Function,
 }
 const columns = [
   {
@@ -39,6 +41,7 @@ const columns = [
 const Header = ({
   listedAssetPairs,
   currentAssetPair,
+  onPairClick,
 }: Props) => {
   const [searchText, setSearchText] = useState('');
   const s = searchText.toLowerCase();
@@ -80,6 +83,9 @@ const Header = ({
               rowKey="id"
               size="middle"
               columns={columns}
+              onRow={record => ({
+                onClick: () => onPairClick(record),
+              })}
               dataSource={listedAssetPairs.filter(p => (
                 searchText.length
                   ? (
