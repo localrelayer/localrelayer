@@ -6,15 +6,16 @@ import type {
 } from 'react';
 
 import {
-  getOpenOrders,
-} from 'web-selectors';
+  coreSelectors,
+} from 'instex-core';
 import Component from 'web-components/ConnectComponent';
 import UserOpenOrders from 'web-components/UserOpenOrders';
+
 
 const UserOpenOrdersContainer = (): Node => (
   <Component
     mapStateToProps={state => ({
-      orders: getOpenOrders(state),
+      orders: coreSelectors.getOpenOrders(state),
     })}
   >
     {({ orders }) => (

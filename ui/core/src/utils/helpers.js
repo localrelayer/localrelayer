@@ -56,11 +56,11 @@ export function getContractAddressesForNetwork(networkId) {
   return contractAddresses;
 }
 
-export const getType = (baseAssetData, makerAssetData) => (
+export const getOrderType = (baseAssetData, makerAssetData) => (
   baseAssetData === makerAssetData ? 'ask' : 'bid'
 );
 
-export const getPrice = (type, makerAssetAmount, takerAssetAmount) => (
+export const getOrderPrice = (type, makerAssetAmount, takerAssetAmount) => (
   type === 'bid'
     ? new BigNumber(makerAssetAmount).div(takerAssetAmount)
     : new BigNumber(takerAssetAmount).div(makerAssetAmount));

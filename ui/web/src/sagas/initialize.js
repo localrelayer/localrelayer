@@ -389,6 +389,7 @@ export function* initialize(): Saga<void> {
     }),
   );
   yield eff.put(uiActions.setUiState({
+    historyType,
     networkId,
   }));
   yield eff.fork(

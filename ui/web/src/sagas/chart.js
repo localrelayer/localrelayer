@@ -2,11 +2,11 @@
 import {
   BigNumber,
 } from '0x.js';
-import {
-  Web3Wrapper,
-} from '@0x/web3-wrapper';
 import * as eff from 'redux-saga/effects';
 
+import {
+  utils,
+} from 'instex-core';
 import {
   actionTypes,
 } from 'web-actions';
@@ -25,7 +25,6 @@ function* takeFillOrderAndCalculateChartBar({
       order,
       metaData,
     } = yield eff.take(orderFillChannel);
-
     const currentAssetPairId = yield eff.select(getUiState('currentAssetPairId'));
     const [baseAssetData] = currentAssetPairId.split('_');
 
@@ -45,14 +44,13 @@ function* takeFillOrderAndCalculateChartBar({
     );
 
     // Convert volume to normal unit amount
-    const volume = +Web3Wrapper.toUnitAmount(
-      new BigNumber(amount),
+    const volume = utils.toUnitAmount(
+      amount,
       assetPair.assetDataB.assetData.decimals,
     );
 
     const bar = {
       volume,
-      // time: moment(metaData.completedAt).unix() * 1000,
       time: new Date(metaData.lastFilledAt).getTime(),
       open: parseFloat(price),
       close: parseFloat(price),
