@@ -102,7 +102,7 @@ const getColumns = isTradingPage => [
       </Tooltip>
     ),
   },
-  /* TODO: link to the etherscan */
+  /* TODO: link to the etherscan need tx hash  */
   {
     render: () => <Icon type="select" />,
   },
@@ -119,6 +119,7 @@ const TradingHistory = ({
       </div>
     </S.Title>
     <S.TradingHistoryTable
+      isTradingPage={isTradingPage}
       size="small"
       columns={getColumns(isTradingPage)}
       pagination={false}
