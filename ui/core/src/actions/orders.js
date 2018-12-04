@@ -10,3 +10,8 @@ export const postOrderRequest = ({
   order,
   formActions,
 });
+
+export const cancelOrderRequest = order => ({
+  type: actionTypes.CANCEL_ORDER,
+  order,
+});

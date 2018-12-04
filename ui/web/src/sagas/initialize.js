@@ -311,6 +311,7 @@ function* takeUpdateOrder(socketChannel) {
       yield eff.put(actions.succeeded({
         lists,
         // prepend: true,
+        removeFromOtherLists: true,
         resources: [{
           id: data.payload.order.signature,
           metaData: data.payload.metaData,
@@ -448,6 +449,7 @@ export function* initialize(): Saga<void> {
   yield eff.fork(coreSagas.takeApproval);
   yield eff.fork(coreSagas.takeDepositAndWithdraw);
   yield eff.fork(coreSagas.takePostOrder);
+  yield eff.fork(coreSagas.takeCancelOrder);
   let watchWalletTask;
   /* Web radio center */
   while (true) {

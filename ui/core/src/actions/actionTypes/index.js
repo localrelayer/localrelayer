@@ -8,3 +8,4 @@ export const SET_APPROVAL_REQUEST = 'assets/SET_APPROVAL_REQUEST';
 export const DEPOSIT_WITHDRAW_REQUEST = 'assets/DEPOSIT_WITHDRAW_REQUEST';
 
 export const POST_ORDER_REQUEST = 'orders/POST_ORDER_REQUEST';
+export const CANCEL_ORDER = 'orders/CANCEL_ORDER';
