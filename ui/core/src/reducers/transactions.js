@@ -8,4 +8,4 @@ import {
 
 export default resourceReducer('transactions', {
   plugins: [includedResources],
-}
+});

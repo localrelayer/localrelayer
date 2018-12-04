@@ -21,6 +21,8 @@ const initialState: UiState = {
 
   tradingInfoSubscribeId: null,
   currentBuySellTab: 'bid',
+
+  isNotificationsPanelIsVisible: false,
 };
 
 const mergeUiValues = (

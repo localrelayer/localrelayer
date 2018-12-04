@@ -10,6 +10,7 @@ import {
 
 import {
   Order,
+  Transaction,
 } from 'db';
 import {
   coRedisClient,
@@ -51,6 +52,71 @@ function nearestMinutes(interval, someMoment) {
   const roundedMinutes = Math.round(someMoment.clone().minute() / interval) * interval;
   return someMoment.clone().minute(roundedMinutes).second(0);
 }
+
+sputnikApi.post('/transactions', async (ctx) => {
+  const transaction = ctx.request.body;
+  let transactionInstance = null;
+  transactionInstance = await Transaction.findOne({
+    transactionHash: transaction.transactionHash,
+    networkId: transaction.networkId,
+  })
+    || (
+      new Transaction({
+        createdAt: new Date().toISOString(),
+      })
+    );
+  Object.keys(transaction).reduce(
+    (acc, key) => {
+      transactionInstance[key] = transaction[key];
+      return acc;
+    },
+    transactionInstance,
+  );
+  if (transaction.status === 1) {
+    transactionInstance.updatedAt = new Date().toISOString();
+  }
+  await transactionInstance.save();
+  ctx.message = 'OK';
+  ctx.status = 200;
+  ctx.body = {};
+});
+
+sputnikApi.get('/transactions', async (ctx) => {
+  const {
+    address,
+    type,
+    page = 1,
+    perPage = 100,
+    networkId = 1,
+  } = ctx.query;
+
+  const baseQuery = {
+    address,
+    networkId,
+    status: {
+      $exists: type !== 'pending',
+    },
+  };
+  const total = await Transaction.find({
+    ...baseQuery,
+  }).count();
+  const dbReq = Transaction.find({
+    ...baseQuery,
+  });
+  if (type !== 'pending') {
+    dbReq
+      .skip(perPage * (page - 1))
+      .limit(parseInt(perPage, 10));
+  }
+  const transactions = await dbReq.lean();
+  ctx.message = 'OK';
+  ctx.body = {
+    records: transactions,
+    page,
+    perPage,
+    total,
+  };
+});
 
 sputnikApi.get('/tradingHistory', async (ctx) => {
   const {

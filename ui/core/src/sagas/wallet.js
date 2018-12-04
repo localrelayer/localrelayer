@@ -78,7 +78,7 @@ export function* watchWallet({
       }
       if (selectedAccount !== wallet.selectedAccount) {
         changedData.push({
-          selectedAccount,
+          selectedAccount: selectedAccount.toLowerCase(),
         });
       }
       if (selectedAccountBalance !== wallet.selectedAccountBalance) {

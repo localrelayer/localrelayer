@@ -321,7 +321,7 @@ export function* checkAssetPair({
 
 function* processApproval(action) {
   const web3 = ethApi.getWeb3();
-  const networkId = eff.call(web3.eth.net.getId);
+  const networkId = yield eff.call(web3.eth.net.getId);
   const contractWrappers = ethApi.getWrappers(networkId);
   const amount = action.isTradable
     ? contractWrappers.erc20Token.UNLIMITED_ALLOWANCE_IN_BASE_UNITS
@@ -342,10 +342,16 @@ function* processApproval(action) {
     saveTransaction,
     {
       transactionHash,
-      address: selectedAccount,
-      name: action.method,
+      address: selectedAccount.toLowerCase(),
+      name: 'Allowance',
       networkId,
       meta: {
+        asset: {
+          name: action.asset.name,
+          symbol: action.asset.symbol,
+          address: action.asset.address,
+          data: action.asset.id,
+        },
         amount,
       },
     },
@@ -354,7 +360,7 @@ function* processApproval(action) {
 
 function* processDepositOrWithdraw(action) {
   const web3 = ethApi.getWeb3();
-  const networkId = eff.call(web3.eth.net.getId);
+  const networkId = yield eff.call(web3.eth.net.getId);
   const contractWrappers = ethApi.getWrappers(networkId);
   const selectedAccount = yield eff.select(getWalletState('selectedAccount'));
   const etherToken = yield eff.select(getAssetByIdField({
@@ -383,7 +389,7 @@ function* processDepositOrWithdraw(action) {
       saveTransaction,
       {
         transactionHash,
-        address: selectedAccount,
+        address: selectedAccount.toLowerCase(),
         name: action.method,
         networkId,
         meta: {

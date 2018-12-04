@@ -88,6 +88,23 @@ function* initializeRoute({
   webRadioChannel,
   networkId,
 }) {
+  const selectedAccount = yield eff.select(coreSelectors.getWalletState('selectedAccount'));
+  yield eff.fork(
+    coreSagas.fetchTransactions,
+    {
+      networkId,
+      address: selectedAccount,
+      type: 'pending',
+    },
+    true,
+  );
+  yield eff.fork(
+    coreSagas.fetchTransactions,
+    {
+      networkId,
+      address: selectedAccount,
+    },
+  );
   yield eff.put(uiActions.setUiState({
     pathname: location.pathname,
   }));
