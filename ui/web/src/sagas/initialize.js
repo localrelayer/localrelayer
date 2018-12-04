@@ -148,7 +148,7 @@ function* initializeRoute({
         tradingInfoSubscribeId: null,
       }));
     }
-    /*
+    /* TODO: fetch history for all pairs
     yield eff.fork(
       coreSagas.fetchTradingHistory,
       {
