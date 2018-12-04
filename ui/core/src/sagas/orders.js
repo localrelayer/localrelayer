@@ -22,7 +22,7 @@ export function* fetchOrderBook(opts = {}) {
   const actions = createActionCreators('read', {
     resourceType: 'orders',
     requestKey: 'orders',
-    mergeListIds: true,
+    mergeListIds: false,
   });
   try {
     yield eff.put(actions.pending());
