@@ -3,6 +3,7 @@ import React from 'react';
 import {
   Icon,
   Tooltip,
+  Button,
 } from 'antd';
 
 import {
@@ -14,9 +15,10 @@ import * as S from './styled';
 
 type Props = {
   orders: Array<any>,
+  onOrderActionClick: Function,
 }
 
-const columns = [{
+const getColumns = onOrderActionClick => [{
   title: 'Pair',
   dataIndex: 'pair',
   render: (text: string) => (
@@ -73,7 +75,7 @@ const columns = [{
   render: (text, record) => (
     record.metaData.isShadowed
       ? (
-        <Tooltip title="This order is shadowed read docs for more info">
+        <Tooltip title="This order is shadowed, read docs for more info">
           Unpublished
           <Icon
             style={{
@@ -90,16 +92,23 @@ const columns = [{
   ),
 }, {
   title: 'Action',
-  dataIndex: 'action',
-  key: 'action',
-  render: (text: string) => (
-    <Tooltip title={text}>
-      {text}
-    </Tooltip>
+  render: order => (
+    <Button
+      ghost
+      size="small"
+      onClick={() => {
+        onOrderActionClick(order);
+      }}
+    >
+      Cancel
+    </Button>
   ),
 }];
 
-const UserOpenOrders = ({ orders }: Props) => (
+const UserOpenOrders = ({
+  orders,
+  onOrderActionClick,
+}: Props) => (
   <S.UserOpenOrders>
     <S.Title>
       <div>
@@ -117,7 +126,7 @@ const UserOpenOrders = ({ orders }: Props) => (
             } : {}
         ),
       })}
-      columns={columns}
+      columns={getColumns(onOrderActionClick)}
       dataSource={orders}
       pagination={false}
       scroll={{ y: 340 }}

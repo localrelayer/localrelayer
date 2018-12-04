@@ -7,6 +7,7 @@ import type {
 
 import {
   coreSelectors,
+  coreActions,
 } from 'instex-core';
 import Component from 'web-components/ConnectComponent';
 import UserOpenOrders from 'web-components/UserOpenOrders';
@@ -18,9 +19,13 @@ const UserOpenOrdersContainer = (): Node => (
       orders: coreSelectors.getOpenOrders(state),
     })}
   >
-    {({ orders }) => (
+    {({
+      orders,
+      dispatch,
+    }) => (
       <UserOpenOrders
         orders={orders}
+        onOrderActionClick={order => dispatch(coreActions.cancelOrderRequest(order))}
       />
     )}
   </Component>

@@ -208,130 +208,156 @@ function* postOrder({
     type,
   },
 }) {
-  const web3 = ethApi.getWeb3();
-  const networkId = yield eff.call(web3.eth.net.getId);
-  const provider = new MetamaskSubprovider(web3.currentProvider);
-  const contractWrappers = ethApi.getWrappers(networkId);
-  const exchangeAddress = getContractAddressesForNetwork(networkId).exchange;
-  const taker = yield eff.select(selectors.getWalletState('selectedAccount'));
+  try {
+    const web3 = ethApi.getWeb3();
+    const networkId = yield eff.call(web3.eth.net.getId);
+    const provider = new MetamaskSubprovider(web3.currentProvider);
+    const contractWrappers = ethApi.getWrappers(networkId);
+    const exchangeAddress = getContractAddressesForNetwork(networkId).exchange;
+    const taker = yield eff.select(selectors.getWalletState('selectedAccount'));
 
-  const matchedOrders = yield eff.call(matchOrder, {
-    makerAssetAmount,
-    takerAssetAmount,
-    type,
-  });
-
-  let requiredAmount = new BigNumber(takerAssetAmount);
-
-  if (matchedOrders.length) {
-    const ordersToFill = [];
-    const takerAssetFillAmounts = [];
-    while (requiredAmount.gt(0) && matchedOrders.length) {
-      const order = matchedOrders.shift();
-      const existingAssetAmount = order.metaData.remainingFillableMakerAssetAmount;
-      const toBeFilledAmount = BigNumber.min(requiredAmount, existingAssetAmount);
-      requiredAmount = requiredAmount.minus(toBeFilledAmount);
-      ordersToFill.push(order);
-
-      // TODO: Danger toFixed(0) CHECK LATER
-      const takerAmount = new BigNumber(toBeFilledAmount
-        .times(order.metaData.remainingFillableTakerAssetAmount)
-        .div(order.metaData.remainingFillableMakerAssetAmount)
-        .toFixed(0));
-      takerAssetFillAmounts.push(takerAmount);
-    }
-
-    console.log(ordersToFill, takerAssetFillAmounts);
-
-    try {
-      const txHash = yield eff.call(
-        [
-          contractWrappers.exchange,
-          contractWrappers.exchange.batchFillOrKillOrdersAsync,
-        ],
-        ordersToFill,
-        takerAssetFillAmounts,
-        taker,
-      );
-      console.log('FILLED WITH HASH', txHash);
-    } catch (e) {
-      console.log('TX FAILED', e);
-    }
-
-    if (requiredAmount.gt(0)) {
-      const newMakerAmount = new BigNumber(makerAssetAmount)
-        .times(requiredAmount)
-        .div(takerAssetAmount);
-
-      yield eff.call(postOrder, {
-        formActions,
-        order: {
-          makerAddress,
-          takerAddress,
-          makerAssetData,
-          takerAssetData,
-          makerAssetAmount: newMakerAmount,
-          takerAssetAmount: requiredAmount,
-          expirationTimeSeconds,
-          type,
-        },
-      });
-    }
-
-    formActions.resetForm({});
-  } else {
-    const orderConfigRequest = {
-      exchangeAddress,
-      makerAddress,
-      takerAddress,
+    const matchedOrders = yield eff.call(matchOrder, {
       makerAssetAmount,
       takerAssetAmount,
-      makerAssetData,
-      takerAssetData,
-      expirationTimeSeconds,
-    };
-    try {
-      const orderConfig = yield eff.call(
-        api.postOrderConfig,
-        orderConfigRequest,
-      );
-      const order = {
-        salt: generatePseudoRandomSalt(),
-        ...orderConfigRequest,
-        ...orderConfig,
-      };
-      const signedOrder = yield eff.call(
-        signatureUtils.ecSignOrderAsync,
-        provider,
-        order,
-        makerAddress,
-      );
+      type,
+    });
 
-      try {
-        yield eff.call(
-          [
-            contractWrappers.exchange,
-            contractWrappers.exchange.validateOrderFillableOrThrowAsync,
-          ],
-          transformBigNumberOrder(signedOrder),
-        );
-      } catch (err) {
-        console.log('NOT VALID', err);
+    let requiredAmount = new BigNumber(takerAssetAmount);
+
+    if (matchedOrders.length) {
+      const ordersToFill = [];
+      const takerAssetFillAmounts = [];
+      while (requiredAmount.gt(0) && matchedOrders.length) {
+        const order = matchedOrders.shift();
+        const existingAssetAmount = order.metaData.remainingFillableMakerAssetAmount;
+        const toBeFilledAmount = BigNumber.min(requiredAmount, existingAssetAmount);
+        requiredAmount = requiredAmount.minus(toBeFilledAmount);
+        ordersToFill.push(order);
+
+        // TODO: Danger toFixed(0) CHECK LATER
+        const takerAmount = new BigNumber(toBeFilledAmount
+          .times(order.metaData.remainingFillableTakerAssetAmount)
+          .div(order.metaData.remainingFillableMakerAssetAmount)
+          .toFixed(0));
+        takerAssetFillAmounts.push(takerAmount);
       }
 
-      yield eff.call(api.postOrder, signedOrder, { networkId });
+      console.log(ordersToFill, takerAssetFillAmounts);
+
+      try {
+        const txHash = yield eff.call(
+          [
+            contractWrappers.exchange,
+            contractWrappers.exchange.batchFillOrKillOrdersAsync,
+          ],
+          ordersToFill,
+          takerAssetFillAmounts,
+          taker,
+        );
+        console.log('FILLED WITH HASH', txHash);
+      } catch (e) {
+        console.log('TX FAILED', e);
+      }
+
+      if (requiredAmount.gt(0)) {
+        const newMakerAmount = new BigNumber(makerAssetAmount)
+          .times(requiredAmount)
+          .div(takerAssetAmount);
+
+        yield eff.call(postOrder, {
+          formActions,
+          order: {
+            makerAddress,
+            takerAddress,
+            makerAssetData,
+            takerAssetData,
+            makerAssetAmount: newMakerAmount,
+            takerAssetAmount: requiredAmount,
+            expirationTimeSeconds,
+            type,
+          },
+        });
+      }
+
       formActions.resetForm({});
-    } catch (err) {
-      console.log(err);
-      formActions.setFieldError(
-        'balance',
-        'Backend validation failed',
-      );
+    } else {
+      const orderConfigRequest = {
+        exchangeAddress,
+        makerAddress,
+        takerAddress,
+        makerAssetAmount,
+        takerAssetAmount,
+        makerAssetData,
+        takerAssetData,
+        expirationTimeSeconds,
+      };
+      try {
+        const orderConfig = yield eff.call(
+          api.postOrderConfig,
+          orderConfigRequest,
+        );
+        const order = {
+          salt: generatePseudoRandomSalt(),
+          ...orderConfigRequest,
+          ...orderConfig,
+        };
+        const signedOrder = yield eff.call(
+          signatureUtils.ecSignOrderAsync,
+          provider,
+          order,
+          makerAddress,
+        );
+
+        try {
+          yield eff.call(
+            [
+              contractWrappers.exchange,
+              contractWrappers.exchange.validateOrderFillableOrThrowAsync,
+            ],
+            transformBigNumberOrder(signedOrder),
+          );
+        } catch (err) {
+          console.log('NOT VALID', err);
+        }
+
+        yield eff.call(api.postOrder, signedOrder, { networkId });
+        formActions.resetForm({});
+      } catch (err) {
+        console.log(err);
+        formActions.setFieldError(
+          'balance',
+          'Backend validation failed',
+        );
+      }
     }
+  } catch (e) {
+    console.log(e);
   }
   formActions.setSubmitting(false);
 }
 
+export function* cancelOrder({ order }) {
+  try {
+    const web3 = ethApi.getWeb3();
+    const networkId = yield eff.call(web3.eth.net.getId);
+    const contractWrappers = ethApi.getWrappers(networkId);
+    const txHash = yield eff.call(
+      [
+        contractWrappers.exchange,
+        contractWrappers.exchange.cancelOrderAsync,
+      ],
+      order,
+    );
+    console.log('CANCELED', txHash);
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 export function* takePostOrder() {
   yield eff.takeEvery(actionTypes.POST_ORDER_REQUEST, postOrder);
+}
+
+export function* takeCancelOrder() {
+  yield eff.takeEvery(actionTypes.CANCEL_ORDER, cancelOrder);
 }
