@@ -49,9 +49,11 @@ export const WrapButton = styled(Button)`
  width: 45%
 `;
 
-export const Table = styled(AntdTable).attrs({
-  pagination: false,
-})`
+export const SearchField = styled.div`
+ width: 50%;
+`;
+
+export const Table = styled(AntdTable)`
   border: none;
   .ant-table-thead > tr > th {
     padding: 0 5px 5px 5px;
