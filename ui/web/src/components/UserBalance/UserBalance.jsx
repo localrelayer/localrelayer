@@ -245,7 +245,6 @@ const UserBalance = ({
             {!isTradingPage && (
             <S.SearchField>
               <Input
-                autoFocus
                 value={searchText}
                 onChange={ev => setSearchText(ev.target.value)}
                 placeholder="Search token name or symbol"
@@ -260,11 +259,11 @@ const UserBalance = ({
         isTradingPage={isTradingPage}
         pagination={!isTradingPage && { pageSize: 20, hideOnSinglePage: true }}
         rowKey="address"
-        dataSource={assets.filter(p => (
+        dataSource={assets.filter(asset => (
           searchText.length
             ? (
-              p.name.toLowerCase().includes(s)
-              || p.symbol.toLowerCase().includes(s)
+              asset.name.toLowerCase().includes(s)
+              || asset.symbol.toLowerCase().includes(s)
             )
             : true
         ))}
