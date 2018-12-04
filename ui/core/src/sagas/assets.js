@@ -7,15 +7,17 @@ import {
 import {
   addressUtils,
 } from '@0x/utils';
-import {
-  Web3Wrapper,
-} from '@0x/web3-wrapper';
+
 import {
   getAssetByIdField,
   getResourceById,
   getWalletState,
 } from '../selectors';
+import {
+  toBaseUnitAmount,
+} from '../utils';
 import api from '../api';
+import ethApi from '../ethApi';
 import {
   cachedTokens,
 } from '../cache';
@@ -24,7 +26,9 @@ import abiBytes32 from '../contracts/abiBytes32';
 import {
   actionTypes,
 } from '../actions';
-import ethApi from '../ethApi';
+import {
+  saveTransaction,
+} from './transactions';
 
 
 function* extractInfo(tokenContract) {
@@ -323,15 +327,32 @@ function* processApproval(action) {
     ? contractWrappers.erc20Token.UNLIMITED_ALLOWANCE_IN_BASE_UNITS
     : new BigNumber(0);
   const selectedAccount = yield eff.select(getWalletState('selectedAccount'));
-  yield eff.call(
-    [contractWrappers.erc20Token, contractWrappers.erc20Token.setProxyAllowanceAsync],
+
+  const transactionHash = yield eff.call(
+    [
+      contractWrappers.erc20Token,
+      contractWrappers.erc20Token.setProxyAllowanceAsync,
+    ],
     action.asset.address,
     selectedAccount,
     amount,
   );
+
+  yield eff.fork(
+    saveTransaction,
+    {
+      transactionHash,
+      address: selectedAccount,
+      name: action.method,
+      networkId,
+      meta: {
+        amount,
+      },
+    },
+  );
 }
 
-function* processDepositWithdraw(action) {
+function* processDepositOrWithdraw(action) {
   const web3 = ethApi.getWeb3();
   const networkId = eff.call(web3.eth.net.getId);
   const contractWrappers = ethApi.getWrappers(networkId);
@@ -340,18 +361,34 @@ function* processDepositWithdraw(action) {
     fieldName: 'symbol',
     value: 'WETH',
   }));
+  const amount = toBaseUnitAmount(
+    new BigNumber(action.amount),
+    etherToken.decimals,
+  );
   try {
-    yield eff.call(
+    const transactionHash = yield eff.call(
       [
         contractWrappers.etherToken,
         contractWrappers.etherToken[`${action.method}Async`],
       ],
       etherToken.address,
-      Web3Wrapper.toBaseUnitAmount(new BigNumber(action.amount), etherToken.decimals),
+      amount,
       selectedAccount,
       {
       // Default gas amount isn't enought for withdrawal
         gasLimit: 100000,
+      },
+    );
+    yield eff.fork(
+      saveTransaction,
+      {
+        transactionHash,
+        address: selectedAccount,
+        name: action.method,
+        networkId,
+        meta: {
+          amount,
+        },
       },
     );
   } catch (e) {
@@ -365,5 +402,5 @@ export function* takeApproval() {
 }
 
 export function* takeDepositAndWithdraw() {
-  yield eff.takeEvery(actionTypes.DEPOSIT_WITHDRAW_REQUEST, processDepositWithdraw);
+  yield eff.takeEvery(actionTypes.DEPOSIT_WITHDRAW_REQUEST, processDepositOrWithdraw);
 }

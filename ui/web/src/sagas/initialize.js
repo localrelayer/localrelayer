@@ -328,9 +328,6 @@ function* takeChangeRoute({
 }) {
   while (true) {
     const { location } = yield eff.take(historyChannel);
-    console.log('---------');
-    console.log(location);
-    console.log('---------');
     yield eff.fork(
       initializeRoute,
       {

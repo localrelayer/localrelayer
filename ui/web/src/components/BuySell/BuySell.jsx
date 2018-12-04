@@ -71,18 +71,28 @@ const BuySell = ({
                 )
             )}
           >
-            <S.BuySellTabs.TabPane tab="Buy" key="bid">
+            <S.BuySellTabs.TabPane
+              key="bid"
+              tab="Buy"
+            >
               <BuySellForm
                 type="bid"
+                baseSymbol={currentAssetPair?.assetDataA?.assetData?.symbol}
+                quoteSymbol={currentAssetPair?.assetDataB?.assetData?.symbol}
                 onSubmitOrder={onSubmitOrder}
                 currentBalance={currentAssetPair?.assetDataB?.balance}
                 currentBuySellTab={currentBuySellTab}
                 currentOrder={currentOrder}
               />
             </S.BuySellTabs.TabPane>
-            <S.BuySellTabs.TabPane tab="Sell" key="ask">
+            <S.BuySellTabs.TabPane
+              key="ask"
+              tab="Sell"
+            >
               <BuySellForm
                 type="ask"
+                baseSymbol={currentAssetPair?.assetDataA?.assetData?.symbol}
+                quoteSymbol={currentAssetPair?.assetDataB?.assetData?.symbol}
                 onSubmitOrder={onSubmitOrder}
                 currentBalance={currentAssetPair?.assetDataA?.balance}
                 currentBuySellTab={currentBuySellTab}
