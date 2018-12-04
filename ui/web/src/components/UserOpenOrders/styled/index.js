@@ -9,23 +9,36 @@ export const UserOpenOrders = styled.div`
   height: 100%;
   width: 100%;
   background-color: ${colors['component-background']};
+  padding: 5px 24px;
+`;
+
+export const Header = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  height: 9%;
+  font-size: 18px;
+`;
+
+export const SearchField = styled.div`
+  & .ant-input {
+    background-color: ${colors['background-color-light']};
+  }
+ width: 35%;
 `;
 
 export const Title = styled.div`
-  display: flex;
-  justify-content: center;
-  height: 10%;
-  font-size: 20px;
+  padding-left: 5%;
+  width: 65%;
 `;
 
 export const UserOpenOrdersTable = styled(Table)`
-   height: 90%;
+ 
   .ant-table {
     border: none;
   }
 
   .ant-table-thead > tr > th {
-    background: ${colors['component-background']};
+    background-color: ${colors['component-background']} !important;
     border-bottom: 1px solid ${colors['component-background']} !important;
     color: white;
     text-align: left;

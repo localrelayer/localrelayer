@@ -57,7 +57,7 @@ export const Table = styled(AntdTable)`
   border: none;
   .ant-table-thead > tr > th {
     padding: 0 5px 5px 5px;
-    background: ${colors['component-background']};
+    background-color: ${colors['component-background']} !important;
     border-bottom: 1px solid ${colors['component-background']} !important;
     color: ${colors.text};
     text-align: left;
