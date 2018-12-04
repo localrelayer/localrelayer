@@ -158,42 +158,41 @@ function* matchOrder({
   if (type === 'bid') {
     price = new BigNumber(makerAssetAmount).div(takerAssetAmount);
     const askOrders = yield eff.select(selectors.getAskOrders);
-    matchedOrders = yield eff.all(askOrders.filter(async (askOrder) => {
+
+    matchedOrders = askOrders.filter((askOrder) => {
       const matchedAskOrderPrice = new BigNumber(
         askOrder.metaData.remainingFillableTakerAssetAmount,
       ).div(askOrder.metaData.remainingFillableMakerAssetAmount);
-      let isValid = false;
-      try {
-        await contractWrappers.exchange.validateOrderFillableOrThrowAsync(transformBigNumberOrder(askOrder));
-        isValid = true;
-      } catch (err) {
-        console.log('MATCHED NOT VALID', err);
-        isValid = false;
-      }
-
-      return isValid && matchedAskOrderPrice.lte(price);
-    }));
+      return matchedAskOrderPrice.lte(price);
+    });
   } else {
     price = new BigNumber(takerAssetAmount).div(makerAssetAmount);
     const bidOrders = yield eff.select(selectors.getBidOrders);
-    matchedOrders = yield eff.all(bidOrders.filter(async (bidOrder) => {
+
+    matchedOrders = yield eff.all(bidOrders.filter((bidOrder) => {
       const matchedBidOrderPrice = new BigNumber(
         bidOrder.metaData.remainingFillableMakerAssetAmount,
       ).div(bidOrder.metaData.remainingFillableTakerAssetAmount);
-
-      let isValid = false;
-      try {
-        await contractWrappers.exchange.validateOrderFillableOrThrowAsync(transformBigNumberOrder(bidOrder));
-        isValid = true;
-      } catch (err) {
-        console.log('MATCHED NOT VALID', err);
-        isValid = false;
-      }
-
-      return isValid && matchedBidOrderPrice.lte(price);
+      return matchedBidOrderPrice.lte(price);
     }));
   }
-  return matchedOrders;
+
+  const filteredOrders = yield eff.all(matchedOrders.reduce((acc, cur) => {
+    try {
+      eff.call(
+        [
+          contractWrappers.exchange,
+          contractWrappers.exchange.validateOrderFillableOrThrowAsync,
+        ],
+        transformBigNumberOrder(cur),
+      );
+      return acc.concat(cur);
+    } catch (err) {
+      console.log('MATCHED NOT VALID', err);
+      return acc;
+    }
+  }, []));
+  return filteredOrders;
 }
 
 function* postOrder({
