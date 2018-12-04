@@ -57,7 +57,8 @@ const assetDataSchema = mongoose.Schema({
     type: String,
   },
 });
-const assetPairsSchema = mongoose.Schema({
+
+const assetPairSchema = mongoose.Schema({
   assetDataA: assetDataSchema,
   assetDataB: assetDataSchema,
   networkId: {
@@ -67,5 +68,46 @@ const assetPairsSchema = mongoose.Schema({
   versionKey: false,
 });
 
+const transactionSchema = mongoose.Schema({
+  transactionHash: {
+    unique: true,
+    dropDups: true,
+    type: String,
+  },
+  address: {
+    type: String,
+  },
+  name: {
+    type: String,
+  },
+  blockHash: {
+    type: String,
+  },
+  blockNumber: {
+    type: Number,
+  },
+  gasUsed: {
+    type: Number,
+  },
+  cumulativeGasUsed: {
+    type: Number,
+  },
+  status: {
+    type: Number,
+  },
+  networkId: {
+    type: Number,
+  },
+  createdAt: {
+    type: Date,
+  },
+  completedAt: {
+    type: Date,
+  },
+}, {
+  versionKey: false,
+});
+
 export const Order = mongoose.model('Order', orderSchema);
-export const AssetPair = mongoose.model('AssetPair', assetPairsSchema);
+export const AssetPair = mongoose.model('AssetPair', assetPairSchema);
+export const Transaction = mongoose.model('Transaction', transactionSchema);

@@ -13,6 +13,8 @@ import * as S from './styled';
 
 type Props = {
   type: String,
+  baseSymbol: String,
+  quoteSymbol: String,
   onSubmitOrder: Function,
   currentBalance: String,
   currentBuySellTab: String,
@@ -23,6 +25,8 @@ const isNumber = n => !isNaN(+n) && +n !== 0 && isFinite(n); /* eslint-disable-l
 
 const BuySellForm = ({
   type,
+  baseSymbol,
+  quoteSymbol,
   onSubmitOrder,
   currentBalance,
   currentBuySellTab,
@@ -104,7 +108,11 @@ const BuySellForm = ({
             placeholder="0.000000"
             name="price"
             value={values.price}
-            addonAfter={<div>WETH</div>}
+            addonAfter={(
+              <div>
+                {quoteSymbol}
+              </div>
+            )}
             onChange={(e) => {
               handleChange(e);
               setFieldTouched('price', true, true);
@@ -132,7 +140,11 @@ const BuySellForm = ({
             name="amount"
             placeholder="0.000000"
             value={values.amount}
-            addonAfter={<div>ZRX</div>}
+            addonAfter={(
+              <div>
+                {baseSymbol}
+              </div>
+            )}
             onChange={(e) => {
               handleChange(e);
               setFieldTouched('amount', true, true);
@@ -154,18 +166,24 @@ const BuySellForm = ({
                 : '0.000000'
               }
               {' '}
-              WETH
+              {quoteSymbol}
             </div>
             <div>
               Fee: 0.000000
               {' '}
-              ZRX
+              {baseSymbol}
               <S.AdditionalInfoPopover
                 placement="bottom"
                 content={(
                   <div>
-                    <div>Ethereum tx fee: 0.000001 ZRX</div>
-                    <div>Instex fee: 0.000000 ZRX</div>
+                    <div>
+                      Ethereum tx fee: 0.000001
+                      {baseSymbol}
+                    </div>
+                    <div>
+                      Instex fee: 0.000000
+                      {baseSymbol}
+                    </div>
                   </div>
                 )}
               >
@@ -178,9 +196,18 @@ const BuySellForm = ({
             htmlType="submit"
             disabled={!isValid && !isSubmitting}
           >
-            {type === 'bid' ? 'Buy' : 'Sell'}
-            {' '}
-            ZRX
+            <span style={{ marginRight: '5px' }}>
+              {
+                type === 'bid'
+                  ? (
+                    'Buy'
+                  )
+                  : (
+                    'Sell'
+                  )
+              }
+            </span>
+            {baseSymbol}
             {isSubmitting
               ? (
                 <Icon
