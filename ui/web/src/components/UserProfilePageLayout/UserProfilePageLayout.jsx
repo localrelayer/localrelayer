@@ -10,26 +10,26 @@ const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
 const layoutXs = [
   {
-    i: 'userBalance', x: 0, y: 0, w: 1, h: 5, static: true,
+    i: 'userBalance', x: 0, y: 0, w: 1, h: 22, static: true,
   },
   {
-    i: 'userOpenOrders', x: 0, y: 5, w: 1, h: 5, static: true,
+    i: 'userOpenOrders', x: 0, y: 22, w: 1, h: 11, static: true,
   },
   {
-    i: 'tradingHistory', x: 0, y: 10, w: 1, h: 5, static: true,
+    i: 'tradingHistory', x: 0, y: 33, w: 1, h: 11, static: true,
   },
 ];
 
 
 const layoutSm = [
   {
-    i: 'userBalance', x: 0, y: 0, w: 2, h: 11, static: true,
+    i: 'userBalance', x: 0, y: 0, w: 2, h: 22, static: true,
   },
   {
-    i: 'userOpenOrders', x: 0, y: 11, w: 2, h: 11, static: true,
+    i: 'userOpenOrders', x: 0, y: 22, w: 2, h: 11, static: true,
   },
   {
-    i: 'tradingHistory', x: 0, y: 22, w: 2, h: 11, static: true,
+    i: 'tradingHistory', x: 0, y: 33, w: 2, h: 11, static: true,
   },
 ];
 

@@ -1,5 +1,7 @@
 // @flow
-import React from 'react';
+import React, {
+  useState,
+} from 'react';
 import {
   Icon,
   Tooltip,
@@ -31,7 +33,6 @@ type Props = {
 
 // use +n !== 0 because empty string (or spaced string) converts to 0
 const isNumber = n => !isNaN(+n) && +n !== 0 && isFinite(n); /* eslint-disable-line */
-
 const getColumns = (
   onToggleTradable,
   isTradingPage,
@@ -63,6 +64,13 @@ const getColumns = (
         )}
       </div>
     ),
+    ...(!isTradingPage
+      ? {
+        defaultSortOrder: 'ascend',
+        sorter: (a, b) => (a.symbol >= b.symbol ? 1 : -1),
+      }
+      : {}
+    ),
   },
   ...(
     !isTradingPage ? [{
@@ -75,6 +83,7 @@ const getColumns = (
           </Tooltip>
         </div>
       ),
+      sorter: (a, b) => (a.name >= b.name ? 1 : -1),
     }] : []
   ),
   {
@@ -110,6 +119,12 @@ const getColumns = (
           />
         </Tooltip>
       </div>
+    ),
+    ...(!isTradingPage
+      ? {
+        sorter: (a, b) => a.balance - b.balance,
+      }
+      : {}
     ),
   },
   {
@@ -156,87 +171,110 @@ const UserBalance = ({
   balance,
   onDeposit,
   onWithdraw,
-}: Props): Node => (
-  <S.UserBalance>
-    <S.Title>
-      <div>
+}: Props): Node => {
+  const [searchText, setSearchText] = useState('');
+  const s = searchText.toLowerCase();
+  return (
+    <S.UserBalance>
+      <S.Title>
+        <div>
         Balance
-        {' '}
-        {balance}
-        {' '}
+          {' '}
+          {balance}
+          {' '}
         ETH
-      </div>
-    </S.Title>
-    <Formik
-      isInitialValid
-      validate={(values) => {
-        const errors = {};
-        if (values.amount.length && !isNumber(values.amount)) {
-          errors.amount = 'Amount should be a number';
-        }
-        return errors;
-      }}
-    >
-      {({
-        handleChange,
-        values,
-        resetForm,
-        errors,
-        isValid,
-      }) => (
-        <S.WrappingBar>
-          <S.Amount>
-            <Form.Item
-              validateStatus={errors.amount && 'error'}
-              help={errors.amount}
-            >
-              <Input
-                value={values.amount}
-                name="amount"
-                addonAfter={<div>ETH</div>}
-                placeholder="Amount"
-                onChange={handleChange}
-                autoComplete="off"
-              />
-            </Form.Item>
-          </S.Amount>
-          <S.UnwrapWrapBar>
-            <Button.Group>
-              <S.UnwrapButton
-                type="primary"
-                disabled={
+        </div>
+      </S.Title>
+      <Formik
+        isInitialValid
+        validate={(values) => {
+          const errors = {};
+          if (values.amount.length && !isNumber(values.amount)) {
+            errors.amount = 'Amount should be a number';
+          }
+          return errors;
+        }}
+      >
+        {({
+          handleChange,
+          values,
+          resetForm,
+          errors,
+          isValid,
+        }) => (
+          <S.WrappingBar>
+            <S.Amount>
+              <Form.Item
+                validateStatus={errors.amount && 'error'}
+                help={errors.amount}
+              >
+                <Input
+                  value={values.amount}
+                  name="amount"
+                  addonAfter={<div>ETH</div>}
+                  placeholder="Amount"
+                  onChange={handleChange}
+                  autoComplete="off"
+                />
+              </Form.Item>
+            </S.Amount>
+            <S.UnwrapWrapBar>
+              <Button.Group>
+                <S.UnwrapButton
+                  type="primary"
+                  disabled={
                   !isValid
                   || !values?.amount?.length
                 }
-                onClick={() => onWithdraw(values.amount, { resetForm })}
-              >
+                  onClick={() => onWithdraw(values.amount, { resetForm })}
+                >
                   Unwrap
-              </S.UnwrapButton>
-              <S.WrapButton
-                type="primary"
-                disabled={
+                </S.UnwrapButton>
+                <S.WrapButton
+                  type="primary"
+                  disabled={
                   !isValid
                   || !values?.amount?.length
                 }
-                onClick={() => onDeposit(values.amount, { resetForm })}
-              >
+                  onClick={() => onDeposit(values.amount, { resetForm })}
+                >
                 Wrap
-              </S.WrapButton>
-            </Button.Group>
-          </S.UnwrapWrapBar>
-        </S.WrappingBar>
-      )}
-    </Formik>
-    <S.Table
-      isTradingPage={isTradingPage}
-      rowKey="address"
-      dataSource={assets}
-      columns={getColumns(
-        onToggleTradable,
-        isTradingPage,
-      )}
-    />
-  </S.UserBalance>
-);
+                </S.WrapButton>
+              </Button.Group>
+            </S.UnwrapWrapBar>
+            {!isTradingPage && (
+            <S.SearchField>
+              <Input
+                autoFocus
+                value={searchText}
+                onChange={ev => setSearchText(ev.target.value)}
+                placeholder="Search token name or symbol"
+              />
+            </S.SearchField>
+            )
+          }
+          </S.WrappingBar>
+        )}
+      </Formik>
+      <S.Table
+        isTradingPage={isTradingPage}
+        pagination={!isTradingPage && { pageSize: 20, hideOnSinglePage: true }}
+        rowKey="address"
+        dataSource={assets.filter(p => (
+          searchText.length
+            ? (
+              p.name.toLowerCase().includes(s)
+              || p.symbol.toLowerCase().includes(s)
+            )
+            : true
+        ))}
+        columns={getColumns(
+          onToggleTradable,
+          isTradingPage,
+        )}
+      />
+    </S.UserBalance>
+  );
+};
 
 export default UserBalance;
