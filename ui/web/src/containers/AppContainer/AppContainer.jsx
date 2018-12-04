@@ -14,6 +14,7 @@ import {
 
 import Component from 'web-components/ConnectComponent';
 import ConnectingToEthProvider from 'web-components/ConnectingToEthProvider';
+import NotificationsPanelContainer from 'web-containers/NotificationsPanelContainer';
 import TradingPageContainer from 'web-containers/TradingPageContainer';
 import UserProfilePageContainer from 'web-containers/UserProfilePageContainer';
 
@@ -26,6 +27,7 @@ const AppContainer = () => (
   >
     {({ isAppInitializing }) => (
       <Layout>
+        <NotificationsPanelContainer />
         {isAppInitializing ? (
           <ConnectingToEthProvider />
         ) : (

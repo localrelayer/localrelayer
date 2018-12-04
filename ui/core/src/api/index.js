@@ -11,6 +11,7 @@ function apiFactory() {
     ['getTradingHistory', '/sputnik/tradingHistory'],
     ['getOpenOrders', '/sputnik/openOrders'],
     ['getBars', '/sputnik/bars'],
+    ['getTransactions', '/sputnik/transactions'],
   ];
   let apiUrl = '';
   let mockMethods = {};
@@ -112,6 +113,19 @@ function apiFactory() {
         endpointUrl: '/v2/order',
         method: 'POST',
         methodName: 'postOrder',
+        bodyParameters,
+        queryParameters,
+      });
+    },
+
+    saveTransaction(
+      bodyParameters,
+      queryParameters = {},
+    ) {
+      return performFetch({
+        endpointUrl: '/sputnik/transactions',
+        method: 'POST',
+        methodName: 'saveTransaction',
         bodyParameters,
         queryParameters,
       });

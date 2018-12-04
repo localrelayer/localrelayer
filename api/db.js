@@ -98,6 +98,9 @@ const transactionSchema = mongoose.Schema({
   networkId: {
     type: Number,
   },
+  meta: {
+    type: Object,
+  },
   createdAt: {
     type: Date,
   },

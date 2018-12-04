@@ -18,6 +18,7 @@ type Props = {
   listedAssetPairs: Array<any>,
   currentAssetPair: any,
   onPairClick: Function,
+  onNotificationsClick: Function,
 }
 const columns = [
   {
@@ -42,6 +43,7 @@ const Header = ({
   listedAssetPairs,
   currentAssetPair,
   onPairClick,
+  onNotificationsClick,
 }: Props) => {
   const [searchText, setSearchText] = useState('');
   const s = searchText.toLowerCase();
@@ -108,6 +110,10 @@ const Header = ({
           <S.HeaderIcon type="down" />
         </Button>
       </Popover>
+      <S.HeaderIcon
+        type="notification"
+        onClick={onNotificationsClick}
+      />
     </S.Header>
   );
 };
