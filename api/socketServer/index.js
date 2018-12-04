@@ -74,6 +74,7 @@ export function runWebSocketServer() {
       if (
         data.type === 'subscribe'
         && data.requestId
+        && validator.isValid(data, schemas.relayerApiOrdersChannelSubscribePayloadSchema)
       ) {
         logger.debug('subscribe');
         ws.subscriptions[data.requestId] = data;
@@ -104,7 +105,8 @@ export function runWebSocketServer() {
       Object.keys(client.subscriptions).forEach((subId) => {
         const sub = client.subscriptions[subId];
         if (
-          sub.channel === 'tradingInfo'
+          sub
+          && sub.channel === 'tradingInfo'
           && (
             sub.payload.pairs.some(
               pair => (
@@ -150,8 +152,8 @@ export function runWebSocketServer() {
       Object.keys(client.subscriptions).forEach((subId) => {
         const sub = client.subscriptions[subId];
         if (
-          sub.channel === 'orders'
-          && validator.isValid(sub.payload, schemas.relayerApiOrdersChannelSubscribePayloadSchema)
+          sub
+          && sub.channel === 'orders'
           && metaData.networkId === (sub.payload.networkId || 1)
           && shouldExistAndEqual(sub.payload.makerAssetProxyId, order.makerAssetProxyId)
           && shouldExistAndEqual(sub.payload.takerAssetProxyId, order.takerAssetProxyId)
