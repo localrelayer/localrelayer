@@ -52,7 +52,7 @@ const Header = ({
     currentAssetPair?.assetDataB?.assetData?.symbol || 'WETH',
   ];
   const currentAssetPairName = currentAssetPairSymbols.join('/');
-  const currentLink = currentAssetPairSymbols.join('/');
+  const currentLink = currentAssetPairSymbols.join('-');
   return (
     <S.Header>
       <S.InstexLogo src={logo} alt="logo" />
