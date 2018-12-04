@@ -146,8 +146,12 @@ sputnikApi.get('/tradingHistory', async (ctx) => {
 });
 
 sputnikApi.get('/openOrders', async (ctx) => {
-  const { traderAddress } = ctx.request.query;
+  const {
+    traderAddress,
+    networkId,
+  } = ctx.request.query;
   const orders = await Order.find({
+    networkId,
     $and: [
       {
         $or: [
