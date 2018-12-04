@@ -14,6 +14,9 @@ import {
   getCurrentAssetPairWithBalance,
 } from 'web-selectors';
 import {
+  uiActions,
+} from 'web-actions';
+import {
   coreActions,
   coreSelectors as cs,
   utils,
@@ -38,7 +41,10 @@ const BuySellContainer = (): Node => (
           price,
           formActions,
           type,
-        }) => (
+        }) => {
+          dispatch(uiActions.setUiState({
+            currentOrderId: null,
+          }));
           dispatch(coreActions.postOrderRequest({
             formActions,
             order: {
@@ -98,8 +104,8 @@ const BuySellContainer = (): Node => (
                 new BigNumber(Math.floor(+Date.now() / 1000)).plus(3 * (10 ** 7))
               ),
             },
-          }))
-        )}
+          }));
+        }}
       />
     )}
   </Component>
