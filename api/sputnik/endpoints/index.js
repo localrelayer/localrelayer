@@ -99,7 +99,7 @@ sputnikApi.get('/transactions', async (ctx) => {
   };
   const total = await Transaction.find({
     ...baseQuery,
-  }).count();
+  }).countDocuments();
   const dbReq = Transaction.find({
     ...baseQuery,
   });

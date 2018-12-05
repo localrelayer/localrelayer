@@ -8,7 +8,9 @@ import {
   Tooltip,
   Button,
 } from 'antd';
-
+import {
+  utils,
+} from 'instex-core';
 import {
   ColoredSpan,
 } from 'web-components/SharedStyledComponents';
@@ -90,7 +92,7 @@ const getColumns = onOrderActionClick => [
     render: (text, record) => (
       record.metaData.isShadowed
         ? (
-          <Tooltip title="This order is shadowed read docs for more info">
+          <Tooltip title={utils.zeroExErrToHumanReadableErrMsg(record.metaData.error)}>
           Unpublished
             <Icon
               style={{

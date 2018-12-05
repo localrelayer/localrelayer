@@ -29,65 +29,22 @@ import {
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
-const layoutXs = [
-  assetPairCardLayout.xs,
-  tradingHistoryLayout.xs,
-  orderBookLayout.xs,
-  userBalanceLayout.xs,
-  buySellLayout.xs,
-  userOpenOrdersLayout.xs,
-  tradingChartLayout.xs,
+const layoutsSizes = ['xs', 'sm', 'md', 'lg', 'lg2', 'lg3'];
+
+const components = [
+  assetPairCardLayout,
+  tradingHistoryLayout,
+  orderBookLayout,
+  userBalanceLayout,
+  buySellLayout,
+  userOpenOrdersLayout,
+  tradingChartLayout,
 ];
 
-const layoutSm = [
-  assetPairCardLayout.sm,
-  tradingHistoryLayout.sm,
-  orderBookLayout.sm,
-  userBalanceLayout.sm,
-  buySellLayout.sm,
-  userOpenOrdersLayout.sm,
-  tradingChartLayout.sm,
-];
-
-const layoutMd = [
-  assetPairCardLayout.md,
-  tradingHistoryLayout.md,
-  orderBookLayout.md,
-  userBalanceLayout.md,
-  buySellLayout.md,
-  userOpenOrdersLayout.md,
-  tradingChartLayout.md,
-];
-
-const layoutLg = [
-  assetPairCardLayout.lg,
-  tradingHistoryLayout.lg,
-  orderBookLayout.lg,
-  userBalanceLayout.lg,
-  buySellLayout.lg,
-  userOpenOrdersLayout.lg,
-  tradingChartLayout.lg,
-];
-
-const layoutLg2 = [
-  assetPairCardLayout.lg2,
-  tradingHistoryLayout.lg2,
-  orderBookLayout.lg2,
-  userBalanceLayout.lg2,
-  buySellLayout.lg2,
-  userOpenOrdersLayout.lg2,
-  tradingChartLayout.lg2,
-];
-
-const layoutLg3 = [
-  assetPairCardLayout.lg3,
-  tradingHistoryLayout.lg3,
-  orderBookLayout.lg3,
-  userBalanceLayout.lg3,
-  buySellLayout.lg3,
-  userOpenOrdersLayout.lg3,
-  tradingChartLayout.lg3,
-];
+const layouts = layoutsSizes.reduce((acc, cur) => {
+  acc[cur] = components.map(component => component[cur]);
+  return acc;
+}, {});
 
 type Props = {
   children: React.Node,
@@ -95,14 +52,7 @@ type Props = {
 
 const TrandgPageLayout = ({ children }: Props) => (
   <ResponsiveReactGridLayout
-    layouts={{
-      xs: layoutXs,
-      sm: layoutSm,
-      md: layoutMd,
-      lg: layoutLg,
-      lg2: layoutLg2,
-      lg3: layoutLg3,
-    }}
+    layouts={layouts}
     breakpoints={{
       xs: 0,
       sm: 600,

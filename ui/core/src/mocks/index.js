@@ -204,6 +204,13 @@ export function mocksOrdersFactory({
         order: o.order,
         metaData: {
           isValid: true,
+          isShadowed: false,
+          remainingFillableMakerAssetAmount: o.order.makerAssetAmount,
+          remainingFillableTakerAssetAmount: o.order.takerAssetAmount,
+          filledTakerAssetAmount: 0,
+          networkId: 50,
+          orderHash: randomEthereumAddress(),
+          createdAt: new Date(),
         },
       }))
   );
@@ -218,6 +225,13 @@ export function mocksOrdersFactory({
         order: o.order,
         metaData: {
           isValid: true,
+          isShadowed: false,
+          remainingFillableMakerAssetAmount: o.order.makerAssetAmount,
+          remainingFillableTakerAssetAmount: o.order.takerAssetAmount,
+          filledTakerAssetAmount: 0,
+          networkId: 50,
+          orderHash: randomEthereumAddress(),
+          createdAt: new Date(),
         },
       }))
   );
@@ -424,15 +438,15 @@ export function mocksOrdersFactory({
           || calculatedTradingInfo.lastPrice).toFixed(8),
       };
       return {
-        records: {
-          [pairId]: {
+        records: [
+          {
             ...tradingInfo,
             id: pairId,
             assetDataA: baseAssetData,
             assetDataB: quoteAssetData,
             networkId,
           },
-        },
+        ],
       };
     },
 

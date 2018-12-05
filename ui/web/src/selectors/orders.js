@@ -80,7 +80,7 @@ export const getCurrentOrder = createSelector(
       } else {
         amount = userBalance > ordersInfo.amount * ordersInfo.price
           ? ordersInfo.amount.toFixed(8)
-          : new BigNumber(userBalance).div(ordersInfo.price).toFixed(8);
+          : new BigNumber(userBalance).div(ordersInfo.price.toFixed(8)).toFixed(8);
       }
       return {
         amount,

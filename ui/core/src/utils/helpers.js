@@ -4,7 +4,15 @@ import {
 import {
   getContractAddressesForNetworkOrThrow,
 } from '@0x/contract-addresses';
-
+import {
+  ExchangeContractErrs,
+} from '@0x/types';
+import {
+  ContractWrappersError,
+} from '@0x/contract-wrappers';
+import {
+  OrderError,
+} from '@0x/order-utils';
 import {
   ORDER_FIELDS,
   GANACHE_CONTRACT_ADDRESSES,
@@ -64,3 +72,40 @@ export const getOrderPrice = (type, makerAssetAmount, takerAssetAmount) => (
   type === 'bid'
     ? new BigNumber(makerAssetAmount).div(takerAssetAmount)
     : new BigNumber(takerAssetAmount).div(makerAssetAmount));
+
+export const zeroExErrToHumanReadableErrMsg = (error, takerAddress) => {
+  const ContractWrappersErrorToHumanReadableError = {
+    [OrderError.InvalidSignature]: 'Order signature is not valid',
+    [ContractWrappersError.ContractNotDeployedOnNetwork]: 'Contract is not deployed on the detected network',
+    [ContractWrappersError.InvalidJump]: 'Invalid jump occured while executing the transaction',
+    [ContractWrappersError.OutOfGas]: 'Transaction ran out of gas',
+  };
+  const exchangeContractErrorToHumanReadableError = {
+    [ExchangeContractErrs.OrderFillExpired]: 'This order has expired',
+    [ExchangeContractErrs.OrderCancelExpired]: 'This order has expired',
+    [ExchangeContractErrs.OrderCancelled]: 'This order has been cancelled',
+    [ExchangeContractErrs.OrderFillAmountZero]: "Order fill amount can't be 0",
+    [ExchangeContractErrs.OrderRemainingFillAmountZero]: 'This order has already been completely filled',
+    [ExchangeContractErrs.OrderFillRoundingError]:
+              'Rounding error will occur when filling this order. Please try filling a different amount.',
+    [ExchangeContractErrs.InsufficientTakerBalance]:
+              'Taker no longer has a sufficient balance to complete this order',
+    [ExchangeContractErrs.InsufficientTakerAllowance]:
+              'Taker no longer has a sufficient allowance to complete this order',
+    [ExchangeContractErrs.InsufficientMakerBalance]:
+              'Maker no longer has a sufficient balance to complete this order',
+    [ExchangeContractErrs.InsufficientMakerAllowance]:
+              'Maker no longer has a sufficient allowance to complete this order',
+    [ExchangeContractErrs.InsufficientTakerFeeBalance]: 'Taker no longer has a sufficient balance to pay fees',
+    [ExchangeContractErrs.InsufficientTakerFeeAllowance]:
+              'Taker no longer has a sufficient allowance to pay fees',
+    [ExchangeContractErrs.InsufficientMakerFeeBalance]: 'Maker no longer has a sufficient balance to pay fees',
+    [ExchangeContractErrs.InsufficientMakerFeeAllowance]:
+              'Maker no longer has a sufficient allowance to pay fees',
+    [ExchangeContractErrs.TransactionSenderIsNotFillOrderTaker]: `This order can only be filled by ${takerAddress}`,
+    [ExchangeContractErrs.InsufficientRemainingFillAmount]: 'Insufficient remaining fill amount',
+  };
+  const humanReadableErrorMsg = exchangeContractErrorToHumanReadableError[error]
+    || ContractWrappersErrorToHumanReadableError[error];
+  return humanReadableErrorMsg;
+};

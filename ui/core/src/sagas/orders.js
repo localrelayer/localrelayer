@@ -136,9 +136,6 @@ function* matchOrder({
   takerAssetAmount,
   type,
 }) {
-  const web3 = ethApi.getWeb3();
-  const networkId = yield eff.call(web3.eth.net.getId);
-  const contractWrappers = ethApi.getWrappers(networkId);
   // BID order wants smallest (sorted by descending order)
   // ASK order wants biggest (sorted by ascending order)
   // So we want first order
@@ -177,22 +174,7 @@ function* matchOrder({
     }));
   }
 
-  const filteredOrders = yield eff.all(matchedOrders.reduce((acc, cur) => {
-    try {
-      eff.call(
-        [
-          contractWrappers.exchange,
-          contractWrappers.exchange.validateOrderFillableOrThrowAsync,
-        ],
-        transformBigNumberOrder(cur),
-      );
-      return acc.concat(cur);
-    } catch (err) {
-      console.log('MATCHED NOT VALID', err);
-      return acc;
-    }
-  }, []));
-  return filteredOrders;
+  return matchedOrders;
 }
 
 function* postOrder({
