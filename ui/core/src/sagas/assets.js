@@ -320,42 +320,46 @@ export function* checkAssetPair({
 }
 
 function* processApproval(action) {
-  const web3 = ethApi.getWeb3();
-  const networkId = yield eff.call(web3.eth.net.getId);
-  const contractWrappers = ethApi.getWrappers(networkId);
-  const amount = action.isTradable
-    ? contractWrappers.erc20Token.UNLIMITED_ALLOWANCE_IN_BASE_UNITS
-    : new BigNumber(0);
-  const selectedAccount = yield eff.select(getWalletState('selectedAccount'));
+  try {
+    const web3 = ethApi.getWeb3();
+    const networkId = yield eff.call(web3.eth.net.getId);
+    const contractWrappers = ethApi.getWrappers(networkId);
+    const amount = action.isTradable
+      ? contractWrappers.erc20Token.UNLIMITED_ALLOWANCE_IN_BASE_UNITS
+      : new BigNumber(0);
+    const selectedAccount = yield eff.select(getWalletState('selectedAccount'));
 
-  const transactionHash = yield eff.call(
-    [
-      contractWrappers.erc20Token,
-      contractWrappers.erc20Token.setProxyAllowanceAsync,
-    ],
-    action.asset.address,
-    selectedAccount,
-    amount,
-  );
+    const transactionHash = yield eff.call(
+      [
+        contractWrappers.erc20Token,
+        contractWrappers.erc20Token.setProxyAllowanceAsync,
+      ],
+      action.asset.address,
+      selectedAccount,
+      amount,
+    );
 
-  yield eff.fork(
-    saveTransaction,
-    {
-      transactionHash,
-      address: selectedAccount.toLowerCase(),
-      name: 'Allowance',
-      networkId,
-      meta: {
-        asset: {
-          name: action.asset.name,
-          symbol: action.asset.symbol,
-          address: action.asset.address,
-          data: action.asset.id,
+    yield eff.fork(
+      saveTransaction,
+      {
+        transactionHash,
+        address: selectedAccount.toLowerCase(),
+        name: 'Allowance',
+        networkId,
+        meta: {
+          asset: {
+            name: action.asset.name,
+            symbol: action.asset.symbol,
+            address: action.asset.address,
+            data: action.asset.id,
+          },
+          amount,
         },
-        amount,
       },
-    },
-  );
+    );
+  } catch (e) {
+    console.log(e);
+  }
 }
 
 function* processDepositOrWithdraw(action) {
