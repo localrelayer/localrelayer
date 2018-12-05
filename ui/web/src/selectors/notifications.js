@@ -16,11 +16,28 @@ export const getNotifications = createSelector(
     selectedAccount,
     transactions,
     lists,
-  ) => (
-    (lists[selectedAccount] || []).map(transaction => ({
-      color: 'green',
-      description: 'Allowence',
+  ) => (lists[selectedAccount] || []).map((transaction) => {
+    let statusDescription;
+    let color;
+    if (Number.isInteger(transactions[transaction].status)) {
+      statusDescription = transactions[transaction].status === 1
+        ? 'Done'
+        : 'Failed';
+      color = transactions[transaction].status === 1
+        ? 'green'
+        : 'red';
+    } else {
+      statusDescription = 'Pending';
+      color = 'yellow';
+    }
+    return {
+      description: transactions[transaction].name,
       id: transaction,
-    }))
-  ),
+      color,
+      status: transactions[transaction].status,
+      statusDescription,
+      createdAt: transactions[transaction].createdAt,
+      metaData: transactions[transaction].meta,
+    };
+  }),
 );
