@@ -11,6 +11,7 @@ import {
 import {
   getCurrentAssetPair,
   getUiState,
+  getNotifications,
 } from 'web-selectors';
 import {
   uiActions,
@@ -30,6 +31,7 @@ const HeaderContainer = (): Node => (
       listedAssetPairs: cs.getListedAssetPairs(state),
       currentAssetPair: getCurrentAssetPair(state),
       isNotificationsPanelIsVisible: getUiState('isNotificationsPanelIsVisible')(state),
+      notifications: getNotifications(state),
     })}
   >
     {({
@@ -38,10 +40,12 @@ const HeaderContainer = (): Node => (
       listedAssetPairs,
       currentAssetPair,
       isNotificationsPanelIsVisible,
+      notifications,
     }) => (
       <Header
         listedAssetPairs={listedAssetPairs}
         currentAssetPair={currentAssetPair}
+        notifications={notifications}
         onNotificationsClick={() => {
           dispatch(uiActions.setUiState({
             isNotificationsPanelIsVisible: !isNotificationsPanelIsVisible,

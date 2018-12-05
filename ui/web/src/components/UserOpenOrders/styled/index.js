@@ -60,7 +60,7 @@ export const UserOpenOrdersTable = styled(Table)`
     font-size: 12px;
     text-align: left;
     cursor: pointer;
-   width: 13%;
+    width: 13%;
   }
   
   .ant-table-tbody > tr > td:nth-child(3) {
