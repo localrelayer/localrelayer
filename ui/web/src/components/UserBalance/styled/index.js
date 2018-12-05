@@ -54,7 +54,7 @@ export const SearchField = styled.div`
 `;
 
 export const Table = styled(AntdTable)`
-  border: none;
+ 
   .ant-table-thead > tr > th {
     padding: 0 5px 5px 5px;
     background-color: ${colors['component-background']} !important;
@@ -66,17 +66,18 @@ export const Table = styled(AntdTable)`
     width: ${props => (props.isTradingPage ? '25%' : '20%')};
   }
   .ant-table-thead > tr > th:nth-child(2) {
-    width: ${props => (props.isTradingPage ? '50%' : '25%')};
+    width: ${props => (props.isTradingPage ? '50%' : '30%')};
   }
-  .ant-table-thead > tr > th:last-child {
-    width: ${props => (props.isTradingPage ? '25%' : '15%')};
+  .ant-table-thead > tr > th:nth-child(3) {
+    width: ${props => (props.isTradingPage ? '25%' : '30%')};
   }
-  .ant-table-tbody > tr > td:last-child {
-    text-align: ${props => (props.isTradingPage ? 'right' : 'left')}; 
+  .ant-table-thead > tr > th:nth-child(4) {
+    width: 15%;
   }
-  .ant-table-thead > tr > th:last-child {
-    text-align: ${props => (props.isTradingPage ? 'right' : 'left')}; 
-} 
+  .ant-table-thead > tr > th:nth-child(5) {
+    width: 5%;
+  }
+  
   .ant-table-tbody > tr > td {
     border-bottom: 1px solid ${colors['component-background']};
     color: ${colors.text};
@@ -84,7 +85,30 @@ export const Table = styled(AntdTable)`
     text-align: left;
     cursor: pointer;
     padding: 5px 5px;
-}
+  }
+  
+  .ant-table-tbody > tr > td:nth-child(1) {
+    width: ${props => (props.isTradingPage ? '25%' : '20%')};
+  }
+  .ant-table-tbody > tr > td:nth-child(2) {
+    width: ${props => (props.isTradingPage ? '50%' : '30%')};
+  }
+  .ant-table-tbody > tr > td:nth-child(3) {
+    width: ${props => (props.isTradingPage ? '25%' : '30%')};
+  }
+  .ant-table-tbody > tr > td:nth-child(4) {
+    width: 15%;
+  }
+  .ant-table-tbody > tr > td:nth-child(5) {
+    width: 5%;
+  }
+  
+  .ant-table-tbody > tr > td:last-child {
+    text-align: ${props => (props.isTradingPage ? 'right' : 'left')}; 
+  }
+  .ant-table-thead > tr > th:last-child {
+    text-align: ${props => (props.isTradingPage ? 'right' : 'left')}; 
+} 
 
   .ant-table-tbody > tr:hover > td {
     background-color: ${colors['item-hover-bg']} !important;

@@ -257,7 +257,8 @@ const UserBalance = ({
       </Formik>
       <S.Table
         isTradingPage={isTradingPage}
-        pagination={!isTradingPage && { pageSize: 20, hideOnSinglePage: true }}
+        pagination={false}
+        scroll={isTradingPage ? { y: 340 } : { y: 740 }}
         rowKey="address"
         dataSource={assets.filter(asset => (
           searchText.length

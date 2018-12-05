@@ -6,11 +6,11 @@ import * as colors from 'web-styles/colors';
 
 
 export const TradingHistoryTable = styled(Table)`
- height: 90%;
-.ant-table {
-  border: none;
-}
 
+  .ant-table {
+    border: none;
+  }
+  
   .ant-table-thead > tr > th {
     background: ${colors['component-background']};
     border-bottom: 1px solid ${colors['component-background']} !important;
@@ -19,13 +19,21 @@ export const TradingHistoryTable = styled(Table)`
     width: ${props => (props.isTradingPage ? '30%' : '13%')};
   }
   
+  .ant-table-thead > tr > th:last-child {
+    width: 10%;
+  } 
+  
   .ant-table-tbody > tr > td {
-    border: none;
     color: white;
     font-size: 12px;
     text-align: left;
     cursor: pointer;
     width: ${props => (props.isTradingPage ? '30%' : '13%')};
+    border-bottom: 1px solid ${colors['component-background']} !important;
+  }
+  
+  .ant-table-thead > tr > td:last-child {
+    width: ${props => (props.isTradingPage ? '10%' : '8%')};
   }
   
   .ant-table-tbody > tr:hover > td {

@@ -87,6 +87,7 @@ const Header = ({
               rowKey="id"
               size="middle"
               columns={columns}
+              pagination={{ hideOnSinglePage: true }}
               onRow={record => ({
                 onClick: () => onPairClick(record),
               })}
