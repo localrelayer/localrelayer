@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import {
   Icon,
   Table,
+  Badge,
 } from 'antd';
 import * as colors from 'web-styles/colors';
 
@@ -43,33 +44,34 @@ export const Account = styled.div`
 
 export const TokensTable = styled(Table)`
 
-.ant-table {
-  margin-top: 10px;
-  width: 400px;
-  border: 1px solid ${colors['component-background']};
-}
-
-.ant-table-thead > tr > th {
-  background-color: ${colors['popover-bg']} !important;
-  border: 1px solid ${colors['component-background']} !important;
-  color: ${colors.text};
-  text-align: left;
-  width: 33%;
-}
-
-.ant-table-tbody > tr > td {
-  padding: 0;
-  background-color: ${colors['popover-bg']} !important;
-  color: white;
-  font-size: 12px;
-  text-align: left;
-  cursor: pointer;
-  width: 33%;
-}
-
-.ant-table-tbody > tr:hover > td {
-  background: ${colors['item-hover-bg']};
+  .ant-table {
+    margin-top: 10px;
+    width: 400px;
+    border: 1px solid ${colors['component-background']};
   }
+  
+  .ant-table-thead > tr > th {
+    background-color: ${colors['popover-bg']} !important;
+    border: 1px solid ${colors['component-background']} !important;
+    color: ${colors.text};
+    text-align: left;
+    width: 33%;
+  }
+  
+  .ant-table-tbody > tr > td {
+    padding: 0;
+    background-color: ${colors['popover-bg']} !important;
+    color: white;
+    font-size: 12px;
+    text-align: left;
+    cursor: pointer;
+    width: 33%;
+  }
+
+  ant-table-tbody > tr:hover > td {
+    background: ${colors['item-hover-bg']};
+  }
+  
   .ant-table-tbody > tr > td {
     padding: 5px 5px;
   } 
@@ -92,4 +94,23 @@ export const PopoverContent = styled.div`
 
 export const SearchBar = styled.div`
   display: flex;
+`;
+
+export const NotificationContainer = styled.div`
+  margin-left: 2%;
+`;
+
+export const NotificationIcon = styled(Icon)`
+  cursor: pointer;
+`;
+
+export const NotificationBadge = styled(Badge)`
+  .ant-badge-count {
+    padding: 0;
+    height: 12px;
+    font-size: 8px;
+    width: 10px;
+    line-height: 12px;
+    top: -5px;
+}
 `;
