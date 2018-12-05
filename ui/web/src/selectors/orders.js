@@ -34,7 +34,10 @@ export const getCurrentOrder = createSelector(
     balance,
   ) => {
     if (currentOrderId) {
-      const orderType = utils.getOrderType(currentAssetPairId.split('_')[0], orders[currentOrderId].makerAssetData);
+      const orderType = utils.getOrderType(
+        currentAssetPairId.split('_')[0],
+        orders[currentOrderId].makerAssetData,
+      );
       const ordersTypes = orderType === 'bid' ? bids : asks;
       const numInOrderList = ordersTypes.reduce(
         (
@@ -61,7 +64,11 @@ export const getCurrentOrder = createSelector(
           order.metaData.remainingFillableTakerAssetAmount,
         );
         acc.amount += amount;
-        acc.price = price > acc.price ? price : acc.price;
+        if (orderType === 'bid') {
+          acc.price = (price > acc.price) && acc.price ? acc.price : price;
+        } else {
+          acc.price = price > acc.price ? price : acc.price;
+        }
         return acc;
       }, {
         price: 0,

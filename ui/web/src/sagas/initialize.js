@@ -322,7 +322,6 @@ function* takeUpdateOrder(socketChannel) {
 
       yield eff.put(actions.succeeded({
         lists,
-        // prepend: true,
         removeFromOtherLists: true,
         resources: [{
           id: data.payload.order.signature,

@@ -14,8 +14,8 @@ import {
   toUnitAmount,
   getOrderPrice,
   getOrderType,
+  sortOrderbook,
 } from '../utils';
-
 
 export const getTradingHistory = createSelector(
   [
@@ -81,7 +81,13 @@ export const getTradingHistory = createSelector(
       lastFilledAt: order.metaData.lastFilledAt,
       type: orderType,
     };
-  }).filter(Boolean),
+  }).filter(Boolean).sort((a, b) => {
+    const date1 = new Date(a.lastFilledAt);
+    const date2 = new Date(b.lastFilledAt);
+    if (date1 > date2) return -1;
+    if (date1 < date2) return 1;
+    return 0;
+  }),
 );
 
 export const getBidOrders = createSelector(
@@ -108,7 +114,7 @@ export const getBidOrders = createSelector(
         order.makerAssetAmount,
         order.takerAssetAmount,
       ).toFixed(8),
-    }))
+    })).sort(sortOrderbook)
   ),
 );
 
@@ -133,7 +139,7 @@ export const getAskOrders = createSelector(
         order.makerAssetAmount,
         order.takerAssetAmount,
       ).toFixed(8),
-    }))
+    })).sort(sortOrderbook)
   ),
 );
 
