@@ -19,6 +19,7 @@ type Props = {
   currentAssetPair: any,
   onPairClick: Function,
   onNotificationsClick: Function,
+  notifications: Array<any>,
 }
 const columns = [
   {
@@ -44,6 +45,7 @@ const Header = ({
   currentAssetPair,
   onPairClick,
   onNotificationsClick,
+  notifications,
 }: Props) => {
   const [searchText, setSearchText] = useState('');
   const s = searchText.toLowerCase();
@@ -110,10 +112,20 @@ const Header = ({
           <S.HeaderIcon type="down" />
         </Button>
       </Popover>
-      <S.HeaderIcon
-        type="notification"
-        onClick={onNotificationsClick}
-      />
+      <S.NotificationContainer>
+        <S.NotificationBadge count={
+          notifications.reduce((acc, notification) => (
+            notification.statusDescription === 'Pending' ? acc + 1 : acc
+          ), 0)
+        }
+        >
+          <S.NotificationIcon
+            type="notification"
+            style={{ fontSize: 24 }}
+            onClick={onNotificationsClick}
+          />
+        </S.NotificationBadge>
+      </S.NotificationContainer>
     </S.Header>
   );
 };

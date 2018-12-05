@@ -2,9 +2,10 @@
 import React from 'react';
 import {
   Drawer,
-  Timeline,
+  Icon,
+  Timeline
 } from 'antd';
-
+import * as S from './styled';
 
 type Props = {
   visible: Boolean,
@@ -29,12 +30,30 @@ const NotificationsPanel = ({
         <Timeline.Item
           key={notification.id}
           color={notification.color}
+          dot={notification.statusDescription === 'Pending'
+          && (
+            <Icon
+              spin
+              type="loading"
+              style={{ fontSize: 14, color: `${notification.color}` }}
+            />
+          )}
         >
-          <div style={{ color: 'white' }}>
-            {notification.description}
-          </div>
-        </Timeline.Item>
-      ))}
+          <S.NotificationItemContent>
+            <div>
+              {notification.description}
+            </div>
+            <div>
+              {notification.metaData?.asset?.name}
+            </div>
+            <div>
+              {new Date(notification.createdAt).toLocaleString()}
+            </div>
+            <S.NotificationItemStatus statuscolor={notification.color}>
+              {notification.statusDescription}
+            </S.NotificationItemStatus>
+          </S.NotificationItemContent>
+        </Timeline.Item>))}
     </Timeline>
   </Drawer>
 );
