@@ -152,6 +152,12 @@ function* matchOrder({
   let price;
   let matchedOrders = [];
 
+  console.log(
+    makerAssetAmount,
+    takerAssetAmount,
+    type,
+  );
+
   if (type === 'bid') {
     price = new BigNumber(makerAssetAmount).div(takerAssetAmount);
     const askOrders = yield eff.select(selectors.getAskOrders);
@@ -170,7 +176,7 @@ function* matchOrder({
       const matchedBidOrderPrice = new BigNumber(
         bidOrder.metaData.remainingFillableMakerAssetAmount,
       ).div(bidOrder.metaData.remainingFillableTakerAssetAmount);
-      return matchedBidOrderPrice.lte(price);
+      return matchedBidOrderPrice.gte(price);
     }));
   }
 
@@ -215,13 +221,15 @@ function* postOrder({
         const toBeFilledAmount = BigNumber.min(requiredAmount, existingAssetAmount);
         requiredAmount = requiredAmount.minus(toBeFilledAmount);
         ordersToFill.push(order);
-
+        console.log('To Fill', toBeFilledAmount);
+        console.log('Remains', requiredAmount);
         // TODO: Danger toFixed(0) CHECK LATER
         const takerAmount = new BigNumber(toBeFilledAmount
           .times(order.metaData.remainingFillableTakerAssetAmount)
           .div(order.metaData.remainingFillableMakerAssetAmount)
           .toFixed(0));
         takerAssetFillAmounts.push(takerAmount);
+        console.log('Taker amount', takerAmount);
       }
 
       console.log(ordersToFill, takerAssetFillAmounts);
@@ -237,30 +245,29 @@ function* postOrder({
           taker,
         );
         console.log('FILLED WITH HASH', txHash);
+
+        if (requiredAmount.gt(0)) {
+          const newMakerAmount = new BigNumber(makerAssetAmount)
+            .times(requiredAmount)
+            .div(takerAssetAmount);
+
+          yield eff.call(postOrder, {
+            formActions,
+            order: {
+              makerAddress,
+              takerAddress,
+              makerAssetData,
+              takerAssetData,
+              makerAssetAmount: newMakerAmount,
+              takerAssetAmount: requiredAmount,
+              expirationTimeSeconds,
+              type,
+            },
+          });
+        }
       } catch (e) {
         console.log('TX FAILED', e);
       }
-
-      if (requiredAmount.gt(0)) {
-        const newMakerAmount = new BigNumber(makerAssetAmount)
-          .times(requiredAmount)
-          .div(takerAssetAmount);
-
-        yield eff.call(postOrder, {
-          formActions,
-          order: {
-            makerAddress,
-            takerAddress,
-            makerAssetData,
-            takerAssetData,
-            makerAssetAmount: newMakerAmount,
-            takerAssetAmount: requiredAmount,
-            expirationTimeSeconds,
-            type,
-          },
-        });
-      }
-
       formActions.resetForm({});
     } else {
       const orderConfigRequest = {
