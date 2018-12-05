@@ -67,6 +67,8 @@ export const getTradingHistory = createSelector(
 
     return {
       ...order,
+      pair: `${assets[order.makerAssetData].symbol}/${assets[order.takerAssetData].symbol}`,
+      status: order.metaData.completedAt ? 'Completed' : 'Canceled',
       amount,
       total,
       price: getOrderPrice(
