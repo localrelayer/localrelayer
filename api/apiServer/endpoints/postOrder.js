@@ -3,6 +3,7 @@ import {
   signatureUtils,
   assetDataUtils,
   ContractWrappers,
+  BigNumber,
 } from '0x.js';
 import {
   schemas,
@@ -31,7 +32,7 @@ import {
 
 
 export function createPostOrderEndpoint(standardRelayerApi) {
-  /* create a middleware wich will provide a provider and stop it at the end of request */
+  /* create a middleware which will provide a provider and stop it at the end of request */
   standardRelayerApi.post('/order', async (ctx) => {
     const networkId = Number(ctx.query.networkId || '1');
     const web3ProviderEngine = initWeb3ProviderEngine(networkId);
@@ -82,7 +83,6 @@ export function createPostOrderEndpoint(standardRelayerApi) {
           };
           return;
         }
-
         try {
           await contractWrappers.exchange.validateOrderFillableOrThrowAsync(
             transformBigNumberOrder(submittedOrder),
@@ -119,6 +119,27 @@ export function createPostOrderEndpoint(standardRelayerApi) {
           orderHash,
           networkId,
         };
+        const userSubmittedOrders = await Order.find({
+          makerAddress: order.makerAddress,
+          makerAssetAddress: order.makerAssetAddress,
+          networkId,
+          isValid: true,
+          isShadowed: false,
+        });
+        const totalOrdersAmount = userSubmittedOrders.concat(order).reduce(
+          (acc, cur) => acc.add(cur.makerAssetAmount), new BigNumber(0),
+        );
+        const makerAssetBalance = await contractWrappers.erc20Token.getBalanceAsync(
+          order.makerAssetAddress,
+          order.makerAddress,
+        );
+        if (new BigNumber(totalOrdersAmount).gt(makerAssetBalance)) {
+          logger.debug('INSUFFICIENT BALANCE');
+          logger.debug(`balance diff ${new BigNumber(makerAssetBalance).minus(totalOrdersAmount).toString()}`);
+          ctx.status = 400;
+          ctx.message = 'Insufficient balance to create order';
+          return;
+        }
         const orderInstance = new Order({
         /* the object will be muted here */
           ...order,

@@ -88,7 +88,7 @@ const getColumns = (
   ),
   {
     title: 'Balance',
-    dataIndex: 'balance',
+    dataIndex: 'availableBalance',
     render: (text, record) => (
       <div>
         {text.length > 14 ? text.slice(0, 14) : text}
@@ -100,13 +100,13 @@ const getColumns = (
                 <div>
                   Wallet balance:
                 </div>
-                {record.balance}
+                {record.totalBalance}
               </div>
               <div>
                 <div>
                   In orders:
                 </div>
-                {record.balance}
+                {(record.totalBalance - record.availableBalance).toFixed(8)}
               </div>
             </div>
           )}
