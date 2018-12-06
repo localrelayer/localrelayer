@@ -32,9 +32,9 @@ export const layout = {
   lg: {
     i: layoutName,
     x: 3,
-    y: 14,
+    y: 10,
     w: 6,
-    h: 11,
+    h: 8,
     static: true,
   },
   lg2: {

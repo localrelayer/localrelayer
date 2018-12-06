@@ -14,6 +14,7 @@ import type {
 import {
   ColoredSpan,
 } from 'web-components/SharedStyledComponents';
+import * as colors from 'web-styles/colors';
 import * as S from './styled';
 
 
@@ -36,9 +37,11 @@ const AssetPairCard = ({
         title={(
           <S.CardTitle>
             <S.AssetPairInfo>
-              {assetDataA?.assetData?.symbol}
-              {assetDataA?.assetData?.symbol ? '/' : ''}
-              {assetDataB?.assetData?.symbol}
+              <div>
+                {assetDataA?.assetData?.symbol}
+                {assetDataA?.assetData?.symbol ? '/' : ''}
+                {assetDataB?.assetData?.symbol}
+              </div>
               <S.BaseAssetAddress
                 target="_blank"
                 rel="noopener"
@@ -48,45 +51,36 @@ const AssetPairCard = ({
               </S.BaseAssetAddress>
             </S.AssetPairInfo>
             <S.LastPrice>
-              {tradingInfo?.lastPrice || 'No info about trades in 24hr'}
+              <div>{tradingInfo?.lastPrice || 'No trades in 24hr'}</div>
+              <S.Description>Last Price</S.Description>
             </S.LastPrice>
-          </S.CardTitle>
-        )}
-        description={(
-          <S.AssetPrice>
-            <S.HighLowBlock>
+            <S.PriceChange>
+              {isPositive
+                ? (
+                  <ColoredSpan color={colors.green}>
+                    {`+${tradingInfo.change24 || '0.00'}%`}
+                  </ColoredSpan>
+                )
+                : (
+                  <ColoredSpan color={colors.red}>
+                    {`${tradingInfo.change24 || '0.00'}%`}
+                  </ColoredSpan>
+                )}
+              <S.Description>24H Price</S.Description>
+            </S.PriceChange>
+            <S.Volume>
               <div>
-                High:
-                {' '}
-                {tradingInfo.maxPrice || '--'}
-              </div>
-              <div>
-                Low:
-                {' '}
-                {tradingInfo.minPrice || '--'}
-              </div>
-            </S.HighLowBlock>
-            <S.ChangeVolumeBlock>
-              <S.PriceChange>
-                {isPositive
-                  ? (
-                    <ColoredSpan color="green">
-                      {`+${tradingInfo.change24 || '0.00'}%`}
-                    </ColoredSpan>
-                  )
-                  : (
-                    <ColoredSpan color="red">
-                      {`${tradingInfo.change24 || '0.00'}%`}
-                    </ColoredSpan>
-                  )}
-              </S.PriceChange>
-              <div>
-                Volume:
-                {' '}
                 {tradingInfo.assetAVolume ? tradingInfo.assetAVolume.slice(0, 16) : 0}
               </div>
-            </S.ChangeVolumeBlock>
-          </S.AssetPrice>
+              <S.Description>{`Volume (${assetDataA?.assetData?.symbol})`}</S.Description>
+            </S.Volume>
+            <S.Volume>
+              <div>
+                {tradingInfo.assetAVolume ? tradingInfo.assetAVolume.slice(0, 16) : 0}
+              </div>
+              <S.Description>{`Volume (${assetDataB?.assetData?.symbol})`}</S.Description>
+            </S.Volume>
+          </S.CardTitle>
         )}
       />
     </S.AssetPairCard>

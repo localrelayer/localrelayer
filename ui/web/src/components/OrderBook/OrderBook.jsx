@@ -17,18 +17,18 @@ const OrderBook = ({
   onOrderClick,
 }: Props) => (
   <S.OrderBook>
-    <S.Asks>
-      <S.Header>
-        <S.HeaderTh>
+    <S.Header>
+      <S.HeaderTh>
           Price
-        </S.HeaderTh>
-        <S.HeaderTh>
+      </S.HeaderTh>
+      <S.HeaderTh>
           Amount
-        </S.HeaderTh>
-        <S.HeaderTh>
+      </S.HeaderTh>
+      <S.HeaderTh>
           Total
-        </S.HeaderTh>
-      </S.Header>
+      </S.HeaderTh>
+    </S.Header>
+    <S.Asks>
       <S.AsksItemsList>
         {asks.map(order => (
           <OrderItem
@@ -40,17 +40,20 @@ const OrderBook = ({
       </S.AsksItemsList>
     </S.Asks>
     <S.Spread>
+      <div>
       Spread:
-      {' '}
-      { asks.length && bids.length
-        ? (asks[0].price - bids[0].price).toFixed(8)
-        : '0.00000000'
+        {' '}
+        { asks.length && bids.length
+          ? (asks[0].price - bids[0].price).toFixed(8)
+          : '0.00000000'
       }
+      </div>
     </S.Spread>
     <S.Bids>
       <S.BidsItemsList>
-        {bids.map(order => (
+        {bids.map((order, i) => (
           <OrderItem
+            id={`order${i}`}
             key={order.id}
             order={order}
             onClick={() => onOrderClick(order.id, 'ask')}

@@ -109,3 +109,24 @@ export const zeroExErrToHumanReadableErrMsg = (error, takerAddress) => {
     || ContractWrappersErrorToHumanReadableError[error];
   return humanReadableErrorMsg;
 };
+
+export const formatDate = (template, date) => {
+  const specs = 'YYYY:MM:DD:HH:mm:ss'.split(':');
+  const timezonedDate = new Date(date) - new Date().getTimezoneOffset() * 6e4;
+  return new Date(timezonedDate)
+    .toISOString()
+    .split(/[-:.TZ]/)
+    .reduce((acc, item, i) => acc.split(specs[i]).join(item), template);
+};
+
+export const sortOrderbook = (a, b) => {
+  const aPrice = new BigNumber(a.takerAssetAmount).div(a.makerAssetAmount);
+  const aTakerFeePrice = new BigNumber(a.takerFee).div(a.takerAssetAmount);
+  const bPrice = new BigNumber(b.takerAssetAmount).div(b.makerAssetAmount);
+  const bTakerFeePrice = new BigNumber(b.takerFee).div(b.takerAssetAmount);
+  const aExpirationTimeSeconds = parseInt(a.expirationTimeSeconds, 10);
+  const bExpirationTimeSeconds = parseInt(b.expirationTimeSeconds, 10);
+  return aPrice - bPrice
+    || aTakerFeePrice - bTakerFeePrice
+    || aExpirationTimeSeconds - bExpirationTimeSeconds;
+};

@@ -9,6 +9,9 @@ import {
   ColoredSpan,
 } from 'web-components/SharedStyledComponents';
 import * as colors from 'web-styles/colors';
+import {
+  utils,
+} from 'instex-core';
 import * as S from './styled';
 
 
@@ -20,16 +23,6 @@ type Props = {
 const getColumns = isTradingPage => [
   ...(
     !isTradingPage ? [{
-      title: 'Type',
-      dataIndex: 'type',
-      render: text => (
-        <div>
-          <Tooltip title={text}>
-            {text}
-          </Tooltip>
-        </div>
-      ),
-    }, {
       title: 'Pair',
       dataIndex: 'pair',
       render: text => (
@@ -97,8 +90,8 @@ const getColumns = isTradingPage => [
     title: 'Date',
     dataIndex: 'lastFilledAt',
     render: (text: string) => (
-      <Tooltip title={new Date(text).toLocaleString()}>
-        {new Date(text).toLocaleString()}
+      <Tooltip title={utils.formatDate('MM/DD/YYYY HH:mm:ss', text)}>
+        {utils.formatDate('MM/DD HH:mm', text)}
       </Tooltip>
     ),
   },
@@ -113,18 +106,13 @@ const TradingHistory = ({
   isTradingPage,
 }: Props) => (
   <S.TradingHistory>
-    <S.Title>
-      <div>
-        Trading history
-      </div>
-    </S.Title>
     <S.TradingHistoryTable
       isTradingPage={isTradingPage}
       size="small"
       columns={getColumns(isTradingPage)}
       pagination={false}
       dataSource={orders}
-      scroll={{ y: 340 }}
+      scroll={{ y: 700 }}
     />
   </S.TradingHistory>
 );

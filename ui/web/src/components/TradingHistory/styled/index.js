@@ -29,20 +29,21 @@ export const TradingHistoryTable = styled(Table)`
     text-align: left;
     cursor: pointer;
     width: ${props => (props.isTradingPage ? '30%' : '13%')};
+    padding: 5px 5px;
     border-bottom: 1px solid ${colors['component-background']} !important;
   }
-  
-  .ant-table-thead > tr > td:last-child {
-    width: ${props => (props.isTradingPage ? '10%' : '8%')};
+
+  .ant-table-tbody > tr > td:last-child {
+    width: 5%;
+  }
+
+  .ant-table-thead > tr > th:last-child {
+    width: 5%;
   }
   
   .ant-table-tbody > tr:hover > td {
     background-color: ${colors['item-hover-bg']} !important; 
-    }
-  
-  .ant-table-tbody > tr > td {
-    padding: 5px 5px;
-  } 
+  }
 `;
 
 export const TradingHistory = styled.div`

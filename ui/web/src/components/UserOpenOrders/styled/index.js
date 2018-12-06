@@ -15,7 +15,6 @@ export const UserOpenOrders = styled.div`
 export const Header = styled.div`
   display: flex;
   justify-content: flex-start;
-  height: 9%;
   font-size: 18px;
 `;
 
@@ -23,12 +22,12 @@ export const SearchField = styled.div`
   & .ant-input {
     background-color: ${colors['background-color-light']};
   }
- width: 35%;
+ width: 45%;
 `;
 
 export const Title = styled.div`
-  padding-left: 5%;
-  width: 65%;
+  margin-left: 40%;
+  width: 55%;
 `;
 
 export const UserOpenOrdersTable = styled(Table)`

@@ -51,6 +51,7 @@ export const getCurrentOrder = createSelector(
       const sumUpOrders = orderType === 'bid'
         ? bids.slice(0, numInOrderList + 1)
         : asks.slice(0, numInOrderList + 1);
+
       const ordersInfo = sumUpOrders.reduce((acc, order) => {
         const amount = +utils.toUnitAmount(
           orderType === 'bid'

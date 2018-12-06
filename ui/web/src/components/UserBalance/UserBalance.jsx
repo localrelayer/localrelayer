@@ -228,7 +228,7 @@ const UserBalance = ({
                 }
                   onClick={() => onWithdraw(values.amount, { resetForm })}
                 >
-                  Unwrap
+                  Withdraw
                 </S.UnwrapButton>
                 <S.WrapButton
                   type="primary"
@@ -238,7 +238,7 @@ const UserBalance = ({
                 }
                   onClick={() => onDeposit(values.amount, { resetForm })}
                 >
-                Wrap
+                Deposit
                 </S.WrapButton>
               </Button.Group>
             </S.UnwrapWrapBar>

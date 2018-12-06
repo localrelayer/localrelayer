@@ -15,25 +15,20 @@ const OrderItem = ({
   order,
   onClick,
 }: Props) => (
-  <Tooltip
-    key={order.id}
-    title="Click to take order"
-    placement="bottom"
+  <S.OrderItem
+    onClick={onClick}
+    className="orderItem"
   >
-    <S.OrderItem
-      onClick={onClick}
-    >
-      <div>
-        {order.price}
-      </div>
-      <div>
-        {order.amount}
-      </div>
-      <div>
-        {order.total}
-      </div>
-    </S.OrderItem>
-  </Tooltip>
+    <div>
+      {order.price}
+    </div>
+    <div>
+      {order.amount}
+    </div>
+    <div>
+      {order.total}
+    </div>
+  </S.OrderItem>
 );
 
 export default OrderItem;

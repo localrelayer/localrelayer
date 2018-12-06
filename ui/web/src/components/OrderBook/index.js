@@ -34,7 +34,7 @@ export const layout = {
     x: 9,
     y: 0,
     w: 3,
-    h: 14,
+    h: 18,
     static: true,
   },
   lg2: {
