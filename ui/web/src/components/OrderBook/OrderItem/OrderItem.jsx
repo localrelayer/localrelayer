@@ -1,9 +1,5 @@
 // @flow
 import React from 'react';
-import {
-  Tooltip,
-} from 'antd';
-
 import * as S from './styled';
 
 type Props = {

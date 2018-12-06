@@ -122,24 +122,22 @@ export function createPostOrderEndpoint(standardRelayerApi) {
         const userSubmittedOrders = await Order.find({
           makerAddress: order.makerAddress,
           makerAssetAddress: order.makerAssetAddress,
+          networkId,
+          isValid: true,
+          isShadowed: false,
         });
-        const allUserOrders = userSubmittedOrders.concat(order);
-        const totalOrdersAmount = allUserOrders.reduce(
-          (acc, amount) => {
-            acc.makerAssetAmount = new BigNumber(acc.makerAssetAmount)
-              .plus(amount.makerAssetAmount);
-            return acc;
-          },
-        ).makerAssetAmount;
+        const totalOrdersAmount = userSubmittedOrders.concat(order).reduce(
+          (acc, cur) => acc.add(cur.makerAssetAmount), new BigNumber(0),
+        );
         const makerAssetBalance = await contractWrappers.erc20Token.getBalanceAsync(
           order.makerAssetAddress,
           order.makerAddress,
         );
-        if (new BigNumber(makerAssetBalance).lessThan(totalOrdersAmount)) {
-          console.log('INSUFFICIENT BALANCE');
-          console.log(new BigNumber(makerAssetBalance).minus(totalOrdersAmount), 'balance diff');
+        if (new BigNumber(totalOrdersAmount).gt(makerAssetBalance)) {
+          logger.debug('INSUFFICIENT BALANCE');
+          logger.debug(`balance diff ${new BigNumber(makerAssetBalance).minus(totalOrdersAmount).toString()}`);
           ctx.status = 400;
-          ctx.message = 'INSUFFICIENT BALANCE to create order';
+          ctx.message = 'Insufficient balance to create order';
           return;
         }
         const orderInstance = new Order({

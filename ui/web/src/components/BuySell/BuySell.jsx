@@ -53,8 +53,8 @@ const BuySell = ({
                     {' '}
                     {currentAssetPair?.assetDataB?.assetData?.symbol}
                     {' '}
-                    <Tooltip title={currentAssetPair?.assetDataB?.balance}>
-                      {currentAssetPair?.assetDataB?.balance}
+                    <Tooltip title={currentAssetPair?.assetDataB?.availableBalance}>
+                      {currentAssetPair?.assetDataB?.availableBalance}
                     </Tooltip>
                   </S.TabsExtraContent>
                 )
@@ -64,8 +64,8 @@ const BuySell = ({
                     {' '}
                     {currentAssetPair?.assetDataA?.assetData?.symbol}
                     {' '}
-                    <Tooltip title={currentAssetPair?.assetDataA?.balance}>
-                      {currentAssetPair?.assetDataA?.balance}
+                    <Tooltip title={currentAssetPair?.assetDataA?.availableBalance}>
+                      {currentAssetPair?.assetDataA?.availableBalance}
                     </Tooltip>
                   </S.TabsExtraContent>
                 )
@@ -80,7 +80,7 @@ const BuySell = ({
                 baseSymbol={currentAssetPair?.assetDataA?.assetData?.symbol}
                 quoteSymbol={currentAssetPair?.assetDataB?.assetData?.symbol}
                 onSubmitOrder={onSubmitOrder}
-                currentBalance={currentAssetPair?.assetDataB?.balance}
+                currentBalance={currentAssetPair?.assetDataB?.availableBalance}
                 currentBuySellTab={currentBuySellTab}
                 currentOrder={currentOrder}
               />
@@ -94,7 +94,7 @@ const BuySell = ({
                 baseSymbol={currentAssetPair?.assetDataA?.assetData?.symbol}
                 quoteSymbol={currentAssetPair?.assetDataB?.assetData?.symbol}
                 onSubmitOrder={onSubmitOrder}
-                currentBalance={currentAssetPair?.assetDataA?.balance}
+                currentBalance={currentAssetPair?.assetDataA?.availableBalance}
                 currentBuySellTab={currentBuySellTab}
                 currentOrder={currentOrder}
               />
