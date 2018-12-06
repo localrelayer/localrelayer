@@ -35,13 +35,13 @@ const layoutSm = [
 
 const layoutMd = [
   {
-    i: 'userBalance', x: 0, y: 0, w: 5, h: 22, static: true,
+    i: 'userBalance', x: 0, y: 0, w: 4.4, h: 22, static: true,
   },
   {
-    i: 'userOpenOrders', x: 5, y: 0, w: 5, h: 11, static: true,
+    i: 'userOpenOrders', x: 5, y: 0, w: 5.6, h: 11, static: true,
   },
   {
-    i: 'tradingHistory', x: 5, y: 11, w: 5, h: 11, static: true,
+    i: 'tradingHistory', x: 5, y: 11, w: 5.6, h: 11, static: true,
   },
 ];
 
@@ -59,25 +59,25 @@ const layoutLg = [
 
 const layoutLg2 = [
   {
-    i: 'userBalance', x: 0, y: 0, w: 12, h: 22, static: true,
+    i: 'userBalance', x: 0, y: 0, w: 12, h: 25, static: true,
   },
   {
-    i: 'userOpenOrders', x: 12, y: 0, w: 12, h: 11, static: true,
+    i: 'userOpenOrders', x: 12, y: 0, w: 12, h: 12.5, static: true,
   },
   {
-    i: 'tradingHistory', x: 12, y: 11, w: 12, h: 11, static: true,
+    i: 'tradingHistory', x: 12, y: 12.5, w: 12, h: 12.5, static: true,
   },
 ];
 
 const layoutLg3 = [
   {
-    i: 'userBalance', x: 0, y: 0, w: 6, h: 22, static: true,
+    i: 'userBalance', x: 0, y: 0, w: 6, h: 32, static: true,
   },
   {
-    i: 'userOpenOrders', x: 6, y: 0, w: 6, h: 11, static: true,
+    i: 'userOpenOrders', x: 6, y: 0, w: 6, h: 16, static: true,
   },
   {
-    i: 'tradingHistory', x: 6, y: 11, w: 6, h: 11, static: true,
+    i: 'tradingHistory', x: 6, y: 16, w: 6, h: 16, static: true,
   },
 ];
 
