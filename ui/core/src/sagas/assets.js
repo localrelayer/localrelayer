@@ -13,9 +13,7 @@ import {
   getResourceById,
   getWalletState,
 } from '../selectors';
-import {
-  toBaseUnitAmount,
-} from '../utils';
+import * as utils from '../utils';
 import api from '../api';
 import ethApi from '../ethApi';
 import {
@@ -371,7 +369,7 @@ function* processDepositOrWithdraw(action) {
     fieldName: 'symbol',
     value: 'WETH',
   }));
-  const amount = toBaseUnitAmount(
+  const amount = utils.toBaseUnitAmount(
     new BigNumber(action.amount),
     etherToken.decimals,
   );
@@ -394,7 +392,7 @@ function* processDepositOrWithdraw(action) {
       {
         transactionHash,
         address: selectedAccount.toLowerCase(),
-        name: action.method,
+        name: utils.cfl(action.method),
         networkId,
         meta: {
           amount,

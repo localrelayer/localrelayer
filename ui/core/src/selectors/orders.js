@@ -64,11 +64,10 @@ export const getTradingHistory = createSelector(
         order.metaData.filledTakerAssetAmount,
         assets[order.takerAssetData].decimals,
       ).toFixed(8);
-
     return {
       ...order,
       pair: `${assets[order.makerAssetData].symbol}/${assets[order.takerAssetData].symbol}`,
-      status: order.metaData.completedAt ? 'Completed' : 'Canceled',
+      status: order.metaData.error === 'ORDER_REMAINING_FILL_AMOUNT_ZERO' ? 'Completed' : 'Canceled',
       amount,
       total,
       price: getOrderPrice(

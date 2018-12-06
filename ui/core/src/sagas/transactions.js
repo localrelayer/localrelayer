@@ -3,12 +3,14 @@ import {
   Web3Wrapper,
 } from '@0x/web3-wrapper';
 import createActionCreators from 'redux-resource-action-creators';
-
 import {
   getResourceById,
 } from '../selectors';
 import ethApi from '../ethApi';
 import api from '../api';
+import {
+  sendNotificationRequest,
+} from '../actions';
 
 
 export function* awaitTransaction(txHash) {
@@ -54,6 +56,22 @@ export function* saveTransaction(
     requestKey: 'saveTransaction',
     list: transaction.address,
   });
+
+  const getStatus = (status) => {
+    if (status === 1) return 'success';
+    if (status === 0) return 'error';
+    return 'info';
+  };
+
+  const notificationConfig = {
+    message: !Number.isInteger(transaction.status)
+      ? `${transaction.name} transaction started`
+      : `${transaction.name} transaction ${transaction.status === 1 ? 'completed' : 'failed'}`,
+    description: transaction.meta?.asset?.name,
+    status: getStatus(transaction.status),
+    duration: 5,
+  };
+
   try {
     yield eff.put(actions.pending());
     const { records: [savedTransaction] } = yield eff.call(
@@ -72,8 +90,10 @@ export function* saveTransaction(
         transaction.transactionHash,
       );
     }
+    yield eff.put(sendNotificationRequest(notificationConfig));
   } catch (err) {
     console.log(err);
+    yield eff.put(sendNotificationRequest(notificationConfig));
     yield eff.put(actions.succeeded({
       resources: [],
     }));

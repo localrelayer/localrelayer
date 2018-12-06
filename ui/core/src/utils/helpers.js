@@ -135,3 +135,7 @@ export const sortOrderbook = (a, b) => {
     || aTakerFeePrice - bTakerFeePrice
     || aExpirationTimeSeconds - bExpirationTimeSeconds;
 };
+
+export function cfl(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}

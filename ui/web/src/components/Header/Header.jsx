@@ -122,7 +122,6 @@ const Header = ({
         >
           <S.NotificationIcon
             type="notification"
-            style={{ fontSize: 24 }}
             onClick={onNotificationsClick}
           />
         </S.NotificationBadge>

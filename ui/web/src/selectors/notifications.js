@@ -5,6 +5,17 @@ import {
   coreSelectors as cs,
 } from 'instex-core';
 
+const sorter = (a, b) => {
+  if (a.completedAt && b.completedAt) {
+    return new Date(b.completedAt) - new Date(a.completedAt);
+  }
+  if (!a.completedAt && b.completedAt) {
+    return -1;
+  } if (a.completedAt && !b.completedAt) {
+    return 1;
+  }
+  return new Date(b.createdAt) - new Date(a.createdAt);
+};
 
 export const getNotifications = createSelector(
   [
@@ -31,13 +42,10 @@ export const getNotifications = createSelector(
       color = 'yellow';
     }
     return {
-      description: transactions[transaction].name,
       id: transaction,
       color,
-      status: transactions[transaction].status,
       statusDescription,
-      createdAt: transactions[transaction].createdAt,
-      metaData: transactions[transaction].meta,
+      ...transactions[transaction],
     };
-  }),
+  }).sort(sorter),
 );

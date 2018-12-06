@@ -16,6 +16,9 @@ import {
   getContractAddressesForNetwork,
   transformBigNumberOrder,
 } from '../utils';
+import {
+  saveTransaction,
+} from './transactions';
 
 
 export function* fetchOrderBook(opts = {}) {
@@ -246,6 +249,31 @@ function* postOrder({
         );
         console.log('FILLED WITH HASH', txHash);
 
+
+        const filledOrders = ordersToFill.map((order, i) => ({
+          orderHash: order.metaData.orderHash,
+          filledAmount: takerAssetFillAmounts[i],
+        }));
+
+        const totalFilledAmount = takerAssetFillAmounts
+          .reduce((acc, cur) => acc.add(cur), new BigNumber(0));
+
+        yield eff.fork(
+          saveTransaction,
+          {
+            transactionHash: txHash,
+            address: taker.toLowerCase(),
+            name: 'Fill',
+            networkId,
+            meta: {
+              totalFilledAmount,
+              filledOrders,
+              makerAssetData,
+              takerAssetData,
+            },
+          },
+        );
+
         if (requiredAmount.gt(0)) {
           const newMakerAmount = new BigNumber(makerAssetAmount)
             .times(requiredAmount)
@@ -330,6 +358,7 @@ export function* cancelOrder({ order }) {
     const web3 = ethApi.getWeb3();
     const networkId = yield eff.call(web3.eth.net.getId);
     const contractWrappers = ethApi.getWrappers(networkId);
+    const address = yield eff.select(selectors.getWalletState('selectedAccount'));
     const txHash = yield eff.call(
       [
         contractWrappers.exchange,
@@ -337,7 +366,19 @@ export function* cancelOrder({ order }) {
       ],
       order,
     );
-    console.log('CANCELED', txHash);
+    yield eff.fork(
+      saveTransaction,
+      {
+        transactionHash: txHash,
+        address: address.toLowerCase(),
+        name: 'Cancel Order',
+        networkId,
+        meta: {
+          makerAssetData: order.makerAssetData,
+          takerAssetData: order.takerAssetData,
+        },
+      },
+    );
   } catch (err) {
     console.log(err);
   }
