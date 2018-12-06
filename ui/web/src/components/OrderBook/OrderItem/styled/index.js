@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 
-
 export const OrderItem = styled.div`
   display: flex;
   justify-content: space-around;
@@ -10,7 +9,7 @@ export const OrderItem = styled.div`
      cursor: pointer;
   }
     & div {
-    width: 30%;
-    text-align: left;
+      width: 30%;
+      text-align: left;
     }
 `;

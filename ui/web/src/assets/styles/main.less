@@ -1,6 +1,11 @@
 @import "~antd/dist/antd.less";
 
 require('./colors.js');
+
+#body {
+  height: 100%;
+}
+
 .ant-popover-inner {
   background-color: @popover-bg !important;
 }
@@ -45,7 +50,8 @@ require('./colors.js');
   border-color: @background-color-light;
 }
 .ant-layout {
-  background-color: @body-background !important;
+  background: @body-background !important;
+  height: 100%;
 }
 .ant-tooltip-inner {
   background-color: @popover-bg !important;

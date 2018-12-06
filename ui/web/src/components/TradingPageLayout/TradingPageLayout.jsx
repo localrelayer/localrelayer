@@ -9,9 +9,6 @@ import {
   layout as assetPairCardLayout,
 } from 'web-components/AssetPairCard';
 import {
-  layout as tradingHistoryLayout,
-} from 'web-components/TradingHistory';
-import {
   layout as orderBookLayout,
 } from 'web-components/OrderBook';
 import {
@@ -33,7 +30,6 @@ const layoutsSizes = ['xs', 'sm', 'md', 'lg', 'lg2', 'lg3'];
 
 const components = [
   assetPairCardLayout,
-  tradingHistoryLayout,
   orderBookLayout,
   userBalanceLayout,
   buySellLayout,

@@ -38,8 +38,8 @@ const getColumns = onOrderActionClick => [
     title: 'Created',
     dataIndex: 'metaData.createdAt',
     render: (text: string) => (
-      <Tooltip title={new Date(text).toLocaleString()}>
-        {new Date(text).toLocaleString()}
+      <Tooltip title={utils.formatDate('MM/DD/YYYY HH:mm:ss', text)}>
+        {utils.formatDate('MM/DD HH:mm', text)}
       </Tooltip>
     ),
     sorter: (a, b) => (
@@ -102,9 +102,7 @@ const getColumns = onOrderActionClick => [
             />
           </Tooltip>
         ) : (
-          <Tooltip title="Published">
-          Published
-          </Tooltip>
+          <div>Published</div>
         )
     ),
   }, {
@@ -131,6 +129,9 @@ const UserOpenOrders = ({
   return (
     <S.UserOpenOrders>
       <S.Header>
+        <S.Title>
+          Open orders
+        </S.Title>
         <S.SearchField>
           <Input
             value={searchText}
@@ -138,9 +139,6 @@ const UserOpenOrders = ({
             placeholder="Search by pair or status"
           />
         </S.SearchField>
-        <S.Title>
-          Your open orders
-        </S.Title>
       </S.Header>
       <S.UserOpenOrdersTable
         size="small"
@@ -164,7 +162,7 @@ const UserOpenOrders = ({
             : true
         ))}
         pagination={false}
-        scroll={{ y: 340 }}
+        scroll={{ y: 230 }}
       />
     </S.UserOpenOrders>
   );

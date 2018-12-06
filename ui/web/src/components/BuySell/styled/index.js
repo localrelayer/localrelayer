@@ -13,6 +13,13 @@ export const BuySell = styled.div`
 
 export const BuySellCard = styled(Card)`
   height: 100%;
+  .ant-card-body {
+    // To make card smaller
+    // padding: 0 20px;
+  }
+  .ant-form-vertical .ant-form-item {
+    // margin-bottom: 10px;
+  }
 `;
 
 export const BuySellTabs = styled(Tabs)`

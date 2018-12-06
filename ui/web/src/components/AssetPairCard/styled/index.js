@@ -15,44 +15,49 @@ export const AssetPairCard = styled(Card)`
 
 export const AssetPairInfo = styled.div`
   display: flex;
-  align-items: center;
+  flex-direction: column;
 `;
 
 export const CardTitle = styled.div`
-  font-size: 1.3em;
+  font-size: 0.9rem;
   display: flex;
   justify-content: space-between;
 `;
 
 export const AssetPrice = styled.div`
   display: flex;
-  width: 100%;
   font-size: 0.75rem;
-  line-height: 200%;
+`;
+
+export const Volume = styled.div`
+  display: flex;
+  font-size: 0.75rem;
+  flex-direction: column;
+`;
+
+export const Description = styled.div`
+  font-size: 0.75rem;
 `;
 
 export const BaseAssetAddress = styled.a`
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   white-space: nowrap;
   max-width: 80px;
   overflow: hidden;
   text-overflow: ellipsis;
-  margin-left: 10px;
 `;
 
 export const LastPrice = styled.div`
   font-weight: 400;
-  font-size: 1.1rem;
+  font-size: 0.9rem;
 `;
 
 export const PriceChange = styled.div`
-  font-size: 0.95rem;  
+  font-size: 0.9rem;  
 `;
-
 
 export const HighLowBlock = styled.div`
   display: flex;
-  flex-direction: column;
   align-items: flex-start;
   width: 40%;
 `;
