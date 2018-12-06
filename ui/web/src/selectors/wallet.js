@@ -11,7 +11,7 @@ import {
   BigNumber,
 } from '0x.js';
 
-export const getFormattedWalletBalance = createSelector(
+export const getEthWalletBalance = createSelector(
   cs.getWalletState('selectedAccountBalance'),
   balance => Web3Wrapper.toUnitAmount(new BigNumber(balance), 18).toFixed(8),
 );

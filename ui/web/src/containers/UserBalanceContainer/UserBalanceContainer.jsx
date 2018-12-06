@@ -7,7 +7,7 @@ import type {
 
 import {
   getAssetsWithBalanceAndAllowance,
-  getFormattedWalletBalance,
+  getEthWalletBalance,
 } from 'web-selectors';
 import Component from 'web-components/ConnectComponent';
 import UserBalance from 'web-components/UserBalance';
@@ -24,7 +24,7 @@ const UserBalanceContainer = ({ isTradingPage }: Props): Node => (
   <Component
     mapStateToProps={state => ({
       assets: getAssetsWithBalanceAndAllowance(state),
-      balance: getFormattedWalletBalance(state),
+      balance: getEthWalletBalance(state),
     })}
   >
     {({
