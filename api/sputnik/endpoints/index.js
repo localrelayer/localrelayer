@@ -73,12 +73,14 @@ sputnikApi.post('/transactions', async (ctx) => {
     transactionInstance,
   );
   if (transaction.status === 1) {
-    transactionInstance.updatedAt = new Date().toISOString();
+    transactionInstance.completedAt = new Date().toISOString();
   }
-  await transactionInstance.save();
+  const saveTransaction = await transactionInstance.save();
   ctx.message = 'OK';
   ctx.status = 200;
-  ctx.body = {};
+  ctx.body = {
+    records: [saveTransaction],
+  };
 });
 
 sputnikApi.get('/transactions', async (ctx) => {
@@ -106,7 +108,8 @@ sputnikApi.get('/transactions', async (ctx) => {
   if (type !== 'pending') {
     dbReq
       .skip(perPage * (page - 1))
-      .limit(parseInt(perPage, 10));
+      .limit(parseInt(perPage, 10))
+      .sort('-completedAt');
   }
   const transactions = await dbReq.lean();
   ctx.message = 'OK';

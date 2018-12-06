@@ -111,12 +111,17 @@ export const zeroExErrToHumanReadableErrMsg = (error, takerAddress) => {
 };
 
 export const formatDate = (template, date) => {
-  const specs = 'YYYY:MM:DD:HH:mm:ss'.split(':');
-  const timezonedDate = new Date(date) - new Date().getTimezoneOffset() * 6e4;
-  return new Date(timezonedDate)
-    .toISOString()
-    .split(/[-:.TZ]/)
-    .reduce((acc, item, i) => acc.split(specs[i]).join(item), template);
+  try {
+    const specs = 'YYYY:MM:DD:HH:mm:ss'.split(':');
+    const timezonedDate = new Date(date) - new Date().getTimezoneOffset() * 6e4;
+    return new Date(timezonedDate)
+      .toISOString()
+      .split(/[-:.TZ]/)
+      .reduce((acc, item, i) => acc.split(specs[i]).join(item), template);
+  } catch (e) {
+    console.log(e);
+    return null;
+  }
 };
 
 export const sortOrderbook = (a, b) => {

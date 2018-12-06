@@ -3,8 +3,11 @@ import React from 'react';
 import {
   Drawer,
   Icon,
-  Timeline
+  Timeline,
 } from 'antd';
+import {
+  utils,
+} from 'instex-core';
 import * as S from './styled';
 
 type Props = {
@@ -47,7 +50,7 @@ const NotificationsPanel = ({
               {notification.metaData?.asset?.name}
             </div>
             <div>
-              {new Date(notification.createdAt).toLocaleString()}
+              {utils.formatDate('MM/DD HH:mm:ss', notification.createdAt)}
             </div>
             <S.NotificationItemStatus statuscolor={notification.color}>
               {notification.statusDescription}

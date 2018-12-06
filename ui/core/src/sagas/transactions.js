@@ -56,14 +56,14 @@ export function* saveTransaction(
   });
   try {
     yield eff.put(actions.pending());
-    yield eff.call(
+    const { records: [savedTransaction] } = yield eff.call(
       api.saveTransaction,
       transaction,
     );
     yield eff.put(actions.succeeded({
       resources: [{
-        id: transaction.transactionHash,
-        ...transaction,
+        id: savedTransaction.transactionHash,
+        ...savedTransaction,
       }],
     }));
     if (action === 'create') {
