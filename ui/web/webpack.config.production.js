@@ -3,15 +3,15 @@ const merge = require('webpack-merge');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const S3Plugin = require('webpack-s3-plugin');
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
-// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const config = require('./webpack.config.base');
-
 
 module.exports = merge(config, {
   mode: 'production',
   devtool: 'source-map',
+  optimization: {
+    minimize: true,
+  },
   plugins: [
     new HtmlWebpackPlugin({
       hash: true,
@@ -31,8 +31,6 @@ module.exports = merge(config, {
     new ExtractTextPlugin({
       filename: 'bundle.css',
     }),
-    new UglifyJSPlugin(),
-    new webpack.optimize.DedupePlugin(),
     new S3Plugin({
       s3Options: {
         accessKeyId: 'AKIAIBIKUDUXXS73SUCQ',
