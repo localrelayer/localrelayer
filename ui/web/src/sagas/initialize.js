@@ -23,6 +23,7 @@ import {
   coreSelectors,
   coreActions,
   api,
+  utils,
 } from 'instex-core';
 
 import config from 'web-config';
@@ -393,6 +394,7 @@ export function* initialize(): Saga<void> {
   yield eff.put(
     coreActions.setWalletState({
       networkId,
+      networkName: utils.ethNetworks[networkId] || 'Unknown',
       selectedAccount,
     }),
   );

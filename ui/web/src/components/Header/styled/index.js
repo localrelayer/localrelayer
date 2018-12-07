@@ -3,6 +3,7 @@ import {
   Icon,
   Table,
   Badge,
+  Button,
 } from 'antd';
 import * as colors from 'web-styles/colors';
 
@@ -99,6 +100,7 @@ export const SearchBar = styled.div`
 export const NotificationContainer = styled.a`
   margin-left: auto;
   margin-right: 3%;
+  display: flex;
 `;
 
 export const NotificationIcon = styled(Icon)`
@@ -115,4 +117,8 @@ export const NotificationBadge = styled(Badge)`
     line-height: 12px;
     top: -5px;
 }
+`;
+
+export const UserProfile = styled.div`
+  margin-right: 30px;
 `;

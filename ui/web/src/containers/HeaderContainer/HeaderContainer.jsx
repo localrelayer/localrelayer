@@ -8,11 +8,7 @@ import type {
 import {
   coreSelectors as cs,
 } from 'instex-core';
-import {
-  getCurrentAssetPair,
-  getUiState,
-  getNotifications,
-} from 'web-selectors';
+import * as webSelectors from 'web-selectors';
 import {
   uiActions,
 } from 'web-actions';
@@ -27,11 +23,12 @@ import {
 const HeaderContainer = (): Node => (
   <Component
     mapStateToProps={state => ({
-      historyType: getUiState('historyType')(state),
+      historyType: webSelectors.getUiState('historyType')(state),
       listedAssetPairs: cs.getListedAssetPairs(state),
-      currentAssetPair: getCurrentAssetPair(state),
-      isNotificationsPanelIsVisible: getUiState('isNotificationsPanelIsVisible')(state),
-      notifications: getNotifications(state),
+      currentAssetPair: webSelectors.getCurrentAssetPair(state),
+      isNotificationsPanelIsVisible: webSelectors.getUiState('isNotificationsPanelIsVisible')(state),
+      notifications: webSelectors.getNotifications(state),
+      address: cs.getWalletState('selectedAccount')(state),
     })}
   >
     {({
@@ -41,11 +38,13 @@ const HeaderContainer = (): Node => (
       currentAssetPair,
       isNotificationsPanelIsVisible,
       notifications,
+      address,
     }) => (
       <Header
         listedAssetPairs={listedAssetPairs}
         currentAssetPair={currentAssetPair}
         notifications={notifications}
+        address={address}
         onNotificationsClick={() => {
           dispatch(uiActions.setUiState({
             isNotificationsPanelIsVisible: !isNotificationsPanelIsVisible,

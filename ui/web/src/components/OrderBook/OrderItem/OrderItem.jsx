@@ -39,15 +39,20 @@ const OrderItem = ({
     onClick={onClick}
     className="orderItem"
   >
+    {/*
     <S.AmountBar
       width={calculateAmountBar(order, allOrders)}
       color={type === 'bids' ? colors.green : colors.red}
     />
+    */}
     <div>
       {order.price}
     </div>
     <div>
       {order.amount}
+    </div>
+    <div>
+      {order.total}
     </div>
     <S.Bar
       width={calculateBar(order, orders)}

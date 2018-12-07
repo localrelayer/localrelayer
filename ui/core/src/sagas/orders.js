@@ -155,12 +155,6 @@ function* matchOrder({
   let price;
   let matchedOrders = [];
 
-  console.log(
-    makerAssetAmount,
-    takerAssetAmount,
-    type,
-  );
-
   if (type === 'bid') {
     price = new BigNumber(makerAssetAmount).div(takerAssetAmount);
     const askOrders = yield eff.select(selectors.getAskOrders);
@@ -212,30 +206,19 @@ function* postOrder({
       takerAssetAmount,
       type,
     });
-
-    let requiredAmount = new BigNumber(takerAssetAmount);
+    let existingAssetAmount = new BigNumber(makerAssetAmount);
 
     if (matchedOrders.length) {
       const ordersToFill = [];
       const takerAssetFillAmounts = [];
-      while (requiredAmount.gt(0) && matchedOrders.length) {
+      while (existingAssetAmount.gt(0) && matchedOrders.length) {
         const order = matchedOrders.shift();
-        const existingAssetAmount = order.metaData.remainingFillableMakerAssetAmount;
-        const toBeFilledAmount = BigNumber.min(requiredAmount, existingAssetAmount);
-        requiredAmount = requiredAmount.minus(toBeFilledAmount);
+        const neededAmount = order.metaData.remainingFillableTakerAssetAmount;
+        const toBeFilledAmount = BigNumber.min(neededAmount, existingAssetAmount);
+        existingAssetAmount = existingAssetAmount.minus(toBeFilledAmount);
         ordersToFill.push(order);
-        console.log('To Fill', toBeFilledAmount);
-        console.log('Remains', requiredAmount);
-        // TODO: Danger toFixed(0) CHECK LATER
-        const takerAmount = new BigNumber(toBeFilledAmount
-          .times(order.metaData.remainingFillableTakerAssetAmount)
-          .div(order.metaData.remainingFillableMakerAssetAmount)
-          .toFixed(0));
-        takerAssetFillAmounts.push(takerAmount);
-        console.log('Taker amount', takerAmount);
+        takerAssetFillAmounts.push(toBeFilledAmount);
       }
-
-      console.log(ordersToFill, takerAssetFillAmounts);
 
       try {
         const txHash = yield eff.call(
@@ -248,7 +231,6 @@ function* postOrder({
           taker,
         );
         console.log('FILLED WITH HASH', txHash);
-
 
         const filledOrders = ordersToFill.map((order, i) => ({
           orderHash: order.metaData.orderHash,
@@ -274,10 +256,10 @@ function* postOrder({
           },
         );
 
-        if (requiredAmount.gt(0)) {
-          const newMakerAmount = new BigNumber(makerAssetAmount)
-            .times(requiredAmount)
-            .div(takerAssetAmount);
+        if (existingAssetAmount.gt(0)) {
+          const newTakerAmount = new BigNumber(takerAssetAmount)
+            .times(existingAssetAmount)
+            .div(makerAssetAmount);
 
           yield eff.call(postOrder, {
             formActions,
@@ -286,8 +268,8 @@ function* postOrder({
               takerAddress,
               makerAssetData,
               takerAssetData,
-              makerAssetAmount: newMakerAmount,
-              takerAssetAmount: requiredAmount,
+              makerAssetAmount: existingAssetAmount,
+              takerAssetAmount: newTakerAmount,
               expirationTimeSeconds,
               type,
             },
@@ -324,7 +306,6 @@ function* postOrder({
           order,
           makerAddress,
         );
-
         try {
           yield eff.call(
             [
@@ -335,8 +316,13 @@ function* postOrder({
           );
         } catch (err) {
           console.log('NOT VALID', err);
+          formActions.setFieldError(
+            'balance',
+            'Order validation failed',
+          );
+          formActions.setSubmitting(false);
+          return;
         }
-
         yield eff.call(api.postOrder, signedOrder, { networkId });
         formActions.resetForm({});
       } catch (err) {
