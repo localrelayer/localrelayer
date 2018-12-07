@@ -12,36 +12,109 @@ mongoose.connect(
 );
 
 const orderSchema = mongoose.Schema({
-  makerAddress: { type: String },
-  takerAddress: { type: String },
-  feeRecipientAddress: { type: String },
-  senderAddress: { type: String },
-  makerAssetAmount: { type: String },
-  takerAssetAmount: { type: String },
-  makerFee: { type: String },
-  takerFee: { type: String },
-  makerAssetData: { type: String },
-  takerAssetData: { type: String },
-  orderHash: { type: String, unique: true, dropDups: true },
-  expirationTimeSeconds: { type: String },
-  networkId: { type: Number, index: true },
-  salt: { type: String },
-  exchangeAddress: { type: String },
-  signature: { type: String },
-  makerAssetProxyId: { type: String },
-  takerAssetProxyId: { type: String },
-  makerAssetAddress: { type: String },
-  takerAssetAddress: { type: String },
-  isValid: { type: Boolean },
-  isShadowed: { type: Boolean },
-  error: { type: String },
-  remainingFillableMakerAssetAmount: { type: String },
-  remainingFillableTakerAssetAmount: { type: String },
-  filledTakerAssetAmount: { type: String },
-  createdAt: { type: Date },
-  completedAt: { type: Date },
-  lastFilledAt: { type: Date },
-}, { versionKey: false });
+  makerAddress: {
+    type: String,
+  },
+  takerAddress: {
+    type: String,
+  },
+  feeRecipientAddress: {
+    type: String,
+  },
+  senderAddress: {
+    type: String,
+  },
+  makerAssetAmount: {
+    type: String,
+  },
+  takerAssetAmount: {
+    type: String,
+  },
+  makerFee: {
+    type: String,
+  },
+  takerFee: {
+    type: String,
+  },
+  makerAssetData: {
+    type: String,
+  },
+  takerAssetData: {
+    type: String,
+  },
+  orderHash: {
+    type: String,
+    unique: true,
+    dropDups: true,
+  },
+  expirationTimeSeconds: {
+    type: String,
+  },
+  networkId: {
+    type: Number,
+    index: true,
+  },
+  salt: {
+    type: String,
+  },
+  exchangeAddress: {
+    type: String,
+  },
+  signature: {
+    type: String,
+  },
+  makerAssetProxyId: {
+    type: String,
+  },
+  takerAssetProxyId: {
+    type: String,
+  },
+  makerAssetAddress: {
+    type: String,
+  },
+  takerAssetAddress: {
+    type: String,
+  },
+  isValid: {
+    type: Boolean,
+    index: true,
+  },
+  isShadowed: {
+    type: Boolean,
+    index: true,
+  },
+  error: {
+    type: String,
+  },
+  remainingFillableMakerAssetAmount: {
+    type: String,
+  },
+  remainingFillableTakerAssetAmount: {
+    type: String,
+  },
+  filledTakerAssetAmount: {
+    type: String,
+  },
+  createdAt: {
+    type: Date,
+  },
+  completedAt: {
+    type: Date,
+  },
+  lastFilledAt: {
+    type: Date,
+  },
+}, {
+  versionKey: false,
+});
+orderSchema.index({
+  makerAssetData: 1,
+  takerAssetData: -1,
+});
+orderSchema.index({
+  isValid: 1,
+  isShadowed: -1,
+});
 
 const assetDataSchema = mongoose.Schema({
   minAmount: {
@@ -63,9 +136,17 @@ const assetPairSchema = mongoose.Schema({
   assetDataB: assetDataSchema,
   networkId: {
     type: Number,
+    index: true,
   },
 }, {
   versionKey: false,
+});
+assetPairSchema.index({
+  assetDataA: 1,
+  assetDataB: -1,
+  networkId: -1,
+}, {
+  unique: true,
 });
 
 const transactionSchema = mongoose.Schema({
