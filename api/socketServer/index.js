@@ -24,8 +24,7 @@ const logger = createLogger(
   'socketServer',
   process.env.LOG_LEVEL || 'silly',
   (
-    require.main === module
-    && process.env.DASHBOARD_PARENT !== 'true'
+    process.env.DASHBOARD_PARENT !== 'true'
   ),
 );
 logger.debug('socketServer logger was created');
