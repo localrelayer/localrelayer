@@ -39,6 +39,7 @@ import {
 import {
   takeSubscribeOnChangeChartBar,
 } from './chart';
+import * as uiSagas from './ui';
 
 
 function* subscribeOnUpdateOrders(): Saga<void> {
@@ -148,14 +149,12 @@ function* initializeRoute({
         tradingInfoSubscribeId: null,
       }));
     }
-    /* TODO: fetch history for all pairs
     yield eff.fork(
       coreSagas.fetchTradingHistory,
       {
         networkId,
       },
     );
-    */
     const allAssets = yield eff.select(coreSelectors.getResourceMappedList('assets'));
     yield eff.put(
       webRadioChannel,
@@ -461,6 +460,7 @@ export function* initialize(): Saga<void> {
   yield eff.fork(coreSagas.takeDepositAndWithdraw);
   yield eff.fork(coreSagas.takePostOrder);
   yield eff.fork(coreSagas.takeCancelOrder);
+  yield eff.fork(uiSagas.takeNotification);
   let watchWalletTask;
   /* Web radio center */
   while (true) {

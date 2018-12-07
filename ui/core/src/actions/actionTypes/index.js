@@ -9,3 +9,5 @@ export const DEPOSIT_WITHDRAW_REQUEST = 'assets/DEPOSIT_WITHDRAW_REQUEST';
 
 export const POST_ORDER_REQUEST = 'orders/POST_ORDER_REQUEST';
 export const CANCEL_ORDER = 'orders/CANCEL_ORDER';
+
+export const SEND_NOTIFICATION = 'ui/SEND_NOTIFICATION';

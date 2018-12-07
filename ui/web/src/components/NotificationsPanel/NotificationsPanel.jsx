@@ -14,12 +14,14 @@ type Props = {
   visible: Boolean,
   notifications: any,
   onClose: Function,
+  networkId: Number,
 };
 
 const NotificationsPanel = ({
   visible,
   notifications,
   onClose,
+  networkId,
 }: Props) => (
   <Drawer
     closable
@@ -44,13 +46,26 @@ const NotificationsPanel = ({
         >
           <S.NotificationItemContent>
             <div>
-              {notification.description}
+              {notification.name}
+              {' '}
+              <a
+                rel="noopener noreferrer"
+                target="_blank"
+                href={`https://${networkId === 42 ? 'kovan.' : ''}etherscan.io/tx/${notification.transactionHash}`}
+              >
+                (
+                {notification.transactionHash.slice(0, 6)}
+)
+              </a>
             </div>
             <div>
-              {notification.metaData?.asset?.name}
+              {notification.meta?.asset?.name}
             </div>
             <div>
-              {utils.formatDate('MM/DD HH:mm:ss', notification.createdAt)}
+              {notification.completedAt
+                ? utils.formatDate('MM/DD HH:mm:ss', notification.completedAt)
+                : utils.formatDate('MM/DD HH:mm:ss', notification.createdAt)
+              }
             </div>
             <S.NotificationItemStatus statuscolor={notification.color}>
               {notification.statusDescription}
