@@ -125,17 +125,17 @@ sputnikApi.get('/tradingHistory', async (ctx) => {
   const {
     baseAssetData,
     quoteAssetData,
+    networkId = 1,
   } = ctx.request.query;
   const orders = await Order.find({
+    networkId,
     $or: [{
       makerAssetData: baseAssetData,
       takerAssetData: quoteAssetData,
-      error: ExchangeContractErrs.OrderRemainingFillAmountZero,
+      filledTakerAssetAmount: { $ne: 0 },
     }, {
       makerAssetData: quoteAssetData,
       takerAssetData: baseAssetData,
-      error: ExchangeContractErrs.OrderRemainingFillAmountZero,
-    }, {
       filledTakerAssetAmount: { $ne: 0 },
     }],
   })
@@ -247,10 +247,7 @@ sputnikApi.get('/bars', async (ctx) => {
       }],
       lastFilledAt: { $gt: start, $lt: end.add(1, 'day') },
     }],
-  }).sort({ lastFilledAt: -1 });
-
-  logger.debug('RECORDS');
-  logger.debug(records);
+  }).sort('lastFilledAt');
 
   const bars = records.reduce((acc, order) => {
     let period = moment(order.lastFilledAt).utc();

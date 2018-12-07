@@ -23,7 +23,7 @@ const NotificationsPanel = ({
 }: Props) => (
   <Drawer
     closable
-    title="Notifications panel"
+    title="Transactions panel"
     placement="right"
     onClose={onClose}
     visible={visible}

@@ -19,13 +19,13 @@ const OrderBook = ({
   <S.OrderBook>
     <S.Header>
       <S.HeaderTh>
+          Size
+      </S.HeaderTh>
+      <S.HeaderTh>
           Price
       </S.HeaderTh>
       <S.HeaderTh>
           Amount
-      </S.HeaderTh>
-      <S.HeaderTh>
-          Total
       </S.HeaderTh>
     </S.Header>
     <S.Asks>
@@ -35,6 +35,9 @@ const OrderBook = ({
             key={order.id}
             order={order}
             onClick={() => onOrderClick(order.id, 'bid')}
+            orders={asks}
+            allOrders={[...asks, ...bids]}
+            type="asks"
           />
         ))}
       </S.AsksItemsList>
@@ -51,12 +54,14 @@ const OrderBook = ({
     </S.Spread>
     <S.Bids>
       <S.BidsItemsList>
-        {bids.map((order, i) => (
+        {bids.map(order => (
           <OrderItem
-            id={`order${i}`}
             key={order.id}
             order={order}
             onClick={() => onOrderClick(order.id, 'ask')}
+            orders={bids}
+            allOrders={[...asks, ...bids]}
+            type="bids"
           />
         ))}
       </S.BidsItemsList>
