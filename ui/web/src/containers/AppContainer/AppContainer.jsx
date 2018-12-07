@@ -17,42 +17,50 @@ import ConnectingToEthProvider from 'web-components/ConnectingToEthProvider';
 import NotificationsPanelContainer from 'web-containers/NotificationsPanelContainer';
 import TradingPageContainer from 'web-containers/TradingPageContainer';
 import UserProfilePageContainer from 'web-containers/UserProfilePageContainer';
+import LoaderPage from 'web-components/LoaderPage';
 
 
 const AppContainer = () => (
   <Component
     mapStateToProps={state => ({
       isAppInitializing: getUiState('isAppInitializing')(state),
+      isMetaMaskPresent: getUiState('isMetaMaskPresent')(state),
     })}
   >
-    {({ isAppInitializing }) => (
-      <Layout>
-        <NotificationsPanelContainer />
-        {isAppInitializing ? (
-          <ConnectingToEthProvider />
-        ) : (
-          <Switch>
-            <Route
-              exact
-              path="/:baseAsset-:quoteAsset"
-              component={TradingPageContainer}
-            />
-            <Route
-              exact
-              path="/account"
-              component={UserProfilePageContainer}
-            />
-            <Route
-              exact
-              path="*"
-              render={() => (
-                <Redirect to="/ZRX-WETH" />
-              )}
-            />
-          </Switch>
-        )}
-      </Layout>
-    )}
+    {({
+      isAppInitializing,
+      isMetaMaskPresent,
+    }) => {
+      if (!isMetaMaskPresent) return (<ConnectingToEthProvider />);
+      return (
+        <Layout>
+          <NotificationsPanelContainer />
+          {isAppInitializing ? (
+            <LoaderPage />
+          ) : (
+            <Switch>
+              <Route
+                exact
+                path="/:baseAsset-:quoteAsset"
+                component={TradingPageContainer}
+              />
+              <Route
+                exact
+                path="/account"
+                component={UserProfilePageContainer}
+              />
+              <Route
+                exact
+                path="*"
+                render={() => (
+                  <Redirect to="/ZRX-WETH" />
+                )}
+              />
+            </Switch>
+          )}
+        </Layout>
+      );
+    }}
   </Component>
 );
 
