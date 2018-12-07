@@ -96,12 +96,14 @@ export const SearchBar = styled.div`
   display: flex;
 `;
 
-export const NotificationContainer = styled.div`
-  margin-left: 2%;
+export const NotificationContainer = styled.a`
+  margin-left: auto;
+  margin-right: 3%;
 `;
 
 export const NotificationIcon = styled(Icon)`
   cursor: pointer;
+  font-size: 24px;
 `;
 
 export const NotificationBadge = styled(Badge)`

@@ -9,6 +9,9 @@ import Component from 'web-components/ConnectComponent';
 import NotificationsPanel from 'web-components/NotificationsPanel';
 
 import {
+  coreSelectors as cs,
+} from 'instex-core';
+import {
   uiActions,
 } from 'web-actions';
 import {
@@ -22,16 +25,19 @@ const NotificationsPanelContainer = (): Node => (
     mapStateToProps={state => ({
       visible: getUiState('isNotificationsPanelIsVisible')(state),
       notifications: getNotifications(state),
+      networkId: cs.getWalletState('networkId')(state),
     })}
   >
     {({
       visible,
       notifications,
+      networkId,
       dispatch,
     }) => (
       <NotificationsPanel
         visible={visible}
         notifications={notifications}
+        networkId={networkId}
         onClose={() => {
           dispatch(uiActions.setUiState({
             isNotificationsPanelIsVisible: !visible,
