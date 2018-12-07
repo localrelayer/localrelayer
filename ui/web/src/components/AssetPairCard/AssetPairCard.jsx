@@ -76,7 +76,7 @@ const AssetPairCard = ({
             </S.Volume>
             <S.Volume>
               <div>
-                {tradingInfo.assetAVolume ? tradingInfo.assetAVolume.slice(0, 16) : 0}
+                {tradingInfo.assetBVolume ? tradingInfo.assetBVolume.slice(0, 16) : 0}
               </div>
               <S.Description>{`Volume (${assetDataB?.assetData?.symbol})`}</S.Description>
             </S.Volume>
