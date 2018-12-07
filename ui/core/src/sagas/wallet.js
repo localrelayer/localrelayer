@@ -1,6 +1,7 @@
 // @flow
 import * as eff from 'redux-saga/effects';
 import * as R from 'ramda';
+import * as utils from '../utils';
 import * as walletActions from '../actions/wallet';
 import ethApi from '../ethApi';
 
@@ -9,12 +10,6 @@ export function* watchWallet({
   delay,
   tokens,
 }): Saga<void> {
-  const ethNetworks = {
-    1: 'Main Ethereum Network',
-    42: 'Kovan Test Network',
-    50: 'Test Network',
-  };
-
   while (true) {
     try {
       const web3 = ethApi.getWeb3();
@@ -68,7 +63,7 @@ export function* watchWallet({
       if (wallet.networkId !== networkId) {
         changedData.push({
           networkId,
-          networkName: ethNetworks[networkId] || 'Unknown',
+          networkName: utils.ethNetworks[networkId] || 'Unknown',
         });
       }
       if (accounts.some((w, i) => wallet.accounts[i] !== w)) {
@@ -76,7 +71,7 @@ export function* watchWallet({
           accounts,
         });
       }
-      if (selectedAccount !== wallet.selectedAccount) {
+      if (selectedAccount?.toLowerCase() !== wallet.selectedAccount?.toLowerCase()) {
         changedData.push({
           selectedAccount: selectedAccount.toLowerCase(),
         });

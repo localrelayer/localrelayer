@@ -139,3 +139,9 @@ export const sortOrderbook = (a, b) => {
 export function cfl(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
+
+export const ethNetworks = {
+  1: 'Main Ethereum Network',
+  42: 'Kovan Test Network',
+  50: 'Test Network',
+};

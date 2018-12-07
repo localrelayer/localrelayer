@@ -46,6 +46,7 @@ const Header = ({
   onPairClick,
   onNotificationsClick,
   notifications,
+  address,
 }: Props) => {
   const [searchText, setSearchText] = useState('');
   const s = searchText.toLowerCase();
@@ -114,6 +115,13 @@ const Header = ({
         </Button>
       </Popover>
       <S.NotificationContainer>
+        <S.UserProfile>
+          <Button loading={!address} type="primary">
+            <S.HeaderIcon type="user" />
+            {address?.slice(0, 16)}
+            ...
+          </Button>
+        </S.UserProfile>
         <S.NotificationBadge count={
           notifications.reduce((acc, notification) => (
             notification.statusDescription === 'Pending' ? acc + 1 : acc

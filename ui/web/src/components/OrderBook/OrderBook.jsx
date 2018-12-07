@@ -19,13 +19,13 @@ const OrderBook = ({
   <S.OrderBook>
     <S.Header>
       <S.HeaderTh>
-          Size
-      </S.HeaderTh>
-      <S.HeaderTh>
           Price
       </S.HeaderTh>
       <S.HeaderTh>
           Amount
+      </S.HeaderTh>
+      <S.HeaderTh>
+          Total
       </S.HeaderTh>
     </S.Header>
     <S.Asks>
