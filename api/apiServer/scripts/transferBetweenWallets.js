@@ -1,4 +1,4 @@
-import 'module-alias/register';
+import '../../aliases';
 import {
   ContractWrappers,
   assetDataUtils,

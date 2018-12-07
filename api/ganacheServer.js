@@ -1,4 +1,4 @@
-import 'module-alias/register';
+import './aliases';
 import ganache from 'ganache-core';
 import {
   createLogger,

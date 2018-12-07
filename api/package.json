@@ -5,6 +5,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
+    "build": "NODE_ENV=production npm run clean && babel . -d dist --copy-files",
     "start": "pm2 start process.yml --env production",
     "stop": "pm2 stop collector-listener collector-socket",
     "delete": "pm2 delete collector-listener collector-socket",
@@ -29,7 +30,6 @@
     "ganache:dev:hotreload": "NODE_ENV=development nodemon ./ganacheServer --exec babel-node",
     "downloadSnapshot": "download --extract --strip 1 --out 0x_ganache_snapshot https://s3.amazonaws.com/testrpc-shapshots/965d6098294beb22292090c461151274ee6f9a26.zip",
     "clean": "rm -rf dist && mkdir dist",
-    "build": "npm run clean && babel src -d dist",
     "scenario:allowances": "NODE_ENV=development nodemon --exec babel-node scenarios/allowances.js",
     "fakeSraServer": "NODE_ENV=development nodemon --exec babel-node scenarios/utils/fakeSraServer.js",
     "scenario:fillOrderERC20": "NODE_ENV=development nodemon --exec babel-node scenarios/fillOrderERC20.js",
@@ -50,14 +50,6 @@
     "plantAssetPairs:prod": "NODE_ENV=production npm run plantAssetPairs",
     "generateOrders": "NODE_ENV=development babel-node apiServer/scripts/generateOrders.js",
     "emulator": "NODE_ENV=development babel-node ./tradingEmulator"
-  },
-  "_moduleAliases": {
-    "db": "./db",
-    "config": "./config",
-    "utils": "./utils",
-    "redisClient": "./redisClient",
-    "logger": "./logger",
-    "apiLogger": "./apiServer/apiLogger"
   },
   "dependencies": {
     "@0x/connect": "3.0.8",

@@ -1,4 +1,4 @@
-import 'module-alias/register';
+import '../../aliases';
 import mainAssetPairs from 'utils/seeds/assetPairs.main';
 import kovanAssetPairs from 'utils/seeds/assetPairs.kovan';
 import testAssetPairs from 'utils/seeds/assetPairs.test';
