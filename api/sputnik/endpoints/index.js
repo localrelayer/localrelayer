@@ -127,7 +127,8 @@ sputnikApi.get('/tradingHistory', async (ctx) => {
     quoteAssetData,
     networkId = 1,
   } = ctx.request.query;
-  const orders = await Order.find({
+
+  const query = baseAssetData && quoteAssetData ? {
     networkId,
     $or: [{
       makerAssetData: baseAssetData,
@@ -138,7 +139,13 @@ sputnikApi.get('/tradingHistory', async (ctx) => {
       takerAssetData: baseAssetData,
       filledTakerAssetAmount: { $ne: 0 },
     }],
-  })
+  }
+    : {
+      networkId,
+      filledTakerAssetAmount: { $ne: 0 },
+    };
+
+  const orders = await Order.find(query)
     .limit(500)
     .sort('-lastFilledAt')
     .lean();
