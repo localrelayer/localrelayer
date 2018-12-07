@@ -46,7 +46,7 @@ type Props = {
   children: React.Node,
 };
 
-const TrandgPageLayout = ({ children }: Props) => (
+const TradingPageLayout = ({ children }: Props) => (
   <ResponsiveReactGridLayout
     layouts={layouts}
     breakpoints={{
@@ -74,4 +74,4 @@ const TrandgPageLayout = ({ children }: Props) => (
   </ResponsiveReactGridLayout>
 );
 
-export default TrandgPageLayout;
+export default TradingPageLayout;
