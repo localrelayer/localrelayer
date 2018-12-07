@@ -42,7 +42,7 @@ export const layout = {
     x: 0,
     y: 0,
     w: 5,
-    h: 12,
+    h: 15,
     static: true,
   },
   lg3: {
@@ -50,7 +50,7 @@ export const layout = {
     x: 0,
     y: 0,
     w: 2.5,
-    h: 12,
+    h: 18,
     static: true,
   },
 };

@@ -40,17 +40,17 @@ export const layout = {
   lg2: {
     i: layoutName,
     x: 0,
-    y: 12,
+    y: 15,
     w: 5,
-    h: 9,
+    h: 13,
     static: true,
   },
   lg3: {
     i: layoutName,
     x: 0,
-    y: 12,
+    y: 18,
     w: 2.5,
-    h: 9,
+    h: 15,
     static: true,
   },
 };
