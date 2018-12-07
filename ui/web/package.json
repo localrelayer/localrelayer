@@ -7,7 +7,7 @@
     "test:watch": "yarn test --watchAll",
     "lint": "eslint ./src --ext .js,.jsx --ignore-pattern '/dist/' --ignore-pattern '*.prod.js' --ignore-pattern '*.test.js' --ignore-pattern '**/node_modules/*'",
     "start": "webpack-dev-server --open --color --env.NODE_ENV=development --config webpack.config.development.js",
-    "build": "cross-env NODE_ENV=production webpack --config webpack.config.production.js --progress --profile --colors",
+    "build": "NODE_ENV=production webpack --config webpack.config.production.js --progress --profile --colors",
     "flow": "flow",
     "storybook": "start-storybook -p 9001 -c .storybook -s ./dist"
   },
@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "antd": "3.10.9",
+    "extract-text-webpack-plugin": "^3.0.2",
     "formik": "1.3.2",
     "history": "4.7.2",
     "instex-core": "0.0.1",
@@ -32,7 +33,8 @@
     "react-measure": "^2.1.3",
     "react-redux": "5.1.1",
     "react-router-dom": "4.3.1",
-    "styled-components": "4.1.2"
+    "styled-components": "4.1.2",
+    "webpack-s3-plugin": "^1.0.2"
   },
   "devDependencies": {
     "@storybook/addon-actions": "4.0.9",
