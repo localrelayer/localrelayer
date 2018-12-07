@@ -1,4 +1,4 @@
-import 'module-alias/register';
+import '../aliases';
 import {
   subscribeEthEvents,
 } from './subscribe';

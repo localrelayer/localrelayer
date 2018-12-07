@@ -1,4 +1,4 @@
-import 'module-alias/register';
+import '../../aliases';
 import {
   OrderWatcher,
 } from '@0x/order-watcher';

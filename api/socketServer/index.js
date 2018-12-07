@@ -1,4 +1,4 @@
-import 'module-alias/register';
+import '../aliases';
 import WebSocket from 'ws';
 import https from 'https';
 import fs from 'fs';

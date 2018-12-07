@@ -1,4 +1,4 @@
-import 'module-alias/register';
+import '../aliases';
 import Koa from 'koa';
 import Router from 'koa-router';
 import bodyParser from 'koa-bodyparser';

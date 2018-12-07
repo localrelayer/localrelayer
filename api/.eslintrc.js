@@ -1,5 +1,5 @@
 const path = require('path');
-const packageJson = require('./package.json');
+const aliases = require('./aliases');
 
 module.exports = {
   settings: {
@@ -7,13 +7,10 @@ module.exports = {
       alias: {
         map: (
           Object.keys(
-            packageJson._moduleAliases
+            aliases,
           ).map(moduleName => ([
             moduleName,
-            path.join(
-              __dirname,
-              packageJson._moduleAliases[moduleName],
-            ),
+            aliases[moduleName],
           ]))
         ),
       },

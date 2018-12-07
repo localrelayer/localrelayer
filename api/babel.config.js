@@ -16,6 +16,9 @@ module.exports = function (api) {
     plugins: [
       '@babel/plugin-proposal-optional-chaining',
     ],
+    ignore: [
+      'node_modules',
+    ],
   };
   return config;
 };
