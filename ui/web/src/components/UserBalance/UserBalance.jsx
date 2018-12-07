@@ -19,7 +19,7 @@ import type {
 import type {
   Asset,
 } from 'instex-core';
-
+import Measure from 'react-measure';
 import * as S from './styled';
 
 type Props = {
@@ -173,107 +173,120 @@ const UserBalance = ({
   onWithdraw,
 }: Props): Node => {
   const [searchText, setSearchText] = useState('');
+  const [dimensions, setDimensions] = useState('');
+  console.log(dimensions);
   const s = searchText.toLowerCase();
   return (
-    <S.UserBalance>
-      <S.Title>
-        <div>
+    <Measure
+      bounds
+      onResize={(contentRect) => {
+        setDimensions(contentRect.bounds);
+      }}
+    >
+      {({ measureRef }) => (
+        <div ref={measureRef} style={{ height: '100%' }}>
+          <S.UserBalance>
+            <S.Title>
+              <div>
         Balance
-          {' '}
-          {balance}
-          {' '}
+                {' '}
+                {balance}
+                {' '}
         ETH
-        </div>
-      </S.Title>
-      <Formik
-        isInitialValid
-        validate={(values) => {
-          const errors = {};
-          if (values.amount.length && !isNumber(values.amount)) {
-            errors.amount = 'Amount should be a number';
-          }
-          return errors;
-        }}
-      >
-        {({
-          handleChange,
-          values,
-          resetForm,
-          errors,
-          isValid,
-        }) => (
-          <S.WrappingBar>
-            <S.Amount>
-              <Form.Item
-                validateStatus={errors.amount && 'error'}
-                help={errors.amount}
-              >
-                <Input
-                  value={values.amount}
-                  name="amount"
-                  addonAfter={<div>ETH</div>}
-                  placeholder="Amount"
-                  onChange={handleChange}
-                  autoComplete="off"
-                />
-              </Form.Item>
-            </S.Amount>
-            <S.UnwrapWrapBar>
-              <Button.Group>
-                <S.UnwrapButton
-                  type="primary"
-                  disabled={
+              </div>
+            </S.Title>
+            <Formik
+              isInitialValid
+              validate={(values) => {
+                const errors = {};
+                if (values.amount.length && !isNumber(values.amount)) {
+                  errors.amount = 'Amount should be a number';
+                }
+                return errors;
+              }}
+            >
+              {({
+                handleChange,
+                values,
+                resetForm,
+                errors,
+                isValid,
+              }) => (
+                <S.WrappingBar>
+                  <S.Amount>
+                    <Form.Item
+                      validateStatus={errors.amount && 'error'}
+                      help={errors.amount}
+                    >
+                      <Input
+                        value={values.amount}
+                        name="amount"
+                        addonAfter={<div>ETH</div>}
+                        placeholder="Amount"
+                        onChange={handleChange}
+                        autoComplete="off"
+                      />
+                    </Form.Item>
+                  </S.Amount>
+                  <S.UnwrapWrapBar>
+                    <Button.Group>
+                      <S.UnwrapButton
+                        type="primary"
+                        disabled={
                   !isValid
                   || !values?.amount?.length
                 }
-                  onClick={() => onWithdraw(values.amount, { resetForm })}
-                >
+                        onClick={() => onWithdraw(values.amount, { resetForm })}
+                      >
                   Withdraw
-                </S.UnwrapButton>
-                <S.WrapButton
-                  type="primary"
-                  disabled={
+                      </S.UnwrapButton>
+                      <S.WrapButton
+                        type="primary"
+                        disabled={
                   !isValid
                   || !values?.amount?.length
                 }
-                  onClick={() => onDeposit(values.amount, { resetForm })}
-                >
+                        onClick={() => onDeposit(values.amount, { resetForm })}
+                      >
                 Deposit
-                </S.WrapButton>
-              </Button.Group>
-            </S.UnwrapWrapBar>
-            {!isTradingPage && (
-            <S.SearchField>
-              <Input
-                value={searchText}
-                onChange={ev => setSearchText(ev.target.value)}
-                placeholder="Search token name or symbol"
-              />
-            </S.SearchField>
-            )
+                      </S.WrapButton>
+                    </Button.Group>
+                  </S.UnwrapWrapBar>
+                  {!isTradingPage && (
+                  <S.SearchField>
+                    <Input
+                      value={searchText}
+                      onChange={ev => setSearchText(ev.target.value)}
+                      placeholder="Search token name or symbol"
+                    />
+                  </S.SearchField>
+                  )
           }
-          </S.WrappingBar>
-        )}
-      </Formik>
-      <S.Table
-        isTradingPage={isTradingPage}
-        pagination={false}
-        scroll={isTradingPage ? { y: 340 } : { y: 740 }}
-        rowKey="address"
-        dataSource={assets.filter(asset => (
-          searchText.length
-            ? (
-              asset.name.toLowerCase().includes(s)
+                </S.WrappingBar>
+              )}
+            </Formik>
+            <S.Table
+              isTradingPage={isTradingPage}
+              pagination={false}
+              scroll={isTradingPage ? { y: dimensions.height } : { y: dimensions.height - 150 }}
+              rowKey="address"
+              dataSource={assets.filter(asset => (
+                searchText.length
+                  ? (
+                    asset.name.toLowerCase().includes(s)
               || asset.symbol.toLowerCase().includes(s)
-            )
-            : true
-        ))}
-        columns={getColumns(
-          onToggleTradable,
-          isTradingPage,
-        )}
-      />
-    </S.UserBalance>
+                  )
+                  : true
+              ))}
+              columns={getColumns(
+                onToggleTradable,
+                isTradingPage,
+              )}
+            />
+          </S.UserBalance>
+        </div>
+      )}
+    </Measure>
   );
 };
 
