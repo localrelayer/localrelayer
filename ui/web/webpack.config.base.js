@@ -53,8 +53,10 @@ module.exports = env => ({
               [
                 '@babel/preset-react',
                 {
-                  development: (!env || !env.NODE_ENV)
-                  || env.NODE_ENV.toLowerCase() === 'development',
+                  development: (
+                    (!env || !env.NODE_ENV)
+                    || env.NODE_ENV.toLowerCase() === 'development'
+                  ),
                 },
               ],
               '@babel/preset-flow',
@@ -94,6 +96,11 @@ module.exports = env => ({
               development: {
                 plugins: [
                   'react-hot-loader/babel',
+                ],
+              },
+              production: {
+                plugins: [
+                  '@babel/plugin-transform-flow-strip-types',
                 ],
               },
             },

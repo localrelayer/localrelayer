@@ -6,7 +6,7 @@ const S3Plugin = require('webpack-s3-plugin');
 
 const config = require('./webpack.config.base');
 
-module.exports = merge(config, {
+module.exports = env => merge(config(env), {
   mode: 'production',
   devtool: 'source-map',
   optimization: {

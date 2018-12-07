@@ -5,7 +5,7 @@ node_modules
 
 # production
 build
-web/dist/
+ui/web/dist/
 
 # misc
 .DS_Store
