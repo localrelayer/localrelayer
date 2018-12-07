@@ -126,7 +126,7 @@ const TradingHistory = ({
               columns={getColumns(isTradingPage)}
               pagination={false}
               dataSource={orders}
-              scroll={{ y: dimensions.height }}
+              scroll={isTradingPage ? { y: dimensions.height } : { y: dimensions.height - 50 }}
             />
           </S.TradingHistory>
         </div>
