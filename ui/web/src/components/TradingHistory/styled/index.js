@@ -47,7 +47,6 @@ export const TradingHistoryTable = styled(Table)`
 `;
 
 export const TradingHistory = styled.div`
-  position: absolute;
   height: 100%;
   width: 100%;
   background-color: ${colors['component-background']};

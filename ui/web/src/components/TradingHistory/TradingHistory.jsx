@@ -1,5 +1,7 @@
 // @flow
-import React from 'react';
+import React, {
+  useState,
+} from 'react';
 import {
   Tooltip,
   Icon,
@@ -12,6 +14,7 @@ import * as colors from 'web-styles/colors';
 import {
   utils,
 } from 'instex-core';
+import Measure from 'react-measure';
 import * as S from './styled';
 
 
@@ -104,17 +107,32 @@ const getColumns = isTradingPage => [
 const TradingHistory = ({
   orders,
   isTradingPage,
-}: Props) => (
-  <S.TradingHistory>
-    <S.TradingHistoryTable
-      isTradingPage={isTradingPage}
-      size="small"
-      columns={getColumns(isTradingPage)}
-      pagination={false}
-      dataSource={orders}
-      scroll={{ y: 700 }}
-    />
-  </S.TradingHistory>
-);
+}: Props) => {
+  const [dimensions, setDimensions] = useState('');
+
+  return (
+    <Measure
+      bounds
+      onResize={(contentRect) => {
+        setDimensions(contentRect.bounds);
+      }}
+    >
+      {({ measureRef }) => (
+        <div ref={measureRef} style={{ height: '100%' }}>
+          <S.TradingHistory>
+            <S.TradingHistoryTable
+              isTradingPage={isTradingPage}
+              size="small"
+              columns={getColumns(isTradingPage)}
+              pagination={false}
+              dataSource={orders}
+              scroll={{ y: dimensions.height }}
+            />
+          </S.TradingHistory>
+        </div>
+      )}
+    </Measure>
+  );
+};
 
 export default TradingHistory;

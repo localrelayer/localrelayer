@@ -15,6 +15,7 @@ import {
   ColoredSpan,
 } from 'web-components/SharedStyledComponents';
 import * as colors from 'web-styles/colors';
+import Measure from 'react-measure';
 import * as S from './styled';
 
 
@@ -125,46 +126,58 @@ const UserOpenOrders = ({
   onOrderActionClick,
 }: Props) => {
   const [searchText, setSearchText] = useState('');
+  const [dimensions, setDimensions] = useState('');
   const s = searchText.toLowerCase();
   return (
-    <S.UserOpenOrders>
-      <S.Header>
-        <S.Title>
+    <Measure
+      bounds
+      onResize={(contentRect) => {
+        setDimensions(contentRect.bounds);
+      }}
+    >
+      {({ measureRef }) => (
+        <div style={{ height: '100%' }} ref={measureRef}>
+          <S.UserOpenOrders>
+            <S.Header>
+              <S.Title>
           Open orders
-        </S.Title>
-        <S.SearchField>
-          <Input
-            value={searchText}
-            onChange={ev => setSearchText(ev.target.value)}
-            placeholder="Search by pair or status"
-          />
-        </S.SearchField>
-      </S.Header>
-      <S.UserOpenOrdersTable
-        size="small"
-        rowKey="id"
-        onRow={record => ({
-          ...(
-            record.metaData.isShadowed
-              ? {
-                className: 'shadowed',
-              } : {}
-          ),
-        })}
-        columns={getColumns(onOrderActionClick)}
-        dataSource={orders.filter(order => (
-          searchText.length
-            ? (
-              order.pair.toLowerCase().includes(s)
+              </S.Title>
+              <S.SearchField>
+                <Input
+                  value={searchText}
+                  onChange={ev => setSearchText(ev.target.value)}
+                  placeholder="Search by pair or status"
+                />
+              </S.SearchField>
+            </S.Header>
+            <S.UserOpenOrdersTable
+              size="small"
+              rowKey="id"
+              onRow={record => ({
+                ...(
+                  record.metaData.isShadowed
+                    ? {
+                      className: 'shadowed',
+                    } : {}
+                ),
+              })}
+              columns={getColumns(onOrderActionClick)}
+              dataSource={orders.filter(order => (
+                searchText.length
+                  ? (
+                    order.pair.toLowerCase().includes(s)
               || (order.metaData.isShadowed ? 'Unpublished' : 'Published')
                 .toLowerCase().includes(s)
-            )
-            : true
-        ))}
-        pagination={false}
-        scroll={{ y: 230 }}
-      />
-    </S.UserOpenOrders>
+                  )
+                  : true
+              ))}
+              pagination={false}
+              scroll={{ y: dimensions.height }}
+            />
+          </S.UserOpenOrders>
+        </div>
+      )}
+    </Measure>
   );
 };
 
