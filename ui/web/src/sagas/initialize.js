@@ -384,6 +384,11 @@ function* socketConnect(socketChannel): Saga<void> {
 }
 
 export function* initialize(): Saga<void> {
+  if (web3.currentProvider) {
+    yield eff.put(uiActions.setUiState({
+      isMetaMaskPresent: true,
+    }));
+  }
   const { historyType } = yield eff.take(actionTypes.INITIALIZE_WEB_APP);
   api.setApiUrl(config.apiUrl);
   console.log('Web initialize saga');
