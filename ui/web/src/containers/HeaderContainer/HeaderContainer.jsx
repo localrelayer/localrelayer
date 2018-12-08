@@ -27,6 +27,7 @@ const HeaderContainer = (): Node => (
       listedAssetPairs: cs.getListedAssetPairs(state),
       currentAssetPair: webSelectors.getCurrentAssetPair(state),
       isNotificationsPanelIsVisible: webSelectors.getUiState('isNotificationsPanelIsVisible')(state),
+      isSocketConnected: webSelectors.getUiState('isSocketConnected')(state),
       notifications: webSelectors.getNotifications(state),
       address: cs.getWalletState('selectedAccount')(state),
     })}
@@ -37,6 +38,7 @@ const HeaderContainer = (): Node => (
       listedAssetPairs,
       currentAssetPair,
       isNotificationsPanelIsVisible,
+      isSocketConnected,
       notifications,
       address,
     }) => (
@@ -45,6 +47,7 @@ const HeaderContainer = (): Node => (
         currentAssetPair={currentAssetPair}
         notifications={notifications}
         address={address}
+        isSocketConnected={isSocketConnected}
         onNotificationsClick={() => {
           dispatch(uiActions.setUiState({
             isNotificationsPanelIsVisible: !isNotificationsPanelIsVisible,

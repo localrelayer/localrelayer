@@ -5,13 +5,13 @@ import TradingChart from 'web-components/TradingChart';
 
 import {
   api,
+  coreSelectors as cs,
 } from 'instex-core';
 import {
   chartActions,
 } from 'web-actions';
 import {
   getCurrentAssetPair,
-  getUiState,
 } from 'web-selectors';
 
 
@@ -19,7 +19,7 @@ const TradingChartContainer = () => (
   <Component
     mapStateToProps={state => ({
       assetPair: getCurrentAssetPair(state),
-      networkId: getUiState('networkId')(state),
+      networkId: cs.getWalletState('networkId')(state),
     })}
   >
     {({

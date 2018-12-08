@@ -44,7 +44,7 @@ import * as uiSagas from './ui';
 
 
 function* subscribeOnUpdateOrders(): Saga<void> {
-  const networkId = yield eff.select(getUiState('networkId'));
+  const networkId = yield eff.select(coreSelectors.getWalletState('networkId'));
   const currentAssetPairId = yield eff.select(getUiState('currentAssetPairId'));
   const traderAddress = yield eff.select(coreSelectors.getWalletState('selectedAccount'));
   const requestId = uuidv4();
@@ -75,7 +75,7 @@ function* subscribeOnUpdateOrders(): Saga<void> {
 }
 
 function* subscribeOnCurrentTradingInfo(): Saga<void> {
-  const networkId = yield eff.select(getUiState('networkId'));
+  const networkId = yield eff.select(coreSelectors.getWalletState('networkId'));
   const currentAssetPairId = yield eff.select(getUiState('currentAssetPairId'));
   const requestId = uuidv4();
   if (currentAssetPairId) {
@@ -386,6 +386,9 @@ function* socketConnect(messagesFromSocketChannel): Saga<void> {
     const { open } = raceResp;
     let { close } = raceResp;
     if (open) {
+      yield eff.put(uiActions.setUiState({
+        isSocketConnected: true,
+      }));
       delay = 0;
       if (isReconnect) {
         yield eff.fork(subscribeOnCurrentTradingInfo);
@@ -393,9 +396,12 @@ function* socketConnect(messagesFromSocketChannel): Saga<void> {
       }
       close = yield eff.take(closeSocketChannel);
     }
+    yield eff.put(uiActions.setUiState({
+      isSocketConnected: false,
+    }));
+    yield eff.cancel(task);
     /* in case if connection is still open(no pong response) */
     socket.close();
-    yield eff.cancel(task);
     if (close?.resendMessage) {
       yield eff.put(coreActions.sendSocketMessage(close.resendMessage));
     }
@@ -429,7 +435,6 @@ export function* initialize(): Saga<void> {
   );
   yield eff.put(uiActions.setUiState({
     historyType,
-    networkId,
   }));
   yield eff.fork(
     coreSagas.fetchUserOrders,
