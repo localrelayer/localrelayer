@@ -49,47 +49,54 @@ function* subscribeOnUpdateOrders(): Saga<void> {
   const traderAddress = yield eff.select(coreSelectors.getWalletState('selectedAccount'));
   const requestId = uuidv4();
 
-  yield eff.put(uiActions.setUiState({
-    ordersSubscribeId: requestId,
-  }));
-  yield eff.put(coreActions.sendSocketMessage({
-    type: 'subscribe',
-    channel: 'orders',
-    requestId,
-    payload: {
-      ...(
-        currentAssetPairId
-          ? {
-            makerAssetData: currentAssetPairId.split('_')[0],
-            takerAssetData: currentAssetPairId.split('_')[1],
-          } : {}
-      ),
-      traderAddress,
-      networkId,
-    },
-  }));
+  if (currentAssetPairId) {
+    yield eff.put(uiActions.setUiState({
+      ordersSubscribeId: requestId,
+    }));
+    yield eff.put(coreActions.sendSocketMessage({
+      type: 'subscribe',
+      channel: 'orders',
+      requestId,
+      payload: {
+        ...(
+          currentAssetPairId
+            ? {
+              makerAssetData: currentAssetPairId.split('_')[0],
+              takerAssetData: currentAssetPairId.split('_')[1],
+            } : {}
+        ),
+        traderAddress,
+        networkId,
+      },
+    }));
+  } else {
+    console.log('attempt subscribeOnUpdateOrders without currentAssetPairId!!!');
+  }
 }
 
 function* subscribeOnCurrentTradingInfo(): Saga<void> {
   const networkId = yield eff.select(getUiState('networkId'));
   const currentAssetPairId = yield eff.select(getUiState('currentAssetPairId'));
   const requestId = uuidv4();
-
-  yield eff.put(uiActions.setUiState({
-    tradingInfoSubscribeId: requestId,
-  }));
-  yield eff.put(coreActions.sendSocketMessage({
-    type: 'subscribe',
-    channel: 'tradingInfo',
-    requestId,
-    payload: {
-      pairs: [{
-        assetDataA: currentAssetPairId.split('_')[0],
-        assetDataB: currentAssetPairId.split('_')[1],
-        networkId,
-      }],
-    },
-  }));
+  if (currentAssetPairId) {
+    yield eff.put(uiActions.setUiState({
+      tradingInfoSubscribeId: requestId,
+    }));
+    yield eff.put(coreActions.sendSocketMessage({
+      type: 'subscribe',
+      channel: 'tradingInfo',
+      requestId,
+      payload: {
+        pairs: [{
+          assetDataA: currentAssetPairId.split('_')[0],
+          assetDataB: currentAssetPairId.split('_')[1],
+          networkId,
+        }],
+      },
+    }));
+  } else {
+    console.log('attempt subscribeOnCurrentTradingInfo without currentAssetPairId!!!');
+  }
 }
 
 function* initializeRoute({
@@ -260,7 +267,7 @@ function* initializeRoute({
   yield eff.fork(subscribeOnUpdateOrders);
 }
 
-function* takeUpdateOrder(socketChannel) {
+function* takeUpdateOrder(messagesFromSocketChannel) {
   const orderFillChannel = yield eff.call(channel);
   yield eff.fork(
     takeSubscribeOnChangeChartBar,
@@ -275,7 +282,7 @@ function* takeUpdateOrder(socketChannel) {
   const traderAddress = yield eff.select(coreSelectors.getWalletState('selectedAccount'));
   while (true) {
     const lists = [];
-    const data = yield eff.take(socketChannel);
+    const data = yield eff.take(messagesFromSocketChannel);
     if (data.channel === 'orders' && data.type === 'update') {
       /* Determine whether the order should be placed to userOrders list */
       if ((
@@ -351,33 +358,46 @@ function* takeChangeRoute({
   }
 }
 
-function* socketConnect(socketChannel): Saga<void> {
-  /* buffer actions */
-  const messageChannel = yield eff.actionChannel(coreActions.actionTypes.SEND_SOCKET_MESSAGE);
+function* socketConnect(messagesFromSocketChannel): Saga<void> {
+  /* buffer messages */
+  const messagesToSocketChannel = yield eff.actionChannel(
+    coreActions.actionTypes.SEND_SOCKET_MESSAGE,
+  );
   const closeSocketChannel = yield eff.call(channel);
+  const openSocketChannel = yield eff.call(channel);
   let isReconnect = false;
   let delay = 0;
   while (true) {
     const socket = new WebSocket(config.socketUrl);
-    if (isReconnect) {
-      yield eff.fork(subscribeOnCurrentTradingInfo);
-      yield eff.fork(subscribeOnUpdateOrders);
-    }
     const task = yield eff.fork(
       coreSagas.handleSocketIO,
       {
         socket,
-        socketChannel,
+        messagesFromSocketChannel,
         closeSocketChannel,
-        messageChannel,
+        openSocketChannel,
+        messagesToSocketChannel,
       },
     );
-    const closeResp = yield eff.take(closeSocketChannel);
-    /* just in case */
+    const raceResp = yield eff.race({
+      open: eff.take(openSocketChannel),
+      close: eff.take(closeSocketChannel),
+    });
+    const { open } = raceResp;
+    let { close } = raceResp;
+    if (open) {
+      delay = 0;
+      if (isReconnect) {
+        yield eff.fork(subscribeOnCurrentTradingInfo);
+        yield eff.fork(subscribeOnUpdateOrders);
+      }
+      close = yield eff.take(closeSocketChannel);
+    }
+    /* in case if connection is still open(no pong response) */
     socket.close();
     yield eff.cancel(task);
-    if (closeResp?.resendMessage) {
-      yield eff.put(coreActions.sendSocketMessage(closeResp.resendMessage));
+    if (close?.resendMessage) {
+      yield eff.put(coreActions.sendSocketMessage(close.resendMessage));
     }
     yield eff.delay(delay);
     if (delay < 5000) {
@@ -419,7 +439,7 @@ export function* initialize(): Saga<void> {
     },
   );
   const webRadioChannel = yield eff.call(channel);
-  const socketChannel = yield eff.call(channel);
+  const messagesFromSocketChannel = yield eff.call(channel);
   const fetchPairsTask = yield eff.fork(
     coreSagas.fetchAssetPairs,
     {
@@ -440,7 +460,7 @@ export function* initialize(): Saga<void> {
   );
   yield eff.fork(
     socketConnect,
-    socketChannel,
+    messagesFromSocketChannel,
   );
   yield eff.fork(
     takeChangeRoute,
@@ -454,7 +474,7 @@ export function* initialize(): Saga<void> {
   yield eff.join(fetchPairsTask);
   yield eff.fork(
     takeUpdateOrder,
-    socketChannel,
+    messagesFromSocketChannel,
   );
   yield eff.fork(
     initializeRoute,

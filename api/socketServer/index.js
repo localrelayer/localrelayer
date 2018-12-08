@@ -59,34 +59,41 @@ export function runWebSocketServer() {
     logger.debug('ws client connected');
 
     ws.subscriptions = {};
-
-    ws.isAlive = true;
-    ws.on('pong', () => {
-      ws.isAlive = true;
-    });
+    ws.pingTimeout = null;
 
     ws.on('message', (message) => {
       logger.debug(`received: ${message}`);
-      const data = JSON.parse(message);
-      console.log(data);
+      if (message === 'ping') {
+        if (ws.pingTimeout) {
+          clearTimeout(ws.pingTimeout);
+        }
+        ws.pingTimeout = setTimeout(() => {
+          if (ws.readyState === 1) {
+            ws.send('pong');
+          }
+        }, 1000);
+      } else {
+        const data = JSON.parse(message);
+        console.log(data);
 
-      if (
-        data.type === 'subscribe'
-        && data.requestId
-        && validator.isValid(data, schemas.relayerApiOrdersChannelSubscribePayloadSchema)
-      ) {
-        logger.debug('subscribe');
-        ws.subscriptions[data.requestId] = data;
-      }
+        if (
+          data.type === 'subscribe'
+          && data.requestId
+          && validator.isValid(data, schemas.relayerApiOrdersChannelSubscribePayloadSchema)
+        ) {
+          logger.debug('subscribe');
+          ws.subscriptions[data.requestId] = data;
+        }
 
-      if (
-        data.type === 'unsubscribe'
-        && data.requestId
-      ) {
-        logger.debug('unsubscribe');
-        ws.subscriptions[data.requestId] = null;
+        if (
+          data.type === 'unsubscribe'
+          && data.requestId
+        ) {
+          logger.debug('unsubscribe');
+          ws.subscriptions[data.requestId] = null;
+        }
+        logger.debug(ws.subscriptions);
       }
-      logger.debug(ws.subscriptions);
     });
   });
 
@@ -123,15 +130,17 @@ export function runWebSocketServer() {
           )
         ) {
           logger.debug('SEND TRADING INFO!!!');
-          client.send(JSON.stringify({
-            type: 'update',
-            channel: 'tradingInfo',
-            requestId: sub.requestId,
-            payload: [
-              tradingInfoMakerTaker,
-              tradingInfoTakerMaker,
-            ],
-          }));
+          if (client.readyState === 1) {
+            client.send(JSON.stringify({
+              type: 'update',
+              channel: 'tradingInfo',
+              requestId: sub.requestId,
+              payload: [
+                tradingInfoMakerTaker,
+                tradingInfoTakerMaker,
+              ],
+            }));
+          }
         }
       });
     });
@@ -178,15 +187,17 @@ export function runWebSocketServer() {
           logger.debug(metaData);
 
           const clearOrder = clearOrderFields(order);
-          client.send(JSON.stringify({
-            type: 'update',
-            channel: 'orders',
-            requestId: sub.requestId,
-            payload: {
-              order: clearOrder,
-              metaData,
-            },
-          }));
+          if (client.readyState === 1) {
+            client.send(JSON.stringify({
+              type: 'update',
+              channel: 'orders',
+              requestId: sub.requestId,
+              payload: {
+                order: clearOrder,
+                metaData,
+              },
+            }));
+          }
         }
       });
     });
