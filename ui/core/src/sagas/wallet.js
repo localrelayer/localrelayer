@@ -84,13 +84,19 @@ export function* watchWallet({
 
       if (!R.equals(wallet.balance, balance)) {
         changedData.push({
-          balance,
+          balance: {
+            _merge: true,
+            ...balance,
+          },
         });
       }
 
       if (!R.equals(wallet.allowance, allowance)) {
         changedData.push({
-          allowance,
+          allowance: {
+            _merge: true,
+            ...allowance,
+          },
         });
       }
 
@@ -104,9 +110,6 @@ export function* watchWallet({
               }),
               {},
             ),
-            [
-              'balance',
-            ],
           ),
         );
       }
