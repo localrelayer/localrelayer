@@ -2,6 +2,7 @@
 import createActionCreators from 'redux-resource-action-creators';
 import {
   eventChannel,
+  channel,
 } from 'redux-saga';
 import * as eff from 'redux-saga/effects';
 import type {
@@ -11,63 +12,115 @@ import type {
 
 function newMessageChannelCreator(socket) {
   return eventChannel((emit) => {
-    socket.onmessage = message => emit(message.data); /* eslint-disable-line */
-    return () => {};
+    function onMessage(message) {
+      emit(message.data);
+    }
+    socket.addEventListener(
+      'message',
+      onMessage,
+    );
+    return () => {
+      socket.removeEventListener(
+        'message',
+        onMessage,
+      );
+    };
   });
 }
 
 function openConnectionChannelCreator(socket) {
   return eventChannel((emit) => {
-    socket.onopen = ev => emit(ev); /* eslint-disable-line */
-    return () => {};
+    function onOpen(ev) {
+      emit(ev);
+    }
+    socket.addEventListener(
+      'open',
+      onOpen,
+    );
+    return () => {
+      socket.removeEventListener(
+        'open',
+        onOpen,
+      );
+    };
   });
 }
 
 function closeConnectionChannelCreator(socket) {
   return eventChannel((emit) => {
-    socket.onclose = ev => emit(ev); /* eslint-disable-line */
-    socket.onerror = (data) => emit(data); /* eslint-disable-line */
-    return () => {};
+    function onClose(ev) {
+      emit(ev);
+    }
+    function onError(ev) {
+      emit(ev);
+    }
+    socket.addEventListener(
+      'close',
+      onClose,
+    );
+    socket.addEventListener(
+      'error',
+      onError,
+    );
+    return () => {
+      socket.removeEventListener(
+        'close',
+        onClose,
+      );
+      socket.removeEventListener(
+        'error',
+        onError,
+      );
+    };
   });
 }
 
 function* read({
   socket,
-  socketChannel,
+  messagesFromSocketChannel,
+  pongChannel,
 }) {
   const newMessageChannel = yield eff.call(newMessageChannelCreator, socket);
   while (true) {
     const message = yield eff.take(newMessageChannel);
-    const data = JSON.parse(message);
+    if (message === 'pong') {
+      yield eff.put(
+        pongChannel,
+        message,
+      );
+    } else {
+      const data = JSON.parse(message);
+      console.log(typeof data);
 
-    console.warn('Message from socket');
-    console.log(data);
-    yield eff.put(
-      socketChannel,
-      data,
-    );
+      console.warn('Message from socket');
+      console.log(data);
+      yield eff.put(
+        messagesFromSocketChannel,
+        data,
+      );
 
-    if (data.channel === 'tradingInfo') {
-      const tradingInfoActions = createActionCreators('read', {
-        resourceType: 'tradingInfo',
-        requestKey: 'socketTradingInfo',
-      });
-      yield eff.put(tradingInfoActions.succeeded({
-        resources: data.payload,
-      }));
+      if (data.channel === 'tradingInfo') {
+        const tradingInfoActions = createActionCreators('read', {
+          resourceType: 'tradingInfo',
+          requestKey: 'socketTradingInfo',
+        });
+        yield eff.put(tradingInfoActions.succeeded({
+          resources: data.payload,
+        }));
+      }
     }
   }
 }
 
 function* write(
   socket,
-  messageChannel,
+  messagesToSocketChannel,
   closeSocketChannel,
 ) {
   const openConnectionChannel = yield eff.call(openConnectionChannelCreator, socket);
   yield eff.take(openConnectionChannel);
   while (true) {
-    const { message } = yield eff.take(messageChannel);
+    const { message } = yield eff.take(messagesToSocketChannel);
     console.log('SEND SOCKET MESSAGE');
     console.log(message);
     if (socket.readyState === 1) {
@@ -85,53 +138,96 @@ function* write(
 
 function* takeCloseConnection(
   socket,
+  closeConnectionChannel,
   reportChannel,
 ): Saga<void> {
-  const closeConnectionChannel = closeConnectionChannelCreator(socket);
   while (true) {
     yield eff.take(closeConnectionChannel);
     yield eff.put(reportChannel, 'close');
   }
 }
 
+function* takeOpenConnection(
+  socket,
+  openConnectionChannel,
+  reportChannel,
+): Saga<void> {
+  while (true) {
+    yield eff.take(openConnectionChannel);
+    yield eff.put(reportChannel, 'open');
+  }
+}
+
 function* takeReadWrite({
   socket,
-  socketChannel,
+  messagesFromSocketChannel,
   closeSocketChannel,
-  messageChannel,
+  messagesToSocketChannel,
+  pongChannel,
 }): Saga<void> {
   yield eff.fork(
     read,
     {
       socket,
-      socketChannel,
+      messagesFromSocketChannel,
+      pongChannel,
     },
   );
   yield eff.fork(
     write,
     socket,
-    messageChannel,
+    messagesToSocketChannel,
     closeSocketChannel,
   );
 }
 
 export function* handleSocketIO({
   socket,
-  socketChannel,
+  messagesFromSocketChannel,
   closeSocketChannel,
-  messageChannel,
+  openSocketChannel,
+  messagesToSocketChannel,
 }): Saga<void> {
+  const pongChannel = yield eff.call(channel);
+  const openConnectionChannel = yield eff.call(openConnectionChannelCreator, socket);
+  const closeConnectionChannel = yield eff.call(closeConnectionChannelCreator, socket);
   yield eff.fork(
     takeReadWrite,
     {
       socket,
-      socketChannel,
+      messagesFromSocketChannel,
       closeSocketChannel,
-      messageChannel,
+      messagesToSocketChannel,
+      pongChannel,
     },
   );
   yield eff.fork(
     takeCloseConnection,
+    socket,
+    closeConnectionChannel,
     closeSocketChannel,
   );
+  yield eff.fork(
+    takeOpenConnection,
+    socket,
+    openConnectionChannel,
+    openSocketChannel,
+  );
+  yield eff.take(openConnectionChannel);
+  while (true) {
+    if (socket.readyState === 1) {
+      socket.send('ping');
+    }
+    const raceResp = yield eff.race({
+      pong: eff.take(pongChannel),
+      notRespond: eff.delay(2000),
+    });
+    if (raceResp.notRespond) {
+      yield eff.put(
+        closeSocketChannel,
+        'notRespond',
+      );
+    }
+    yield eff.delay(2000);
+  }
 }
