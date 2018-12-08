@@ -8,8 +8,6 @@ import type {
   Saga,
 } from 'redux-saga';
 
-import * as actionTypes from '../actions/actionTypes';
-
 
 function newMessageChannelCreator(socket) {
   return eventChannel((emit) => {
@@ -21,6 +19,14 @@ function newMessageChannelCreator(socket) {
 function openConnectionChannelCreator(socket) {
   return eventChannel((emit) => {
     socket.onopen = ev => emit(ev); /* eslint-disable-line */
+    return () => {};
+  });
+}
+
+function closeConnectionChannelCreator(socket) {
+  return eventChannel((emit) => {
+    socket.onclose = ev => emit(ev); /* eslint-disable-line */
+    socket.onerror = (data) => emit(data); /* eslint-disable-line */
     return () => {};
   });
 }
@@ -53,22 +59,46 @@ function* read({
   }
 }
 
-function* write(socket) {
+function* write(
+  socket,
+  messageChannel,
+  closeSocketChannel,
+) {
   const openConnectionChannel = yield eff.call(openConnectionChannelCreator, socket);
-  /* buffer actions */
-  const messageChannel = yield eff.actionChannel(actionTypes.SEND_SOCKET_MESSAGE);
   yield eff.take(openConnectionChannel);
   while (true) {
     const { message } = yield eff.take(messageChannel);
     console.log('SEND SOCKET MESSAGE');
     console.log(message);
-    socket.send(JSON.stringify(message));
+    if (socket.readyState === 1) {
+      socket.send(JSON.stringify(message));
+    } else {
+      yield eff.put(
+        closeSocketChannel,
+        {
+          resendMessage: message,
+        },
+      );
+    }
+  }
+}
+
+function* takeCloseConnection(
+  socket,
+  reportChannel,
+): Saga<void> {
+  const closeConnectionChannel = closeConnectionChannelCreator(socket);
+  while (true) {
+    yield eff.take(closeConnectionChannel);
+    yield eff.put(reportChannel, 'close');
   }
 }
 
 function* takeReadWrite({
   socket,
   socketChannel,
+  closeSocketChannel,
+  messageChannel,
 }): Saga<void> {
   yield eff.fork(
     read,
@@ -80,28 +110,28 @@ function* takeReadWrite({
   yield eff.fork(
     write,
     socket,
+    messageChannel,
+    closeSocketChannel,
   );
 }
 
 export function* handleSocketIO({
   socket,
   socketChannel,
+  closeSocketChannel,
+  messageChannel,
 }): Saga<void> {
-  const task = yield eff.fork(
+  yield eff.fork(
     takeReadWrite,
     {
       socket,
       socketChannel,
+      closeSocketChannel,
+      messageChannel,
     },
   );
-  return [
-    task,
-    eventChannel((emit) => {
-      socket.onclose = (data) => emit(data); /* eslint-disable-line */
-      socket.onerror = (data) => emit(data); /* eslint-disable-line */
-      return () => {
-        socket.close();
-      };
-    }),
-  ];
+  yield eff.fork(
+    takeCloseConnection,
+    closeSocketChannel,
+  );
 }
