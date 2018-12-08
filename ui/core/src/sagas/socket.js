@@ -90,8 +90,6 @@ function* read({
       );
     } else {
       const data = JSON.parse(message);
-      console.log(typeof data);
-
       console.warn('Message from socket');
       console.log(data);
       yield eff.put(
