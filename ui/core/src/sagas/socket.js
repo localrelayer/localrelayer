@@ -218,7 +218,7 @@ export function* handleSocketIO({
     }
     const raceResp = yield eff.race({
       pong: eff.take(pongChannel),
-      notRespond: eff.delay(2000),
+      notRespond: eff.delay(3000),
     });
     if (raceResp.notRespond) {
       yield eff.put(

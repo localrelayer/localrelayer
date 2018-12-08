@@ -8,14 +8,12 @@ import {
 } from '.';
 
 export const setWalletState = (
-  values: any,
-  deepMergeKeys: Array<string> = [],
-): UiAction => ({
+  keyOrRootValues: any,
+  maybeValues: any,
+): WalletAction => ({
   type: actionTypes.SET_WALLET_STATE,
   payload: {
-    values,
-  },
-  meta: {
-    deepMergeKeys,
+    keyOrRootValues,
+    maybeValues,
   },
 });

@@ -11,6 +11,7 @@ import type {
 
 const initialState: UiState = {
   isAppInitializing: true,
+  isSocketConnected: false,
   isMetaMaskPresent: false,
   pathname: null,
   historyType: null,
@@ -26,17 +27,18 @@ const initialState: UiState = {
   isNotificationsPanelIsVisible: false,
 };
 
-const mergeUiValues = (
+const mergeValues = (
   values,
-  deepMergeKeys,
   state,
 ) => (
   Object.keys(values).reduce((s, v) => ({
     ...s,
-    [v]: deepMergeKeys.includes(v) ? {
+    [v]: values[v]._merge ? ({ /* eslint-disable-line */
       ...state[v],
       ...values[v],
-    } : values[v],
+    }) : (
+      values[v]
+    ),
   }), {})
 );
 
@@ -47,28 +49,39 @@ const ui = (
   switch (action.type) {
     case actionTypes.SET_UI_STATE: {
       const {
-        key,
-        values,
+        keyOrRootValues,
+        maybeValues,
       } = action.payload;
-      const { deepMergeKeys } = action.meta;
+      const [
+        values,
+        key,
+      ] = (
+        maybeValues === undefined
+          ? [
+            keyOrRootValues,
+            null,
+          ]
+          : [
+            maybeValues,
+            keyOrRootValues,
+          ]
+      );
       return {
         ...state,
         ...(
-          values !== undefined
+          key
             ? ({
               [key]: {
                 ...state[key],
-                ...mergeUiValues(
+                ...mergeValues(
                   values,
-                  deepMergeKeys,
                   state[key],
                 ),
               },
             })
             : (
-              mergeUiValues(
-                key,
-                deepMergeKeys,
+              mergeValues(
+                values,
                 state,
               )
             )

@@ -3,7 +3,6 @@ import {
   Icon,
   Table,
   Badge,
-  Button,
 } from 'antd';
 import * as colors from 'web-styles/colors';
 
@@ -103,7 +102,18 @@ export const NotificationContainer = styled.a`
   display: flex;
 `;
 
-export const NotificationIcon = styled(Icon)`
+export const NotificationIcon = styled(Icon).attrs({
+  type: 'notification',
+})`
+  cursor: pointer;
+  font-size: 24px;
+`;
+
+export const WarningIcon = styled(Icon).attrs({
+  type: 'warning',
+})`
+  margin-right: 20px;
+  color: red;
   cursor: pointer;
   font-size: 24px;
 `;

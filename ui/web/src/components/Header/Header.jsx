@@ -9,6 +9,7 @@ import {
   Input,
   Button,
   Popover,
+  Tooltip,
 } from 'antd';
 
 import * as S from './styled';
@@ -20,6 +21,8 @@ type Props = {
   onPairClick: Function,
   onNotificationsClick: Function,
   notifications: Array<any>,
+  address: any,
+  isSocketConnected: Boolean,
 }
 const columns = [
   {
@@ -47,6 +50,7 @@ const Header = ({
   onNotificationsClick,
   notifications,
   address,
+  isSocketConnected,
 }: Props) => {
   const [searchText, setSearchText] = useState('');
   const s = searchText.toLowerCase();
@@ -115,6 +119,20 @@ const Header = ({
         </Button>
       </Popover>
       <S.NotificationContainer>
+        {!isSocketConnected
+          && (
+            <Tooltip
+              placement="bottom"
+              title={(
+                <div>
+                  Socket is disconnected. Orderbook will not be updated!!!
+                </div>
+              )}
+            >
+              <S.WarningIcon />
+            </Tooltip>
+          )
+        }
         <S.UserProfile>
           <Button loading={!address} type="primary">
             <S.HeaderIcon type="user" />
@@ -128,10 +146,7 @@ const Header = ({
           ), 0)
         }
         >
-          <S.NotificationIcon
-            type="notification"
-            onClick={onNotificationsClick}
-          />
+          <S.NotificationIcon onClick={onNotificationsClick} />
         </S.NotificationBadge>
       </S.NotificationContainer>
     </S.Header>

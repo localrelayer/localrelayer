@@ -21,15 +21,16 @@ const initialState: WalletState = {
 
 const mergeValues = (
   values,
-  deepMergeKeys,
   state,
 ) => (
   Object.keys(values).reduce((s, v) => ({
     ...s,
-    [v]: deepMergeKeys.includes(v) ? {
+    [v]: values[v]._merge ? ({ /* eslint-disable-line */
       ...state[v],
       ...values[v],
-    } : values[v],
+    }) : (
+      values[v]
+    ),
   }), {})
 );
 
@@ -39,15 +40,44 @@ const wallet = (
 ) => {
   switch (action.type) {
     case actionTypes.SET_WALLET_STATE: {
-      const { values } = action.payload;
-      const { deepMergeKeys } = action.meta;
+      const {
+        keyOrRootValues,
+        maybeValues,
+      } = action.payload;
+      const [
+        values,
+        key,
+      ] = (
+        maybeValues === undefined
+          ? [
+            keyOrRootValues,
+            null,
+          ]
+          : [
+            maybeValues,
+            keyOrRootValues,
+          ]
+      );
       return {
         ...state,
-        ...(mergeValues(
-          values,
-          deepMergeKeys,
-          state,
-        )),
+        ...(
+          key
+            ? ({
+              [key]: {
+                ...state[key],
+                ...mergeValues(
+                  values,
+                  state[key],
+                ),
+              },
+            })
+            : (
+              mergeValues(
+                values,
+                state,
+              )
+            )
+        ),
       };
     }
     default:

@@ -8,16 +8,12 @@ import {
 } from '.';
 
 export const setUiState = (
-  key: any,
-  values: any,
-  deepMergeKeys: Array<string> = [],
+  keyOrRootValues: any,
+  maybeValues: any,
 ): UiAction => ({
   type: actionTypes.SET_UI_STATE,
   payload: {
-    key,
-    values,
-  },
-  meta: {
-    deepMergeKeys,
+    keyOrRootValues,
+    maybeValues,
   },
 });
