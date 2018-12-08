@@ -33,7 +33,7 @@ const mergeValues = (
 ) => (
   Object.keys(values).reduce((s, v) => ({
     ...s,
-    [v]: values[v]._merge ? ({ /* eslint-disable-line */
+    [v]: values[v]?._merge ? ({ /* eslint-disable-line */
       ...state[v],
       ...values[v],
     }) : (

@@ -177,9 +177,13 @@ async function watcherCreator(networkId) {
   const networks = (
     (process.env.ETH_NETWORKS || 'main,kovan,test').split(',')
   ).map(networkName => ETH_NETWORKS_NAME_MAP[networkName]);
-  const watchers = await networks.reduce(async (acc, networkId) => ({
+  const watchers = (
+    await Promise.all(
+      networks.map(networkId => watcherCreator(networkId)),
+    )
+  ).reduce((acc, watcher, index) => ({
     ...acc,
-    [networkId]: await watcherCreator(networkId),
+    [networks[index]]: watcher,
   }), {});
 
   const redisSub = redisClient.duplicate();
