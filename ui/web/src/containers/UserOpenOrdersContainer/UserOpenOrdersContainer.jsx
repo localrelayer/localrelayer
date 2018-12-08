@@ -25,7 +25,9 @@ const UserOpenOrdersContainer = (): Node => (
     }) => (
       <UserOpenOrders
         orders={orders}
-        onOrderActionClick={order => dispatch(coreActions.cancelOrderRequest(order))}
+        onCancel={(order) => {
+          dispatch(coreActions.cancelOrderRequest(order));
+        }}
       />
     )}
   </Component>

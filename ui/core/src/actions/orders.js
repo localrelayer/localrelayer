@@ -12,6 +12,6 @@ export const postOrderRequest = ({
 });
 
 export const cancelOrderRequest = order => ({
-  type: actionTypes.CANCEL_ORDER,
+  type: actionTypes.CANCEL_ORDER_REQUEST,
   order,
 });

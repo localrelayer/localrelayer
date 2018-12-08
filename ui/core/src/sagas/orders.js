@@ -375,5 +375,5 @@ export function* takePostOrder() {
 }
 
 export function* takeCancelOrder() {
-  yield eff.takeEvery(actionTypes.CANCEL_ORDER, cancelOrder);
+  yield eff.takeEvery(actionTypes.CANCEL_ORDER_REQUEST, cancelOrder);
 }

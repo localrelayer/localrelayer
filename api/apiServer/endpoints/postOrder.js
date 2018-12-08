@@ -112,6 +112,7 @@ export function createPostOrderEndpoint(standardRelayerApi) {
           takerAssetAddress: decTakerAssetData.tokenAddress,
           takerAssetProxyId: decTakerAssetData.assetProxyId,
           isValid: true,
+          isShadowed: false,
           remainingFillableMakerAssetAmount: submittedOrder.makerAssetAmount,
           remainingFillableTakerAssetAmount: submittedOrder.takerAssetAmount,
           filledTakerAssetAmount: 0,

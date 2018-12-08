@@ -21,10 +21,10 @@ import * as S from './styled';
 
 type Props = {
   orders: Array<any>,
-  onOrderActionClick: Function,
+  onCancel: Function,
 }
 
-const getColumns = onOrderActionClick => [
+const getColumns = onCancel => [
   {
     title: 'Pair',
     dataIndex: 'pair',
@@ -113,7 +113,7 @@ const getColumns = onOrderActionClick => [
         ghost
         size="small"
         onClick={() => {
-          onOrderActionClick(order);
+          onCancel(order);
         }}
       >
         Cancel
@@ -123,7 +123,7 @@ const getColumns = onOrderActionClick => [
 
 const UserOpenOrders = ({
   orders,
-  onOrderActionClick,
+  onCancel,
 }: Props) => {
   const [searchText, setSearchText] = useState('');
   const [dimensions, setDimensions] = useState('');
@@ -161,7 +161,7 @@ const UserOpenOrders = ({
                     } : {}
                 ),
               })}
-              columns={getColumns(onOrderActionClick)}
+              columns={getColumns(onCancel)}
               dataSource={orders.filter(order => (
                 searchText.length
                   ? (
