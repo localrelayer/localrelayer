@@ -18,6 +18,13 @@ function newMessageChannelCreator(socket) {
   });
 }
 
+function openConnectionChannelCreator(socket) {
+  return eventChannel((emit) => {
+    socket.onopen = ev => emit(ev); /* eslint-disable-line */
+    return () => {};
+  });
+}
+
 function* read({
   socket,
   socketChannel,
@@ -47,8 +54,12 @@ function* read({
 }
 
 function* write(socket) {
+  const openConnectionChannel = yield eff.call(openConnectionChannelCreator, socket);
+  /* buffer actions */
+  const messageChannel = yield eff.actionChannel(actionTypes.SEND_SOCKET_MESSAGE);
+  yield eff.take(openConnectionChannel);
   while (true) {
-    const { message } = yield eff.take(actionTypes.SEND_SOCKET_MESSAGE);
+    const { message } = yield eff.take(messageChannel);
     console.log('SEND SOCKET MESSAGE');
     console.log(message);
     socket.send(JSON.stringify(message));
