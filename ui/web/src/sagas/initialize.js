@@ -476,14 +476,17 @@ export function* initialize(): Saga<void> {
     takeUpdateOrder,
     messagesFromSocketChannel,
   );
-  yield eff.fork(
-    initializeRoute,
-    {
-      location: history.location,
-      webRadioChannel,
-      networkId,
-    },
-  );
+  /* index root will redirect to /zrx-weth and initializeRoute catch it */
+  if (history.location.pathname !== '/') {
+    yield eff.fork(
+      initializeRoute,
+      {
+        location: history.location,
+        webRadioChannel,
+        networkId,
+      },
+    );
+  }
   yield eff.put(uiActions.setUiState({
     isAppInitializing: false,
   }));
