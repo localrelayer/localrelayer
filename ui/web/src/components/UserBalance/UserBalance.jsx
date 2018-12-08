@@ -174,7 +174,6 @@ const UserBalance = ({
 }: Props): Node => {
   const [searchText, setSearchText] = useState('');
   const [dimensions, setDimensions] = useState('');
-  console.log(dimensions);
   const s = searchText.toLowerCase();
   return (
     <Measure

@@ -352,29 +352,33 @@ function* takeChangeRoute({
 }
 
 function* socketConnect(socketChannel): Saga<void> {
+  /* buffer actions */
+  const messageChannel = yield eff.actionChannel(coreActions.actionTypes.SEND_SOCKET_MESSAGE);
+  const closeSocketChannel = yield eff.call(channel);
   let isReconnect = false;
   let delay = 0;
   while (true) {
     const socket = new WebSocket(config.socketUrl);
-    if (socket.readyState === 1) {
-      delay = 0;
-      if (isReconnect) {
-        yield eff.fork(subscribeOnCurrentTradingInfo);
-        yield eff.fork(subscribeOnUpdateOrders);
-      }
+    if (isReconnect) {
+      yield eff.fork(subscribeOnCurrentTradingInfo);
+      yield eff.fork(subscribeOnUpdateOrders);
     }
-    const [
-      task,
-      closeSocketChannel,
-    ] = yield eff.call(
+    const task = yield eff.fork(
       coreSagas.handleSocketIO,
       {
         socket,
         socketChannel,
+        closeSocketChannel,
+        messageChannel,
       },
     );
-    yield eff.take(closeSocketChannel);
+    const closeResp = yield eff.take(closeSocketChannel);
+    /* just in case */
+    socket.close();
     yield eff.cancel(task);
+    if (closeResp?.resendMessage) {
+      yield eff.put(coreActions.sendSocketMessage(closeResp.resendMessage));
+    }
     yield eff.delay(delay);
     if (delay < 5000) {
       delay += 500;
