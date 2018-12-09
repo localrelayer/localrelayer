@@ -14,7 +14,7 @@ import {
 
 import Component from 'web-components/ConnectComponent';
 import ConnectingToEthProvider from 'web-components/ConnectingToEthProvider';
-import NotificationsPanelContainer from 'web-containers/NotificationsPanelContainer';
+import TransactionsPanelContainer from 'web-containers/TransactionsPanelContainer';
 import TradingPageContainer from 'web-containers/TradingPageContainer';
 import UserProfilePageContainer from 'web-containers/UserProfilePageContainer';
 import LoaderPage from 'web-components/LoaderPage';
@@ -34,7 +34,7 @@ const AppContainer = () => (
       if (!isMetaMaskPresent) return (<ConnectingToEthProvider />);
       return (
         <Layout>
-          <NotificationsPanelContainer />
+          <TransactionsPanelContainer />
           {isAppInitializing ? (
             <LoaderPage />
           ) : (

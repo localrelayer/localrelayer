@@ -6,7 +6,7 @@ import type {
 } from 'react';
 
 import Component from 'web-components/ConnectComponent';
-import NotificationsPanel from 'web-components/NotificationsPanel';
+import TransactionsPanel from 'web-components/TransactionsPanel';
 
 import {
   coreSelectors as cs,
@@ -20,10 +20,10 @@ import {
 } from 'web-selectors';
 
 
-const NotificationsPanelContainer = (): Node => (
+const TransactionsPanelContainer = (): Node => (
   <Component
     mapStateToProps={state => ({
-      visible: getUiState('isNotificationsPanelIsVisible')(state),
+      visible: getUiState('isTransactionsPanelIsVisible')(state),
       notifications: getNotifications(state),
       networkId: cs.getWalletState('networkId')(state),
     })}
@@ -34,13 +34,13 @@ const NotificationsPanelContainer = (): Node => (
       networkId,
       dispatch,
     }) => (
-      <NotificationsPanel
+      <TransactionsPanel
         visible={visible}
         notifications={notifications}
         networkId={networkId}
         onClose={() => {
           dispatch(uiActions.setUiState({
-            isNotificationsPanelIsVisible: !visible,
+            isTransactionsPanelIsVisible: !visible,
           }));
         }}
       />
@@ -48,4 +48,4 @@ const NotificationsPanelContainer = (): Node => (
   </Component>
 );
 
-export default NotificationsPanelContainer;
+export default TransactionsPanelContainer;
