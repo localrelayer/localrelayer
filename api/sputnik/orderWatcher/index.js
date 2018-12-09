@@ -144,6 +144,12 @@ async function watcherCreator(networkId) {
           ),
         );
         await order.save();
+        if (
+          !order.isValid
+          && !order.isShadowed
+        ) {
+          orderWatcher.removeOrder(orderHash);
+        }
       }
     }
   });
