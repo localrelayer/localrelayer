@@ -49,7 +49,6 @@ const CLOSE_ORDER_ERRORS = [
   ExchangeContractErrs.OrderRemainingFillAmountZero,
   ExchangeContractErrs.OrderFillRoundingError,
 ];
-const shadowedOrders = new Map();
 
 async function watcherCreator(networkId) {
   const web3ProviderEngine = initWeb3ProviderEngine(networkId);
@@ -74,7 +73,6 @@ async function watcherCreator(networkId) {
     order.isValid = isValid;
 
     if (isValid) {
-      shadowedOrders.delete(orderHash);
       const {
         remainingFillableMakerAssetAmount,
         remainingFillableTakerAssetAmount,
@@ -105,51 +103,47 @@ async function watcherCreator(networkId) {
       );
     } else {
       const { error } = orderState;
-      if (!shadowedOrders.has(orderHash)) {
-        shadowedOrders.set(orderHash, Date.now());
+      order.error = error;
+      order.isShadowed = !CLOSE_ORDER_ERRORS.includes(error);
+      if (CLOSE_ORDER_ERRORS.includes(error)) {
+        order.completedAt = new Date().toISOString();
+      }
 
-        order.error = error;
-        order.isShadowed = !CLOSE_ORDER_ERRORS.includes(error);
-        if (CLOSE_ORDER_ERRORS.includes(error)) {
-          order.completedAt = new Date().toISOString();
+      if (error === FILL_ERROR) {
+        order.remainingFillableMakerAssetAmount = '0';
+        order.remainingFillableTakerAssetAmount = '0';
+        order.filledTakerAssetAmount = order.takerAssetAmount;
+        order.lastFilledAt = new Date();
+        try {
+          const {
+            tradingInfoRedisKeyMakerTaker,
+            tradingInfoRedisKeyTakerMaker,
+          } = await collectTradingInfo(order, logger);
+
+          redisClient.publish(
+            'tradingInfo',
+            `${tradingInfoRedisKeyMakerTaker}^${tradingInfoRedisKeyTakerMaker}`,
+          );
+        } catch (e) {
+          logger.error(e);
         }
-
-        if (error === FILL_ERROR) {
-          order.remainingFillableMakerAssetAmount = '0';
-          order.remainingFillableTakerAssetAmount = '0';
-          order.filledTakerAssetAmount = order.takerAssetAmount;
-          order.lastFilledAt = new Date();
-          try {
-            const {
-              tradingInfoRedisKeyMakerTaker,
-              tradingInfoRedisKeyTakerMaker,
-            } = await collectTradingInfo(order, logger);
-
-            redisClient.publish(
-              'tradingInfo',
-              `${tradingInfoRedisKeyMakerTaker}^${tradingInfoRedisKeyTakerMaker}`,
-            );
-          } catch (e) {
-            logger.error(e);
-          }
-        }
-        /* do not spread plainOrder object, it will emit lot of extra keys */
-        const plainOrder = order.toObject();
-        redisClient.publish(
-          'orders',
-          JSON.stringify(
-            constructOrderRecord(
-              clearOrderWithMetaFields(plainOrder),
-            ),
+      }
+      /* do not spread plainOrder object, it will emit lot of extra keys */
+      const plainOrder = order.toObject();
+      redisClient.publish(
+        'orders',
+        JSON.stringify(
+          constructOrderRecord(
+            clearOrderWithMetaFields(plainOrder),
           ),
-        );
-        await order.save();
-        if (
-          !order.isValid
-          && !order.isShadowed
-        ) {
-          orderWatcher.removeOrder(orderHash);
-        }
+        ),
+      );
+      await order.save();
+      if (
+        !order.isValid
+        && !order.isShadowed
+      ) {
+        orderWatcher.removeOrder(orderHash);
       }
     }
   });
@@ -200,11 +194,9 @@ async function watcherCreator(networkId) {
       metaData,
     } = JSON.parse(message);
     const order = clearOrderFields(rawOrder);
-    if (!shadowedOrders.has(metaData.orderHash)) {
-      await watchers[metaData.networkId].addOrderAsync(
-        transformBigNumberOrder(order),
-      );
-    }
+    await watchers[metaData.networkId].addOrderAsync(
+      transformBigNumberOrder(order),
+    );
   });
 
   const redisTestSub = redisClient.duplicate();
