@@ -79,16 +79,24 @@ export const getCurrentOrder = createSelector(
         orders[currentOrderId].takerAssetData,
       ).tokenAddress;
       const { decimals } = assets[orders[currentOrderId].takerAssetData];
-      const userBalance = +utils.toUnitAmount(balance[takerAssetAddress], decimals);
+      const userBalance = utils.toUnitAmount(balance[takerAssetAddress], decimals);
       let amount;
       if (orderType === 'bid') {
         amount = userBalance > ordersInfo.amount
           ? ordersInfo.amount.toFixed(8)
           : userBalance.toFixed(8);
       } else {
-        amount = userBalance > ordersInfo.amount * ordersInfo.price
-          ? ordersInfo.amount.toFixed(8)
-          : new BigNumber(userBalance).div(ordersInfo.price.toFixed(8)).toFixed(8);
+        amount = (
+          userBalance > (ordersInfo.amount * ordersInfo.price)
+            ? ordersInfo.amount.toFixed(8)
+            : (
+              new BigNumber(
+                balance[takerAssetAddress],
+              )
+                .div(ordersInfo.price.toFixed(8))
+                .toFixed(8)
+            )
+        );
       }
       return {
         amount,
