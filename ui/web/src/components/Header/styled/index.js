@@ -102,7 +102,7 @@ export const NotificationContainer = styled.a`
   display: flex;
 `;
 
-export const NotificationIcon = styled(Icon).attrs({
+export const TransactionsIcon = styled(Icon).attrs({
   type: 'notification',
 })`
   cursor: pointer;
@@ -118,7 +118,7 @@ export const WarningIcon = styled(Icon).attrs({
   font-size: 24px;
 `;
 
-export const NotificationBadge = styled(Badge)`
+export const TransactionsBadge = styled(Badge)`
   .ant-badge-count {
     padding: 0;
     height: 12px;

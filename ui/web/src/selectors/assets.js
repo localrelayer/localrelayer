@@ -125,26 +125,31 @@ export const getCurrentAssetPairWithBalance = createSelector(
 export const getAssetsWithBalanceAndAllowance = createSelector(
   [
     cs.getResourceMap('assets'),
-    cs.getResourceMappedList('assets'),
     getUiState('currentAssetPairId'),
     getUiState('pathname'),
+    cs.getWalletState('selectedAccount'),
     cs.getWalletState('balance'),
     cs.getWalletState('allowance'),
+    cs.getWalletState('networkId'),
+    cs.getPendingTransactions,
     cs.getResourceMappedList('orders', 'userOrders'),
   ],
   (
     assetsResources,
-    allAssets,
     currentPairId,
     currentPathname,
+    selectedAccount,
     balance,
     allowance,
+    networkId,
+    pendingTransactions,
     orders,
   ) => {
     const assets = (
       currentPathname === '/account'
         ? (
-          allAssets
+          Object.keys(assetsResources)
+            .map(key => assetsResources[key])
         )
         : (
           (currentPairId || '').split('_')
@@ -152,6 +157,37 @@ export const getAssetsWithBalanceAndAllowance = createSelector(
             .map(key => assetsResources[key])
         )
     );
+    const pendingTransactionsAssetState = (
+      pendingTransactions.reduce(
+        (acc, tr) => {
+          switch (tr.name) {
+            case 'Allowance': {
+              acc.allowance[tr.meta.asset.data] = true;
+              return acc;
+            }
+            case 'Withdraw':
+            case 'Deposit': {
+              acc.balance[utils.WETH_DATA_NETWORKS_MAP[networkId]] = true;
+              return acc;
+            }
+            case 'Fill': {
+              if (tr.address === selectedAccount) {
+                acc.balance[tr.meta.takerAssetData] = true;
+              }
+              return acc;
+            }
+            default: {
+              return acc;
+            }
+          }
+        },
+        {
+          allowance: {},
+          balance: {},
+        },
+      )
+    );
+
     return assets.map((asset) => {
       const assetLockedAmount = orders.reduce((acc, cur) => {
         if (cur.makerAssetData === asset.id) {
@@ -175,9 +211,24 @@ export const getAssetsWithBalanceAndAllowance = createSelector(
       return {
         ...asset,
         totalBalance: assetTotalFormattedBalance,
-        availableBalance: new BigNumber(assetAvailableFormattedBalance).gte(0)
-          ? assetAvailableFormattedBalance : (0).toFixed(8),
+        availableBalance: (
+          new BigNumber(assetAvailableFormattedBalance).gte(0)
+            ? assetAvailableFormattedBalance
+            : (0).toFixed(8)
+        ),
         isTradable,
+        isTradablePending: (
+          typeof allowance[asset.address] !== 'string'
+          || (
+            pendingTransactionsAssetState.allowance[asset.id]
+          )
+        ),
+        isBalancePending: (
+          typeof balance[asset.address] !== 'string'
+          || (
+            pendingTransactionsAssetState.balance[asset.id]
+          )
+        ),
       };
     });
   },
