@@ -57,19 +57,51 @@ export function* saveTransaction(
     list: transaction.address,
   });
 
-  const getStatus = (status) => {
-    if (status === 1) return 'success';
-    if (status === 0) return 'error';
-    return 'info';
+  const getMessageAndIcon = (tr) => {
+    switch (tr.status) {
+      case 1: {
+        return {
+          message: `${tr.name} transaction completed`,
+          iconProps: {
+            type: 'check-circle',
+            style: {
+              color: 'green',
+            },
+          },
+        };
+      }
+      case 0: {
+        return {
+          message: `${tr.name} transaction failed`,
+          iconProps: {
+            type: 'close-circle',
+            style: {
+              color: 'red',
+            },
+          },
+        };
+      }
+      default: {
+        return {
+          message: `${tr.name} transaction pending...`,
+          iconProps: {
+            type: 'loading',
+          },
+        };
+      }
+    }
   };
 
   const notificationConfig = {
-    message: !Number.isInteger(transaction.status)
-      ? `${transaction.name} transaction started`
-      : `${transaction.name} transaction ${transaction.status === 1 ? 'completed' : 'failed'}`,
+    key: transaction.transactionHash,
+    placement: 'topLeft',
+    ...(getMessageAndIcon(transaction)),
     description: transaction.meta?.asset?.name,
-    status: getStatus(transaction.status),
-    duration: 5,
+    duration: (
+      Number.isInteger(transaction.status)
+        ? 3
+        : null
+    ),
   };
 
   try {
@@ -92,7 +124,6 @@ export function* saveTransaction(
     }
     yield eff.put(sendNotificationRequest(notificationConfig));
   } catch (err) {
-    console.log(err);
     yield eff.put(sendNotificationRequest(notificationConfig));
     yield eff.put(actions.succeeded({
       resources: [],

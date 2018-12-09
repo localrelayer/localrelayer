@@ -40,7 +40,9 @@ import {
 import {
   takeSubscribeOnChangeChartBar,
 } from './chart';
-import * as uiSagas from './ui';
+import {
+  takeNotification,
+} from './notifications';
 
 
 function* subscribeOnUpdateOrders(): Saga<void> {
@@ -325,8 +327,6 @@ function* takeUpdateOrder(messagesFromSocketChannel) {
         ));
       }
 
-      console.log('Lists', lists);
-
       yield eff.put(actions.succeeded({
         lists,
         removeFromOtherLists: true,
@@ -499,7 +499,7 @@ export function* initialize(): Saga<void> {
   yield eff.fork(coreSagas.takeDepositAndWithdraw);
   yield eff.fork(coreSagas.takePostOrder);
   yield eff.fork(coreSagas.takeCancelOrder);
-  yield eff.fork(uiSagas.takeNotification);
+  yield eff.fork(takeNotification);
   let watchWalletTask;
   /* Web radio center */
   while (true) {
