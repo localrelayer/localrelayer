@@ -16,7 +16,6 @@ import {
 } from 'web-actions';
 import {
   getUiState,
-  getNotifications,
 } from 'web-selectors';
 
 
@@ -24,19 +23,19 @@ const TransactionsPanelContainer = (): Node => (
   <Component
     mapStateToProps={state => ({
       visible: getUiState('isTransactionsPanelIsVisible')(state),
-      notifications: getNotifications(state),
+      transactions: cs.getTransactions(state),
       networkId: cs.getWalletState('networkId')(state),
     })}
   >
     {({
       visible,
-      notifications,
+      transactions,
       networkId,
       dispatch,
     }) => (
       <TransactionsPanel
         visible={visible}
-        notifications={notifications}
+        transactions={transactions}
         networkId={networkId}
         onClose={() => {
           dispatch(uiActions.setUiState({

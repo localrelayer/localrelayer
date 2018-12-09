@@ -28,16 +28,20 @@ export function* watchWallet({
 
       const selectedAccount = accounts.length ? accounts[0] : null;
       const selectedAccountBalance = (
-        accounts.length ? yield eff.call(web3.eth.getBalance, accounts[0]) : null
+        accounts.length
+          ? (
+            yield eff.call(web3.eth.getBalance, accounts[0])
+          ) : null
       );
       const balance = yield eff.all(
         tokens.reduce(
           (acc, tokenAddress) => ({
             ...acc,
-            [tokenAddress]: eff.call(
-              [contractWrappers.erc20Token, contractWrappers.erc20Token.getBalanceAsync],
-              tokenAddress,
-              selectedAccount,
+            [tokenAddress]: (
+              contractWrappers.erc20Token.getBalanceAsync(
+                tokenAddress,
+                selectedAccount,
+              ).then(b => b.toString())
             ),
           }),
           {},
@@ -48,10 +52,11 @@ export function* watchWallet({
         tokens.reduce(
           (acc, tokenAddress) => ({
             ...acc,
-            [tokenAddress]: eff.call(
-              [contractWrappers.erc20Token, contractWrappers.erc20Token.getProxyAllowanceAsync],
-              tokenAddress,
-              selectedAccount,
+            [tokenAddress]: (
+              contractWrappers.erc20Token.getProxyAllowanceAsync(
+                tokenAddress,
+                selectedAccount,
+              ).then(b => b.toString())
             ),
           }),
           {},

@@ -45,23 +45,26 @@ const getColumns = (
         <Tooltip title={record.name}>
           {text}
         </Tooltip>
-        {record.symbol === 'WETH' && (
-          <Tooltip
-            placement="bottom"
-            title={(
-              <div>
-                Wrapping ETH allows you to trade directly with alt tokens
-              </div>
-            )}
-          >
-            <Icon
-              style={{
-                marginLeft: 5,
-              }}
-              type="question-circle-o"
-            />
-          </Tooltip>
-        )}
+        {
+          record.symbol === 'WETH'
+            && (
+              <Tooltip
+                placement="bottom"
+                title={(
+                  <div>
+                    Wrapping ETH allows you to trade directly with alt tokens
+                  </div>
+                )}
+              >
+                <Icon
+                  style={{
+                    marginLeft: 5,
+                  }}
+                  type="question-circle-o"
+                />
+              </Tooltip>
+            )
+        }
       </div>
     ),
     ...(!isTradingPage
@@ -91,7 +94,13 @@ const getColumns = (
     dataIndex: 'availableBalance',
     render: (text, record) => (
       <div>
-        {text.length > 14 ? text.slice(0, 14) : text}
+        {(
+          record.isBalancePending
+            && (
+              <Icon type="loading" />
+            )
+        )}
+        {text}
         <Tooltip
           placement="bottom"
           title={(
@@ -131,13 +140,20 @@ const getColumns = (
     title: 'Tradable',
     key: 'tradable',
     render: (text, record) => (
-      <Switch
-        checked={record.isTradable}
-        checkedChildren={(
-          <Icon type="check" />
-        )}
-        onChange={checked => onToggleTradable(checked, record)}
-      />
+      record.isTradablePending
+        ? (
+          <Icon type="loading" />
+        ) : (
+          <Switch
+            checked={record.isTradable}
+            checkedChildren={(
+              <Icon type="check" />
+            )}
+            onChange={(checked) => {
+              onToggleTradable(checked, record);
+            }}
+          />
+        )
     ),
   },
   ...(
@@ -187,11 +203,11 @@ const UserBalance = ({
           <S.UserBalance>
             <S.Title>
               <div>
-        Balance
+                Balance
                 {' '}
                 {balance}
                 {' '}
-        ETH
+                ETH
               </div>
             </S.Title>
             <Formik
@@ -232,22 +248,26 @@ const UserBalance = ({
                       <S.UnwrapButton
                         type="primary"
                         disabled={
-                  !isValid
-                  || !values?.amount?.length
-                }
-                        onClick={() => onWithdraw(values.amount, { resetForm })}
+                          !isValid
+                          || !values?.amount?.length
+                        }
+                        onClick={() => {
+                          onWithdraw(values.amount, { resetForm });
+                        }}
                       >
-                  Withdraw
+                        Withdraw
                       </S.UnwrapButton>
                       <S.WrapButton
                         type="primary"
                         disabled={
-                  !isValid
-                  || !values?.amount?.length
-                }
-                        onClick={() => onDeposit(values.amount, { resetForm })}
+                          !isValid
+                          || !values?.amount?.length
+                        }
+                        onClick={() => {
+                          onDeposit(values.amount, { resetForm });
+                        }}
                       >
-                Deposit
+                        Deposit
                       </S.WrapButton>
                     </Button.Group>
                   </S.UnwrapWrapBar>
@@ -259,24 +279,29 @@ const UserBalance = ({
                       placeholder="Search token name or symbol"
                     />
                   </S.SearchField>
-                  )
-          }
+                  )}
                 </S.WrappingBar>
               )}
             </Formik>
             <S.Table
               isTradingPage={isTradingPage}
               pagination={false}
-              scroll={isTradingPage ? { y: dimensions.height } : { y: dimensions.height - 150 }}
+              scroll={
+                isTradingPage
+                  ? { y: dimensions.height }
+                  : { y: dimensions.height - 150 }
+              }
               rowKey="address"
-              dataSource={assets.filter(asset => (
-                searchText.length
-                  ? (
-                    asset.name.toLowerCase().includes(s)
-              || asset.symbol.toLowerCase().includes(s)
-                  )
-                  : true
-              ))}
+              dataSource={(
+                assets.filter(asset => (
+                  searchText.length
+                    ? (
+                      asset.name.toLowerCase().includes(s)
+                      || asset.symbol.toLowerCase().includes(s)
+                    )
+                    : true
+                ))
+              )}
               columns={getColumns(
                 onToggleTradable,
                 isTradingPage,

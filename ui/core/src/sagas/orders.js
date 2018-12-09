@@ -233,6 +233,7 @@ function* postOrder({
         console.log('FILLED WITH HASH', txHash);
 
         const filledOrders = ordersToFill.map((order, i) => ({
+          makerAddress: order.makerAddress,
           orderHash: order.metaData.orderHash,
           filledAmount: takerAssetFillAmounts[i],
         }));
@@ -250,6 +251,7 @@ function* postOrder({
             meta: {
               totalFilledAmount,
               filledOrders,
+              makerAddress,
               makerAssetData,
               takerAssetData,
             },

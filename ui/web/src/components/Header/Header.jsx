@@ -19,8 +19,8 @@ type Props = {
   listedAssetPairs: Array<any>,
   currentAssetPair: any,
   onPairClick: Function,
-  onNotificationsClick: Function,
-  notifications: Array<any>,
+  onTransactionsClick: Function,
+  pendingTransactionsCount: Array<any>,
   address: any,
   isSocketConnected: Boolean,
 }
@@ -47,8 +47,8 @@ const Header = ({
   listedAssetPairs,
   currentAssetPair,
   onPairClick,
-  onNotificationsClick,
-  notifications,
+  onTransactionsClick,
+  pendingTransactionsCount,
   address,
   isSocketConnected,
 }: Props) => {
@@ -140,14 +140,9 @@ const Header = ({
             ...
           </Button>
         </S.UserProfile>
-        <S.NotificationBadge count={
-          notifications.reduce((acc, notification) => (
-            notification.statusDescription === 'Pending' ? acc + 1 : acc
-          ), 0)
-        }
-        >
-          <S.NotificationIcon onClick={onNotificationsClick} />
-        </S.NotificationBadge>
+        <S.TransactionsBadge count={pendingTransactionsCount}>
+          <S.TransactionsIcon onClick={onTransactionsClick} />
+        </S.TransactionsBadge>
       </S.NotificationContainer>
     </S.Header>
   );

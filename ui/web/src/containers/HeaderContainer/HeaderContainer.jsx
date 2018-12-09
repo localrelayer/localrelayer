@@ -28,7 +28,7 @@ const HeaderContainer = (): Node => (
       currentAssetPair: webSelectors.getCurrentAssetPair(state),
       isTransactionsPanelIsVisible: webSelectors.getUiState('isTransactionsPanelIsVisible')(state),
       isSocketConnected: webSelectors.getUiState('isSocketConnected')(state),
-      notifications: webSelectors.getNotifications(state),
+      pendingTransactionsCount: cs.getPendingTransactions(state).length,
       address: cs.getWalletState('selectedAccount')(state),
     })}
   >
@@ -39,16 +39,16 @@ const HeaderContainer = (): Node => (
       currentAssetPair,
       isTransactionsPanelIsVisible,
       isSocketConnected,
-      notifications,
+      pendingTransactionsCount,
       address,
     }) => (
       <Header
         listedAssetPairs={listedAssetPairs}
         currentAssetPair={currentAssetPair}
-        notifications={notifications}
+        pendingTransactionsCount={pendingTransactionsCount}
         address={address}
         isSocketConnected={isSocketConnected}
-        onNotificationsClick={() => {
+        onTransactionsClick={() => {
           dispatch(uiActions.setUiState({
             isTransactionsPanelIsVisible: !isTransactionsPanelIsVisible,
           }));

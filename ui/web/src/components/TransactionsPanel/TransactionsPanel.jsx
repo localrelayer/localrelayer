@@ -12,14 +12,14 @@ import * as S from './styled';
 
 type Props = {
   visible: Boolean,
-  notifications: any,
+  transactions: any,
   onClose: Function,
   networkId: Number,
 };
 
 const TransactionsPanel = ({
   visible,
-  notifications,
+  transactions,
   onClose,
   networkId,
 }: Props) => (
@@ -31,44 +31,44 @@ const TransactionsPanel = ({
     visible={visible}
   >
     <Timeline>
-      {notifications.map(notification => (
+      {transactions.map(tr => (
         <Timeline.Item
-          key={notification.id}
-          color={notification.color}
-          dot={notification.statusDescription === 'Pending'
+          key={tr.id}
+          color={tr.color}
+          dot={tr.statusDescription === 'Pending'
           && (
             <Icon
               spin
               type="loading"
-              style={{ fontSize: 14, color: `${notification.color}` }}
+              style={{ fontSize: 14, color: `${tr.color}` }}
             />
           )}
         >
           <S.TransactionItemContent>
             <div>
-              {notification.name}
+              {tr.name}
               {' '}
               <a
                 rel="noopener noreferrer"
                 target="_blank"
-                href={`https://${networkId === 42 ? 'kovan.' : ''}etherscan.io/tx/${notification.transactionHash}`}
+                href={`https://${networkId === 42 ? 'kovan.' : ''}etherscan.io/tx/${tr.transactionHash}`}
               >
                 (
-                {notification.transactionHash.slice(0, 6)}
+                {tr.transactionHash.slice(0, 6)}
 )
               </a>
             </div>
             <div>
-              {notification.meta?.asset?.name}
+              {tr.meta?.asset?.name}
             </div>
             <div>
-              {notification.completedAt
-                ? utils.formatDate('MM/DD HH:mm:ss', notification.completedAt)
-                : utils.formatDate('MM/DD HH:mm:ss', notification.createdAt)
-              }
+              {utils.formatDate(
+                'MM/DD HH:mm:ss',
+                tr.completedA || tr.createdAt,
+              )}
             </div>
-            <S.TransactionItemStatus statuscolor={notification.color}>
-              {notification.statusDescription}
+            <S.TransactionItemStatus statuscolor={tr.color}>
+              {tr.statusDescription}
             </S.TransactionItemStatus>
           </S.TransactionItemContent>
         </Timeline.Item>))}

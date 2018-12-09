@@ -7,12 +7,12 @@ import type {
 
 import {
   getAssetsWithBalanceAndAllowance,
-  getEthWalletBalance,
 } from 'web-selectors';
 import Component from 'web-components/ConnectComponent';
 import UserBalance from 'web-components/UserBalance';
 import {
   coreActions,
+  coreSelectors as cs,
 } from 'instex-core';
 
 type Props = {
@@ -24,7 +24,7 @@ const UserBalanceContainer = ({ isTradingPage }: Props): Node => (
   <Component
     mapStateToProps={state => ({
       assets: getAssetsWithBalanceAndAllowance(state),
-      balance: getEthWalletBalance(state),
+      balance: cs.getEthWalletBalance(state),
     })}
   >
     {({

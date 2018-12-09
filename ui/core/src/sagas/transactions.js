@@ -45,6 +45,7 @@ export function* awaitTransaction(txHash) {
     },
     'update',
   );
+  /* React on completed transaction - change wallet state */
 }
 
 export function* saveTransaction(
