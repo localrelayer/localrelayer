@@ -285,15 +285,16 @@ function* takeUpdateOrder(messagesFromSocketChannel) {
   while (true) {
     const lists = [];
     const data = yield eff.take(messagesFromSocketChannel);
-    if (data.channel === 'orders' && data.type === 'update') {
+    if (
+      data.channel === 'orders'
+      && data.type === 'update'
+    ) {
       /* Determine whether the order should be placed to userOrders list */
       if ((
         data.payload.metaData.isValid === true
         || data.payload.metaData.isShadowed === true
-      )
-      && (
+      ) && (
         data.payload.order.makerAddress === traderAddress
-        || data.payload.order.takerAddress === traderAddress
       )
       ) {
         lists.push('userOrders');
@@ -303,14 +304,31 @@ function* takeUpdateOrder(messagesFromSocketChannel) {
         (
           data.payload.metaData.isValid === false
           && data.payload.metaData.error === ExchangeContractErrs.OrderRemainingFillAmountZero
+        ) || (
+          new BigNumber(data.payload.metaData.filledTakerAssetAmount).gt(0)
         )
-        || new BigNumber(data.payload.metaData.filledTakerAssetAmount).gt(0)
       ) {
         lists.push('tradingHistory');
         yield eff.put(
           orderFillChannel,
           data.payload,
         );
+        if (data.payload.order.makerAddress === traderAddress) {
+          /*
+           * TODO: provide more information about order - pair and price
+           * TODO: update balance
+          * */
+          yield eff.put(coreActions.sendNotificationRequest({
+            placement: 'topLeft',
+            message: 'Your order has been filled',
+            iconProps: {
+              type: 'check-circle',
+              style: {
+                color: 'green',
+              },
+            },
+          }));
+        }
       }
 
       if (data.payload.metaData.isValid === true) {
