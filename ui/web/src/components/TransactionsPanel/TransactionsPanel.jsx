@@ -17,7 +17,7 @@ type Props = {
   networkId: Number,
 };
 
-const NotificationsPanel = ({
+const TransactionsPanel = ({
   visible,
   notifications,
   onClose,
@@ -44,7 +44,7 @@ const NotificationsPanel = ({
             />
           )}
         >
-          <S.NotificationItemContent>
+          <S.TransactionItemContent>
             <div>
               {notification.name}
               {' '}
@@ -67,13 +67,13 @@ const NotificationsPanel = ({
                 : utils.formatDate('MM/DD HH:mm:ss', notification.createdAt)
               }
             </div>
-            <S.NotificationItemStatus statuscolor={notification.color}>
+            <S.TransactionItemStatus statuscolor={notification.color}>
               {notification.statusDescription}
-            </S.NotificationItemStatus>
-          </S.NotificationItemContent>
+            </S.TransactionItemStatus>
+          </S.TransactionItemContent>
         </Timeline.Item>))}
     </Timeline>
   </Drawer>
 );
 
-export default NotificationsPanel;
+export default TransactionsPanel;

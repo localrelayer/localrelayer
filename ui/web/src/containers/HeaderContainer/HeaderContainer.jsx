@@ -26,7 +26,7 @@ const HeaderContainer = (): Node => (
       historyType: webSelectors.getUiState('historyType')(state),
       listedAssetPairs: cs.getListedAssetPairs(state),
       currentAssetPair: webSelectors.getCurrentAssetPair(state),
-      isNotificationsPanelIsVisible: webSelectors.getUiState('isNotificationsPanelIsVisible')(state),
+      isTransactionsPanelIsVisible: webSelectors.getUiState('isTransactionsPanelIsVisible')(state),
       isSocketConnected: webSelectors.getUiState('isSocketConnected')(state),
       notifications: webSelectors.getNotifications(state),
       address: cs.getWalletState('selectedAccount')(state),
@@ -37,7 +37,7 @@ const HeaderContainer = (): Node => (
       historyType,
       listedAssetPairs,
       currentAssetPair,
-      isNotificationsPanelIsVisible,
+      isTransactionsPanelIsVisible,
       isSocketConnected,
       notifications,
       address,
@@ -50,7 +50,7 @@ const HeaderContainer = (): Node => (
         isSocketConnected={isSocketConnected}
         onNotificationsClick={() => {
           dispatch(uiActions.setUiState({
-            isNotificationsPanelIsVisible: !isNotificationsPanelIsVisible,
+            isTransactionsPanelIsVisible: !isTransactionsPanelIsVisible,
           }));
         }}
         onPairClick={({
