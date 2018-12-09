@@ -16,7 +16,7 @@ import UserOpenOrders from 'web-components/UserOpenOrders';
 const UserOpenOrdersContainer = (): Node => (
   <Component
     mapStateToProps={state => ({
-      orders: coreSelectors.getOpenOrders(state),
+      orders: coreSelectors.getUserOpenOrders(state),
     })}
   >
     {({

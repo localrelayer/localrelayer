@@ -127,23 +127,19 @@ export const getAssetsWithBalanceAndAllowance = createSelector(
     cs.getResourceMap('assets'),
     getUiState('currentAssetPairId'),
     getUiState('pathname'),
-    cs.getWalletState('selectedAccount'),
     cs.getWalletState('balance'),
     cs.getWalletState('allowance'),
-    cs.getWalletState('networkId'),
-    cs.getPendingTransactions,
     cs.getResourceMappedList('orders', 'userOrders'),
+    cs.getPendingTransactionsRelativeState,
   ],
   (
     assetsResources,
     currentPairId,
     currentPathname,
-    selectedAccount,
     balance,
     allowance,
-    networkId,
-    pendingTransactions,
     orders,
+    pendingTransactionsRelativeState,
   ) => {
     const assets = (
       currentPathname === '/account'
@@ -156,36 +152,6 @@ export const getAssetsWithBalanceAndAllowance = createSelector(
             .filter(exist => exist)
             .map(key => assetsResources[key])
         )
-    );
-    const pendingTransactionsAssetState = (
-      pendingTransactions.reduce(
-        (acc, tr) => {
-          switch (tr.name) {
-            case 'Allowance': {
-              acc.allowance[tr.meta.asset.data] = true;
-              return acc;
-            }
-            case 'Withdraw':
-            case 'Deposit': {
-              acc.balance[utils.WETH_DATA_NETWORKS_MAP[networkId]] = true;
-              return acc;
-            }
-            case 'Fill': {
-              if (tr.address === selectedAccount) {
-                acc.balance[tr.meta.takerAssetData] = true;
-              }
-              return acc;
-            }
-            default: {
-              return acc;
-            }
-          }
-        },
-        {
-          allowance: {},
-          balance: {},
-        },
-      )
     );
 
     return assets.map((asset) => {
@@ -220,13 +186,13 @@ export const getAssetsWithBalanceAndAllowance = createSelector(
         isTradablePending: (
           typeof allowance[asset.address] !== 'string'
           || (
-            pendingTransactionsAssetState.allowance[asset.id]
+            pendingTransactionsRelativeState.allowance[asset.id]
           )
         ),
         isBalancePending: (
           typeof balance[asset.address] !== 'string'
           || (
-            pendingTransactionsAssetState.balance[asset.id]
+            pendingTransactionsRelativeState.balance[asset.id]
           )
         ),
       };

@@ -364,6 +364,7 @@ export function* cancelOrder({ order }) {
         meta: {
           makerAssetData: order.makerAssetData,
           takerAssetData: order.takerAssetData,
+          orderHash: order.metaData.orderHash,
         },
       },
     );

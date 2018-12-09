@@ -111,6 +111,7 @@ const getColumns = onCancel => [
     render: order => (
       <Button
         ghost
+        loading={order.isCancelPending}
         size="small"
         onClick={() => {
           onCancel(order);
