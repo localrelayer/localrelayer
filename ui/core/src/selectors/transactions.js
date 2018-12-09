@@ -104,6 +104,7 @@ export const getPendingTransactionsRelativeState = createSelector(
           }
           case 'Fill': {
             if (tr.address === selectedAccount) {
+              acc.balance[tr.meta.makerAssetData] = true;
               acc.balance[tr.meta.takerAssetData] = true;
             }
             return acc;

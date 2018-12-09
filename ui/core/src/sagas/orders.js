@@ -249,6 +249,8 @@ function* postOrder({
             name: 'Fill',
             networkId,
             meta: {
+              makerAssetAmount,
+              takerAssetAmount,
               totalFilledAmount,
               filledOrders,
               makerAddress,

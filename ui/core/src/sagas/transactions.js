@@ -1,16 +1,25 @@
-import * as eff from 'redux-saga/effects';
+import {
+  assetDataUtils,
+  BigNumber,
+} from '0x.js';
 import {
   Web3Wrapper,
 } from '@0x/web3-wrapper';
+import * as eff from 'redux-saga/effects';
 import createActionCreators from 'redux-resource-action-creators';
+
 import {
   getResourceById,
 } from '../selectors';
+import * as walletActions from '../actions/wallet';
 import ethApi from '../ethApi';
 import api from '../api';
 import {
   sendNotificationRequest,
 } from '../actions';
+import {
+  WETH_DATA_NETWORKS_MAP,
+} from '../utils';
 
 
 export function* awaitTransaction(txHash) {
@@ -45,7 +54,112 @@ export function* awaitTransaction(txHash) {
     },
     'update',
   );
-  /* React on completed transaction - change wallet state */
+
+  if ([
+    'Allowance',
+    'Deposit',
+    'Withdraw',
+    'Fill',
+  ].includes(transaction.name)) {
+    const WETH_ADDRESS = (
+      assetDataUtils.decodeERC20AssetData(
+        WETH_DATA_NETWORKS_MAP[transaction.networkId],
+      ).tokenAddress
+    );
+    const wallet = yield eff.select(s => s.wallet);
+    yield eff.put(
+      walletActions.setWalletState(
+        ((tr) => {
+          switch (tr.name) {
+            case 'Allowance': {
+              return {
+                allowance: {
+                  _merge: true,
+                  [tr.meta.asset.address]: tr.meta.amount,
+                },
+              };
+            }
+            case 'Deposit': {
+              return {
+                selectedAccountBalance: (
+                  new BigNumber(
+                    wallet.selectedAccountBalance,
+                  ).minus(
+                    new BigNumber(tr.meta.amount),
+                  )
+                ),
+                balance: {
+                  _merge: true,
+                  [WETH_ADDRESS]: (
+                    new BigNumber(
+                      wallet.balance[WETH_ADDRESS],
+                    ).plus(
+                      new BigNumber(tr.meta.amount),
+                    ).toString()
+                  ),
+                },
+              };
+            }
+            case 'Withdraw': {
+              return {
+                selectedAccountBalance: (
+                  new BigNumber(
+                    wallet.selectedAccountBalance,
+                  ).plus(
+                    new BigNumber(tr.meta.amount),
+                  )
+                ),
+                balance: {
+                  _merge: true,
+                  [WETH_ADDRESS]: (
+                    new BigNumber(
+                      wallet.balance[WETH_ADDRESS],
+                    ).minus(
+                      new BigNumber(tr.meta.amount),
+                    ).toString()
+                  ),
+                },
+              };
+            }
+            case 'Fill': {
+              const makerAssetAddress = (
+                assetDataUtils.decodeERC20AssetData(
+                  transaction.meta.makerAssetData,
+                ).tokenAddress
+              );
+              const takerAssetAddress = (
+                assetDataUtils.decodeERC20AssetData(
+                  transaction.meta.takerAssetData,
+                ).tokenAddress
+              );
+              return {
+                balance: {
+                  _merge: true,
+                  [makerAssetAddress]: (
+                    new BigNumber(
+                      wallet.balance[makerAssetAddress] || 0,
+                    ).minus(
+                      new BigNumber(tr.meta.totalFilledAmount),
+                    ).toString()
+                  ),
+                  [takerAssetAddress]: (
+                    new BigNumber(
+                      wallet.balance[takerAssetAddress] || 0,
+                    ).plus(
+                      new BigNumber(tr.meta.takerAssetAmount),
+                    ).toString()
+                  ),
+                },
+              };
+            }
+            default: {
+              return {};
+            }
+          }
+        })(transaction),
+      ),
+    );
+  }
 }
 
 export function* saveTransaction(
