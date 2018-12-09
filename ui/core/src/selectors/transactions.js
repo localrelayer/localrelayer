@@ -8,6 +8,9 @@ import {
 import {
   getWalletState,
 } from './wallet';
+import {
+  WETH_DATA_NETWORKS_MAP,
+} from '../utils';
 
 
 const sorter = (a, b) => {
@@ -73,5 +76,52 @@ export const getPendingTransactions = createSelector(
             : transactions[id]
         ),
       ).filter(Boolean)
+  ),
+);
+
+export const getPendingTransactionsRelativeState = createSelector(
+  [
+    getPendingTransactions,
+    getWalletState('selectedAccount'),
+    getWalletState('networkId'),
+  ],
+  (
+    pendingTransactions,
+    selectedAccount,
+    networkId,
+  ) => (
+    pendingTransactions.reduce(
+      (acc, tr) => {
+        switch (tr.name) {
+          case 'Allowance': {
+            acc.allowance[tr.meta.asset.data] = true;
+            return acc;
+          }
+          case 'Withdraw':
+          case 'Deposit': {
+            acc.balance[WETH_DATA_NETWORKS_MAP[networkId]] = true;
+            return acc;
+          }
+          case 'Fill': {
+            if (tr.address === selectedAccount) {
+              acc.balance[tr.meta.takerAssetData] = true;
+            }
+            return acc;
+          }
+          case 'Cancel Order': {
+            acc.cancel[tr.meta.orderHash] = true;
+            return acc;
+          }
+          default: {
+            return acc;
+          }
+        }
+      },
+      {
+        allowance: {},
+        balance: {},
+        cancel: {},
+      },
+    )
   ),
 );

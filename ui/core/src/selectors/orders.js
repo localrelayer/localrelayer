@@ -11,6 +11,9 @@ import {
   getResourceMappedList,
 } from './resources';
 import {
+  getPendingTransactionsRelativeState,
+} from './transactions';
+import {
   toUnitAmount,
   getOrderPrice,
   getOrderType,
@@ -142,16 +145,18 @@ export const getAskOrders = createSelector(
   ),
 );
 
-export const getOpenOrders = createSelector(
+export const getUserOpenOrders = createSelector(
   [
     getResourceMappedList('orders', 'userOrders'),
     getResourceMap('assets'),
     getResourceMap('assetPairs'),
+    getPendingTransactionsRelativeState,
   ],
   (
     orders,
     assets,
     assetPairs,
+    pendingTransactionsRelativeState,
   ) => (
     orders.map((order) => {
       const assetPair = (
@@ -191,6 +196,7 @@ export const getOpenOrders = createSelector(
         pair: `${assets[order.makerAssetData].symbol}/${assets[order.takerAssetData].symbol}`,
         amount,
         total,
+        isCancelPending: pendingTransactionsRelativeState.cancel[order.metaData.orderHash],
         price: getOrderPrice(
           orderType,
           order.makerAssetAmount,
