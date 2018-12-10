@@ -23,6 +23,7 @@ export const getCurrentOrder = createSelector(
     cs.getBidOrders,
     cs.getAskOrders,
     cs.getWalletState('balance'),
+    cs.getResourceMappedList('orders', 'userOrders'),
   ],
   (
     currentAssetPairId,
@@ -32,12 +33,14 @@ export const getCurrentOrder = createSelector(
     bids,
     asks,
     balance,
+    userOrders,
   ) => {
     if (currentOrderId) {
       const orderType = utils.getOrderType(
         currentAssetPairId.split('_')[0],
         orders[currentOrderId].makerAssetData,
       );
+      const assetDataB = currentAssetPairId.split('_')[1];
       const ordersTypes = orderType === 'bid' ? bids : asks;
       const numInOrderList = ordersTypes.reduce(
         (
@@ -51,7 +54,12 @@ export const getCurrentOrder = createSelector(
       const sumUpOrders = orderType === 'bid'
         ? bids.slice(0, numInOrderList + 1)
         : asks.slice(0, numInOrderList + 1);
-
+      const fundsInOrders = userOrders.reduce((acc, cur) => {
+        if (cur.makerAssetData === assetDataB) {
+          return acc.add(cur.makerAssetAmount);
+        }
+        return acc;
+      }, new BigNumber(0));
       const ordersInfo = sumUpOrders.reduce((acc, order) => {
         const amount = +utils.toUnitAmount(
           orderType === 'bid'
@@ -65,11 +73,7 @@ export const getCurrentOrder = createSelector(
           order.metaData.remainingFillableTakerAssetAmount,
         );
         acc.amount += amount;
-        if (orderType === 'bid') {
-          acc.price = (price > acc.price) && acc.price ? acc.price : price;
-        } else {
-          acc.price = price > acc.price ? price : acc.price;
-        }
+        acc.price = price;
         return acc;
       }, {
         price: 0,
@@ -79,19 +83,22 @@ export const getCurrentOrder = createSelector(
         orders[currentOrderId].takerAssetData,
       ).tokenAddress;
       const { decimals } = assets[orders[currentOrderId].takerAssetData];
-      const userBalance = utils.toUnitAmount(balance[takerAssetAddress], decimals);
+      const userAvailableBalance = utils.toUnitAmount(
+        new BigNumber(balance[takerAssetAddress]).minus(fundsInOrders),
+        decimals,
+      );
       let amount;
       if (orderType === 'bid') {
-        amount = userBalance > ordersInfo.amount
+        amount = userAvailableBalance > ordersInfo.amount
           ? ordersInfo.amount.toFixed(8)
-          : userBalance.toFixed(8);
+          : userAvailableBalance.toFixed(8);
       } else {
         amount = (
-          userBalance > (ordersInfo.amount * ordersInfo.price)
+          userAvailableBalance > (ordersInfo.amount * ordersInfo.price)
             ? ordersInfo.amount.toFixed(8)
             : (
               new BigNumber(
-                balance[takerAssetAddress],
+                userAvailableBalance,
               )
                 .div(ordersInfo.price.toFixed(8))
                 .toFixed(8)
