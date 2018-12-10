@@ -1,7 +1,15 @@
+const useProdApi = false;
+
 module.exports = {
-  apiUrl: 'http://localhost:5001',
-  // apiUrl: 'https://api.instex.io/api',
-  socketUrl: 'ws://localhost:5003',
-  mockApi: true,
+  apiUrl: (
+    useProdApi
+      ? 'https://api.instex.io'
+      : 'http://localhost:5001'
+  ),
+  socketUrl: (
+    useProdApi
+      ? 'wss://api.instex.io:8082'
+      : 'ws://localhost:5003'
+  ),
   useSentry: false,
 };
