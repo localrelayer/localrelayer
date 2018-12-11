@@ -65,14 +65,10 @@ const renderLayout = children => columns.map(({ rows, container }) => {
   );
 });
 
-const TradingPageLayout = ({ children }: Props) => {
-  console.log(children);
-
-  return (
-    <S.TradingPage>
-      {renderLayout(children)}
-    </S.TradingPage>
-  );
-};
+const TradingPageLayout = ({ children }: Props) => (
+  <S.TradingPage>
+    {renderLayout(children)}
+  </S.TradingPage>
+);
 
 export default TradingPageLayout;
