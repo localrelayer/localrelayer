@@ -26,7 +26,6 @@
     "instex-core": "0.0.1",
     "react": "16.7.0-alpha.2",
     "react-dom": "16.7.0-alpha.2",
-    "react-grid-layout": "0.16.6",
     "react-hot-loader": "4.3.12",
     "react-joyride": "1.11.4",
     "react-measure": "^2.1.3",

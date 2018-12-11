@@ -32,7 +32,7 @@ const AssetPairCard = ({
   const tradingInfo = assetPair?.tradingInfo || {};
   const isPositive = (tradingInfo.change24 || 0) >= 0;
   return (
-    <S.AssetPairCard loading={loading}>
+    <S.AssetPairCard bordered={false} loading={loading}>
       <Card.Meta
         title={(
           <S.CardTitle>
