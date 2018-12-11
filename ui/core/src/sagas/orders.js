@@ -240,7 +240,8 @@ function* postOrder({
 
         const totalFilledAmount = takerAssetFillAmounts
           .reduce((acc, cur) => acc.add(cur), new BigNumber(0));
-
+        const assets = yield eff.select(selectors.getResourceMap('assets'));
+        const ordersInfo = ordersToFill[ordersToFill.length - 1];
         yield eff.fork(
           saveTransaction,
           {
@@ -256,6 +257,8 @@ function* postOrder({
               makerAddress,
               makerAssetData,
               takerAssetData,
+              price: ordersInfo.price,
+              pair: `${assets[ordersInfo.makerAssetData].symbol}/${assets[ordersInfo.takerAssetData].symbol}`,
             },
           },
         );

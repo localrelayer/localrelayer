@@ -58,6 +58,17 @@ const TransactionsPanel = ({
 )
               </a>
             </div>
+            { tr.name === 'Fill' && (
+              <div>
+                <div>
+                  {`Pair: ${tr.meta?.pair}`}
+                </div>
+                <div>
+                  {`Price: ${tr.meta?.price}`}
+                </div>
+              </div>
+            )
+            }
             <div>
               {tr.meta?.asset?.name}
             </div>

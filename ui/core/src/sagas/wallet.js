@@ -126,3 +126,29 @@ export function* watchWallet({
     yield eff.delay(delay);
   }
 }
+
+export function* getWalletBalance(tokens): Saga<void> {
+  const web3 = ethApi.getWeb3();
+  const {
+    networkId,
+    accounts,
+  } = yield eff.all({
+    networkId: eff.call(web3.eth.net.getId),
+    accounts: eff.call(web3.eth.getAccounts),
+  });
+  const contractWrappers = ethApi.getWrappers(networkId);
+  return yield eff.all(
+    Object.values(tokens).reduce(
+      (acc, tokenAddress) => ({
+        ...acc,
+        [tokenAddress]: (
+          contractWrappers.erc20Token.getBalanceAsync(
+            tokenAddress,
+            accounts[0],
+          ).then(b => b.toString())
+        ),
+      }),
+      {},
+    ),
+  );
+}

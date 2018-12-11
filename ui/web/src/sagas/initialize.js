@@ -313,14 +313,42 @@ function* takeUpdateOrder(messagesFromSocketChannel) {
           orderFillChannel,
           data.payload,
         );
-        if (data.payload.order.makerAddress === traderAddress) {
-          /*
-           * TODO: provide more information about order - pair and price
-           * TODO: update balance
-          * */
+        const userOrders = yield eff.select(coreSelectors.getUserOpenOrders);
+        const { order } = data.payload;
+        const orderInfo = userOrders.find(userOrder => userOrder.signature === order.signature);
+        if (orderInfo && order.makerAddress === traderAddress) {
+          const makerAssetAddress = (
+            assetDataUtils.decodeERC20AssetData(
+              orderInfo.makerAssetData,
+            ).tokenAddress
+          );
+          const takerAssetAddress = (
+            assetDataUtils.decodeERC20AssetData(
+              orderInfo.takerAssetData,
+            ).tokenAddress
+          );
+          const userBalance = yield eff.call(
+            coreSagas.getWalletBalance,
+            {
+              makerAssetAddress,
+              takerAssetAddress,
+            },
+          );
+          yield eff.put(coreActions.setWalletState({
+            balance: {
+              _merge: true,
+              [makerAssetAddress]: (
+                userBalance[makerAssetAddress] || 0
+              ),
+              [takerAssetAddress]: (
+                userBalance[takerAssetAddress] || 0
+              ),
+            },
+          }));
           yield eff.put(coreActions.sendNotificationRequest({
             placement: 'topLeft',
             message: 'Your order has been filled',
+            description: `Pair: ${orderInfo.pair} Price: ${orderInfo.price}`,
             iconProps: {
               type: 'check-circle',
               style: {
