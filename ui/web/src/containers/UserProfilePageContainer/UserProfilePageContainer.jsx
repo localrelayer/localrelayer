@@ -11,15 +11,9 @@ const UserProfilePageContainer = () => (
   <div>
     <HeaderContainer />
     <UserProfilePageLayout>
-      <div key="userBalance">
-        <UserBalanceContainer isTradingPage={false} />
-      </div>
-      <div key="tradingHistory">
-        <UserTradingHistoryContainer />
-      </div>
-      <div key="userOpenOrders">
-        <UserOpenOrdersContainer />
-      </div>
+      <UserBalanceContainer isTradingPage={false} key="userBalance" />
+      <UserTradingHistoryContainer key="tradingHistory" />
+      <UserOpenOrdersContainer key="userOpenOrders" />
     </UserProfilePageLayout>
   </div>
 );

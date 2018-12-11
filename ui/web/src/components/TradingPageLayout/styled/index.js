@@ -21,12 +21,13 @@ const Column = styled.div`
 
 export const Column1 = styled(Column)`
   flex: none;
-  width: 365px;
+  width: 370px;
 `;
 
 export const Column2 = styled(Column)`
   flex-grow: 1;
   flex-basis: auto;
+  min-width: 310px;
 `;
 
 export const Column3 = styled(Column)`

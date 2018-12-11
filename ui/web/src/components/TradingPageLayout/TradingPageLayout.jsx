@@ -6,68 +6,75 @@ type Props = {
   children: React.Node,
 }
 
-const columns = [
+const tradingPageColumns = [
   {
     rows: [
       {
-        components: ['buySell'],
+        component: 'buySell',
         container: S.BuySellWrapper,
       },
       {
-        components: ['userBalance'],
+        component: 'userBalance',
         container: S.UserBalanceWrapper,
       },
     ],
     container: S.Column1,
+    key: 'column1',
   },
   {
     rows: [
       {
-        components: ['orderBook'],
+        component: 'orderBook',
         container: S.OrderBookWrapper,
       },
     ],
     container: S.Column2,
+    key: 'column2',
   },
   {
     rows: [
       {
-        components: ['assetPairCard'],
+        component: 'assetPairCard',
         container: S.AssetPairCardWrapper,
       },
       {
-        components: ['tradingChart'],
+        component: 'tradingChart',
         container: S.TradingChartWrapper,
       },
       {
-        components: ['userOpenOrders'],
+        component: 'userOpenOrders',
         container: S.UserOpenOrdersWrapper,
       },
     ],
     container: S.Column3,
+    key: 'column3',
   },
 ];
 
-const renderLayout = children => columns.map(({ rows, container }) => {
+export const renderLayout = (columns, children) => columns.map(({ rows, container, key }) => {
   const renderedRows = rows.map((row) => {
     const renderedElements = children
-      .filter(child => row.components.some(c => c === child.key));
+      .filter(child => row.component === child.key);
     return React.createElement(
       row.container,
-      {},
+      {
+        key: row.component,
+      },
       renderedElements,
     );
   });
   return React.createElement(
     container,
-    {},
+    {
+      key,
+    },
     renderedRows,
   );
 });
 
 const TradingPageLayout = ({ children }: Props) => (
   <S.TradingPage>
-    {renderLayout(children)}
+    {renderLayout(tradingPageColumns, children)}
   </S.TradingPage>
 );
 
