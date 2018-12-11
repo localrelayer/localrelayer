@@ -7,6 +7,7 @@ import type {
 } from 'instex-core/types';
 
 import colors from 'web-styles/colors';
+import * as S from './styled';
 import {
   getDatafeed,
 } from './Datafeed';
@@ -137,6 +138,6 @@ export default class extends Component<Props> {
   }
 
   render() {
-    return <div style={{ height: '100%' }} id="chart_container" />;
+    return <S.Chart id="chart_container" />;
   }
 }

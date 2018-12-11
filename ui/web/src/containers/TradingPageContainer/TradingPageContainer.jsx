@@ -9,29 +9,16 @@ import UserBalanceContainer from 'web-containers/UserBalanceContainer';
 import UserOpenOrdersContainer from 'web-containers/UserOpenOrdersContainer';
 import TradingChartContainer from 'web-containers/TradingChartContainer';
 
-
 export default () => (
   <div>
     <HeaderContainer />
     <TradingPageLayout>
-      <div key="assetPairCard">
-        <AssetPairCardContainer />
-      </div>
-      <div key="tradingChart">
-        <TradingChartContainer />
-      </div>
-      <div key="userBalance">
-        <UserBalanceContainer isTradingPage />
-      </div>
-      <div key="orderBook">
-        <OrderBookHistory />
-      </div>
-      <div key="buySell">
-        <BuySellContainer />
-      </div>
-      <div key="userOpenOrders">
-        <UserOpenOrdersContainer />
-      </div>
+      <BuySellContainer key="buySell" />
+      <UserBalanceContainer isTradingPage key="userBalance" />
+      <OrderBookHistory key="orderBook" />
+      <AssetPairCardContainer key="assetPairCard" />
+      <TradingChartContainer key="tradingChart" />
+      <UserOpenOrdersContainer key="userOpenOrders" />
     </TradingPageLayout>
   </div>
 );

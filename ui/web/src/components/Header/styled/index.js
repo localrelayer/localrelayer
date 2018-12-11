@@ -15,11 +15,10 @@ export const Header = styled.div`
   align-items: center;
   text-align: center;
   background-color: ${colors['layout-header-background']};
-  height: 7%;
+  height: 54px;
 `;
 
 export const InstexLogo = styled.img`
-  width: 12%;
   height: 100%;
   cursor: pointer;
 `;

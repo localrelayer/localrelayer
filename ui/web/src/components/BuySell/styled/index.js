@@ -6,7 +6,6 @@ import {
 import * as colors from 'web-styles/colors';
 
 export const BuySell = styled.div`
-  position: absolute;
   width: 100%;
   height: 100%;
 `;

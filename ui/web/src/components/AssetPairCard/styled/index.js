@@ -5,9 +5,8 @@ import {
 
 
 export const AssetPairCard = styled(Card)`
-  height: 100%;
+  height: 60px;
   margin: 0;
-
   .ant-card-body {
     padding: 15px;
   }

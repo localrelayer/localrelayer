@@ -22,6 +22,7 @@ export const OrderItem = styled.div`
   justify-content: space-around;
   font-size: 12px;
   min-height: 24px;
+  position: relative;
   color: white;
   align-items: center;
   &:hover {
