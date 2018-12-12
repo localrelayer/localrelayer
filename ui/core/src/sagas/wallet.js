@@ -4,6 +4,10 @@ import * as R from 'ramda';
 import * as utils from '../utils';
 import * as walletActions from '../actions/wallet';
 import ethApi from '../ethApi';
+import {
+  fetchUserOrders,
+  fetchUserTradingHistory,
+} from './orders';
 
 
 export function* watchWallet({
@@ -31,7 +35,7 @@ export function* watchWallet({
         const selectedAccountBalance = (
           accounts.length
             ? (
-              yield eff.call(web3.eth.getBalance, accounts[0])
+              yield eff.call(web3.eth.getBalance, selectedAccount)
             ) : null
         );
         const balance = yield eff.all(
@@ -81,7 +85,22 @@ export function* watchWallet({
           changedData.push({
             selectedAccount: selectedAccount.toLowerCase(),
           });
+          yield eff.fork(
+            fetchUserOrders,
+            {
+              networkId,
+              traderAddress: selectedAccount,
+            },
+          );
+          yield eff.fork(
+            fetchUserTradingHistory,
+            {
+              networkId,
+              makerAddress: selectedAccount,
+            },
+          );
         }
+
         if (selectedAccountBalance !== wallet.selectedAccountBalance) {
           changedData.push({
             selectedAccountBalance,

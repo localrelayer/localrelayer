@@ -26,12 +26,10 @@ const BuySellContainer = (): Node => (
   <Component
     mapStateToProps={state => ({
       currentAssetPair: getCurrentAssetPairWithBalance(state),
-      makerAddress: cs.getWalletState('selectedAccount')(state),
     })}
   >
     {({
       currentAssetPair,
-      makerAddress,
       dispatch,
     }) => (
       <BuySell
@@ -49,7 +47,6 @@ const BuySellContainer = (): Node => (
             formActions,
             order: {
               type,
-              makerAddress: makerAddress.toLowerCase(),
               takerAddress: utils.NULL_ADDRESS,
               makerAssetAmount: (
                 type === 'bid'

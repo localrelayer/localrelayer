@@ -13,7 +13,7 @@ import TradingHistory from 'web-components/TradingHistory';
 const UserTradingHistoryContainer = (): Node => (
   <Component
     mapStateToProps={state => ({
-      orders: coreSelectors.getTradingHistory(state),
+      orders: coreSelectors.getTradingHistory('userTradingHistory')(state),
     })}
   >
     {({ orders }) => (

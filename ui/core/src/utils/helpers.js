@@ -19,12 +19,12 @@ import {
 } from './constants';
 
 
-export function toUnitAmount(amount, decimals) {
+export function toUnitAmount(amount = 0, decimals = 18) {
   const aUnit = new BigNumber(10).pow(decimals);
   const unit = new BigNumber(amount).div(aUnit);
   return unit;
 }
-export function toBaseUnitAmount(amount, decimals) {
+export function toBaseUnitAmount(amount = 0, decimals = 18) {
   const unit = new BigNumber(10).pow(decimals);
   return (new BigNumber(amount)).times(unit);
 }

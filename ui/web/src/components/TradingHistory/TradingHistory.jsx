@@ -52,7 +52,7 @@ const getColumns = isTradingPage => [
               : colors.green
           )}
         >
-          {text}
+          {text.slice(0, 9)}
         </ColoredSpan>
       </Tooltip>
     ),
@@ -62,7 +62,7 @@ const getColumns = isTradingPage => [
     dataIndex: 'amount',
     render: (text: string) => (
       <Tooltip title={text}>
-        {text}
+        {text.slice(0, 9)}
       </Tooltip>
     ),
   },
@@ -73,7 +73,7 @@ const getColumns = isTradingPage => [
       render: text => (
         <div>
           <Tooltip title={text}>
-            {text}
+            {text.slice(0, 9)}
           </Tooltip>
         </div>
       ),

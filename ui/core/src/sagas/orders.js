@@ -102,6 +102,38 @@ export function* fetchTradingHistory(opts = {}) {
   }
 }
 
+export function* fetchUserTradingHistory(opts = {}) {
+  const actions = createActionCreators('read', {
+    resourceType: 'orders',
+    requestKey: 'userTradingHistory',
+    list: 'userTradingHistory',
+    mergeListIds: false,
+  });
+  try {
+    yield eff.put(actions.pending());
+    const response = yield eff.call(
+      api.getTradingHistory,
+      {
+        ...opts,
+      },
+    );
+    const orders = response.records.map(({ order, metaData }) => ({
+      id: order.signature,
+      ...order,
+      metaData,
+    }));
+
+    yield eff.put(actions.succeeded({
+      resources: orders,
+    }));
+  } catch (err) {
+    console.log(err);
+    yield eff.put(actions.succeeded({
+      resources: [],
+    }));
+  }
+}
+
 export function* fetchUserOrders(opts = {}) {
   const actions = createActionCreators('read', {
     resourceType: 'orders',
@@ -183,7 +215,6 @@ function* matchOrder({
 function* postOrder({
   formActions,
   order: {
-    makerAddress,
     takerAddress,
     makerAssetData,
     takerAssetData,
@@ -199,7 +230,6 @@ function* postOrder({
     const provider = new MetamaskSubprovider(web3.currentProvider);
     const contractWrappers = ethApi.getWrappers(networkId);
     const exchangeAddress = getContractAddressesForNetwork(networkId).exchange;
-    const taker = yield eff.select(selectors.getWalletState('selectedAccount'));
 
     const matchedOrders = yield eff.call(matchOrder, {
       makerAssetAmount,
@@ -219,6 +249,8 @@ function* postOrder({
         ordersToFill.push(order);
         takerAssetFillAmounts.push(toBeFilledAmount);
       }
+
+      const taker = yield eff.select(selectors.getWalletState('selectedAccount'));
 
       try {
         const txHash = yield eff.call(
@@ -254,7 +286,6 @@ function* postOrder({
               takerAssetAmount,
               totalFilledAmount,
               filledOrders,
-              makerAddress,
               makerAssetData,
               takerAssetData,
               price: ordersInfo.price,
@@ -287,6 +318,8 @@ function* postOrder({
       }
       formActions.resetForm({});
     } else {
+      const makerAddress = yield eff.select(selectors.getWalletState('selectedAccount'));
+
       const orderConfigRequest = {
         exchangeAddress,
         makerAddress,
