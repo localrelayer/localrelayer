@@ -165,6 +165,14 @@ function* initializeRoute({
         networkId,
       },
     );
+
+    yield eff.fork(
+      coreSagas.fetchUserTradingHistory,
+      {
+        networkId,
+        makerAddress: selectedAccount,
+      },
+    );
     const allAssets = yield eff.select(coreSelectors.getResourceMappedList('assets'));
     yield eff.put(
       webRadioChannel,
@@ -225,6 +233,16 @@ function* initializeRoute({
         coreSagas.fetchTradingHistory,
         {
           networkId,
+          baseAssetData: assetPair.assetDataA.assetData,
+          quoteAssetData: assetPair.assetDataB.assetData,
+        },
+      );
+
+      yield eff.fork(
+        coreSagas.fetchUserTradingHistory,
+        {
+          networkId,
+          makerAddress: selectedAccount,
           baseAssetData: assetPair.assetDataA.assetData,
           quoteAssetData: assetPair.assetDataB.assetData,
         },

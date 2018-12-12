@@ -20,9 +20,9 @@ import {
   sortOrderbook,
 } from '../utils';
 
-export const getTradingHistory = createSelector(
+export const getTradingHistory = listName => createSelector(
   [
-    getResourceMappedList('orders', 'tradingHistory'),
+    getResourceMappedList('orders', listName),
     getResourceMap('assets'),
     getResourceMap('assetPairs'),
   ],

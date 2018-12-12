@@ -90,7 +90,7 @@ const getColumns = (
     }] : []
   ),
   {
-    title: 'Balance',
+    title: 'Available Balance',
     dataIndex: 'availableBalance',
     render: (text, record) => (
       <div>
@@ -100,7 +100,7 @@ const getColumns = (
               <Icon type="loading" />
             )
         )}
-        {text}
+        {text?.slice(0, 16)}
         <Tooltip
           placement="bottom"
           title={(

@@ -145,10 +145,15 @@ sputnikApi.get('/tradingHistory', async (ctx) => {
       filledTakerAssetAmount: { $ne: 0 },
     };
 
+  if (makerAddress) {
+    query.makerAddress = makerAddress;
+  }
+
   const orders = await Order.find(query)
     .limit(500)
     .sort('-lastFilledAt')
     .lean();
+
   ctx.status = 200;
   ctx.body = {
     records: orders.map(constructOrderRecord),
@@ -192,6 +197,7 @@ sputnikApi.get('/openOrders', async (ctx) => {
     records: orders.map(constructOrderRecord),
   };
 });
+
 
 sputnikApi.post('/tradingInfo', async (ctx) => {
   const { pairs } = ctx.request.body;
