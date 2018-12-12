@@ -302,7 +302,6 @@ function* postOrder({
           yield eff.call(postOrder, {
             formActions,
             order: {
-              makerAddress,
               takerAddress,
               makerAssetData,
               takerAssetData,

@@ -6,9 +6,9 @@ import * as colors from 'web-styles/colors';
 
 
 export const TradingHistoryTable = styled(Table)`
-
   .ant-table {
-    border: none;
+   padding-left: ${props => (props.isUserTradingHistory ? '10px' : 0)};
+   border: 1px solid ${colors['component-background']} !important;
   }
   
   .ant-table-thead > tr > th {
@@ -52,9 +52,8 @@ export const TradingHistory = styled.div`
   background-color: ${colors['component-background']};
 `;
 
-export const Title = styled.div`
+export const Header = styled.div`
   display: flex;
   justify-content: center;
-  height: 10%;
-  font-size: 20px;
+  font-size: 18px;
 `;

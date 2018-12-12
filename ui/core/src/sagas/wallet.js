@@ -30,7 +30,7 @@ export function* watchWallet({
       });
       const contractWrappers = ethApi.getWrappers(networkId);
 
-      const selectedAccount = accounts.length ? accounts[0] : null;
+      const selectedAccount = accounts.length ? accounts[0].toLowerCase() : null;
       if (selectedAccount) {
         const selectedAccountBalance = (
           accounts.length
@@ -81,9 +81,9 @@ export function* watchWallet({
             accounts,
           });
         }
-        if (selectedAccount?.toLowerCase() !== wallet.selectedAccount?.toLowerCase()) {
+        if (selectedAccount !== wallet.selectedAccount) {
           changedData.push({
-            selectedAccount: selectedAccount.toLowerCase(),
+            selectedAccount,
           });
           yield eff.fork(
             fetchUserOrders,

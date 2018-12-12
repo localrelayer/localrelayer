@@ -6,7 +6,7 @@ import OrderBookHistory from 'web-components/OrderBookHistory';
 import AssetPairCardContainer from 'web-containers/AssetPairCardContainer';
 import BuySellContainer from 'web-containers/BuySellContainer';
 import UserBalanceContainer from 'web-containers/UserBalanceContainer';
-import UserOpenOrdersContainer from 'web-containers/UserOpenOrdersContainer';
+import UserOrdersContainer from 'web-containers/UserOrdersContainer';
 import TradingChartContainer from 'web-containers/TradingChartContainer';
 
 export default () => (
@@ -18,7 +18,7 @@ export default () => (
       <OrderBookHistory key="orderBook" />
       <AssetPairCardContainer key="assetPairCard" />
       <TradingChartContainer key="tradingChart" />
-      <UserOpenOrdersContainer key="userOpenOrders" />
+      <UserOrdersContainer key="userOrders" />
     </TradingPageLayout>
   </div>
 );

@@ -8,7 +8,7 @@ export const UserOpenOrders = styled.div`
   height: 100%;
   width: 100%;
   background-color: ${colors['component-background']};
-  padding: 5px 24px;
+  padding-left: 10px;
 `;
 
 export const Header = styled.div`
