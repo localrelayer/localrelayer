@@ -125,6 +125,7 @@ sputnikApi.get('/tradingHistory', async (ctx) => {
   const {
     baseAssetData,
     quoteAssetData,
+    makerAddress,
     networkId = 1,
   } = ctx.request.query;
 
