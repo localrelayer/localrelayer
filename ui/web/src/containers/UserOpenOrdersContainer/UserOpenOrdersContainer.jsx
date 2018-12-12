@@ -12,8 +12,13 @@ import {
 import Component from 'web-components/ConnectComponent';
 import UserOpenOrders from 'web-components/UserOpenOrders';
 
+type Props = {
+  isTradingPage: Boolean,
+}
 
-const UserOpenOrdersContainer = (): Node => (
+const UserOpenOrdersContainer = (
+  { isTradingPage }: Props,
+): Node => (
   <Component
     mapStateToProps={state => ({
       orders: coreSelectors.getUserOpenOrders(state),
@@ -25,6 +30,7 @@ const UserOpenOrdersContainer = (): Node => (
     }) => (
       <UserOpenOrders
         orders={orders}
+        isTradingPage={isTradingPage}
         onCancel={(order) => {
           dispatch(coreActions.cancelOrderRequest(order));
         }}

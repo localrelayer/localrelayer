@@ -21,6 +21,7 @@ import * as S from './styled';
 type Props = {
   orders: Array<any>,
   isTradingPage: boolean,
+  isUserTradingHistory: Boolean,
 }
 
 const getColumns = isTradingPage => [
@@ -107,9 +108,9 @@ const getColumns = isTradingPage => [
 const TradingHistory = ({
   orders,
   isTradingPage,
+  isUserTradingHistory,
 }: Props) => {
   const [dimensions, setDimensions] = useState('');
-
   return (
     <Measure
       bounds
@@ -120,13 +121,23 @@ const TradingHistory = ({
       {({ measureRef }) => (
         <div ref={measureRef} style={{ height: '100%' }}>
           <S.TradingHistory>
+            {!isTradingPage
+            && !isUserTradingHistory
+            && (
+            <S.Header>
+              <div>
+                Trading History
+              </div>
+            </S.Header>
+            )}
             <S.TradingHistoryTable
+              isUserTradingHistory={isUserTradingHistory}
               isTradingPage={isTradingPage}
               size="small"
               columns={getColumns(isTradingPage)}
               pagination={false}
               dataSource={orders}
-              scroll={isTradingPage ? { y: dimensions.height } : { y: dimensions.height - 50 }}
+              scroll={isTradingPage ? { y: dimensions.height } : { y: dimensions.height - 75 }}
             />
           </S.TradingHistory>
         </div>

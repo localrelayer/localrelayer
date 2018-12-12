@@ -10,6 +10,8 @@ import {
   Button,
   Popover,
   Tooltip,
+  Tag,
+  Icon,
 } from 'antd';
 
 import * as S from './styled';
@@ -23,6 +25,7 @@ type Props = {
   pendingTransactionsCount: Array<any>,
   address: any,
   isSocketConnected: Boolean,
+  networkId: any,
 }
 const columns = [
   {
@@ -43,6 +46,29 @@ const columns = [
   },
 ];
 
+const networkEnum = {
+  1: {
+    name: 'Mainnet',
+    isSupported: true,
+  },
+  3: {
+    name: 'Ropsten',
+    isSupported: false,
+  },
+  4: {
+    name: 'Rinkeby',
+    isSupported: false,
+  },
+  42: {
+    name: 'Kovan',
+    isSupported: true,
+  },
+  50: {
+    name: 'Ganache',
+    isSupported: true,
+  },
+};
+
 const Header = ({
   listedAssetPairs,
   currentAssetPair,
@@ -50,6 +76,7 @@ const Header = ({
   onTransactionsClick,
   pendingTransactionsCount,
   address,
+  networkId,
   isSocketConnected,
 }: Props) => {
   const [searchText, setSearchText] = useState('');
@@ -119,6 +146,35 @@ const Header = ({
         </Button>
       </Popover>
       <S.NotificationContainer>
+        <S.CurrentNetwork
+          isSupported={networkEnum[networkId].isSupported}
+        >
+          {networkEnum[networkId].isSupported
+            ? (
+              <Tag>
+                <Icon type="global" />
+                {' '}
+                {
+                  networkEnum[networkId].name
+                }
+                {' '}
+                {'network'}
+              </Tag>
+            )
+            : (
+              <Tooltip title="Sorry, but this network is not supported!">
+                <Tag>
+                  <Icon type="global" />
+                  {' '}
+                  {
+                    networkEnum[networkId].name
+                  }
+                  {' '}
+                  {'network'}
+                </Tag>
+              </Tooltip>
+            )}
+        </S.CurrentNetwork>
         {!isSocketConnected
           && (
             <Tooltip
