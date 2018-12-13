@@ -26,6 +26,7 @@ const initialState: UiState = {
   currentBuySellTab: 'bid',
 
   isTransactionsPanelIsVisible: false,
+  isTokensPanelIsVisible: false,
 };
 
 const mergeValues = (
