@@ -22,7 +22,7 @@ const colors = {
   'firm-color': '#673ab7',
   green: '#279467',
   red: '#a03756',
-  // same as fade(#fff, 85%)
+  // same as fade(#3782c3, 85%)
   white: '#DADDDF',
 };
 

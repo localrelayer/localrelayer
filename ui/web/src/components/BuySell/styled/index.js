@@ -24,7 +24,10 @@ export const BuySellCard = styled(Card)`
 export const BuySellTabs = styled(Tabs)`
   .ant-tabs-bar {
     border-bottom: 1px solid ${colors['component-background']};
-} 
+  } 
+  .ant-tabs-tab-active {
+    color: white !important;
+  }
 `;
 
 export const TabsExtraContent = styled.div`
