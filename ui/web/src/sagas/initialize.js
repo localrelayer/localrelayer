@@ -486,7 +486,7 @@ export function* initialize(): Saga<void> {
   const { historyType } = yield eff.take(actionTypes.INITIALIZE_WEB_APP);
   if (!web3) {
     yield eff.put(uiActions.setUiState({
-      isMetaMaskPresent: false,
+      isWeb3ProviderPresent: false,
     }));
   }
   const networkId = yield eff.call(web3.eth.net.getId);
@@ -576,6 +576,7 @@ export function* initialize(): Saga<void> {
   yield eff.fork(coreSagas.takeCancelOrder);
   yield eff.fork(takeNotification);
   let watchWalletTask;
+
   /* Web radio center */
   while (true) {
     const {

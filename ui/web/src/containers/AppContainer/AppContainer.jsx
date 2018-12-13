@@ -25,16 +25,16 @@ const AppContainer = () => (
   <Component
     mapStateToProps={state => ({
       isAppInitializing: getUiState('isAppInitializing')(state),
-      isMetaMaskPresent: getUiState('isMetaMaskPresent')(state),
       isNetworkSupported: getUiState('isNetworkSupported')(state),
+      isWeb3ProviderPresent: getUiState('isWeb3ProviderPresent')(state),
     })}
   >
     {({
       isAppInitializing,
-      isMetaMaskPresent,
       isNetworkSupported,
+      isWeb3ProviderPresent,
     }) => {
-      if (!isMetaMaskPresent) return (<ConnectingToEthProvider />);
+      if (!isWeb3ProviderPresent) return (<ConnectingToEthProvider />);
       if (!isNetworkSupported) return (<NetworkNotSupported />);
       return (
         <Layout>
