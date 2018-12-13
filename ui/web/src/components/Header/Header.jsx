@@ -10,7 +10,12 @@ import {
   Button,
   Popover,
   Tooltip,
+  Tag,
+  Icon,
 } from 'antd';
+import {
+  utils,
+} from 'instex-core';
 
 import * as S from './styled';
 import logo from '../../assets/logo5.png';
@@ -23,6 +28,7 @@ type Props = {
   pendingTransactionsCount: Array<any>,
   address: any,
   isSocketConnected: Boolean,
+  networkId: any,
 }
 const columns = [
   {
@@ -50,6 +56,7 @@ const Header = ({
   onTransactionsClick,
   pendingTransactionsCount,
   address,
+  networkId,
   isSocketConnected,
 }: Props) => {
   const [searchText, setSearchText] = useState('');
@@ -119,6 +126,17 @@ const Header = ({
         </Button>
       </Popover>
       <S.NotificationContainer>
+        <S.CurrentNetwork>
+          <Tag>
+            <Icon type="global" />
+            {' '}
+            {
+                  utils.getNetwork(networkId).name
+                }
+            {' '}
+            {'network'}
+          </Tag>
+        </S.CurrentNetwork>
         {!isSocketConnected
           && (
             <Tooltip
@@ -134,11 +152,11 @@ const Header = ({
           )
         }
         <S.UserProfile>
-          <Button loading={!address} type="primary">
+          <Tag>
             <S.HeaderIcon type="user" />
             {address?.slice(0, 16)}
             ...
-          </Button>
+          </Tag>
         </S.UserProfile>
         <S.TransactionsBadge count={pendingTransactionsCount}>
           <S.TransactionsIcon onClick={onTransactionsClick} />

@@ -12,7 +12,8 @@ import type {
 const initialState: UiState = {
   isAppInitializing: true,
   isSocketConnected: false,
-  isMetaMaskPresent: false,
+  isMetaMaskPresent: true,
+  isNetworkSupported: true,
   pathname: null,
   historyType: null,
   networkId: null,

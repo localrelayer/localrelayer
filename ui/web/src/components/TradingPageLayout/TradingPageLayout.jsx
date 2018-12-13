@@ -42,7 +42,7 @@ const tradingPageColumns = [
         container: S.TradingChartWrapper,
       },
       {
-        component: 'userOpenOrders',
+        component: 'userOrders',
         container: S.UserOpenOrdersWrapper,
       },
     ],

@@ -84,7 +84,7 @@ export const getCurrentOrder = createSelector(
       ).tokenAddress;
       const { decimals } = assets[orders[currentOrderId].takerAssetData];
       const userAvailableBalance = utils.toUnitAmount(
-        new BigNumber(balance[takerAssetAddress]).minus(fundsInOrders),
+        new BigNumber(balance[takerAssetAddress] || 0).minus(fundsInOrders),
         decimals,
       );
       let amount;
@@ -98,7 +98,7 @@ export const getCurrentOrder = createSelector(
             ? ordersInfo.amount.toFixed(8)
             : (
               new BigNumber(
-                userAvailableBalance,
+                userAvailableBalance || 0,
               )
                 .div(ordersInfo.price.toFixed(8))
                 .toFixed(8)

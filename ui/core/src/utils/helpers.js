@@ -140,8 +140,38 @@ export function cfl(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-export const ethNetworks = {
-  1: 'Main Ethereum Network',
-  42: 'Kovan Test Network',
-  50: 'Test Network',
+export const networks = {
+  1: {
+    name: 'Mainnet',
+    isSupported: true,
+  },
+  3: {
+    name: 'Ropsten',
+    isSupported: false,
+  },
+  4: {
+    name: 'Rinkeby',
+    isSupported: false,
+  },
+  42: {
+    name: 'Kovan',
+    isSupported: true,
+  },
+  50: {
+    name: 'Ganache',
+    isSupported: true,
+  },
+  77: {
+    name: 'sokol (POA Network)',
+    isSupported: false,
+  },
+  99: {
+    name: 'core (POA Network)',
+    isSupported: false,
+  },
+};
+
+export const getNetwork = id => networks[id] || {
+  name: 'Unknown',
+  isSupported: false,
 };

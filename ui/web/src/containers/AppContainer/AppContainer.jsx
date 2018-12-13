@@ -14,6 +14,7 @@ import {
 
 import Component from 'web-components/ConnectComponent';
 import ConnectingToEthProvider from 'web-components/ConnectingToEthProvider';
+import NetworkNotSupported from 'web-components/NetworkNotSupported';
 import TransactionsPanelContainer from 'web-containers/TransactionsPanelContainer';
 import TradingPageContainer from 'web-containers/TradingPageContainer';
 import UserProfilePageContainer from 'web-containers/UserProfilePageContainer';
@@ -25,13 +26,16 @@ const AppContainer = () => (
     mapStateToProps={state => ({
       isAppInitializing: getUiState('isAppInitializing')(state),
       isMetaMaskPresent: getUiState('isMetaMaskPresent')(state),
+      isNetworkSupported: getUiState('isNetworkSupported')(state),
     })}
   >
     {({
       isAppInitializing,
       isMetaMaskPresent,
+      isNetworkSupported,
     }) => {
       if (!isMetaMaskPresent) return (<ConnectingToEthProvider />);
+      if (!isNetworkSupported) return (<NetworkNotSupported />);
       return (
         <Layout>
           <TransactionsPanelContainer />

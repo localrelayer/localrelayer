@@ -11,16 +11,26 @@ import {
 import Component from 'web-components/ConnectComponent';
 import TradingHistory from 'web-components/TradingHistory';
 
+type Props = {
+  isTradingPage: Boolean,
+  isUserTradingHistory: Boolean,
+};
 
-const TradingHistoryContainer = (): Node => (
+const TradingHistoryContainer = ({
+  isTradingPage,
+  isUserTradingHistory,
+}: Props): Node => (
   <Component
     mapStateToProps={state => ({
-      orders: coreSelectors.getTradingHistory('tradingHistory')(state),
+      orders: isUserTradingHistory
+        ? coreSelectors.getTradingHistory('userTradingHistory')(state)
+        : coreSelectors.getTradingHistory('tradingHistory')(state),
     })}
   >
     {({ orders }) => (
       <TradingHistory
-        isTradingPage
+        isTradingPage={isTradingPage}
+        isUserTradingHistory={isUserTradingHistory}
         orders={orders}
       />
     )}

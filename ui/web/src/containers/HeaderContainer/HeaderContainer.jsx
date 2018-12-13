@@ -30,6 +30,7 @@ const HeaderContainer = (): Node => (
       isSocketConnected: webSelectors.getUiState('isSocketConnected')(state),
       pendingTransactionsCount: cs.getPendingTransactions(state).length,
       address: cs.getWalletState('selectedAccount')(state),
+      networkId: cs.getWalletState('networkId')(state),
     })}
   >
     {({
@@ -41,12 +42,14 @@ const HeaderContainer = (): Node => (
       isSocketConnected,
       pendingTransactionsCount,
       address,
+      networkId,
     }) => (
       <Header
         listedAssetPairs={listedAssetPairs}
         currentAssetPair={currentAssetPair}
         pendingTransactionsCount={pendingTransactionsCount}
         address={address}
+        networkId={networkId}
         isSocketConnected={isSocketConnected}
         onTransactionsClick={() => {
           dispatch(uiActions.setUiState({
