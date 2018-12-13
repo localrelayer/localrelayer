@@ -17,10 +17,7 @@ const UserOrdersContainer = (): Node => (
       <UserOpenOrdersContainer isTradingPage />
     </S.UserOrdersTabs.TabPane>
     <S.UserOrdersTabs.TabPane tab="Filled" key="2">
-      <TradingHistoryContainer
-        isTradingPage={false}
-        isUserTradingHistory
-      />
+      <TradingHistoryContainer isUserTradingHistory />
     </S.UserOrdersTabs.TabPane>
   </S.UserOrdersTabs>
 );

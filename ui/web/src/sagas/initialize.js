@@ -327,6 +327,11 @@ function* takeUpdateOrder(messagesFromSocketChannel) {
         )
       ) {
         lists.push('tradingHistory');
+
+        if (data.payload.order.makerAddress === traderAddress) {
+          lists.push('userTradingHistory');
+        }
+
         yield eff.put(
           orderFillChannel,
           data.payload,
@@ -478,25 +483,31 @@ function* socketConnect(messagesFromSocketChannel): Saga<void> {
 }
 
 export function* initialize(): Saga<void> {
-  if (web3.currentProvider) {
+  const { historyType } = yield eff.take(actionTypes.INITIALIZE_WEB_APP);
+  if (!web3) {
     yield eff.put(uiActions.setUiState({
-      isMetaMaskPresent: true,
+      isMetaMaskPresent: false,
     }));
   }
-  const { historyType } = yield eff.take(actionTypes.INITIALIZE_WEB_APP);
+  const networkId = yield eff.call(web3.eth.net.getId);
+  if (!utils.getNetwork(networkId).isSupported) {
+    yield eff.put(uiActions.setUiState({
+      isNetworkSupported: false,
+    }));
+  }
   api.setApiUrl(config.apiUrl);
   console.log('Web initialize saga');
 
-  const networkId = yield eff.call(web3.eth.net.getId);
   const accounts = yield eff.call(web3.eth.getAccounts);
   const selectedAccount = accounts.length ? accounts[0].toLowerCase() : null;
   yield eff.put(
     coreActions.setWalletState({
       networkId,
-      networkName: utils.ethNetworks[networkId] || 'Unknown',
+      networkName: utils.getNetwork(networkId).name || 'Unknown',
       selectedAccount,
     }),
   );
+
   yield eff.put(uiActions.setUiState({
     historyType,
   }));

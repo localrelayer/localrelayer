@@ -13,6 +13,9 @@ import {
   Tag,
   Icon,
 } from 'antd';
+import {
+  utils,
+} from 'instex-core';
 
 import * as S from './styled';
 import logo from '../../assets/logo5.png';
@@ -45,29 +48,6 @@ const columns = [
     dataIndex: 'assetDataB.assetData.name',
   },
 ];
-
-const networkEnum = {
-  1: {
-    name: 'Mainnet',
-    isSupported: true,
-  },
-  3: {
-    name: 'Ropsten',
-    isSupported: false,
-  },
-  4: {
-    name: 'Rinkeby',
-    isSupported: false,
-  },
-  42: {
-    name: 'Kovan',
-    isSupported: true,
-  },
-  50: {
-    name: 'Ganache',
-    isSupported: true,
-  },
-};
 
 const Header = ({
   listedAssetPairs,
@@ -146,34 +126,16 @@ const Header = ({
         </Button>
       </Popover>
       <S.NotificationContainer>
-        <S.CurrentNetwork
-          isSupported={networkEnum[networkId].isSupported}
-        >
-          {networkEnum[networkId].isSupported
-            ? (
-              <Tag>
-                <Icon type="global" />
-                {' '}
-                {
-                  networkEnum[networkId].name
+        <S.CurrentNetwork>
+          <Tag>
+            <Icon type="global" />
+            {' '}
+            {
+                  utils.getNetwork(networkId).name
                 }
-                {' '}
-                {'network'}
-              </Tag>
-            )
-            : (
-              <Tooltip title="Sorry, but this network is not supported!">
-                <Tag>
-                  <Icon type="global" />
-                  {' '}
-                  {
-                    networkEnum[networkId].name
-                  }
-                  {' '}
-                  {'network'}
-                </Tag>
-              </Tooltip>
-            )}
+            {' '}
+            {'network'}
+          </Tag>
         </S.CurrentNetwork>
         {!isSocketConnected
           && (
@@ -190,11 +152,11 @@ const Header = ({
           )
         }
         <S.UserProfile>
-          <Button loading={!address} type="primary">
+          <Tag>
             <S.HeaderIcon type="user" />
             {address?.slice(0, 16)}
             ...
-          </Button>
+          </Tag>
         </S.UserProfile>
         <S.TransactionsBadge count={pendingTransactionsCount}>
           <S.TransactionsIcon onClick={onTransactionsClick} />

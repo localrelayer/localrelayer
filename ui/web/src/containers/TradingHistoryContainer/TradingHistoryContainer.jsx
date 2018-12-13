@@ -29,10 +29,7 @@ const TradingHistoryContainer = ({
   >
     {({ orders }) => (
       <TradingHistory
-        isTradingPage={typeof isTradingPage === 'boolean'
-          ? isTradingPage
-          : true
-        }
+        isTradingPage={isTradingPage}
         isUserTradingHistory={isUserTradingHistory}
         orders={orders}
       />

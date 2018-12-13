@@ -73,7 +73,7 @@ export function* watchWallet({
         if (wallet.networkId !== networkId) {
           changedData.push({
             networkId,
-            networkName: utils.ethNetworks[networkId] || 'Unknown',
+            networkName: utils.getNetwork(networkId).name,
           });
         }
         if (accounts.some((w, i) => wallet.accounts[i] !== w)) {
