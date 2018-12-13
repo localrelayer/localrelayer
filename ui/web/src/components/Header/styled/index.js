@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import {
   Icon,
-  Table,
   Badge,
 } from 'antd';
 import * as colors from 'web-styles/colors';
@@ -39,60 +38,6 @@ export const Account = styled.div`
   justify-content: center;
   height: 100%;
   cursor: pointer;
-`;
-
-export const TokensTable = styled(Table)`
-
-  .ant-table {
-    margin-top: 10px;
-    width: 400px;
-    border: 1px solid ${colors['component-background']};
-  }
-  
-  .ant-table-thead > tr > th {
-    background-color: ${colors['popover-bg']} !important;
-    border: 1px solid ${colors['component-background']} !important;
-    color: ${colors.text};
-    text-align: left;
-    width: 33%;
-  }
-  
-  .ant-table-tbody > tr > td {
-    padding: 0;
-    background-color: ${colors['popover-bg']} !important;
-    color: white;
-    font-size: 12px;
-    text-align: left;
-    cursor: pointer;
-    width: 33%;
-  }
-
-  .ant-table-tbody > tr:hover > td {
-    background: ${colors['item-hover-bg']};
-  }
-  
-  .ant-table-tbody > tr > td {
-    padding: 5px 5px;
-  } 
-  
-  & .ant-table-placeholder {
-    background-color: ${colors['popover-bg']} !important;
-  }
-`;
-
-export const PopoverContent = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  & .ant-input {
-    background-color: ${colors['background-color-light']};
-    width: 70%;
-  border-radius: 4px 0 0 4px;
-  }
-`;
-
-export const SearchBar = styled.div`
-  display: flex;
 `;
 
 export const NotificationContainer = styled.div`

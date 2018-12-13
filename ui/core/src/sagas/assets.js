@@ -11,6 +11,7 @@ import {
 import {
   getAssetByIdField,
   getResourceById,
+  getResourceMap,
   getWalletState,
 } from '../selectors';
 import * as utils from '../utils';
@@ -169,16 +170,27 @@ export function* fetchAssetPairs(opts = { networkId: 1 }) {
   }
 }
 
-export function* fetchTradingInfo(opts = { networkId: 1 }) {
+export function* fetchAllTradingInfo(opts = { networkId: 1 }) {
   const actions = createActionCreators('read', {
     resourceType: 'tradingInfo',
     requestKey: 'apiTradingInfo',
   });
   try {
     yield eff.put(actions.pending());
+    const assetPairs = yield eff.select(getResourceMap('assetPairs'));
+    const pairs = Object.keys(assetPairs).map((pair) => {
+      const [assetDataA, assetDataB] = pair.split('_');
+      return {
+        networkId: opts.networkId,
+        assetDataA,
+        assetDataB,
+      };
+    });
     const response = yield eff.call(
       api.getTradingInfo,
-      opts,
+      {
+        pairs,
+      },
     );
     yield eff.put(actions.succeeded({
       resources: response.records,
