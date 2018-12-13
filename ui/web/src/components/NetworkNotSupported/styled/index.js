@@ -16,13 +16,10 @@ export const MessageWrapper = styled.div`
   display: flex;
   text-align: center;
   color: white;
+  flex-direction: column;
 `;
 
-export const MetaMaskLink = styled.a.attrs({
-  rel: 'noopener noreferrer',
-  target: '_blank',
-  href: 'https://metamask.io/',
-})`
-  margin-left: 5px;
-  margin-right: 5px;
+
+export const SupportedNetworks = styled.div`
+  display: flex;
 `;

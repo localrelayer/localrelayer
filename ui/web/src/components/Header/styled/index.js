@@ -67,7 +67,7 @@ export const TokensTable = styled(Table)`
     width: 33%;
   }
 
-  ant-table-tbody > tr:hover > td {
+  .ant-table-tbody > tr:hover > td {
     background: ${colors['item-hover-bg']};
   }
   
@@ -95,10 +95,22 @@ export const SearchBar = styled.div`
   display: flex;
 `;
 
-export const NotificationContainer = styled.a`
+export const NotificationContainer = styled.div`
   margin-left: auto;
   margin-right: 3%;
   display: flex;
+`;
+
+export const CurrentNetwork = styled.div`
+  .ant-tag {
+    background-color: ${colors['background-color-light']};
+    border-color: ${colors['background-color-light']} !important;
+    min-height: 32px;
+    min-width: 200px;
+    line-height: 32px;
+    font-size: 16px;
+    color: ${colors.white};
+  }
 `;
 
 export const TransactionsIcon = styled(Icon).attrs({
@@ -130,4 +142,12 @@ export const TransactionsBadge = styled(Badge)`
 
 export const UserProfile = styled.div`
   margin-right: 30px;
+  .ant-tag {
+    border-color: ${colors['background-color-light']} !important;
+    min-height: 32px;
+    min-width: 200px;
+    line-height: 32px;
+    font-size: 0.8rem;
+    color: ${colors.white};
+  }
 `;

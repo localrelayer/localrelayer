@@ -23,10 +23,6 @@ window.addEventListener('load', async () => {
       // Request account access if needed
       await window.ethereum.enable();
       ethApi.setWeb3(window.web3);
-      store.dispatch({
-        type: actionTypes.INITIALIZE_WEB_APP,
-        historyType: window.__STORYBOOK_CLIENT_API__ ? 'memory' : 'browser',
-      });
     } catch (error) {
       // User denied account access...
       console.log('User denied');
@@ -35,12 +31,13 @@ window.addEventListener('load', async () => {
   } else if (window.web3) {
     window.web3 = new Web3(web3.currentProvider);
     ethApi.setWeb3(window.web3);
-    store.dispatch({
-      type: actionTypes.INITIALIZE_WEB_APP,
-      historyType: window.__STORYBOOK_CLIENT_API__ ? 'memory' : 'browser',
-    });
   } else {
     // Non-dapp browsers...
+    window.web3 = null;
     console.log('Non-Ethereum browser detected. You should consider trying MetaMask!');
   }
+  store.dispatch({
+    type: actionTypes.INITIALIZE_WEB_APP,
+    historyType: window.__STORYBOOK_CLIENT_API__ ? 'memory' : 'browser',
+  });
 });
