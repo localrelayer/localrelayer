@@ -103,7 +103,7 @@ export const NotificationContainer = styled.div`
 
 export const CurrentNetwork = styled.div`
   .ant-tag {
-    background-color: ${props => (props.isSupported ? colors['background-color-light'] : 'red')};
+    background-color: ${colors['background-color-light']};
     border-color: ${colors['background-color-light']} !important;
     min-height: 32px;
     min-width: 200px;
@@ -142,4 +142,12 @@ export const TransactionsBadge = styled(Badge)`
 
 export const UserProfile = styled.div`
   margin-right: 30px;
+  .ant-tag {
+    border-color: ${colors['background-color-light']} !important;
+    min-height: 32px;
+    min-width: 200px;
+    line-height: 32px;
+    font-size: 0.8rem;
+    color: ${colors.white};
+  }
 `;

@@ -121,8 +121,9 @@ const TradingHistory = ({
       {({ measureRef }) => (
         <div ref={measureRef} style={{ height: '100%' }}>
           <S.TradingHistory>
-            {!isTradingPage
-            && !isUserTradingHistory
+            {
+            !isUserTradingHistory
+            && !isTradingPage
             && (
             <S.Header>
               <div>
@@ -134,7 +135,7 @@ const TradingHistory = ({
               isUserTradingHistory={isUserTradingHistory}
               isTradingPage={isTradingPage}
               size="small"
-              columns={getColumns(isTradingPage)}
+              columns={getColumns(isTradingPage || !isUserTradingHistory)}
               pagination={false}
               dataSource={orders}
               scroll={isTradingPage ? { y: dimensions.height } : { y: dimensions.height - 75 }}
