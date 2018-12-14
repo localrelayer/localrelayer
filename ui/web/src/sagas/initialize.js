@@ -382,7 +382,10 @@ function* takeUpdateOrder(messagesFromSocketChannel) {
         }
       }
 
-      if (data.payload.metaData.isValid === true) {
+      if (
+        data.payload.metaData.isValid === true
+        && data.payload.metaData.isShadowed === false
+      ) {
         const currentAssetPairId = yield eff.select(getUiState('currentAssetPairId'));
         const [baseAssetData] = currentAssetPairId.split('_');
         lists.push((
