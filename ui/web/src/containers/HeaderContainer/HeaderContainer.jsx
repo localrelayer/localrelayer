@@ -15,18 +15,14 @@ import {
 
 import Component from 'web-components/ConnectComponent';
 import Header from 'web-components/Header';
-import {
-  getHistory,
-} from '../../history';
 
 
 const HeaderContainer = (): Node => (
   <Component
     mapStateToProps={state => ({
-      historyType: webSelectors.getUiState('historyType')(state),
-      listedAssetPairs: cs.getListedAssetPairs(state),
       currentAssetPair: webSelectors.getCurrentAssetPair(state),
       isTransactionsPanelIsVisible: webSelectors.getUiState('isTransactionsPanelIsVisible')(state),
+      isTokensPanelIsVisible: webSelectors.getUiState('isTokensPanelIsVisible')(state),
       isSocketConnected: webSelectors.getUiState('isSocketConnected')(state),
       pendingTransactionsCount: cs.getPendingTransactions(state).length,
       address: cs.getWalletState('selectedAccount')(state),
@@ -35,17 +31,15 @@ const HeaderContainer = (): Node => (
   >
     {({
       dispatch,
-      historyType,
-      listedAssetPairs,
       currentAssetPair,
       isTransactionsPanelIsVisible,
+      isTokensPanelIsVisible,
       isSocketConnected,
       pendingTransactionsCount,
       address,
       networkId,
     }) => (
       <Header
-        listedAssetPairs={listedAssetPairs}
         currentAssetPair={currentAssetPair}
         pendingTransactionsCount={pendingTransactionsCount}
         address={address}
@@ -56,12 +50,10 @@ const HeaderContainer = (): Node => (
             isTransactionsPanelIsVisible: !isTransactionsPanelIsVisible,
           }));
         }}
-        onPairClick={({
-          assetDataA,
-          assetDataB,
-        }) => {
-          const history = getHistory(historyType);
-          history.push(`${assetDataA.assetData.symbol}-${assetDataB.assetData.symbol}`);
+        onTokensClick={() => {
+          dispatch(uiActions.setUiState({
+            isTokensPanelIsVisible: !isTokensPanelIsVisible,
+          }));
         }}
       />
     )}

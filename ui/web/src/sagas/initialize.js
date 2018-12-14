@@ -212,14 +212,8 @@ function* initializeRoute({
       yield eff.fork(subscribeOnCurrentTradingInfo);
 
       yield eff.fork(
-        coreSagas.fetchTradingInfo,
-        {
-          pairs: [{
-            networkId,
-            assetDataA: assetPair.assetDataA.assetData,
-            assetDataB: assetPair.assetDataB.assetData,
-          }],
-        },
+        coreSagas.fetchAllTradingInfo,
+        networkId,
       );
       yield eff.fork(
         coreSagas.fetchOrderBook,

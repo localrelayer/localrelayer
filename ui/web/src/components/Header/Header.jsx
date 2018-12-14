@@ -1,14 +1,10 @@
 // @flow
-import React, {
-  useState,
-} from 'react';
+import React from 'react';
 import {
   Link,
 } from 'react-router-dom';
 import {
-  Input,
   Button,
-  Popover,
   Tooltip,
   Tag,
   Icon,
@@ -21,46 +17,24 @@ import * as S from './styled';
 import logo from '../../assets/logo5.png';
 
 type Props = {
-  listedAssetPairs: Array<any>,
   currentAssetPair: any,
-  onPairClick: Function,
   onTransactionsClick: Function,
+  onTokensClick: Function,
   pendingTransactionsCount: Array<any>,
   address: any,
   isSocketConnected: Boolean,
   networkId: any,
 }
-const columns = [
-  {
-    title: 'Pair',
-    key: 'pair',
-    render: (text, record) => ([
-      record.assetDataA.assetData.symbol,
-      record.assetDataB.assetData.symbol,
-    ].join('/')),
-  },
-  {
-    title: 'Base token',
-    dataIndex: 'assetDataA.assetData.name',
-  },
-  {
-    title: 'Quote token',
-    dataIndex: 'assetDataB.assetData.name',
-  },
-];
 
 const Header = ({
-  listedAssetPairs,
   currentAssetPair,
-  onPairClick,
   onTransactionsClick,
+  onTokensClick,
   pendingTransactionsCount,
   address,
   networkId,
   isSocketConnected,
 }: Props) => {
-  const [searchText, setSearchText] = useState('');
-  const s = searchText.toLowerCase();
   const currentAssetPairSymbols = [
     currentAssetPair?.assetDataA?.assetData?.symbol || 'ZRX',
     currentAssetPair?.assetDataB?.assetData?.symbol || 'WETH',
@@ -82,49 +56,15 @@ const Header = ({
           Account
         </Link>
       </S.Account>
-      <Popover
-        trigger="click"
-        placement="bottom"
-        content={(
-          <S.PopoverContent>
-            <S.SearchBar>
-              <Input
-                autoFocus
-                value={searchText}
-                onChange={ev => setSearchText(ev.target.value)}
-                placeholder="Search token name, symbol or address"
-              />
-            </S.SearchBar>
-            <S.TokensTable
-              rowKey="id"
-              size="middle"
-              columns={columns}
-              pagination={{ hideOnSinglePage: true }}
-              onRow={record => ({
-                onClick: () => onPairClick(record),
-              })}
-              dataSource={listedAssetPairs.filter(p => (
-                searchText.length
-                  ? (
-                    p.assetDataA.assetData.name.toLowerCase().includes(s)
-                    || p.assetDataA.assetData.symbol.toLowerCase().includes(s)
-                    || p.assetDataA.assetData.address.toLowerCase().includes(s)
-                    || p.assetDataB.assetData.symbol.toLowerCase().includes(s)
-                    || p.assetDataB.assetData.address.toLowerCase().includes(s)
-                  )
-                  : true
-              ))}
-            />
-          </S.PopoverContent>
-        )}
+      <Button
+        type="primary"
+        onClick={onTokensClick}
       >
-        <Button type="primary">
           Tokens(
-          {currentAssetPairName}
+        {currentAssetPairName}
           )
-          <S.HeaderIcon type="down" />
-        </Button>
-      </Popover>
+        <S.HeaderIcon type="right" />
+      </Button>
       <S.NotificationContainer>
         <S.CurrentNetwork>
           <Tag>
