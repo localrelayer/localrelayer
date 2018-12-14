@@ -75,8 +75,10 @@ export const getTradingHistory = listName => createSelector(
       total,
       price: getOrderPrice(
         orderType,
-        order.makerAssetAmount,
-        order.takerAssetAmount,
+        toUnitAmount(order.makerAssetAmount,
+          assets[order.makerAssetData].decimals),
+        toUnitAmount(order.takerAssetAmount,
+          assets[order.takerAssetData].decimals),
       ).toFixed(8),
       key: order.id,
       completedAt: order.metaData.completedAt,
@@ -113,8 +115,10 @@ export const getBidOrders = createSelector(
       ).toFixed(8),
       price: getOrderPrice(
         'bid',
-        order.makerAssetAmount,
-        order.takerAssetAmount,
+        toUnitAmount(order.makerAssetAmount,
+          assets[order.makerAssetData].decimals),
+        toUnitAmount(order.takerAssetAmount,
+          assets[order.takerAssetData].decimals),
       ).toFixed(8),
     })).sort(sortOrderbook)
   ),
@@ -138,8 +142,10 @@ export const getAskOrders = createSelector(
       ).toFixed(8),
       price: getOrderPrice(
         'ask',
-        order.makerAssetAmount,
-        order.takerAssetAmount,
+        toUnitAmount(order.makerAssetAmount,
+          assets[order.makerAssetData].decimals),
+        toUnitAmount(order.takerAssetAmount,
+          assets[order.takerAssetData].decimals),
       ).toFixed(8),
     })).sort(sortOrderbook)
   ),
@@ -199,8 +205,10 @@ export const getUserOpenOrders = createSelector(
         isCancelPending: pendingTransactionsRelativeState.cancel[order.metaData.orderHash],
         price: getOrderPrice(
           orderType,
-          order.makerAssetAmount,
-          order.takerAssetAmount,
+          toUnitAmount(order.makerAssetAmount,
+            assets[order.makerAssetData].decimals),
+          toUnitAmount(order.takerAssetAmount,
+            assets[order.takerAssetData].decimals),
         ).toFixed(8),
         action: (
           assetPair.id.split('_')[0] === order.makerAssetData
