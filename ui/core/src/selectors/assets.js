@@ -8,6 +8,9 @@ import {
   getResourceIds,
   getResourceMap,
 } from './resources';
+import {
+  utils,
+} from '../index';
 
 
 export const getAssetByIdField = ({
@@ -53,17 +56,34 @@ export const getListedAssetPairs = createSelector(
     getResourceIds('assetPairs', 'listed'),
     getResourceMap('assetPairs'),
     getResourceMap('assets'),
+    getResourceMap('tradingInfo'),
   ],
   (
     ids = [],
     assetPairs,
     assets,
-  ) => (
-    ids.map(id => (
+    assetPairTradingInfo,
+  ) => {
+    const listedPairs = ids.map(id => (
       constructAssetPair({
         assetPair: assetPairs[id],
         assets,
       })
-    ))
-  ),
+    ));
+    return listedPairs.map((pair) => {
+      const assetBVolume = utils.toUnitAmount(
+        assetPairTradingInfo[pair.id]?.assetBVolume || 0,
+        pair.assetDataB.assetData.decimals,
+      ).toNumber();
+      return {
+        ...pair,
+        tradingInfo:
+          {
+            assetBVolume,
+            lastPrice: assetPairTradingInfo[pair.id]?.lastPrice || 0,
+            change24: assetPairTradingInfo[pair.id]?.change24 || 0,
+          } || {},
+      };
+    });
+  },
 );

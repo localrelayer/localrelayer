@@ -16,6 +16,7 @@ import Component from 'web-components/ConnectComponent';
 import ConnectingToEthProvider from 'web-components/ConnectingToEthProvider';
 import NetworkNotSupported from 'web-components/NetworkNotSupported';
 import TransactionsPanelContainer from 'web-containers/TransactionsPanelContainer';
+import TokensPanelContainer from 'web-containers/TokensPanelContainer';
 import TradingPageContainer from 'web-containers/TradingPageContainer';
 import UserProfilePageContainer from 'web-containers/UserProfilePageContainer';
 import LoaderPage from 'web-components/LoaderPage';
@@ -38,6 +39,7 @@ const AppContainer = () => (
       if (!isNetworkSupported) return (<NetworkNotSupported />);
       return (
         <Layout>
+          <TokensPanelContainer />
           <TransactionsPanelContainer />
           {isAppInitializing ? (
             <LoaderPage />
