@@ -40,7 +40,7 @@ export const getCurrentOrder = createSelector(
         currentAssetPairId.split('_')[0],
         orders[currentOrderId].makerAssetData,
       );
-      const assetDataB = currentAssetPairId.split('_')[1];
+      const [assetDataA, assetDataB] = currentAssetPairId.split('_');
       const ordersTypes = orderType === 'bid' ? bids : asks;
       const numInOrderList = ordersTypes.reduce(
         (
@@ -51,26 +51,30 @@ export const getCurrentOrder = createSelector(
           order.id === currentOrderId ? index : acc
         ), 0,
       );
+
       const sumUpOrders = orderType === 'bid'
         ? bids.slice(0, numInOrderList + 1)
         : asks.slice(0, numInOrderList + 1);
-      const fundsInOrders = userOrders.reduce((acc, cur) => {
-        if (cur.makerAssetData === assetDataB) {
-          return acc.add(cur.makerAssetAmount);
-        }
-        return acc;
-      }, new BigNumber(0));
+
       const ordersInfo = sumUpOrders.reduce((acc, order) => {
         const amount = +utils.toUnitAmount(
           orderType === 'bid'
             ? order.metaData.remainingFillableTakerAssetAmount
             : order.metaData.remainingFillableMakerAssetAmount,
-          assets[order.makerAssetData].decimals,
+          orderType === 'bid'
+            ? assets[order.takerAssetData].decimals
+            : assets[order.makerAssetData].decimals,
         );
         const price = +utils.getOrderPrice(
           orderType,
-          order.metaData.remainingFillableMakerAssetAmount,
-          order.metaData.remainingFillableTakerAssetAmount,
+          utils.toUnitAmount(
+            order.metaData.remainingFillableMakerAssetAmount,
+            assets[order.makerAssetData].decimals,
+          ),
+          utils.toUnitAmount(
+            order.metaData.remainingFillableTakerAssetAmount,
+            assets[order.takerAssetData].decimals,
+          ),
         );
         acc.amount += amount;
         acc.price = price;
@@ -79,14 +83,28 @@ export const getCurrentOrder = createSelector(
         price: 0,
         amount: 0,
       });
+
       const takerAssetAddress = assetDataUtils.decodeERC20AssetData(
         orders[currentOrderId].takerAssetData,
       ).tokenAddress;
-      const { decimals } = assets[orders[currentOrderId].takerAssetData];
+      const decimalsTaker = assets[orders[currentOrderId].takerAssetData].decimals;
+
+      const fundsInOrders = userOrders.reduce((acc, cur) => {
+        if (cur.makerAssetData === (orderType === 'bid'
+          ? assetDataA
+          : assetDataB)
+        ) {
+          return acc.add(cur.makerAssetAmount);
+        }
+        return acc;
+      }, new BigNumber(0));
+
       const userAvailableBalance = utils.toUnitAmount(
-        new BigNumber(balance[takerAssetAddress] || 0).minus(fundsInOrders),
-        decimals,
+        new BigNumber(balance[takerAssetAddress] || 0)
+          .minus(fundsInOrders),
+        decimalsTaker,
       );
+
       let amount;
       if (orderType === 'bid') {
         amount = userAvailableBalance > ordersInfo.amount
