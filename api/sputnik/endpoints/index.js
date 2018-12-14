@@ -14,9 +14,11 @@ import {
 } from 'db';
 import {
   coRedisClient,
+  redisClient,
 } from 'redisClient';
 import {
   constructOrderRecord,
+  clearOrderWithMetaFields,
 } from 'utils';
 import {
   logger,
@@ -76,6 +78,54 @@ sputnikApi.post('/transactions', async (ctx) => {
     transactionInstance.completedAt = new Date().toISOString();
   }
   const saveTransaction = await transactionInstance.save();
+
+  // Only for pending transaction with fill orders
+  if (transaction.meta?.filledOrders && !Number.isInteger(transaction.status)) {
+    const { filledOrders } = transaction.meta;
+
+    await Promise.all(filledOrders.map(async (order) => {
+      const foundOrder = await Order.findOne({
+        orderHash: order.orderHash,
+      });
+      const remainingFillableTakerAssetAmount = new BigNumber(
+        foundOrder.remainingFillableTakerAssetAmount,
+      ).minus(order.filledAmount);
+
+      const remainingFillableMakerAssetAmount = new BigNumber(
+        foundOrder.makerAssetAmount,
+      )
+        .times(remainingFillableTakerAssetAmount)
+        .div(foundOrder.takerAssetAmount);
+      const a = await Order.update(
+        {
+          orderHash: order.orderHash,
+        },
+        {
+          remainingFillableMakerAssetAmount,
+          remainingFillableTakerAssetAmount,
+        },
+      );
+      return a;
+    }));
+
+    const updatedOrders = await Order.find({
+      $or: filledOrders.map(({ orderHash }) => ({
+        orderHash,
+      })),
+    }).lean();
+
+    updatedOrders.forEach((order) => {
+      redisClient.publish(
+        'orders',
+        JSON.stringify(
+          constructOrderRecord(
+            clearOrderWithMetaFields(order),
+          ),
+        ),
+      );
+    });
+  }
+
   ctx.message = 'OK';
   ctx.status = 200;
   ctx.body = {

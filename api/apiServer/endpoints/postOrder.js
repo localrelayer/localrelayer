@@ -153,7 +153,6 @@ export function createPostOrderEndpoint(standardRelayerApi) {
           return;
         }
 
-        logger.debug(order);
         redisClient.publish('orderWatcher', JSON.stringify(constructOrderRecord(order)));
         ctx.status = 201;
         ctx.message = 'OK';

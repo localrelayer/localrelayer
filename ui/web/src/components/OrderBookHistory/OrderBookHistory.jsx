@@ -14,7 +14,7 @@ const OrderBookHistory = (): Node => (
       <OrderBookContainer />
     </S.TabPane>
     <S.TabPane tab="Trading History" key="2">
-      <TradingHistoryContainer />
+      <TradingHistoryContainer isTradingPage />
     </S.TabPane>
   </S.Tabs>
 );

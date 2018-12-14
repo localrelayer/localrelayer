@@ -193,8 +193,8 @@ function* matchOrder({
 
     matchedOrders = askOrders.filter((askOrder) => {
       const matchedAskOrderPrice = new BigNumber(
-        askOrder.metaData.remainingFillableTakerAssetAmount,
-      ).div(askOrder.metaData.remainingFillableMakerAssetAmount);
+        askOrder.takerAssetAmount,
+      ).div(askOrder.makerAssetAmount);
       return matchedAskOrderPrice.lte(price);
     });
   } else {
@@ -203,8 +203,8 @@ function* matchOrder({
 
     matchedOrders = yield eff.all(bidOrders.filter((bidOrder) => {
       const matchedBidOrderPrice = new BigNumber(
-        bidOrder.metaData.remainingFillableMakerAssetAmount,
-      ).div(bidOrder.metaData.remainingFillableTakerAssetAmount);
+        bidOrder.makerAssetAmount,
+      ).div(bidOrder.takerAssetAmount);
       return matchedBidOrderPrice.gte(price);
     }));
   }
@@ -212,9 +212,95 @@ function* matchOrder({
   return matchedOrders;
 }
 
-function* postOrder({
+export function* fillOrder({
+  order,
   formActions,
-  order: {
+  matchedOrders,
+}) {
+  const networkId = yield eff.call(web3.eth.net.getId);
+  const contractWrappers = ethApi.getWrappers(networkId);
+
+  let existingAssetAmount = new BigNumber(order.makerAssetAmount);
+  const ordersToFill = [];
+  const takerAssetFillAmounts = [];
+  while (existingAssetAmount.gt(0) && matchedOrders.length) {
+    const matchedOrder = matchedOrders.shift();
+    const neededAmount = matchedOrder.metaData.remainingFillableTakerAssetAmount;
+    const toBeFilledAmount = BigNumber.min(neededAmount, existingAssetAmount);
+    existingAssetAmount = existingAssetAmount.minus(toBeFilledAmount);
+    ordersToFill.push(matchedOrder);
+    takerAssetFillAmounts.push(toBeFilledAmount);
+  }
+
+  const taker = yield eff.select(selectors.getWalletState('selectedAccount'));
+
+  try {
+    const txHash = yield eff.call(
+      [
+        contractWrappers.exchange,
+        contractWrappers.exchange.batchFillOrKillOrdersAsync,
+      ],
+      ordersToFill,
+      takerAssetFillAmounts,
+      taker,
+    );
+    console.log('FILLED WITH HASH', txHash);
+
+    const filledOrders = ordersToFill.map((filledOrder, i) => ({
+      makerAddress: filledOrder.makerAddress,
+      orderHash: filledOrder.metaData.orderHash,
+      filledAmount: takerAssetFillAmounts[i],
+    }));
+
+    const totalFilledAmount = takerAssetFillAmounts
+      .reduce((acc, cur) => acc.add(cur), new BigNumber(0));
+    const assets = yield eff.select(selectors.getResourceMap('assets'));
+    // TODO: include all filled orders to transaction meta
+    const ordersInfo = ordersToFill[ordersToFill.length - 1];
+    yield eff.fork(
+      saveTransaction,
+      {
+        transactionHash: txHash,
+        address: taker.toLowerCase(),
+        name: 'Fill',
+        networkId,
+        meta: {
+          totalFilledAmount,
+          filledOrders,
+          price: ordersInfo.price,
+          pair: `${assets[ordersInfo.makerAssetData].symbol}/${assets[ordersInfo.takerAssetData].symbol}`,
+        },
+      },
+    );
+
+    if (existingAssetAmount.gt(0)) {
+      const newTakerAmount = new BigNumber(order.takerAssetAmount)
+        .times(existingAssetAmount)
+        .div(order.makerAssetAmount);
+
+      // eslint-disable-next-line
+      yield eff.call(postOrder, {
+        formActions,
+        order: {
+          ...order,
+          makerAssetAmount: existingAssetAmount,
+          takerAssetAmount: newTakerAmount,
+        },
+      });
+    } else {
+      formActions.resetForm({});
+      formActions.setSubmitting(false);
+    }
+  } catch (e) {
+    console.log('TX FAILED', e);
+  }
+}
+
+export function* postOrder({
+  formActions,
+  order,
+}) {
+  const {
     takerAddress,
     makerAssetData,
     takerAssetData,
@@ -222,8 +308,7 @@ function* postOrder({
     takerAssetAmount,
     expirationTimeSeconds,
     type,
-  },
-}) {
+  } = order;
   try {
     const web3 = ethApi.getWeb3();
     const networkId = yield eff.call(web3.eth.net.getId);
@@ -236,86 +321,13 @@ function* postOrder({
       takerAssetAmount,
       type,
     });
-    let existingAssetAmount = new BigNumber(makerAssetAmount);
 
     if (matchedOrders.length) {
-      const ordersToFill = [];
-      const takerAssetFillAmounts = [];
-      while (existingAssetAmount.gt(0) && matchedOrders.length) {
-        const order = matchedOrders.shift();
-        const neededAmount = order.metaData.remainingFillableTakerAssetAmount;
-        const toBeFilledAmount = BigNumber.min(neededAmount, existingAssetAmount);
-        existingAssetAmount = existingAssetAmount.minus(toBeFilledAmount);
-        ordersToFill.push(order);
-        takerAssetFillAmounts.push(toBeFilledAmount);
-      }
-
-      const taker = yield eff.select(selectors.getWalletState('selectedAccount'));
-
-      try {
-        const txHash = yield eff.call(
-          [
-            contractWrappers.exchange,
-            contractWrappers.exchange.batchFillOrKillOrdersAsync,
-          ],
-          ordersToFill,
-          takerAssetFillAmounts,
-          taker,
-        );
-        console.log('FILLED WITH HASH', txHash);
-
-        const filledOrders = ordersToFill.map((order, i) => ({
-          makerAddress: order.makerAddress,
-          orderHash: order.metaData.orderHash,
-          filledAmount: takerAssetFillAmounts[i],
-        }));
-
-        const totalFilledAmount = takerAssetFillAmounts
-          .reduce((acc, cur) => acc.add(cur), new BigNumber(0));
-        const assets = yield eff.select(selectors.getResourceMap('assets'));
-        const ordersInfo = ordersToFill[ordersToFill.length - 1];
-        yield eff.fork(
-          saveTransaction,
-          {
-            transactionHash: txHash,
-            address: taker.toLowerCase(),
-            name: 'Fill',
-            networkId,
-            meta: {
-              makerAssetAmount,
-              takerAssetAmount,
-              totalFilledAmount,
-              filledOrders,
-              makerAssetData,
-              takerAssetData,
-              price: ordersInfo.price,
-              pair: `${assets[ordersInfo.makerAssetData].symbol}/${assets[ordersInfo.takerAssetData].symbol}`,
-            },
-          },
-        );
-
-        if (existingAssetAmount.gt(0)) {
-          const newTakerAmount = new BigNumber(takerAssetAmount)
-            .times(existingAssetAmount)
-            .div(makerAssetAmount);
-
-          yield eff.call(postOrder, {
-            formActions,
-            order: {
-              takerAddress,
-              makerAssetData,
-              takerAssetData,
-              makerAssetAmount: existingAssetAmount,
-              takerAssetAmount: newTakerAmount,
-              expirationTimeSeconds,
-              type,
-            },
-          });
-        }
-      } catch (e) {
-        console.log('TX FAILED', e);
-      }
-      formActions.resetForm({});
+      yield eff.call(fillOrder, {
+        formActions,
+        matchedOrders,
+        order,
+      });
     } else {
       const makerAddress = yield eff.select(selectors.getWalletState('selectedAccount'));
 
@@ -334,7 +346,7 @@ function* postOrder({
           api.postOrderConfig,
           orderConfigRequest,
         );
-        const order = {
+        const submitOrder = {
           salt: generatePseudoRandomSalt(),
           ...orderConfigRequest,
           ...orderConfig,
@@ -342,7 +354,7 @@ function* postOrder({
         const signedOrder = yield eff.call(
           signatureUtils.ecSignOrderAsync,
           provider,
-          order,
+          submitOrder,
           makerAddress,
         );
         try {
@@ -363,7 +375,6 @@ function* postOrder({
           return;
         }
         yield eff.call(api.postOrder, signedOrder, { networkId });
-        formActions.resetForm({});
       } catch (err) {
         console.log(err);
         formActions.setFieldError(
@@ -371,11 +382,12 @@ function* postOrder({
           'Backend validation failed',
         );
       }
+      formActions.setSubmitting(false);
+      formActions.resetForm({});
     }
   } catch (e) {
     console.log(e);
   }
-  formActions.setSubmitting(false);
 }
 
 export function* cancelOrder({ order }) {
