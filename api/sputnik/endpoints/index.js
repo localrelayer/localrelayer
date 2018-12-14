@@ -96,14 +96,22 @@ sputnikApi.post('/transactions', async (ctx) => {
       )
         .times(remainingFillableTakerAssetAmount)
         .div(foundOrder.takerAssetAmount);
+
+      const updateQuery = {
+        remainingFillableMakerAssetAmount,
+        remainingFillableTakerAssetAmount,
+      };
+
+      if (remainingFillableTakerAssetAmount.lte(0)) {
+        updateQuery.isValid = false;
+        updateQuery.isShadowed = true;
+      }
+
       const a = await Order.update(
         {
           orderHash: order.orderHash,
         },
-        {
-          remainingFillableMakerAssetAmount,
-          remainingFillableTakerAssetAmount,
-        },
+        updateQuery,
       );
       return a;
     }));
