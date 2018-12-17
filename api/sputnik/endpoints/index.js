@@ -86,7 +86,11 @@ sputnikApi.post('/transactions', async (ctx) => {
     await Promise.all(filledOrders.map(async (order) => {
       const foundOrder = await Order.findOne({
         orderHash: order.orderHash,
+        isValid: true,
       });
+      if (!foundOrder) {
+        return null;
+      }
       const remainingFillableTakerAssetAmount = new BigNumber(
         foundOrder.remainingFillableTakerAssetAmount,
       ).minus(order.filledAmount);
@@ -102,7 +106,7 @@ sputnikApi.post('/transactions', async (ctx) => {
         remainingFillableTakerAssetAmount,
       };
 
-      if (remainingFillableTakerAssetAmount.lte(0)) {
+      if (remainingFillableTakerAssetAmount.eq(0)) {
         updateQuery.isValid = false;
         updateQuery.isShadowed = true;
       }
