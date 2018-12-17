@@ -75,12 +75,17 @@ export const getListedAssetPairs = createSelector(
         assetPairTradingInfo[pair.id]?.assetBVolume || 0,
         pair.assetDataB.assetData.decimals,
       ).toNumber();
+      const lastPrice = utils.toUnitAmount(
+        assetPairTradingInfo[pair.id]?.lastPrice || 0,
+        Math.abs(pair.assetDataA.assetData.decimals
+          - pair.assetDataB.assetData.decimals),
+      ).toNumber();
       return {
         ...pair,
         tradingInfo:
           {
             assetBVolume,
-            lastPrice: assetPairTradingInfo[pair.id]?.lastPrice || 0,
+            lastPrice,
             change24: assetPairTradingInfo[pair.id]?.change24 || 0,
           } || {},
       };
