@@ -31,12 +31,17 @@ export const getCurrentAssetPair = createSelector(
       assetPair: assetPairs[currentAssetPairId],
       assets,
     });
-
+    const decimalsGap = currentAssetPairId && Math.abs(assetPair.assetDataA.assetData.decimals
+      - assetPair.assetDataB.assetData.decimals);
     return currentAssetPairId
       ? ({
         ...assetPair,
         tradingInfo: {
           ...tradingInfo[currentAssetPairId],
+          lastPrice: utils.toUnitAmount(
+            tradingInfo[currentAssetPairId]?.lastPrice,
+            decimalsGap,
+          ).toFixed(8),
           assetAVolume: utils.toUnitAmount(
             tradingInfo[currentAssetPairId]?.assetAVolume || 0,
             assetPair.assetDataA.assetData.decimals,

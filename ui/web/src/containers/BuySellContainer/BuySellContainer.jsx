@@ -26,14 +26,17 @@ const BuySellContainer = (): Node => (
   <Component
     mapStateToProps={state => ({
       currentAssetPair: getCurrentAssetPairWithBalance(state),
+      bestOrders: cs.getBestOrders(state),
     })}
   >
     {({
       currentAssetPair,
+      bestOrders,
       dispatch,
     }) => (
       <BuySell
         currentAssetPair={currentAssetPair}
+        bestOrders={bestOrders}
         onSubmitOrder={({
           amount,
           price,

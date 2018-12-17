@@ -151,6 +151,19 @@ export const getAskOrders = createSelector(
   ),
 );
 
+export const getBestOrders = createSelector(
+  [
+    getBidOrders,
+    getAskOrders,
+  ],
+  (bids, asks) => (
+    {
+      bid: bids[0],
+      ask: asks[0],
+    }
+  ),
+);
+
 export const getUserOpenOrders = createSelector(
   [
     getResourceMappedList('orders', 'userOrders'),

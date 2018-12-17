@@ -19,9 +19,32 @@ type Props = {
   currentBalance: String,
   currentBuySellTab: String,
   currentOrder: Object,
+  bestOrders: Object,
 }
 
-const isNumber = n => !isNaN(+n) && +n !== 0 && isFinite(n); /* eslint-disable-line */
+const isNumber = n => !isNaN(+n) && +n !== 0 && isFinite(n) && Math.abs(n) === +n; /* eslint-disable-line */
+
+const truncate = (value, n) => Math.floor(value * (10 ** n)) / (10 ** n);
+
+const setFieldByPercentage = (
+  type,
+  setValues,
+  values,
+  currentBalance,
+  percentage = 100,
+) => {
+  const bidAmount = values.price
+    ? truncate(new BigNumber(currentBalance).times(percentage / 100).div(values.price), 8)
+    : '0.00000000';
+  setValues(
+    {
+      ...values,
+      amount: type === 'ask'
+        ? truncate(new BigNumber(currentBalance).times(percentage / 100), 8)
+        : bidAmount,
+    },
+  );
+};
 
 const BuySellForm = ({
   type,
@@ -31,6 +54,7 @@ const BuySellForm = ({
   currentBalance,
   currentBuySellTab,
   currentOrder,
+  bestOrders,
 }: Props) => (
   <Formik
     isInitialValid
@@ -81,6 +105,7 @@ const BuySellForm = ({
       handleSubmit,
       handleBlur,
       setFieldTouched,
+      setValues,
     }) => (
       <S.BuySellForm
         layout="vertical"
@@ -98,14 +123,32 @@ const BuySellForm = ({
             <S.FormItemTitle>
               <div>Price</div>
               <S.FormItemTitleLinks>
-                <a>Buy</a>
-                <a>Sell</a>
+                <a
+                  onClick={
+                    () => setValues(
+                      { ...values,
+                        price: bestOrders.ask?.price || '0.00000000' },
+                    )
+                  }
+                >
+                  Buy
+                </a>
+                <a
+                  onClick={
+                    () => setValues(
+                      { ...values,
+                        price: bestOrders.bid?.price || '0.00000000' },
+                    )
+                  }
+                >
+                  Sell
+                </a>
               </S.FormItemTitleLinks>
             </S.FormItemTitle>
           )}
         >
           <S.FormInput
-            placeholder="0.000000"
+            placeholder="0.00000000"
             name="price"
             value={values.price}
             addonAfter={(
@@ -128,17 +171,33 @@ const BuySellForm = ({
             <S.FormItemTitle>
               <div>Amount</div>
               <S.FormItemTitleLinks>
-                <a>25%</a>
-                <a>50%</a>
-                <a>75%</a>
-                <a>100%</a>
+                <a
+                  onClick={() => setFieldByPercentage(type, setValues, values, currentBalance, 25)}
+                >
+                  25%
+                </a>
+                <a
+                  onClick={() => setFieldByPercentage(type, setValues, values, currentBalance, 50)}
+                >
+                  50%
+                </a>
+                <a
+                  onClick={() => setFieldByPercentage(type, setValues, values, currentBalance, 75)}
+                >
+                  75%
+                </a>
+                <a
+                  onClick={() => setFieldByPercentage(type, setValues, values, currentBalance)}
+                >
+                  100%
+                </a>
               </S.FormItemTitleLinks>
             </S.FormItemTitle>
           )}
         >
           <S.FormInput
             name="amount"
-            placeholder="0.000000"
+            placeholder="0.00000000"
             value={values.amount}
             addonAfter={(
               <div>

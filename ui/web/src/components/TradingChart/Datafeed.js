@@ -61,24 +61,24 @@ export const getDatafeed = (
       noData: false,
     };
 
-    const barsData = data.items || data;
-    const bars = Object.keys(barsData).map((a) => {
-      // Convert volume to normal unit amount
-      const volume = +utils.toUnitAmount(
-        barsData[a].volume.toString(),
-        assetPair.assetDataB.assetData.decimals,
-      );
-
-      return {
-        ...barsData[a],
-        volume,
-      };
-    }) || [];
+    const decimalsGap = Math.abs(assetPair.assetDataA.assetData.decimals
+      - assetPair.assetDataB.assetData.decimals);
+    const barsData = Object.values(Object.values(data)[0]).map(bar => ({
+      time: bar.time,
+      close: +utils.toUnitAmount(bar.close, decimalsGap),
+      low: +utils.toUnitAmount(bar.low, decimalsGap),
+      volume: +utils.toUnitAmount(bar.volume, assetPair.assetDataB.assetData.decimals),
+      open: +utils.toUnitAmount(bar.open, decimalsGap),
+      high: +utils.toUnitAmount(bar.high, decimalsGap),
+      last: +utils.toUnitAmount(bar.last, decimalsGap),
+    }));
+    const bars = Object.keys(barsData).map(a => ({
+      ...barsData[a],
+    })) || [];
 
     if (!bars.length) {
       meta.noData = true;
     }
-
     setTimeout(() => onHistoryCallBack(bars, meta), 0);
   },
 
@@ -116,6 +116,7 @@ export const getDatafeed = (
   ) => {
     onSubscribeBars(
       chartBarCallback,
+      assetPair,
     );
   },
 
