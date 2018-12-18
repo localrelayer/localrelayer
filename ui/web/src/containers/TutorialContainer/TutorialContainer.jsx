@@ -9,37 +9,52 @@ import {
   getAssetsWithBalanceAndAllowance,
   getUiState,
 } from 'web-selectors';
+import {
+  uiActions,
+} from 'web-actions';
 import Component from 'web-components/ConnectComponent';
-import UserBalance from 'web-components/UserBalance';
+import Tutorial from 'web-components/Tutorial';
 import {
   coreActions,
   coreSelectors as cs,
 } from 'instex-core';
 
-type Props = {
-  isTradingPage: Boolean,
-}
 
-
-const UserBalanceContainer = ({ isTradingPage }: Props): Node => (
+const TutorialContainer = (): Node => (
   <Component
     mapStateToProps={state => ({
       assets: getAssetsWithBalanceAndAllowance(state),
       balance: cs.getEthWalletBalance(state),
+      etherTokenBalance: cs.getEtherTokenBalance(state),
+      selectedAccount: cs.getWalletState('selectedAccount')(state),
+      networkName: cs.getWalletState('networkName')(state),
       isWeb3ProviderPresent: getUiState('isWeb3ProviderPresent')(state),
+      isSetupGuideVisible: getUiState('isSetupGuideVisible')(state),
     })}
   >
     {({
-      assets,
       balance,
       dispatch,
       isWeb3ProviderPresent,
+      selectedAccount,
+      networkName,
+      assets,
+      isSetupGuideVisible,
+      etherTokenBalance,
     }) => (
-      <UserBalance
-        isTradingPage={isTradingPage}
+      <Tutorial
         assets={assets}
         isWeb3ProviderPresent={isWeb3ProviderPresent}
+        isSetupGuideVisible={isSetupGuideVisible}
         balance={balance}
+        etherTokenBalance={etherTokenBalance}
+        networkName={networkName}
+        selectedAccount={selectedAccount}
+        toggleTutorialVisible={() => (
+          dispatch(uiActions.setUiState({
+            isSetupGuideVisible: !isSetupGuideVisible,
+          }))
+        )}
         onToggleTradable={
           (isTradable, asset) => (
             dispatch(coreActions.setApprovalRequest(isTradable, asset))
@@ -60,4 +75,4 @@ const UserBalanceContainer = ({ isTradingPage }: Props): Node => (
   </Component>
 );
 
-export default UserBalanceContainer;
+export default TutorialContainer;

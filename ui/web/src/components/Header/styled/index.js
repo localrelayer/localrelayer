@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import {
   Icon,
   Badge,
+  Button,
 } from 'antd';
 import * as colors from 'web-styles/colors';
 
@@ -96,4 +97,11 @@ export const UserProfile = styled.div`
     font-size: 0.8rem;
     color: ${colors.white};
   }
+`;
+
+export const TokensButton = styled(Button).attrs({
+  type: 'primary',
+})`
+  margin-left: 10px
+  width: 180px;
 `;

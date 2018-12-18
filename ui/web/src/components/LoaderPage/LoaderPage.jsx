@@ -1,4 +1,6 @@
-import React from 'react';
+import React, {
+  useEffect, useState,
+} from 'react';
 import logo from '../../assets/logo5.png';
 import * as S from './styled';
 
@@ -92,7 +94,7 @@ const LoaderPage = () => {
     return (Math.sin(t / period + 100) + 1) / 2;
   }
 
-  document.addEventListener('DOMContentLoaded', () => {
+  useEffect(() => {
     const phrases = shuffleArray(messages);
     addPhrasesToDocument(phrases);
     const startTime = new Date().getTime();
@@ -128,7 +130,8 @@ const LoaderPage = () => {
       }
     }
     animateLoading();
-  });
+  }, []);
+
   return (
     <S.PageWrapper>
       <div id="page">

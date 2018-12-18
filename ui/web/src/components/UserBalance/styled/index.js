@@ -10,6 +10,7 @@ export const UserBalance = styled.div`
   height: 100%;
   background-color: ${colors['component-background']};
   padding: 5px 24px;
+  position: relative;
 `;
 
 export const Title = styled.div`

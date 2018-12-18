@@ -11,6 +11,9 @@ import {
 import {
   utils,
 } from '../index';
+import {
+  getWalletState,
+} from './wallet';
 
 
 export const getAssetByIdField = ({
@@ -91,4 +94,17 @@ export const getListedAssetPairs = createSelector(
       };
     });
   },
+);
+
+export const getEtherTokenBalance = createSelector(
+  [
+    getAssetByIdField({
+      fieldName: 'symbol',
+      value: 'WETH',
+    }),
+    getWalletState('balance'),
+  ],
+  (etherToken, balances) => (
+    utils.toUnitAmount(balances[etherToken.address], etherToken.decimals).toFixed(8)
+  ),
 );

@@ -8,6 +8,7 @@ import * as colors from 'web-styles/colors';
 export const BuySell = styled.div`
   width: 100%;
   height: 100%;
+  position: relative;
 `;
 
 export const BuySellCard = styled(Card)`

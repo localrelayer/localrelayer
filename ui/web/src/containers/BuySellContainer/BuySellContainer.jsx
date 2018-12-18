@@ -12,14 +12,15 @@ import BuySell from 'web-components/BuySell';
 import Component from 'web-components/ConnectComponent';
 import {
   getCurrentAssetPairWithBalance,
+  getUiState,
 } from 'web-selectors';
 import {
   uiActions,
 } from 'web-actions';
 import {
   coreActions,
-  coreSelectors as cs,
   utils,
+  coreSelectors as cs,
 } from 'instex-core';
 
 const BuySellContainer = (): Node => (
@@ -27,14 +28,17 @@ const BuySellContainer = (): Node => (
     mapStateToProps={state => ({
       currentAssetPair: getCurrentAssetPairWithBalance(state),
       bestOrders: cs.getBestOrders(state),
+      isWeb3ProviderPresent: getUiState('isWeb3ProviderPresent')(state),
     })}
   >
     {({
       currentAssetPair,
       bestOrders,
       dispatch,
+      isWeb3ProviderPresent,
     }) => (
       <BuySell
+        isWeb3ProviderPresent={isWeb3ProviderPresent}
         currentAssetPair={currentAssetPair}
         bestOrders={bestOrders}
         onSubmitOrder={({

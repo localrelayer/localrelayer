@@ -1,7 +1,7 @@
 const colors = {
   'primary-color': '#3782c3',
   'body-background': 'linear-gradient(to right, #0b1e42 0%,#1e386f 100%)',
-  'layout-body-background': '#0e2435',
+  'layout-body-background': '#091B3C',
   'component-background': '#091B3C',
   'layout-header-background': '#091B3C',
   'heading-color': 'fade(#fff, 90%)',

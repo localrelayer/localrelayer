@@ -16,6 +16,7 @@ module.exports = env => ({
     extensions: ['.js', '.jsx', '.mjs', '.wasm', '.json'],
     alias: {
       'web-components': path.resolve(__dirname, 'src/components'),
+      'web-assets': path.resolve(__dirname, 'src/assets'),
       'web-containers': path.resolve(__dirname, 'src/containers'),
       'web-actions': path.resolve(__dirname, 'src/actions'),
       'web-selectors': path.resolve(__dirname, 'src/selectors'),

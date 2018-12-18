@@ -14,19 +14,27 @@ import {
 import Component from 'web-components/ConnectComponent';
 import BuySellForm from './BuySellForm';
 import * as S from './styled';
+import {
+  Overlay,
+} from '../SharedStyledComponents';
 
 type Props = {
   currentAssetPair: any,
   onSubmitOrder: Function,
   bestOrders: any,
+  isWeb3ProviderPresent: boolean,
 };
 
 const BuySell = ({
   currentAssetPair,
   bestOrders,
   onSubmitOrder,
+  isWeb3ProviderPresent,
 }: Props) => (
   <S.BuySell>
+    <Overlay isShown={!isWeb3ProviderPresent}>
+      <div>Connect a wallet to create orders</div>
+    </Overlay>
     <S.BuySellCard
       bordered={false}
     >
