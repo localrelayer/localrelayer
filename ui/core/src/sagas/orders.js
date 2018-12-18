@@ -7,6 +7,9 @@ import {
 import * as eff from 'redux-saga/effects';
 import createActionCreators from 'redux-resource-action-creators';
 import {
+  utils,
+} from 'instex-core';
+import {
   actionTypes,
 } from '../actions';
 import * as selectors from '../selectors';
@@ -369,7 +372,7 @@ export function* postOrder({
           console.log('NOT VALID', err);
           formActions.setFieldError(
             'balance',
-            'Order validation failed',
+            `Order validation failed: "${utils.zeroExErrToHumanReadableErrMsg(err.message)}".`,
           );
           formActions.setSubmitting(false);
           return;
@@ -379,7 +382,7 @@ export function* postOrder({
         console.log(err);
         formActions.setFieldError(
           'balance',
-          'Backend validation failed',
+          `Backend validation failed "${utils.zeroExErrToHumanReadableErrMsg(err.message)}".`,
         );
       }
       formActions.setSubmitting(false);

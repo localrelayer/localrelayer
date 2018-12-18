@@ -66,6 +66,20 @@ const Header = ({
         <S.HeaderIcon type="right" />
       </Button>
       <S.NotificationContainer>
+        {!isSocketConnected
+        && (
+          <Tooltip
+            placement="bottom"
+            title={(
+              <div>
+                Socket is disconnected. Orderbook will not be updated!!!
+              </div>
+            )}
+          >
+            <S.WarningIcon />
+          </Tooltip>
+        )
+        }
         <S.CurrentNetwork>
           <Tag>
             <Icon type="global" />
@@ -77,20 +91,6 @@ const Header = ({
             {'network'}
           </Tag>
         </S.CurrentNetwork>
-        {!isSocketConnected
-          && (
-            <Tooltip
-              placement="bottom"
-              title={(
-                <div>
-                  Socket is disconnected. Orderbook will not be updated!!!
-                </div>
-              )}
-            >
-              <S.WarningIcon />
-            </Tooltip>
-          )
-        }
         <S.UserProfile>
           <Tag>
             <S.HeaderIcon type="user" />

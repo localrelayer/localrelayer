@@ -43,21 +43,17 @@ function* takeFillOrderAndCalculateChartBar({
         ]
     );
 
-    // Convert volume to normal unit amount
-    const volume = utils.toUnitAmount(
-      amount,
-      assetPair.assetDataB.assetData.decimals,
-    );
-
+    const decimalsGap = Math.abs(assetPair.assetDataB.assetData.decimals
+      - assetPair.assetDataA.assetData.decimals);
     const bar = {
-      volume,
+      // not sure about it depends on from
+      volume: +utils.toUnitAmount(amount, assetPair.assetDataA.assetData.decimals).toNumber(),
       time: new Date(metaData.lastFilledAt).getTime(),
-      open: parseFloat(price),
-      close: parseFloat(price),
-      low: parseFloat(price),
-      high: parseFloat(price),
+      open: +utils.toUnitAmount(price, decimalsGap).toNumber(),
+      close: +utils.toUnitAmount(price, decimalsGap).toNumber(),
+      low: +utils.toUnitAmount(price, decimalsGap).toNumber(),
+      high: +utils.toUnitAmount(price, decimalsGap).toNumber(),
     };
-
     chartBarCallback(bar);
   }
 }
