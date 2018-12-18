@@ -20,9 +20,12 @@ export const Overlay = styled.div`
   height: 100%;
   z-index: 1000;
   background: #000;
-  opacity: 0.8;
+  opacity: 0.9;
   text-align: center;
   transition: opacity .5s;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
 `;
 
 export const ComponentTitle = styled.h3`

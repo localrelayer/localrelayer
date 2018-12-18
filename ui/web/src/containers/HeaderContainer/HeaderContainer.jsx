@@ -45,6 +45,11 @@ const HeaderContainer = (): Node => (
         address={address}
         networkId={networkId}
         isSocketConnected={isSocketConnected}
+        onSetupGuideClick={() => (
+          dispatch(uiActions.setUiState({
+            isSetupGuideVisible: true,
+          }))
+        )}
         onTransactionsClick={() => {
           dispatch(uiActions.setUiState({
             isTransactionsPanelIsVisible: !isTransactionsPanelIsVisible,

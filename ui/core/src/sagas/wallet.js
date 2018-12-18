@@ -21,17 +21,18 @@ export function* watchWallet({
         networkId,
         accounts,
       } = yield eff.all({
-        networkId: eff.call(web3.eth.net.getId),
+        networkId: web3 ? eff.call(web3.eth.net.getId) : 1,
         /*
          * metamask always return only single account
          * https://github.com/MetaMask/metamask-extension/issues/3207
         */
-        accounts: eff.call(web3.eth.getAccounts),
+        accounts: web3 ? eff.call(web3.eth.getAccounts) : [],
       });
-      const contractWrappers = ethApi.getWrappers(networkId);
 
       const selectedAccount = accounts.length ? accounts[0].toLowerCase() : null;
       if (selectedAccount) {
+        const contractWrappers = ethApi.getWrappers(networkId);
+
         const selectedAccountBalance = (
           accounts.length
             ? (
@@ -152,8 +153,8 @@ export function* getWalletBalance(tokens): Saga<void> {
     networkId,
     accounts,
   } = yield eff.all({
-    networkId: eff.call(web3.eth.net.getId),
-    accounts: eff.call(web3.eth.getAccounts),
+    networkId: web3 ? eff.call(web3.eth.net.getId) : 1,
+    accounts: web3 ? eff.call(web3.eth.getAccounts) : [],
   });
   const contractWrappers = ethApi.getWrappers(networkId);
   return yield eff.all(

@@ -16,11 +16,11 @@ export const initWeb3ProviderEngine = (
 ) => {
   const networksByIds = {
     1: {
-      rpcUrl: 'https://mainnet.infura.io/v3/240b30f52dcb42e0a051a4acdfe00d8e',
+      rpcUrl: 'https://eth-mainnet.alchemyapi.io/jsonrpc/XE7yAnUMrGLbVdtYgHqoiDU03IsjYU57',
     },
     42: {
       rpcUrl: 'http://api.instex.io:8545',
-      // rpcUrl: 'https://kovan.infura.io/v3/240b30f52dcb42e0a051a4acdfe00d8e',
+      // rpcUrl: 'https://eth-kovan.alchemyapi.io/jsonrpc/XE7yAnUMrGLbVdtYgHqoiDU03IsjYU57',
     },
     50: {
       rpcUrl: 'http://localhost:8545',

@@ -20,6 +20,7 @@ import TokensPanelContainer from 'web-containers/TokensPanelContainer';
 import TradingPageContainer from 'web-containers/TradingPageContainer';
 import UserProfilePageContainer from 'web-containers/UserProfilePageContainer';
 import LoaderPage from 'web-components/LoaderPage';
+import Tutorial from 'web-containers/TutorialContainer';
 
 
 const AppContainer = () => (
@@ -27,15 +28,12 @@ const AppContainer = () => (
     mapStateToProps={state => ({
       isAppInitializing: getUiState('isAppInitializing')(state),
       isNetworkSupported: getUiState('isNetworkSupported')(state),
-      isWeb3ProviderPresent: getUiState('isWeb3ProviderPresent')(state),
     })}
   >
     {({
       isAppInitializing,
       isNetworkSupported,
-      isWeb3ProviderPresent,
     }) => {
-      if (!isWeb3ProviderPresent) return (<ConnectingToEthProvider />);
       if (!isNetworkSupported) return (<NetworkNotSupported />);
       return (
         <Layout>
@@ -44,25 +42,28 @@ const AppContainer = () => (
           {isAppInitializing ? (
             <LoaderPage />
           ) : (
-            <Switch>
-              <Route
-                exact
-                path="/:baseAsset-:quoteAsset"
-                component={TradingPageContainer}
-              />
-              <Route
-                exact
-                path="/account"
-                component={UserProfilePageContainer}
-              />
-              <Route
-                exact
-                path="*"
-                render={() => (
-                  <Redirect to="/ZRX-WETH" />
-                )}
-              />
-            </Switch>
+            <div>
+              <Tutorial />
+              <Switch>
+                <Route
+                  exact
+                  path="/:baseAsset-:quoteAsset"
+                  component={TradingPageContainer}
+                />
+                <Route
+                  exact
+                  path="/account"
+                  component={UserProfilePageContainer}
+                />
+                <Route
+                  exact
+                  path="*"
+                  render={() => (
+                    <Redirect to="/ZRX-WETH" />
+                  )}
+                />
+              </Switch>
+            </div>
           )}
         </Layout>
       );

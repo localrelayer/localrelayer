@@ -27,6 +27,7 @@ const initialState: UiState = {
 
   isTransactionsPanelIsVisible: false,
   isTokensPanelIsVisible: false,
+  isSetupGuideVisible: false,
 };
 
 const mergeValues = (

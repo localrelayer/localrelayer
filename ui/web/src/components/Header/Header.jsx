@@ -4,7 +4,6 @@ import {
   Link,
 } from 'react-router-dom';
 import {
-  Button,
   Tooltip,
   Tag,
   Icon,
@@ -12,14 +11,14 @@ import {
 import {
   utils,
 } from 'instex-core';
-
+import logo from 'web-assets/logo5.png';
 import * as S from './styled';
-import logo from '../../assets/logo5.png';
 
 type Props = {
   currentAssetPair: any,
   onTransactionsClick: Function,
   onTokensClick: Function,
+  onSetupGuideClick: Function,
   pendingTransactionsCount: Array<any>,
   address: any,
   isSocketConnected: Boolean,
@@ -34,6 +33,7 @@ const Header = ({
   address,
   networkId,
   isSocketConnected,
+  onSetupGuideClick,
 }: Props) => {
   const currentAssetPairSymbols = [
     currentAssetPair?.assetDataA?.assetData?.symbol || 'ZRX',
@@ -44,6 +44,12 @@ const Header = ({
   return (
     <S.Header>
       <S.InstexLogo src={logo} alt="logo" />
+      <S.TokensButton onClick={onTokensClick}>
+        Tokens(
+        {currentAssetPairName}
+        )
+        <S.HeaderIcon type="right" />
+      </S.TokensButton>
       <S.Trade>
         <S.HeaderIcon type="swap" />
         <Link to={currentLink}>
@@ -56,15 +62,12 @@ const Header = ({
           Account
         </Link>
       </S.Account>
-      <Button
-        type="primary"
-        onClick={onTokensClick}
-      >
-          Tokens(
-        {currentAssetPairName}
-          )
-        <S.HeaderIcon type="right" />
-      </Button>
+      <S.Account>
+        <S.HeaderIcon type="setting" />
+        <a onClick={onSetupGuideClick}>
+          Setup Guide
+        </a>
+      </S.Account>
       <S.NotificationContainer>
         {!isSocketConnected
         && (
@@ -94,8 +97,10 @@ const Header = ({
         <S.UserProfile>
           <Tag>
             <S.HeaderIcon type="user" />
-            {address?.slice(0, 16)}
-            ...
+            {address
+              ? `${address.slice(0, 16)}...`
+              : 'Not Connected'
+            }
           </Tag>
         </S.UserProfile>
         <S.TransactionsBadge count={pendingTransactionsCount}>
