@@ -32,7 +32,7 @@ type Props = {
 }
 
 // use +n !== 0 because empty string (or spaced string) converts to 0
-const isNumber = n => !isNaN(+n) && +n !== 0 && isFinite(n); /* eslint-disable-line */
+const isNumber = n => !isNaN(+n) && +n !== 0 && isFinite(n) && Math.abs(n) === +n; /* eslint-disable-line */
 const getColumns = (
   onToggleTradable,
   isTradingPage,

@@ -33,11 +33,11 @@ const TradingChartContainer = () => (
             assetPair={assetPair}
             networkId={networkId}
             getBars={api.getBars}
-            onSubscribeBars={(chartBarCallback) => {
+            onSubscribeBars={(chartBarCallback, pair) => {
               dispatch(
                 chartActions.subscribeOnChangeChartBar(
                   chartBarCallback,
-                  assetPair,
+                  pair,
                 ),
               );
             }}

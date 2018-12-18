@@ -68,7 +68,8 @@ export const TransactionsIcon = styled(Icon).attrs({
 export const WarningIcon = styled(Icon).attrs({
   type: 'warning',
 })`
-  margin-right: 20px;
+  margin-right: 10px;
+  padding-top: 5px;
   color: red;
   cursor: pointer;
   font-size: 24px;

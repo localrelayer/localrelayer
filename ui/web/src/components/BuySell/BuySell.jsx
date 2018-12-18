@@ -18,10 +18,12 @@ import * as S from './styled';
 type Props = {
   currentAssetPair: any,
   onSubmitOrder: Function,
+  bestOrders: any,
 };
 
 const BuySell = ({
   currentAssetPair,
+  bestOrders,
   onSubmitOrder,
 }: Props) => (
   <S.BuySell>
@@ -77,6 +79,7 @@ const BuySell = ({
             >
               <BuySellForm
                 type="bid"
+                bestOrders={bestOrders}
                 baseSymbol={currentAssetPair?.assetDataA?.assetData?.symbol}
                 quoteSymbol={currentAssetPair?.assetDataB?.assetData?.symbol}
                 onSubmitOrder={onSubmitOrder}
@@ -91,6 +94,7 @@ const BuySell = ({
             >
               <BuySellForm
                 type="ask"
+                bestOrders={bestOrders}
                 baseSymbol={currentAssetPair?.assetDataA?.assetData?.symbol}
                 quoteSymbol={currentAssetPair?.assetDataB?.assetData?.symbol}
                 onSubmitOrder={onSubmitOrder}
