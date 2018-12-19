@@ -24,6 +24,8 @@ const colors = {
   red: '#a03756',
   // same as fade(#3782c3, 85%)
   white: '#DADDDF',
+  'disabled-color': '#ffffff57',
+  'disabled-bg': '#182646',
 };
 
 module.exports = colors;

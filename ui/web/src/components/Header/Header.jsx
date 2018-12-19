@@ -51,20 +51,20 @@ const Header = ({
         <S.HeaderIcon type="right" />
       </S.TokensButton>
       <S.Trade>
-        <S.HeaderIcon type="swap" />
         <Link to={currentLink}>
+          <S.HeaderIcon type="swap" />
           Trade
         </Link>
       </S.Trade>
       <S.Account>
-        <S.HeaderIcon type="home" />
         <Link to="/account">
+          <S.HeaderIcon type="home" />
           Account
         </Link>
       </S.Account>
       <S.Account>
-        <S.HeaderIcon type="setting" />
         <a onClick={onSetupGuideClick}>
+          <S.HeaderIcon type="setting" />
           Setup Guide
         </a>
       </S.Account>
