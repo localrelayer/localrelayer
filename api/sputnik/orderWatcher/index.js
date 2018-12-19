@@ -70,7 +70,6 @@ async function watcherCreator(networkId) {
     const order = await Order.findOne({
       orderHash,
     });
-    order.isValid = isValid;
 
     if (isValid) {
       const {
@@ -79,29 +78,40 @@ async function watcherCreator(networkId) {
         filledTakerAssetAmount,
       } = orderState.orderRelevantState;
 
-      order.remainingFillableMakerAssetAmount = remainingFillableMakerAssetAmount;
-      order.remainingFillableTakerAssetAmount = remainingFillableTakerAssetAmount;
-      order.filledTakerAssetAmount = new BigNumber(
-        order.filledTakerAssetAmount,
-      ).add(filledTakerAssetAmount);
-
-      if (new BigNumber(filledTakerAssetAmount).gt(0)) {
+      if (!(new BigNumber(filledTakerAssetAmount).eq(order.filledTakerAssetAmount))) {
         order.lastFilledAt = new Date();
       }
 
-      order.isShadowed = false;
-      await order.save();
-      /* do not spread plainOrder object, it will emit lot of extra keys */
-      const plainOrder = order.toObject();
-      redisClient.publish(
-        'orders',
-        JSON.stringify(
-          constructOrderRecord(
-            clearOrderWithMetaFields(plainOrder),
+      if (
+        !(new BigNumber(filledTakerAssetAmount).eq(order.filledTakerAssetAmount))
+        || !(new BigNumber(remainingFillableMakerAssetAmount)
+          .eq(order.remainingFillableMakerAssetAmount))
+        || !(new BigNumber(remainingFillableTakerAssetAmount)
+          .eq(order.remainingFillableTakerAssetAmount))
+        || order.isShadowed
+        || !order.isValid
+      ) {
+        order.isShadowed = false;
+        order.isValid = true;
+
+        order.remainingFillableMakerAssetAmount = remainingFillableMakerAssetAmount;
+        order.remainingFillableTakerAssetAmount = remainingFillableTakerAssetAmount;
+        order.filledTakerAssetAmount = new BigNumber(filledTakerAssetAmount);
+
+        await order.save();
+        /* do not spread plainOrder object, it will emit lot of extra keys */
+        const plainOrder = order.toObject();
+        redisClient.publish(
+          'orders',
+          JSON.stringify(
+            constructOrderRecord(
+              clearOrderWithMetaFields(plainOrder),
+            ),
           ),
-        ),
-      );
+        );
+      }
     } else {
+      order.isValid = false;
       const { error } = orderState;
       order.error = error;
       order.isShadowed = !CLOSE_ORDER_ERRORS.includes(error);

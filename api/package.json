@@ -55,7 +55,7 @@
     "@0x/connect": "3.0.8",
     "@0x/subproviders": "2.1.6",
     "@0x/web3-wrapper": "3.1.6",
-    "@0x/order-watcher": "2.2.6",
+    "@0x/order-watcher": "2.2.8",
     "0x.js": "2.0.6",
     "kue": "0.11.6",
     "@koa/cors": "2.2.2",
