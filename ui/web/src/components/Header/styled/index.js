@@ -54,7 +54,7 @@ export const CurrentNetwork = styled.div`
     min-height: 32px;
     min-width: 200px;
     line-height: 32px;
-    font-size: 16px;
+    font-size: 0.8rem;
     color: ${colors.white};
   }
 `;
@@ -84,7 +84,9 @@ export const TransactionsBadge = styled(Badge)`
     width: 10px;
     line-height: 12px;
     top: -5px;
-}
+  }
+  display: flex !important;
+  align-items: center;
 `;
 
 export const UserProfile = styled.div`

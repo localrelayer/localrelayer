@@ -55,7 +55,7 @@ export const FormItemTitleLinks = styled.div`
 
 export const SubmitButton = styled(Button)`
   width: 100%;
-  margin-top: 10px;
+  margin-top: 50px;
 `;
 
 export const AdditionalInfo = styled.div`

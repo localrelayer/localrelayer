@@ -272,6 +272,8 @@ export function* fillOrder({
           filledOrders,
           price: ordersInfo.price,
           pair: `${assets[ordersInfo.makerAssetData].symbol}/${assets[ordersInfo.takerAssetData].symbol}`,
+          makerAssetData: order.makerAssetData,
+          takerAssetData: order.takerAssetData,
         },
       },
     );
@@ -289,6 +291,7 @@ export function* fillOrder({
           makerAssetAmount: existingAssetAmount,
           takerAssetAmount: newTakerAmount,
         },
+        shouldMatch: false,
       });
     } else {
       formActions.resetForm({});
@@ -302,6 +305,7 @@ export function* fillOrder({
 export function* postOrder({
   formActions,
   order,
+  shouldMatch = true,
 }) {
   const {
     takerAddress,
@@ -325,7 +329,7 @@ export function* postOrder({
       type,
     });
 
-    if (matchedOrders.length) {
+    if (shouldMatch && matchedOrders.length) {
       yield eff.call(fillOrder, {
         formActions,
         matchedOrders,
@@ -333,7 +337,7 @@ export function* postOrder({
       });
     } else {
       const makerAddress = yield eff.select(selectors.getWalletState('selectedAccount'));
-
+      console.log('WTF UG');
       const orderConfigRequest = {
         exchangeAddress,
         makerAddress,
