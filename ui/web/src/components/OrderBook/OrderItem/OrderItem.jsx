@@ -64,19 +64,19 @@ const OrderItem = ({
       color={type === 'bids' ? colors.green : colors.red}
     />
     */}
-      <div>
-        {order.price}
-      </div>
-      <div>
-        {order.amount}
-      </div>
-      <div>
-        {order.total}
-      </div>
       <S.Bar
         width={calculateBar(order, orders)}
         color={type === 'bids' ? colors.green : colors.red}
       />
+      <div>
+        {order.price.slice(0, 12)}
+      </div>
+      <div>
+        {order.amount.slice(0, 12)}
+      </div>
+      <div>
+        {order.total.slice(0, 12)}
+      </div>
     </S.OrderItem>
   </Popover>
 );

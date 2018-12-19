@@ -16,30 +16,30 @@ export const TradingHistoryTable = styled(Table)`
     border-bottom: 1px solid ${colors['component-background']} !important;
     color: white;
     text-align: left;
-    width: ${props => (props.isTradingPage ? '30%' : '13%')};
+    width: ${props => (props.isTradingPage ? '33%' : '13%')};
   }
   
-  .ant-table-thead > tr > th:last-child {
-    width: 10%;
-  } 
+  // .ant-table-thead > tr > th:last-child {
+  //   width: 10%;
+  // } 
   
   .ant-table-tbody > tr > td {
     color: white;
     font-size: 12px;
     text-align: left;
     cursor: pointer;
-    width: ${props => (props.isTradingPage ? '30%' : '13%')};
+    width: ${props => (props.isTradingPage ? '33%' : '13%')};
     padding: 5px 5px;
     border-bottom: 1px solid ${colors['component-background']} !important;
   }
 
-  .ant-table-tbody > tr > td:last-child {
-    width: 5%;
-  }
+  // .ant-table-tbody > tr > td:last-child {
+  //   width: 5%;
+  // }
 
-  .ant-table-thead > tr > th:last-child {
-    width: 5%;
-  }
+  // .ant-table-thead > tr > th:last-child {
+  //   width: 5%;
+  // }
   
   .ant-table-tbody > tr:hover > td {
     background-color: ${colors['item-hover-bg']} !important; 

@@ -99,10 +99,6 @@ const getColumns = isTradingPage => [
       </Tooltip>
     ),
   },
-  /* TODO: link to the etherscan need tx hash  */
-  {
-    render: () => <Icon type="select" />,
-  },
 ];
 
 const TradingHistory = ({
@@ -135,7 +131,7 @@ const TradingHistory = ({
               isUserTradingHistory={isUserTradingHistory}
               isTradingPage={isTradingPage}
               size="small"
-              columns={getColumns(isTradingPage || !isUserTradingHistory)}
+              columns={getColumns(isTradingPage && !isUserTradingHistory)}
               pagination={false}
               dataSource={orders}
               scroll={isTradingPage ? { y: dimensions.height } : { y: dimensions.height - 75 }}

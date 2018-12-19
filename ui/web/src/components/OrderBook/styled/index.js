@@ -21,8 +21,6 @@ export const Spread = styled.div`
   align-items: center;
   height: 6%;
   padding: 15px;
-  border-top: 1px solid ${colors['border-color-base']};
-  border-bottom: 1px solid ${colors['border-color-base']}
 `;
 
 export const Header = styled.div`

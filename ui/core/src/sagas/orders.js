@@ -329,6 +329,8 @@ export function* postOrder({
       type,
     });
 
+    console.log('MATCHED', matchedOrders);
+
     if (shouldMatch && matchedOrders.length) {
       yield eff.call(fillOrder, {
         formActions,
@@ -337,7 +339,6 @@ export function* postOrder({
       });
     } else {
       const makerAddress = yield eff.select(selectors.getWalletState('selectedAccount'));
-      console.log('WTF UG');
       const orderConfigRequest = {
         exchangeAddress,
         makerAddress,

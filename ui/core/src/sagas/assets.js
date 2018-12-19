@@ -47,7 +47,9 @@ export function* getAssetAdditionalInfo({
   try {
     const { tokenAddress: address } = assetDataUtils.decodeAssetDataOrThrow(assetData);
     tokenAddress = address;
-  } catch(e) {} /* eslint-disable-line */
+  } catch (e) {
+    console.log(e);
+  }
   if (cachedTokens[networkId][tokenAddress]) {
     return {
       ...cachedTokens[networkId][tokenAddress],

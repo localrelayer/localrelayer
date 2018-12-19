@@ -299,6 +299,8 @@ function* takeUpdateOrder(messagesFromSocketChannel) {
   while (true) {
     const lists = [];
     const data = yield eff.take(messagesFromSocketChannel);
+    const currentAssetPairId = yield eff.select(getUiState('currentAssetPairId'));
+    const assetsData = currentAssetPairId.split('_');
 
     if (
       data.channel === 'orders'
@@ -319,14 +321,16 @@ function* takeUpdateOrder(messagesFromSocketChannel) {
         lists.push('userOrders');
       }
       if (
-        (
+        ((
           data.payload.metaData.isValid === false
           && data.payload.metaData.error === ExchangeContractErrs.OrderRemainingFillAmountZero
         ) || (
           currentOrder
           && !(new BigNumber(data.payload?.metaData?.filledTakerAssetAmount)
             .eq(currentOrder?.metaData?.filledTakerAssetAmount))
-        )
+        ))
+        && assetsData.some(assetData => assetData === data.payload.order.makerAssetData)
+        && assetsData.some(assetData => assetData === data.payload.order.takerAssetData)
       ) {
         lists.push('tradingHistory');
 
@@ -383,8 +387,6 @@ function* takeUpdateOrder(messagesFromSocketChannel) {
           }));
         }
       }
-      const currentAssetPairId = yield eff.select(getUiState('currentAssetPairId'));
-      const assetsData = currentAssetPairId.split('_');
       if (
         data.payload.metaData.isValid === true
         && assetsData.some(assetData => assetData === data.payload.order.makerAssetData)
