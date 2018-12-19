@@ -213,7 +213,9 @@ function* initializeRoute({
 
       yield eff.fork(
         coreSagas.fetchAllTradingInfo,
-        networkId,
+        {
+          networkId,
+        },
       );
       yield eff.fork(
         coreSagas.fetchOrderBook,

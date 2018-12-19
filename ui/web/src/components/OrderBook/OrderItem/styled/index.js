@@ -6,7 +6,7 @@ export const Bar = styled.div`
   background: ${props => props.color};
   width: ${props => props.width} !important;
   min-height: 24px;
-  opacity: 0.2;
+  opacity: 0.5;
 `;
 
 export const AmountBar = styled.div`
