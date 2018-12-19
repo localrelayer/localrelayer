@@ -6,7 +6,7 @@ export const Bar = styled.div`
   background: ${props => props.color};
   width: ${props => props.width} !important;
   min-height: 24px;
-  opacity: 0.5;
+  opacity: 0.3;
 `;
 
 export const AmountBar = styled.div`
@@ -29,6 +29,7 @@ export const OrderItem = styled.div`
      cursor: pointer;
   }
     & div {
+      z-index: 1;
       width: 30%;
       text-align: left;
     }

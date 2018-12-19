@@ -129,7 +129,7 @@ const getColumns = (
     ),
     ...(!isTradingPage
       ? {
-        sorter: (a, b) => a.balance - b.balance,
+        sorter: (a, b) => a.availableBalance - b.availableBalance,
       }
       : {}
     ),

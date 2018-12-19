@@ -65,12 +65,11 @@ export const getDatafeed = (
       - assetPair.assetDataB.assetData.decimals);
     const barsData = Object.values(Object.values(data)[0]).map(bar => ({
       time: bar.time,
-      close: +utils.toUnitAmount(bar.close, decimalsGap),
-      low: +utils.toUnitAmount(bar.low, decimalsGap),
-      volume: +utils.toUnitAmount(bar.volume, assetPair.assetDataB.assetData.decimals),
-      open: +utils.toUnitAmount(bar.open, decimalsGap),
-      high: +utils.toUnitAmount(bar.high, decimalsGap),
-      last: +utils.toUnitAmount(bar.last, decimalsGap),
+      close: +utils.toUnitAmount(bar.close.toString(), decimalsGap),
+      low: +utils.toUnitAmount(bar.low.toString(), decimalsGap),
+      volume: +utils.toUnitAmount(bar.volume.toString(), assetPair.assetDataB.assetData.decimals),
+      open: +utils.toUnitAmount(bar.open.toString(), decimalsGap),
+      high: +utils.toUnitAmount(bar.high.toString(), decimalsGap),
     }));
     const bars = Object.keys(barsData).map(a => ({
       ...barsData[a],

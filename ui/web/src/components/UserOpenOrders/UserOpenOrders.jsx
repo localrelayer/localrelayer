@@ -64,7 +64,7 @@ const getColumns = onCancel => [
             : colors.green
         )}
         >
-          {text}
+          {text.slice(0, 12)}
         </ColoredSpan>
       </Tooltip>
     ),
@@ -74,7 +74,7 @@ const getColumns = onCancel => [
     dataIndex: 'amount',
     render: (text: string) => (
       <Tooltip title={text}>
-        {text}
+        {text.slice(0, 12)}
       </Tooltip>
     ),
     sorter: (a, b) => (+a.amount >= +b.amount ? 1 : -1),
@@ -84,7 +84,7 @@ const getColumns = onCancel => [
     dataIndex: 'total',
     render: (text: string) => (
       <Tooltip title={text}>
-        {text}
+        {text.slice(0, 12)}
       </Tooltip>
     ),
     sorter: (a, b) => (+a.total >= +b.total ? 1 : -1),

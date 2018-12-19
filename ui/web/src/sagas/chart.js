@@ -46,13 +46,12 @@ function* takeFillOrderAndCalculateChartBar({
     const decimalsGap = Math.abs(assetPair.assetDataB.assetData.decimals
       - assetPair.assetDataA.assetData.decimals);
     const bar = {
-      // not sure about it depends on from
-      volume: +utils.toUnitAmount(amount, assetPair.assetDataA.assetData.decimals).toNumber(),
       time: new Date(metaData.lastFilledAt).getTime(),
-      open: +utils.toUnitAmount(price, decimalsGap).toNumber(),
-      close: +utils.toUnitAmount(price, decimalsGap).toNumber(),
-      low: +utils.toUnitAmount(price, decimalsGap).toNumber(),
-      high: +utils.toUnitAmount(price, decimalsGap).toNumber(),
+      volume: +utils.toUnitAmount(amount.toString(), assetPair.assetDataA.assetData.decimals),
+      open: +utils.toUnitAmount(price.toString(), decimalsGap),
+      close: +utils.toUnitAmount(price.toString(), decimalsGap),
+      low: +utils.toUnitAmount(price.toString(), decimalsGap),
+      high: +utils.toUnitAmount(price.toString(), decimalsGap),
     };
     chartBarCallback(bar);
   }

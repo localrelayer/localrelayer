@@ -55,6 +55,7 @@ const Trading = ({
         pagination={false}
         rowKey="address"
         dataSource={assets}
+        scroll={{ y: 150 }}
         columns={
         getColumns(
           onToggleTradable,
