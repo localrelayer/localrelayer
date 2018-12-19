@@ -498,7 +498,7 @@ export function* initialize(): Saga<void> {
   try {
     const settings = JSON.parse(localStorageSettings);
 
-    if (!settings?.setupGuideShown) {
+    if (!settings?.setupGuideShown || !web3) {
       yield eff.put(uiActions.setUiState({
         isSetupGuideVisible: true,
       }));

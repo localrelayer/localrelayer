@@ -2,12 +2,13 @@ const path = require('path');
 const webpack = require('webpack');
 const merge = require('webpack-merge');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ErrorOverlayPlugin = require('error-overlay-webpack-plugin');
 
 const config = require('./webpack.config.base');
 
 module.exports = env => merge(config(env), {
   mode: 'development',
-  devtool: 'eval-source-map',
+  devtool: 'cheap-module-source-map',
   plugins: [
     new HtmlWebpackPlugin({
       template: 'src/index.tpl.html',
@@ -19,6 +20,7 @@ module.exports = env => merge(config(env), {
     }),
     new webpack.NamedModulesPlugin(),
     new webpack.HotModuleReplacementPlugin(),
+    new ErrorOverlayPlugin(),
   ],
 
   devServer: {

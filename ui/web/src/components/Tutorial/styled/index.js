@@ -2,7 +2,9 @@ import styled from 'styled-components';
 import * as colors from 'web-styles/colors';
 
 import {
-  Button, Badge, Tag,
+  Button,
+  Badge,
+  Tag,
 } from 'antd';
 
 export const Container = styled.div`
@@ -76,7 +78,9 @@ export const NetworkName = styled(Badge)`
   }
 `;
 
-export const NextButton = styled(Button)`
+export const NextButton = styled(Button).attrs({
+  type: 'primary',
+})`
   position: absolute !important;
   bottom: 50px;
 `;
