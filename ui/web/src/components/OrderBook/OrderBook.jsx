@@ -35,8 +35,6 @@ const OrderBook = ({
             key={order.id}
             order={order}
             onClick={() => onOrderClick(order.id, 'bid')}
-            orders={asks}
-            allOrders={[...asks, ...bids]}
             type="asks"
           />
         ))}
@@ -59,8 +57,6 @@ const OrderBook = ({
             key={order.id}
             order={order}
             onClick={() => onOrderClick(order.id, 'ask')}
-            orders={bids}
-            allOrders={[...asks, ...bids]}
             type="bids"
           />
         ))}

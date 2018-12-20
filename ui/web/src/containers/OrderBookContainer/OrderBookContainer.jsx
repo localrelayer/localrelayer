@@ -5,9 +5,7 @@ import type {
   Node,
 } from 'react';
 
-import {
-  coreSelectors,
-} from 'instex-core';
+import * as webSelectors from 'web-selectors';
 import {
   uiActions,
 } from 'web-actions';
@@ -18,8 +16,8 @@ import OrderBook from 'web-components/OrderBook';
 const OrderBookContainer = (): Node => (
   <Component
     mapStateToProps={state => ({
-      asks: coreSelectors.getAskOrders(state),
-      bids: coreSelectors.getBidOrders(state),
+      asks: webSelectors.getAskOrdersWithBar(state),
+      bids: webSelectors.getBidOrdersWithBar(state),
     })}
   >
     {({

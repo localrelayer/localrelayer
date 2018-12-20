@@ -131,3 +131,28 @@ export const getCurrentOrder = createSelector(
     return {};
   },
 );
+
+export const getAskOrdersWithBar = createSelector(
+  [
+    cs.getAskOrders,
+  ],
+  orders => (
+    orders.map(order => ({
+      ...order,
+      barWidth: utils.calculateBar(order, orders),
+    }))
+  ),
+);
+
+
+export const getBidOrdersWithBar = createSelector(
+  [
+    cs.getBidOrders,
+  ],
+  orders => (
+    orders.map(order => ({
+      ...order,
+      barWidth: utils.calculateBar(order, orders),
+    }))
+  ),
+);
