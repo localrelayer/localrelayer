@@ -39,9 +39,9 @@ const getColumns = onCancel => [
   }, {
     title: 'Created',
     dataIndex: 'metaData.createdAt',
-    render: (text: string) => (
-      <Tooltip title={utils.formatDate('MM/DD/YYYY HH:mm:ss', text)}>
-        {utils.formatDate('MM/DD HH:mm', text)}
+    render: (text: string, record: any) => (
+      <Tooltip title={record.createdAtFormattedLong}>
+        {record.createdAtFormattedShort}
       </Tooltip>
     ),
     sorter: (a, b) => (

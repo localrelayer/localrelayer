@@ -11,7 +11,7 @@ export const Tabs = styled(AntdTabs)`
   height: 100%;
   background: ${colors['component-background']};
   .ant-tabs-content {
-    height: 100%;
+    height: 90%;
   }
   .ant-tabs-tab-active {
     color: white !important;

@@ -5,9 +5,7 @@ import type {
   Node,
 } from 'react';
 
-import {
-  coreSelectors,
-} from 'instex-core';
+import * as webSelectors from 'web-selectors';
 import Component from 'web-components/ConnectComponent';
 import TradingHistory from 'web-components/TradingHistory';
 
@@ -23,8 +21,8 @@ const TradingHistoryContainer = ({
   <Component
     mapStateToProps={state => ({
       orders: isUserTradingHistory
-        ? coreSelectors.getTradingHistory('userTradingHistory')(state)
-        : coreSelectors.getTradingHistory('tradingHistory')(state),
+        ? webSelectors.getTradingHistoryFormatted('userTradingHistory')(state)
+        : webSelectors.getTradingHistoryFormatted('tradingHistory')(state),
     })}
   >
     {({ orders }) => (
