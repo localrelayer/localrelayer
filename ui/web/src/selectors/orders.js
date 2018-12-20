@@ -132,7 +132,7 @@ export const getCurrentOrder = createSelector(
   },
 );
 
-export const getAskOrdersWithBar = createSelector(
+export const getAskOrdersFormatted = createSelector(
   [
     cs.getAskOrders,
   ],
@@ -140,12 +140,13 @@ export const getAskOrdersWithBar = createSelector(
     orders.map(order => ({
       ...order,
       barWidth: utils.calculateBar(order, orders),
+      formattedExpirationTime: utils.formatDate('MM/DD/YYYY HH:mm:ss', order.expirationTimeSeconds * 1000),
     }))
   ),
 );
 
 
-export const getBidOrdersWithBar = createSelector(
+export const getBidOrdersFormatted = createSelector(
   [
     cs.getBidOrders,
   ],
@@ -153,6 +154,36 @@ export const getBidOrdersWithBar = createSelector(
     orders.map(order => ({
       ...order,
       barWidth: utils.calculateBar(order, orders),
+      formattedExpirationTime: utils.formatDate('MM/DD/YYYY HH:mm:ss', order.expirationTimeSeconds * 1000),
     }))
+  ),
+);
+
+export const getTradingHistoryFormatted = listName => createSelector(
+  [
+    cs.getTradingHistory(listName),
+  ],
+  orders => (
+    orders.map(order => ({
+      ...order,
+      lastFilledAtFormattedLong: utils.formatDate('MM/DD/YYYY HH:mm:ss', order.lastFilledAt),
+      lastFilledAtFormattedShort: utils.formatDate('MM/DD HH:mm', order.lastFilledAt),
+    }))
+  ),
+);
+
+export const getUserOpenOrdersFormatted = createSelector(
+  [
+    cs.getUserOpenOrders,
+  ],
+  orders => (
+    orders.map((order) => {
+      console.log(order.createdAt);
+      return {
+        ...order,
+        createdAtFormattedLong: utils.formatDate('MM/DD/YYYY HH:mm:ss', order.metaData.createdAt),
+        createdAtFormattedShort: utils.formatDate('MM/DD HH:mm', order.metaData.createdAt),
+      };
+    })
   ),
 );

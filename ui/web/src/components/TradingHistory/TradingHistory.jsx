@@ -93,9 +93,9 @@ const getColumns = isTradingPage => [
   {
     title: 'Date',
     dataIndex: 'lastFilledAt',
-    render: (text: string) => (
-      <Tooltip title={utils.formatDate('MM/DD/YYYY HH:mm:ss', text)}>
-        {utils.formatDate('MM/DD HH:mm', text)}
+    render: (text: string, record: any) => (
+      <Tooltip title={record.lastFilledAtFormattedLong}>
+        {record.lastFilledAtFormattedShort}
       </Tooltip>
     ),
   },

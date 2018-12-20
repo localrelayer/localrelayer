@@ -4,9 +4,8 @@ import React from 'react';
 import type {
   Node,
 } from 'react';
-
+import * as webSelectors from 'web-selectors';
 import {
-  coreSelectors,
   coreActions,
 } from 'instex-core';
 import Component from 'web-components/ConnectComponent';
@@ -21,7 +20,7 @@ const UserOpenOrdersContainer = (
 ): Node => (
   <Component
     mapStateToProps={state => ({
-      orders: coreSelectors.getUserOpenOrders(state),
+      orders: webSelectors.getUserOpenOrdersFormatted(state),
     })}
   >
     {({

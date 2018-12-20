@@ -16,8 +16,8 @@ import OrderBook from 'web-components/OrderBook';
 const OrderBookContainer = (): Node => (
   <Component
     mapStateToProps={state => ({
-      asks: webSelectors.getAskOrdersWithBar(state),
-      bids: webSelectors.getBidOrdersWithBar(state),
+      asks: webSelectors.getAskOrdersFormatted(state),
+      bids: webSelectors.getBidOrdersFormatted(state),
     })}
   >
     {({

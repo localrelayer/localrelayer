@@ -38,7 +38,7 @@ const OrderItem = ({
         <div>
           Expire:
           {' '}
-          {utils.formatDate('MM/DD/YYYY HH:mm:ss', order.expirationTimeSeconds * 1000)}
+          {order.formattedExpirationTime}
         </div>
       </div>
 )}
