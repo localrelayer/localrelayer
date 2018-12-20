@@ -175,3 +175,11 @@ export const getNetwork = id => networks[id] || {
   name: 'Unknown',
   isSupported: false,
 };
+
+export const calculateBar = (order, orders) => {
+  const index = orders.findIndex(o => o.id === order.id);
+  const previousOrders = orders.slice(0, index);
+  const accumulator = previousOrders.reduce((acc, cur) => acc + +cur.amount, +order.amount);
+  const totalAmount = orders.reduce((acc, cur) => acc + +cur.amount, 0);
+  return `${accumulator / totalAmount * 100 / 12 * 8}%`;
+};

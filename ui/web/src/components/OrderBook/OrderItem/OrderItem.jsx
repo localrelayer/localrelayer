@@ -26,19 +26,10 @@ type Props = {
 
 // Bar = accOrderAmount / totalAmount * 100 / 12 * 8
 
-const calculateBar = (order, orders) => {
-  const index = orders.findIndex(o => o.id === order.id);
-  const previousOrders = orders.slice(0, index);
-  const accumulator = previousOrders.reduce((acc, cur) => acc + +cur.amount, +order.amount);
-  const totalAmount = orders.reduce((acc, cur) => acc + +cur.amount, 0);
-  return `${accumulator / totalAmount * 100 / 12 * 8}%`;
-};
 
 const OrderItem = ({
   order,
   onClick,
-  orders,
-  // allOrders,
   type,
 }: Props) => (
   <Popover
@@ -65,7 +56,7 @@ const OrderItem = ({
     />
     */}
       <S.Bar
-        width={calculateBar(order, orders)}
+        width={order.barWidth}
         color={type === 'bids' ? colors.green : colors.red}
       />
       <div>
