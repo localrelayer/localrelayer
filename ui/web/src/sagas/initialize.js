@@ -283,11 +283,48 @@ function* initializeRoute({
   yield eff.fork(subscribeOnUpdateOrders);
 }
 
+function* updateOrdersBalancer(bufferChannel) {
+  while (true) {
+    const firstAction = yield eff.take(bufferChannel);
+    const restActions = yield eff.flush(bufferChannel);
+    const allActions = [
+      firstAction,
+      ...restActions,
+    ];
+    const combined = allActions.reduce(
+      (acc, action) => ({
+        ...acc,
+        [`${action.resourceType}_${action.lists.join('_')}`]: [
+          ...acc[`${action.resourceType}_${action.lists.join('_')}`] || [],
+          action,
+        ],
+      }),
+      {},
+    );
+    yield eff.all(
+      Object.keys(combined).map(
+        k => eff.put({
+          ...combined[k][0],
+          resources: [].concat(
+            ...combined[k].map(a => a.resources),
+          ),
+        }),
+      ),
+    );
+    yield eff.delay(1000);
+  }
+}
+
 function* takeUpdateOrder(messagesFromSocketChannel) {
   const orderFillChannel = yield eff.call(channel);
+  const ordersBufferChannel = yield eff.call(channel);
   yield eff.fork(
     takeSubscribeOnChangeChartBar,
     orderFillChannel,
+  );
+  yield eff.fork(
+    updateOrdersBalancer,
+    ordersBufferChannel,
   );
   const actions = createActionCreators('read', {
     resourceType: 'orders',
@@ -404,15 +441,18 @@ function* takeUpdateOrder(messagesFromSocketChannel) {
         ));
       }
 
-      yield eff.put(actions.succeeded({
-        lists,
-        removeFromOtherLists: true,
-        resources: [{
-          id: data.payload.order.signature,
-          metaData: data.payload.metaData,
-          ...data.payload.order,
-        }],
-      }));
+      yield eff.put(
+        ordersBufferChannel,
+        actions.succeeded({
+          lists,
+          removeFromOtherLists: true,
+          resources: [{
+            id: data.payload.order.signature,
+            metaData: data.payload.metaData,
+            ...data.payload.order,
+          }],
+        }),
+      );
     }
   }
 }
