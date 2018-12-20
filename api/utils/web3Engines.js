@@ -19,8 +19,8 @@ export const initWeb3ProviderEngine = (
       rpcUrl: 'https://eth-mainnet.alchemyapi.io/jsonrpc/XE7yAnUMrGLbVdtYgHqoiDU03IsjYU57',
     },
     42: {
-      rpcUrl: 'http://api.instex.io:8545',
-      // rpcUrl: 'https://eth-kovan.alchemyapi.io/jsonrpc/XE7yAnUMrGLbVdtYgHqoiDU03IsjYU57',
+      // rpcUrl: 'http://api.instex.io:8545',
+      rpcUrl: 'https://eth-kovan.alchemyapi.io/jsonrpc/XE7yAnUMrGLbVdtYgHqoiDU03IsjYU57',
     },
     50: {
       rpcUrl: 'http://localhost:8545',
