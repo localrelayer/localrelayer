@@ -1,6 +1,7 @@
 import React, {
-  useEffect, useState,
+  useEffect,
 } from 'react';
+
 import logo from '../../assets/logo5.png';
 import * as S from './styled';
 
