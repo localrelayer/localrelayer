@@ -1,11 +1,12 @@
 // @flow
 import * as actionTypes from './actionTypes';
 
-export const sendShowModalRequest = () => ({
-  type: actionTypes.SHOW_ORDERS_MODAL,
+export const sendShowModalRequest = modalName => ({
+  type: actionTypes.SHOW_MODAL_REQUEST,
+  modalName,
 });
 
-export const checkModalStatus = ({ isConfirmed }) => ({
+export const checkModalStatus = isConfirmed => ({
   type: actionTypes.CHECK_MODAL_STATUS,
   isConfirmed,
 });
