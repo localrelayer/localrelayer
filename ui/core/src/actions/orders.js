@@ -1,7 +1,6 @@
 // @flow
 import * as actionTypes from './actionTypes';
 
-
 export const postOrderRequest = ({
   order,
   formActions,

@@ -11,6 +11,7 @@ import {
 } from 'instex-core';
 import {
   actionTypes,
+  sendShowModalRequest,
 } from '../actions';
 import * as selectors from '../selectors';
 import api from '../api';
@@ -215,6 +216,29 @@ function* matchOrder({
   return matchedOrders;
 }
 
+export function* saveMatchOrders(orders) {
+  const actions = createActionCreators('read', {
+    resourceType: 'orders',
+    requestKey: 'matchedOrders',
+    list: 'matchedOrders',
+    mergeListIds: false,
+  });
+  try {
+    yield eff.put(actions.pending());
+    const ordersIds = orders.map(item => item.id);
+    yield eff.put(actions.succeeded({
+      resources: ordersIds,
+      list: 'matchedOrders',
+    }));
+  } catch (err) {
+    yield eff.put(actions.succeeded({
+      resources: [],
+      list: 'matchedOrders',
+    }));
+    console.log(err);
+  }
+}
+
 export function* fillOrder({
   order,
   formActions,
@@ -329,16 +353,25 @@ export function* postOrder({
       type,
     });
 
-    console.log('MATCHED', matchedOrders);
-
     if (shouldMatch && matchedOrders.length) {
-      yield eff.call(fillOrder, {
-        formActions,
-        matchedOrders,
-        order,
-      });
+      yield eff.call(saveMatchOrders, matchedOrders);
+
+      yield eff.put(sendShowModalRequest('OrdersInfo'));
+      const { isConfirmed } = yield eff.take(actionTypes.CHECK_MODAL_STATUS);
+      if (isConfirmed) {
+        yield eff.call(fillOrder, {
+          formActions,
+          matchedOrders,
+          order,
+        });
+        yield eff.call(saveMatchOrders, []);
+      } else {
+        yield eff.call(saveMatchOrders, []);
+        return;
+      }
     } else {
       const makerAddress = yield eff.select(selectors.getWalletState('selectedAccount'));
+
       const orderConfigRequest = {
         exchangeAddress,
         makerAddress,

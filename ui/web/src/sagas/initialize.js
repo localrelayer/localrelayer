@@ -43,6 +43,9 @@ import {
 import {
   takeNotification,
 } from './notifications';
+import {
+  takeModalShow,
+} from './modals';
 
 
 function* subscribeOnUpdateOrders(): Saga<void> {
@@ -424,6 +427,7 @@ function* takeUpdateOrder(messagesFromSocketChannel) {
           }));
         }
       }
+
       if (
         data.payload.metaData.isValid === true
         && assetsData.some(assetData => assetData === data.payload.order.makerAssetData)
@@ -641,6 +645,7 @@ export function* initialize(): Saga<void> {
   yield eff.fork(coreSagas.takePostOrder);
   yield eff.fork(coreSagas.takeCancelOrder);
   yield eff.fork(takeNotification);
+  yield eff.fork(takeModalShow);
   let watchWalletTask;
 
   /* Web radio center */
