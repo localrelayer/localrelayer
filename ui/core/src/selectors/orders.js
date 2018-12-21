@@ -232,3 +232,59 @@ export const getUserOpenOrders = createSelector(
     })
   ),
 );
+
+export const getMatchedOrders = createSelector(
+  [
+    getResourceMappedList('orders', 'matchedOrders'),
+    getResourceMap('assetPairs'),
+    getResourceMap('assets'),
+  ],
+  (
+    matchedOrders,
+    assetPairs,
+    assets,
+  ) => matchedOrders.map((order) => {
+    const assetPair = (
+      assetPairs[`${order.makerAssetData}_${order.takerAssetData}`]
+        || assetPairs[`${order.takerAssetData}_${order.makerAssetData}`]
+    );
+    const orderType = getOrderType(
+      assetPair.id.split('_')[0],
+      order.makerAssetData,
+    );
+    const pair = `${assets[order.makerAssetData].symbol}/${assets[order.takerAssetData].symbol}`;
+    const amount = orderType === 'bid'
+      ? toUnitAmount(
+        order.metaData.remainingFillableTakerAssetAmount,
+        assets[order.takerAssetData].decimals,
+      ).toFixed(8)
+      : toUnitAmount(
+        order.metaData.remainingFillableMakerAssetAmount,
+        assets[order.makerAssetData].decimals,
+      ).toFixed(8);
+    const total = orderType === 'bid'
+      ? toUnitAmount(
+        order.metaData.remainingFillableMakerAssetAmount,
+        assets[order.makerAssetData].decimals,
+      ).toFixed(8)
+      : toUnitAmount(
+        order.metaData.remainingFillableTakerAssetAmount,
+        assets[order.takerAssetData].decimals,
+      ).toFixed(8);
+    const price = getOrderPrice(
+      orderType,
+      toUnitAmount(order.makerAssetAmount,
+        assets[order.makerAssetData].decimals),
+      toUnitAmount(order.takerAssetAmount,
+        assets[order.takerAssetData].decimals),
+    ).toFixed(8);
+    return {
+      ...order,
+      pair,
+      amount,
+      total,
+      price,
+      color: orderType === 'bid' ? '#279467' : '#a03756',
+    };
+  }),
+);
