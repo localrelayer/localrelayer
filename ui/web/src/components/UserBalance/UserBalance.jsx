@@ -29,6 +29,7 @@ type Props = {
   onDeposit: Function,
   isTradingPage: boolean,
   isWeb3ProviderPresent: boolean,
+  isNetworkSupported: boolean,
 }
 
 const getColumns = (
@@ -186,6 +187,7 @@ const UserBalance = ({
   onDeposit,
   onWithdraw,
   isWeb3ProviderPresent,
+  isNetworkSupported,
 }: Props): Node => {
   const [searchText, setSearchText] = useState('');
   const [dimensions, setDimensions] = useState('');
@@ -202,6 +204,9 @@ const UserBalance = ({
           <S.UserBalance>
             <Overlay isShown={!isWeb3ProviderPresent}>
               <div>Connect a wallet to access balance</div>
+            </Overlay>
+            <Overlay isShown={isWeb3ProviderPresent && !isNetworkSupported}>
+              <div>Choose supported network</div>
             </Overlay>
             <S.Title>
               <div>

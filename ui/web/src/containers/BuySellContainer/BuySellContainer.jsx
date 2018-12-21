@@ -29,6 +29,7 @@ const BuySellContainer = (): Node => (
       currentAssetPair: getCurrentAssetPairWithBalance(state),
       bestOrders: cs.getBestOrders(state),
       isWeb3ProviderPresent: getUiState('isWeb3ProviderPresent')(state),
+      isNetworkSupported: getUiState('isNetworkSupported')(state),
     })}
   >
     {({
@@ -36,11 +37,13 @@ const BuySellContainer = (): Node => (
       bestOrders,
       dispatch,
       isWeb3ProviderPresent,
+      isNetworkSupported,
     }) => (
       <BuySell
         isWeb3ProviderPresent={isWeb3ProviderPresent}
         currentAssetPair={currentAssetPair}
         bestOrders={bestOrders}
+        isNetworkSupported={isNetworkSupported}
         onSubmitOrder={({
           amount,
           price,
