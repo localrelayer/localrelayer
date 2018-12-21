@@ -27,6 +27,7 @@ const HeaderContainer = (): Node => (
       pendingTransactionsCount: cs.getPendingTransactions(state).length,
       address: cs.getWalletState('selectedAccount')(state),
       networkId: cs.getWalletState('networkId')(state),
+      isNetworkSupported: webSelectors.getUiState('isNetworkSupported')(state),
     })}
   >
     {({
@@ -38,6 +39,7 @@ const HeaderContainer = (): Node => (
       pendingTransactionsCount,
       address,
       networkId,
+      isNetworkSupported,
     }) => (
       <Header
         currentAssetPair={currentAssetPair}
@@ -45,6 +47,7 @@ const HeaderContainer = (): Node => (
         address={address}
         networkId={networkId}
         isSocketConnected={isSocketConnected}
+        isNetworkSupported={isNetworkSupported}
         onSetupGuideClick={() => (
           dispatch(uiActions.setUiState({
             isSetupGuideVisible: true,

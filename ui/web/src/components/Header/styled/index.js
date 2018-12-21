@@ -18,6 +18,15 @@ export const Header = styled.div`
   height: 54px;
 `;
 
+export const UnsupportedNetwork = styled.div`
+  background-color: ${colors.red};
+  color: ${colors.white};
+  text-align: center;
+  font-size: 14px;
+  line-height: 36px;
+  border-radius: 4px;
+`;
+
 export const InstexLogo = styled.img`
   height: 100%;
   cursor: pointer;
@@ -104,6 +113,6 @@ export const UserProfile = styled.div`
 export const TokensButton = styled(Button).attrs({
   type: 'primary',
 })`
-  margin-left: 10px
+  margin-left: 10px;
   width: 180px;
 `;
