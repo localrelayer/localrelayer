@@ -5,3 +5,4 @@ export * from './wallet';
 export * from './socketClient';
 export * from './orders';
 export * from './notifications';
+export * from './modals';

@@ -13,7 +13,7 @@ import {
 } from 'web-selectors';
 
 import Component from 'web-components/ConnectComponent';
-import ConnectingToEthProvider from 'web-components/ConnectingToEthProvider';
+import OrdersInfoModalContainer from 'web-containers/OrdersInfoModalContainer';
 import NetworkNotSupported from 'web-components/NetworkNotSupported';
 import TransactionsPanelContainer from 'web-containers/TransactionsPanelContainer';
 import TokensPanelContainer from 'web-containers/TokensPanelContainer';
@@ -39,6 +39,7 @@ const AppContainer = () => (
         <Layout>
           <TokensPanelContainer />
           <TransactionsPanelContainer />
+          <OrdersInfoModalContainer />
           {isAppInitializing ? (
             <LoaderPage />
           ) : (

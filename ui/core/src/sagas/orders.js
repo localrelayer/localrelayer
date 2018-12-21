@@ -11,6 +11,8 @@ import {
 } from 'instex-core';
 import {
   actionTypes,
+  sendMatchedOrders,
+  sendShowModalRequest,
 } from '../actions';
 import * as selectors from '../selectors';
 import api from '../api';
@@ -329,16 +331,24 @@ export function* postOrder({
       type,
     });
 
-    console.log('MATCHED', matchedOrders);
-
     if (shouldMatch && matchedOrders.length) {
-      yield eff.call(fillOrder, {
-        formActions,
-        matchedOrders,
-        order,
-      });
+      yield eff.put(sendMatchedOrders(matchedOrders));
+      yield eff.put(sendShowModalRequest());
+      const { isConfirmed } = yield eff.take(actionTypes.CHECK_MODAL_STATUS);
+      if (isConfirmed) {
+        yield eff.call(fillOrder, {
+          formActions,
+          matchedOrders,
+          order,
+        });
+      } else {
+        yield eff.put(sendMatchedOrders([]));
+        return;
+      }
+      yield eff.put(sendMatchedOrders([]));
     } else {
       const makerAddress = yield eff.select(selectors.getWalletState('selectedAccount'));
+
       const orderConfigRequest = {
         exchangeAddress,
         makerAddress,
@@ -430,10 +440,37 @@ export function* cancelOrder({ order }) {
   }
 }
 
+export function* fetchMatchedOrders({ orders }) {
+  const actions = createActionCreators('read', {
+    resourceType: 'orders',
+    requestKey: 'matchedOrders',
+    list: 'matchedOrders',
+    mergeListIds: false,
+  });
+  try {
+    yield eff.put(actions.pending());
+    const ordersIds = orders.map(item => item.id);
+    yield eff.put(actions.succeeded({
+      resources: ordersIds,
+      list: 'matchedOrders',
+    }));
+  } catch (err) {
+    yield eff.put(actions.succeeded({
+      resources: [],
+      list: 'matchedOrders',
+    }));
+    console.log(err);
+  }
+}
+
 export function* takePostOrder() {
   yield eff.takeEvery(actionTypes.POST_ORDER_REQUEST, postOrder);
 }
 
 export function* takeCancelOrder() {
   yield eff.takeEvery(actionTypes.CANCEL_ORDER_REQUEST, cancelOrder);
+}
+
+export function* takeMatchedOrders() {
+  yield eff.takeEvery(actionTypes.SEND_MATCHED_ORDERS, fetchMatchedOrders);
 }
