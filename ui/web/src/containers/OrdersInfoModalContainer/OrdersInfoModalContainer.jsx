@@ -38,10 +38,10 @@ const OrdersInfoModalContainer = (): Node => (
           dispatch(uiActions.setUiState({
             isOrdersInfoModalVisible: false,
           }));
-          dispatch(ca.checkModalStatus({ isConfirmed }));
+          dispatch(ca.checkModalStatus(isConfirmed));
         }}
         onOk={(isConfirmed) => {
-          dispatch(ca.checkModalStatus({ isConfirmed }));
+          dispatch(ca.checkModalStatus(isConfirmed));
           dispatch(uiActions.setUiState({
             isOrdersInfoModalVisible: false,
           }));

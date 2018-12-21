@@ -22,7 +22,7 @@ const OrdersInfoModal = (
   }: Props,
 ) => (
   <S.OrdersInfoModal
-    title="Following orders will be filled"
+    title="You are going to fill following orders"
     closable={false}
     visible={isVisible}
     onCancel={() => onCancel(false)}

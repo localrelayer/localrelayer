@@ -6,15 +6,15 @@ import {
   uiActions,
 } from 'web-actions';
 
-function* showModal() {
+function* showModal({ modalName }) {
   yield eff.put(uiActions.setUiState({
-    isOrdersInfoModalVisible: true,
+    [`is${modalName}ModalVisible`]: true,
   }));
 }
 
 export function* takeModalShow() {
   yield eff.takeEvery(
-    coreActions.actionTypes.SHOW_ORDERS_MODAL,
+    coreActions.actionTypes.SHOW_MODAL_REQUEST,
     showModal,
   );
 }
