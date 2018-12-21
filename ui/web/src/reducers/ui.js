@@ -28,6 +28,7 @@ const initialState: UiState = {
   isTransactionsPanelIsVisible: false,
   isTokensPanelIsVisible: false,
   isSetupGuideVisible: false,
+  isOrdersInfoModalVisible: false,
 };
 
 const mergeValues = (
