@@ -105,6 +105,8 @@ export const getEtherTokenBalance = createSelector(
     getWalletState('balance'),
   ],
   (etherToken, balances) => (
-    utils.toUnitAmount(balances[etherToken.address], etherToken.decimals).toFixed(8)
+    etherToken
+      ? utils.toUnitAmount(balances[etherToken.address], etherToken.decimals).toFixed(8)
+      : 0
   ),
 );

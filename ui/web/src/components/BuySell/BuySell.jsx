@@ -23,6 +23,7 @@ type Props = {
   onSubmitOrder: Function,
   bestOrders: any,
   isWeb3ProviderPresent: boolean,
+  isNetworkSupported: boolean,
 };
 
 const BuySell = ({
@@ -30,10 +31,14 @@ const BuySell = ({
   bestOrders,
   onSubmitOrder,
   isWeb3ProviderPresent,
+  isNetworkSupported,
 }: Props) => (
   <S.BuySell>
     <Overlay isShown={!isWeb3ProviderPresent}>
       <div>Connect a wallet to create orders</div>
+    </Overlay>
+    <Overlay isShown={isWeb3ProviderPresent && !isNetworkSupported}>
+      <div>Choose supported network</div>
     </Overlay>
     <S.BuySellCard
       bordered={false}

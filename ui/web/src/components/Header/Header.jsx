@@ -23,6 +23,7 @@ type Props = {
   address: any,
   isSocketConnected: Boolean,
   networkId: any,
+  isNetworkSupported: Boolean,
 }
 
 const Header = ({
@@ -34,6 +35,7 @@ const Header = ({
   networkId,
   isSocketConnected,
   onSetupGuideClick,
+  isNetworkSupported,
 }: Props) => {
   const currentAssetPairSymbols = [
     currentAssetPair?.assetDataA?.assetData?.symbol || 'ZRX',
@@ -42,34 +44,35 @@ const Header = ({
   const currentAssetPairName = currentAssetPairSymbols.join('/');
   const currentLink = currentAssetPairSymbols.join('-');
   return (
-    <S.Header>
-      <S.InstexLogo src={logo} alt="logo" />
-      <S.TokensButton onClick={onTokensClick}>
+    <div>
+      <S.Header>
+        <S.InstexLogo src={logo} alt="logo" />
+        <S.TokensButton onClick={onTokensClick}>
         Tokens(
-        {currentAssetPairName}
+          {currentAssetPairName}
         )
-        <S.HeaderIcon type="right" />
-      </S.TokensButton>
-      <S.Trade>
-        <Link to={currentLink}>
-          <S.HeaderIcon type="swap" />
+          <S.HeaderIcon type="right" />
+        </S.TokensButton>
+        <S.Trade>
+          <Link to={currentLink}>
+            <S.HeaderIcon type="swap" />
           Trade
-        </Link>
-      </S.Trade>
-      <S.Account>
-        <Link to="/account">
-          <S.HeaderIcon type="home" />
+          </Link>
+        </S.Trade>
+        <S.Account>
+          <Link to="/account">
+            <S.HeaderIcon type="home" />
           Account
-        </Link>
-      </S.Account>
-      <S.Account>
-        <a onClick={onSetupGuideClick}>
-          <S.HeaderIcon type="setting" />
+          </Link>
+        </S.Account>
+        <S.Account>
+          <a onClick={onSetupGuideClick}>
+            <S.HeaderIcon type="setting" />
           Setup Guide
-        </a>
-      </S.Account>
-      <S.NotificationContainer>
-        {!isSocketConnected
+          </a>
+        </S.Account>
+        <S.NotificationContainer>
+          {!isSocketConnected
         && (
           <Tooltip
             placement="bottom"
@@ -83,31 +86,52 @@ const Header = ({
           </Tooltip>
         )
         }
-        <S.CurrentNetwork>
-          <Tag>
-            <Icon type="global" />
-            {' '}
-            {
+          <S.CurrentNetwork>
+            <Tag>
+              <Icon type="global" />
+              {' '}
+              {
                   utils.getNetwork(networkId).name
                 }
-            {' '}
-            {'network'}
-          </Tag>
-        </S.CurrentNetwork>
-        <S.UserProfile>
-          <Tag>
-            <S.HeaderIcon type="user" />
-            {address
-              ? `${address.slice(0, 16)}...`
-              : 'Not Connected'
+              {' '}
+              {'network'}
+            </Tag>
+          </S.CurrentNetwork>
+          <S.UserProfile>
+            <Tag>
+              <S.HeaderIcon type="user" />
+              {address
+                ? `${address.slice(0, 16)}...`
+                : 'Not Connected'
             }
-          </Tag>
-        </S.UserProfile>
-        <S.TransactionsBadge count={pendingTransactionsCount}>
-          <S.TransactionsIcon onClick={onTransactionsClick} />
-        </S.TransactionsBadge>
-      </S.NotificationContainer>
-    </S.Header>
+            </Tag>
+          </S.UserProfile>
+          <S.TransactionsBadge count={pendingTransactionsCount}>
+            <S.TransactionsIcon onClick={onTransactionsClick} />
+          </S.TransactionsBadge>
+        </S.NotificationContainer>
+      </S.Header>
+      {
+        !isNetworkSupported
+        && (
+          <S.UnsupportedNetwork>
+            <Icon
+              type="exclamation-circle"
+              theme="filled"
+            />
+            {' '}
+            This network is not supported.
+            Please choose one among supported networks:
+            {' '}
+            {Object.keys(utils.networks)
+              .filter(key => utils.networks[key].isSupported)
+              .map(key => utils.networks[key].name)
+              .join(', ')}
+            .
+          </S.UnsupportedNetwork>
+        )
+      }
+    </div>
   );
 };
 
