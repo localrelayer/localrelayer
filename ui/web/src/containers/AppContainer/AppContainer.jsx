@@ -14,7 +14,6 @@ import {
 
 import Component from 'web-components/ConnectComponent';
 import OrdersInfoModalContainer from 'web-containers/OrdersInfoModalContainer';
-import NetworkNotSupported from 'web-components/NetworkNotSupported';
 import TransactionsPanelContainer from 'web-containers/TransactionsPanelContainer';
 import TokensPanelContainer from 'web-containers/TokensPanelContainer';
 import TradingPageContainer from 'web-containers/TradingPageContainer';
@@ -30,45 +29,39 @@ const AppContainer = () => (
       isNetworkSupported: getUiState('isNetworkSupported')(state),
     })}
   >
-    {({
-      isAppInitializing,
-      isNetworkSupported,
-    }) => {
-      if (!isNetworkSupported) return (<NetworkNotSupported />);
-      return (
-        <Layout>
-          <TokensPanelContainer />
-          <TransactionsPanelContainer />
-          <OrdersInfoModalContainer />
-          {isAppInitializing ? (
-            <LoaderPage />
-          ) : (
-            <div>
-              <Tutorial />
-              <Switch>
-                <Route
-                  exact
-                  path="/:baseAsset-:quoteAsset"
-                  component={TradingPageContainer}
-                />
-                <Route
-                  exact
-                  path="/account"
-                  component={UserProfilePageContainer}
-                />
-                <Route
-                  exact
-                  path="*"
-                  render={() => (
-                    <Redirect to="/ZRX-WETH" />
-                  )}
-                />
-              </Switch>
-            </div>
-          )}
-        </Layout>
-      );
-    }}
+    {({ isAppInitializing }) => (
+      <Layout>
+        <TokensPanelContainer />
+        <TransactionsPanelContainer />
+        <OrdersInfoModalContainer />
+        {isAppInitializing ? (
+          <LoaderPage />
+        ) : (
+          <div>
+            <Tutorial />
+            <Switch>
+              <Route
+                exact
+                path="/:baseAsset-:quoteAsset"
+                component={TradingPageContainer}
+              />
+              <Route
+                exact
+                path="/account"
+                component={UserProfilePageContainer}
+              />
+              <Route
+                exact
+                path="*"
+                render={() => (
+                  <Redirect to="/ZRX-WETH" />
+                )}
+              />
+            </Switch>
+          </div>
+        )}
+      </Layout>
+    )}
   </Component>
 );
 

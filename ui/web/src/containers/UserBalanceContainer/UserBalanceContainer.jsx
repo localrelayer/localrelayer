@@ -27,6 +27,7 @@ const UserBalanceContainer = ({ isTradingPage }: Props): Node => (
       assets: getAssetsWithBalanceAndAllowance(state),
       balance: cs.getEthWalletBalance(state),
       isWeb3ProviderPresent: getUiState('isWeb3ProviderPresent')(state),
+      isNetworkSupported: getUiState('isNetworkSupported')(state),
     })}
   >
     {({
@@ -34,11 +35,13 @@ const UserBalanceContainer = ({ isTradingPage }: Props): Node => (
       balance,
       dispatch,
       isWeb3ProviderPresent,
+      isNetworkSupported,
     }) => (
       <UserBalance
         isTradingPage={isTradingPage}
         assets={assets}
         isWeb3ProviderPresent={isWeb3ProviderPresent}
+        isNetworkSupported={isNetworkSupported}
         balance={balance}
         onToggleTradable={
           (isTradable, asset) => (
