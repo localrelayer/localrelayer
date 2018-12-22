@@ -102,7 +102,7 @@ export function* watchWallet({
           );
         }
 
-        if (selectedAccountBalance !== wallet.selectedAccountBalance) {
+        if (selectedAccountBalance && selectedAccountBalance !== wallet.selectedAccountBalance) {
           changedData.push({
             selectedAccountBalance,
           });

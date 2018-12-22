@@ -45,7 +45,7 @@
   "dependencies": {
     "@babel/runtime": "7.2.0",
     "@babel/polyfill": "7.2.3",
-    "web3": "1.0.0-beta.37",
+    "web3": "1.0.0-beta.35",
     "0x.js": "2.0.8",
     "ramda": "0.26.1",
     "redux": "4.0.1",
