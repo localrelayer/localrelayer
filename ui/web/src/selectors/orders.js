@@ -177,13 +177,10 @@ export const getUserOpenOrdersFormatted = createSelector(
     cs.getUserOpenOrders,
   ],
   orders => (
-    orders.map((order) => {
-      console.log(order.createdAt);
-      return {
-        ...order,
-        createdAtFormattedLong: utils.formatDate('MM/DD/YYYY HH:mm:ss', order.metaData.createdAt),
-        createdAtFormattedShort: utils.formatDate('MM/DD HH:mm', order.metaData.createdAt),
-      };
-    })
+    orders.map(order => ({
+      ...order,
+      createdAtFormattedLong: utils.formatDate('MM/DD/YYYY HH:mm:ss', order.metaData.createdAt),
+      createdAtFormattedShort: utils.formatDate('MM/DD HH:mm', order.metaData.createdAt),
+    }))
   ),
 );

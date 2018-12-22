@@ -8,6 +8,27 @@ import {
 } from 'web-actions';
 import store from './store';
 
+const promiseTimeout = (ms, promise) => {
+  // Create a promise that rejects in <ms> milliseconds
+  const timeout = new Promise((resolve, reject) => {
+    const id = setTimeout(() => {
+      clearTimeout(id);
+      reject(new Error('Timed out'));
+    }, ms);
+  });
+
+  // Returns a race between our timeout and the passed in promise
+  return Promise.race([
+    promise,
+    timeout,
+  ]);
+};
+
+const connectMetamask = async () => {
+  await window.ethereum.enable();
+  ethApi.setWeb3(window.web3);
+};
+
 /**
  * INITIALIZE_WEB_APP will be dispatched when web3 instance appear in global scope
  * which mean the app conntected to the ethereum net.
@@ -21,18 +42,23 @@ window.addEventListener('load', async () => {
     window.web3 = new Web3(window.ethereum);
     try {
       // Request account access if needed
-      window.onfocus = async () => {
-        await window.ethereum.enable();
-        ethApi.setWeb3(window.web3);
-        store.dispatch({
-          type: actionTypes.INITIALIZE_WEB_APP,
-          historyType: window.__STORYBOOK_CLIENT_API__ ? 'memory' : 'browser',
-        });
-      };
+      await promiseTimeout(1000, connectMetamask());
     } catch (error) {
       // User denied account access...
-      console.log('User denied', error);
+      if (error.message === 'Timed out') {
+        window.onfocus = async () => {
+          await connectMetamask();
+        };
+      } else {
+        console.log('User denied', error);
+      }
+    } finally {
+      store.dispatch({
+        type: actionTypes.INITIALIZE_WEB_APP,
+        historyType: window.__STORYBOOK_CLIENT_API__ ? 'memory' : 'browser',
+      });
     }
+
     // Legacy dapp browsers...
   } else if (window.web3) {
     window.web3 = new Web3(web3.currentProvider);
