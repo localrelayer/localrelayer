@@ -4,16 +4,12 @@ import React, {
 } from 'react';
 import {
   Tooltip,
-  Icon,
 } from 'antd';
 
 import {
   ColoredSpan,
 } from 'web-components/SharedStyledComponents';
 import * as colors from 'web-styles/colors';
-import {
-  utils,
-} from 'instex-core';
 import Measure from 'react-measure';
 import * as S from './styled';
 
