@@ -17,6 +17,7 @@ const initialState: WalletState = {
   accounts: [],
   balance: {},
   allowance: {},
+  matchedOrders: [],
 };
 
 const mergeValues = (

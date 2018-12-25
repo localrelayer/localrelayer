@@ -19,6 +19,9 @@ import {
   getOrderType,
   sortOrderbook,
 } from '../utils';
+import {
+  getWalletState,
+} from './wallet';
 
 export const getTradingHistory = listName => createSelector(
   [
@@ -235,7 +238,7 @@ export const getUserOpenOrders = createSelector(
 
 export const getMatchedOrders = createSelector(
   [
-    getResourceMappedList('orders', 'matchedOrders'),
+    getWalletState('matchedOrders'),
     getResourceMap('assetPairs'),
     getResourceMap('assets'),
   ],
@@ -252,23 +255,27 @@ export const getMatchedOrders = createSelector(
       assetPair.id.split('_')[0],
       order.makerAssetData,
     );
+    console.log(
+      order.makerAssetAmount,
+      order.takerAssetAmount,
+    );
     const pair = `${assets[order.makerAssetData].symbol}/${assets[order.takerAssetData].symbol}`;
     const amount = orderType === 'bid'
       ? toUnitAmount(
-        order.metaData.remainingFillableTakerAssetAmount,
+        order.takerAssetAmount,
         assets[order.takerAssetData].decimals,
       ).toFixed(8)
       : toUnitAmount(
-        order.metaData.remainingFillableMakerAssetAmount,
+        order.makerAssetAmount,
         assets[order.makerAssetData].decimals,
       ).toFixed(8);
     const total = orderType === 'bid'
       ? toUnitAmount(
-        order.metaData.remainingFillableMakerAssetAmount,
+        order.makerAssetAmount,
         assets[order.makerAssetData].decimals,
       ).toFixed(8)
       : toUnitAmount(
-        order.metaData.remainingFillableTakerAssetAmount,
+        order.takerAssetAmount,
         assets[order.takerAssetData].decimals,
       ).toFixed(8);
     const price = getOrderPrice(
@@ -278,6 +285,8 @@ export const getMatchedOrders = createSelector(
       toUnitAmount(order.takerAssetAmount,
         assets[order.takerAssetData].decimals),
     ).toFixed(8);
+
+    console.log(amount, price, total);
     return {
       ...order,
       pair,

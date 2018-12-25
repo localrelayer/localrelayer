@@ -132,6 +132,7 @@ export function* awaitTransaction(txHash) {
                   transaction.meta.takerAssetData,
                 ).tokenAddress
               );
+
               return {
                 balance: {
                   _merge: true,
@@ -139,14 +140,14 @@ export function* awaitTransaction(txHash) {
                     new BigNumber(
                       wallet.balance[makerAssetAddress] || 0,
                     ).minus(
-                      new BigNumber(tr.meta.totalFilledAmount),
+                      new BigNumber(tr.meta.filledMakerAssetAmount),
                     ).toString()
                   ),
                   [takerAssetAddress]: (
                     new BigNumber(
                       wallet.balance[takerAssetAddress] || 0,
                     ).plus(
-                      new BigNumber(tr.meta.takerAssetAmount),
+                      new BigNumber(tr.meta.filledTakerAssetAmount),
                     ).toString()
                   ),
                 },

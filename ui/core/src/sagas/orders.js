@@ -12,6 +12,7 @@ import {
 import {
   actionTypes,
   sendShowModalRequest,
+  setWalletState,
 } from '../actions';
 import * as selectors from '../selectors';
 import api from '../api';
@@ -216,29 +217,6 @@ function* matchOrder({
   return matchedOrders;
 }
 
-export function* saveMatchOrders(orders) {
-  const actions = createActionCreators('read', {
-    resourceType: 'orders',
-    requestKey: 'matchedOrders',
-    list: 'matchedOrders',
-    mergeListIds: false,
-  });
-  try {
-    yield eff.put(actions.pending());
-    const ordersIds = orders.map(item => item.id);
-    yield eff.put(actions.succeeded({
-      resources: ordersIds,
-      list: 'matchedOrders',
-    }));
-  } catch (err) {
-    yield eff.put(actions.succeeded({
-      resources: [],
-      list: 'matchedOrders',
-    }));
-    console.log(err);
-  }
-}
-
 export function* fillOrder({
   order,
   formActions,
@@ -248,85 +226,118 @@ export function* fillOrder({
   const contractWrappers = ethApi.getWrappers(networkId);
 
   let existingAssetAmount = new BigNumber(order.makerAssetAmount);
+
   const ordersToFill = [];
+  const makerAssetFillAmounts = [];
   const takerAssetFillAmounts = [];
+
   while (existingAssetAmount.gt(0) && matchedOrders.length) {
     const matchedOrder = matchedOrders.shift();
     const neededAmount = matchedOrder.metaData.remainingFillableTakerAssetAmount;
     const toBeFilledAmount = BigNumber.min(neededAmount, existingAssetAmount);
     existingAssetAmount = existingAssetAmount.minus(toBeFilledAmount);
+
+    const filledMakerAssetAmount = new BigNumber(matchedOrder.makerAssetAmount)
+      .times(toBeFilledAmount)
+      .div(matchedOrder.takerAssetAmount);
+
     ordersToFill.push(matchedOrder);
+    makerAssetFillAmounts.push(filledMakerAssetAmount);
     takerAssetFillAmounts.push(toBeFilledAmount);
   }
 
   const taker = yield eff.select(selectors.getWalletState('selectedAccount'));
 
-  try {
-    const txHash = yield eff.call(
-      [
-        contractWrappers.exchange,
-        contractWrappers.exchange.batchFillOrKillOrdersAsync,
-      ],
-      ordersToFill,
-      takerAssetFillAmounts,
-      taker,
+  const toBeViewedOrders = ordersToFill.map((o, i) => {
+    const makerAssetAmount = makerAssetFillAmounts[i];
+    const takerAssetAmount = takerAssetFillAmounts[i];
+
+    console.log(
+      'maker', makerAssetAmount.toString(),
+      'taket', takerAssetAmount.toString(),
     );
-    console.log('FILLED WITH HASH', txHash);
+    return {
+      ...o,
+      makerAssetAmount,
+      takerAssetAmount,
+    };
+  });
 
-    const filledOrders = ordersToFill.map((filledOrder, i) => ({
-      makerAddress: filledOrder.makerAddress,
-      orderHash: filledOrder.metaData.orderHash,
-      filledAmount: takerAssetFillAmounts[i],
-    }));
+  yield eff.put(setWalletState({ matchedOrders: toBeViewedOrders }));
 
-    const totalFilledAmount = takerAssetFillAmounts
-      .reduce((acc, cur) => acc.add(cur), new BigNumber(0));
-    const assets = yield eff.select(selectors.getResourceMap('assets'));
-    // TODO: include all filled orders to transaction meta
-    const ordersInfo = ordersToFill[ordersToFill.length - 1];
-    yield eff.fork(
-      saveTransaction,
-      {
-        transactionHash: txHash,
-        address: taker.toLowerCase(),
-        name: 'Fill',
-        networkId,
-        meta: {
-          totalFilledAmount,
-          filledOrders,
-          price: ordersInfo.price,
-          pair: `${assets[ordersInfo.makerAssetData].symbol}/${assets[ordersInfo.takerAssetData].symbol}`,
-          makerAssetData: order.makerAssetData,
-          takerAssetData: order.takerAssetData,
-        },
-      },
-    );
+  yield eff.put(sendShowModalRequest('OrdersInfo'));
+  const { isConfirmed } = yield eff.take(actionTypes.CHECK_MODAL_STATUS);
+  if (isConfirmed) {
+    try {
+      const txHash = yield eff.call(
+        [
+          contractWrappers.exchange,
+          contractWrappers.exchange.batchFillOrKillOrdersAsync,
+        ],
+        ordersToFill,
+        takerAssetFillAmounts,
+        taker,
+      );
+      console.log('FILLED WITH HASH', txHash);
 
-    if (existingAssetAmount.gt(0)) {
+      const filledOrders = ordersToFill.map((filledOrder, i) => ({
+        makerAddress: filledOrder.makerAddress,
+        orderHash: filledOrder.metaData.orderHash,
+        filledAmount: takerAssetFillAmounts[i],
+      }));
+
+      const totalFilledAmount = takerAssetFillAmounts
+        .reduce((acc, cur) => acc.add(cur), new BigNumber(0));
+      const assets = yield eff.select(selectors.getResourceMap('assets'));
+      // TODO: include all filled orders to transaction meta
+      const ordersInfo = ordersToFill[ordersToFill.length - 1];
+
       const newTakerAmount = new BigNumber(order.takerAssetAmount)
         .times(existingAssetAmount)
         .div(order.makerAssetAmount);
 
-      // eslint-disable-next-line
-      yield eff.call(postOrder, {
-        formActions,
-        order: {
-          ...order,
-          makerAssetAmount: existingAssetAmount,
-          takerAssetAmount: newTakerAmount,
+      yield eff.fork(
+        saveTransaction,
+        {
+          transactionHash: txHash,
+          address: taker.toLowerCase(),
+          name: 'Fill',
+          networkId,
+          meta: {
+            filledMakerAssetAmount: totalFilledAmount,
+            filledTakerAssetAmount: new BigNumber(order.takerAssetAmount).minus(newTakerAmount),
+            filledOrders,
+            price: ordersInfo.price,
+            pair: `${assets[ordersInfo.makerAssetData].symbol}/${assets[ordersInfo.takerAssetData].symbol}`,
+            makerAssetData: order.makerAssetData,
+            takerAssetData: order.takerAssetData,
+          },
         },
-        shouldMatch: false,
-      });
-    } else {
-      formActions.resetForm({
-        expirationNumber: 1,
-        expirationUnit: 'hours',
-      });
-      formActions.setSubmitting(false);
+      );
+
+      if (existingAssetAmount.gt(0)) {
+        // eslint-disable-next-line
+        yield eff.call(postOrder, {
+          formActions,
+          order: {
+            ...order,
+            makerAssetAmount: existingAssetAmount,
+            takerAssetAmount: newTakerAmount,
+          },
+          shouldMatch: false,
+        });
+      } else {
+        formActions.resetForm({
+          expirationNumber: 1,
+          expirationUnit: 'hours',
+        });
+        formActions.setSubmitting(false);
+      }
+    } catch (e) {
+      console.log('TX FAILED', e);
     }
-  } catch (e) {
-    console.log('TX FAILED', e);
   }
+  yield eff.put(setWalletState({ matchedOrders: [] }));
 }
 
 export function* postOrder({
@@ -357,21 +368,11 @@ export function* postOrder({
     });
 
     if (shouldMatch && matchedOrders.length) {
-      yield eff.call(saveMatchOrders, matchedOrders);
-
-      yield eff.put(sendShowModalRequest('OrdersInfo'));
-      const { isConfirmed } = yield eff.take(actionTypes.CHECK_MODAL_STATUS);
-      if (isConfirmed) {
-        yield eff.call(fillOrder, {
-          formActions,
-          matchedOrders,
-          order,
-        });
-        yield eff.call(saveMatchOrders, []);
-      } else {
-        yield eff.call(saveMatchOrders, []);
-        return;
-      }
+      yield eff.call(fillOrder, {
+        formActions,
+        matchedOrders,
+        order,
+      });
     } else {
       const makerAddress = yield eff.select(selectors.getWalletState('selectedAccount'));
 
