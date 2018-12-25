@@ -29,6 +29,7 @@ module.exports = env => merge(config(env), {
     hot: true,
     lazy: false,
     compress: true,
+    disableHostCheck: true,
     stats: 'minimal',
     watchOptions: {
       aggregateTimeout: 1000,
