@@ -29,6 +29,51 @@ export function toBaseUnitAmount(amount = 0, decimals = 18) {
   return (new BigNumber(amount)).times(unit);
 }
 
+export const unitTimeToUnix = (quantity, unit) => {
+  switch (unit) {
+    case 'minutes':
+      return quantity * 60 * 1000;
+    case 'hours':
+      return quantity * 3600 * 1000;
+    case 'days':
+      return quantity * 24 * 3600 * 1000;
+    case 'months':
+      return quantity * 30 * 24 * 3600 * 1000;
+    default:
+      return 3 * 60 * 1000;
+  }
+};
+
+export const validateExpiration = (quantity, unit) => {
+  const isValidQuantity = n => Number.isInteger(+n)
+    && Math.abs(n) === +n
+    && n > 0;
+  switch (unit) {
+    case 'minutes':
+      return {
+        status: isValidQuantity(quantity) && quantity.toString().length <= 3,
+        error: 'Expiration in minutes must be positive Integer less than 1000',
+      };
+    case 'hours':
+      return {
+        status: isValidQuantity(quantity) && quantity.toString().length <= 2,
+        error: 'Expiration in hours must be positive Integer less than 100',
+      };
+    case 'days':
+      return {
+        status: isValidQuantity(quantity) && quantity.toString().length <= 2,
+        error: 'Expiration in days must be positive Integer less than 100',
+      };
+    case 'months':
+      return {
+        status: isValidQuantity(quantity) && quantity.toString().length === 1,
+        error: 'Expiration in months must be positive Integer less than 10',
+      };
+    default:
+      return false;
+  }
+};
+
 export const transformBigNumberOrder = order => (
   Object.keys(order).reduce((acc, fieldName) => ({
     ...acc,
