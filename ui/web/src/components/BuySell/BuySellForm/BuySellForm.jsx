@@ -9,6 +9,9 @@ import {
 import {
   Icon,
 } from 'antd';
+import {
+  utils,
+} from 'instex-core';
 import * as S from './styled';
 
 type Props = {
@@ -58,7 +61,12 @@ const BuySellForm = ({
 }: Props) => (
   <Formik
     isInitialValid
-    initialValues={currentOrder}
+    initialValues={
+      {
+        ...currentOrder,
+        expirationNumber: 1,
+        expirationUnit: 'hours',
+      }}
     validateOnBlur={false}
     enableReinitialize
     validateOnChange
@@ -80,6 +88,20 @@ const BuySellForm = ({
         errors.price = 'Required';
       } else if (!isNumber(values.price)) {
         errors.price = 'Amount should be a number';
+      }
+      if (!values.expirationNumber) {
+        errors.expirationNumber = 'Required';
+      } else if (
+        !utils.validateExpiration(
+          values.expirationNumber,
+          values.expirationUnit,
+        )
+          .status) {
+        errors.expirationNumber = utils.validateExpiration(
+          values.expirationNumber,
+          values.expirationUnit,
+        )
+          .error;
       }
       if (currentBuySellTab === 'bid'
         && isNumber(values.amount)
@@ -113,6 +135,7 @@ const BuySellForm = ({
           handleSubmit(e);
           setFieldTouched('price', true, true);
           setFieldTouched('amount', true, true);
+          setFieldTouched('expirationNumber', true, true);
         }}
         buttonvalue={type === 'bid' ? 'Buy' : 'Sell'}
       >
@@ -211,6 +234,39 @@ const BuySellForm = ({
             autoComplete="off"
             onBlur={handleBlur}
           />
+        </S.BuySellForm.Item>
+        <S.BuySellForm.Item
+          label="Expiration"
+          validateStatus={touched.expirationNumber && errors.expirationNumber && 'error'}
+          help={touched.expirationNumber && errors.expirationNumber}
+        >
+          <S.ExpirationBlock>
+            <S.ExpirationInput
+              name="expirationNumber"
+              value={values.expirationNumber}
+              onChange={(e) => {
+                handleChange(e);
+                setFieldTouched('expirationNumber', true, true);
+              }}
+              onBlur={handleBlur}
+              autoComplete="off"
+            />
+            <S.ExpirationSelect
+              name="expirationUnit"
+              value={values.expirationUnit}
+              onChange={(value) => {
+                setValues(
+                  { ...values,
+                    expirationUnit: value },
+                );
+              }}
+            >
+              <S.ExpirationSelect.Option value="minutes">minutes</S.ExpirationSelect.Option>
+              <S.ExpirationSelect.Option value="hours">hours</S.ExpirationSelect.Option>
+              <S.ExpirationSelect.Option value="days">days</S.ExpirationSelect.Option>
+              <S.ExpirationSelect.Option value="months">months</S.ExpirationSelect.Option>
+            </S.ExpirationSelect>
+          </S.ExpirationBlock>
         </S.BuySellForm.Item>
         <S.BuySellForm.Item
           validateStatus={touched.amount && errors.balance && 'error'}
