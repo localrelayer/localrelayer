@@ -47,6 +47,8 @@ const BuySellContainer = (): Node => (
         onSubmitOrder={({
           amount,
           price,
+          expirationNumber,
+          expirationUnit,
           formActions,
           type,
         }) => {
@@ -106,10 +108,15 @@ const BuySellContainer = (): Node => (
                     currentAssetPair.assetDataB.assetData.id
                   )
               ),
-              expirationTimeSeconds: (
-                // + 1 year
-                new BigNumber(Math.floor(+Date.now() / 1000)).plus(3 * (10 ** 7))
-              ),
+              expirationTimeSeconds: Math.floor(
+                (
+                  Date.now()
+                  + utils.unitTimeToUnix(
+                    expirationNumber,
+                    expirationUnit,
+                  )
+                ) / 1000,
+              ).toString(),
             },
           }));
         }}

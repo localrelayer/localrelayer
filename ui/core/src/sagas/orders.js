@@ -318,7 +318,10 @@ export function* fillOrder({
         shouldMatch: false,
       });
     } else {
-      formActions.resetForm({});
+      formActions.resetForm({
+        expirationNumber: 1,
+        expirationUnit: 'hours',
+      });
       formActions.setSubmitting(false);
     }
   } catch (e) {
@@ -424,7 +427,10 @@ export function* postOrder({
         );
       }
       formActions.setSubmitting(false);
-      formActions.resetForm({});
+      formActions.resetForm({
+        expirationNumber: 1,
+        expirationUnit: 'hours',
+      });
     }
   } catch (e) {
     console.log(e);
