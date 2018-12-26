@@ -637,6 +637,13 @@ export function* initialize(): Saga<void> {
       },
     );
   }
+  yield eff.fork(
+    coreSagas.marketQuotesWatcher,
+    {
+      delay: 1000 * 60 * 10,
+      symbols: ['WETH'],
+    },
+  );
   yield eff.put(uiActions.setUiState({
     isAppInitializing: false,
   }));
