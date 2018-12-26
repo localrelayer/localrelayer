@@ -7,6 +7,9 @@ import {
 } from 'db';
 
 (async () => {
+  // Drop old asset pairs
+  await AssetPair.deleteMany({});
+
   const mainPairs = mainAssetPairs.map((pair) => {
     pair.networkId = 1;
     return pair;

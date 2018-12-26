@@ -1,3 +1,4 @@
+import '../../aliases';
 import chai from 'chai';
 import {
   orderHashUtils,
@@ -26,6 +27,8 @@ import {
   generateRandomMakerAssetAmount,
   generateRandomTakerAssetAmount,
   getRandomFutureDateInSeconds,
+  validateMinOrderAmount,
+  validateMaxOrderAmount,
 } from 'utils';
 import {
   request,
@@ -392,6 +395,90 @@ describe('postOrder', () => {
         field: 'senderAddress',
         code: 1003,
         reason: 'Wrong order config field',
+      }]);
+    });
+
+    it('should response 400 with too small order', async () => {
+      /* Testnet network id */
+      const networkId = 50;
+      const web3Wrapper = new Web3Wrapper(web3ProviderEngine);
+      const [makerAddress] = await web3Wrapper.getAvailableAddressesAsync();
+      const order = (
+        ORDER_FIELDS
+          .reduce((acc, fieldName) => ({
+            [fieldName]: (
+              orderConfig[fieldName]
+              || testData[fieldName]()
+            ),
+            ...acc,
+          }), {
+            makerAssetAmount: '1',
+            takerAssetAmount: '1',
+            makerAddress,
+          })
+      );
+      const orderHash = orderHashUtils.getOrderHashHex(order);
+      const signature = await signatureUtils.ecSignHashAsync(
+        web3ProviderEngine,
+        orderHash,
+        makerAddress,
+      );
+      const isMinAmountValid = await validateMinOrderAmount(order);
+      expect(isMinAmountValid).to.equal(false);
+      const response = await request
+        .post(`/v2/order?networkId=${networkId}`)
+        .send({
+          ...order,
+          signature,
+        });
+      expect(response.statusCode).to.equal(400);
+      expect(response.body.reason).to.equal('Validation Failed');
+      expect(response.body.validationErrors).to.have.deep.members([{
+        field: 'amount',
+        code: 1004,
+        reason: 'Value out of range',
+      }]);
+    });
+
+    it('should response 400 with too big order', async () => {
+      /* Testnet network id */
+      const networkId = 50;
+      const web3Wrapper = new Web3Wrapper(web3ProviderEngine);
+      const [makerAddress] = await web3Wrapper.getAvailableAddressesAsync();
+      const order = (
+        ORDER_FIELDS
+          .reduce((acc, fieldName) => ({
+            [fieldName]: (
+              orderConfig[fieldName]
+              || testData[fieldName]()
+            ),
+            ...acc,
+          }), {
+            makerAssetAmount: '10000000000000000000000',
+            takerAssetAmount: '10000000000000000000000',
+            makerAddress,
+          })
+      );
+      const orderHash = orderHashUtils.getOrderHashHex(order);
+      const signature = await signatureUtils.ecSignHashAsync(
+        web3ProviderEngine,
+        orderHash,
+        makerAddress,
+      );
+      const isMaxAmountValid = await validateMaxOrderAmount(order);
+      expect(isMaxAmountValid).to.equal(false);
+      const response = await request
+        .post(`/v2/order?networkId=${networkId}`)
+        .send({
+          ...order,
+          signature,
+        });
+      expect(response.statusCode).to.equal(400);
+      expect(response.body.reason).to.equal('Validation Failed');
+      expect(response.body.validationErrors).to.have.deep.members([{
+        field: 'amount',
+        code: 1004,
+        reason: 'Value out of range',
       }]);
     });
   });

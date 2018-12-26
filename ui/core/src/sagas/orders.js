@@ -252,10 +252,6 @@ export function* fillOrder({
     const makerAssetAmount = makerAssetFillAmounts[i];
     const takerAssetAmount = takerAssetFillAmounts[i];
 
-    console.log(
-      'maker', makerAssetAmount.toString(),
-      'taket', takerAssetAmount.toString(),
-    );
     return {
       ...o,
       makerAssetAmount,
@@ -336,6 +332,12 @@ export function* fillOrder({
     } catch (e) {
       console.log('TX FAILED', e);
     }
+  } else {
+    formActions.resetForm({
+      expirationNumber: 1,
+      expirationUnit: 'hours',
+    });
+    formActions.setSubmitting(false);
   }
   yield eff.put(setWalletState({ matchedOrders: [] }));
 }
@@ -421,11 +423,13 @@ export function* postOrder({
         }
         yield eff.call(api.postOrder, signedOrder, { networkId });
       } catch (err) {
-        console.log(err);
+        console.log('BACKEND VALIDATION', err);
         formActions.setFieldError(
           'balance',
-          `Backend validation failed "${utils.zeroExErrToHumanReadableErrMsg(err.message)}".`,
+          `Backend validation failed "${err.json.reason}".`,
         );
+        formActions.setSubmitting(false);
+        return;
       }
       formActions.setSubmitting(false);
       formActions.resetForm({

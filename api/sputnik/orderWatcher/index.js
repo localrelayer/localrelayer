@@ -7,6 +7,7 @@ import {
 } from '@0x/types';
 import {
   Order,
+  AssetPair,
 } from 'db';
 import {
   redisClient,
@@ -22,6 +23,7 @@ import {
   constructOrderRecord,
   ETH_NETWORKS_NAME_MAP,
   GANACHE_CONTRACT_ADDRESSES,
+  validateOrderAmount,
 } from 'utils';
 
 import {
@@ -82,12 +84,43 @@ async function watcherCreator(networkId) {
         order.lastFilledAt = new Date();
       }
 
-      if (
-        !(new BigNumber(filledTakerAssetAmount).eq(order.filledTakerAssetAmount))
-        || !(new BigNumber(remainingFillableMakerAssetAmount)
-          .eq(order.remainingFillableMakerAssetAmount))
-        || !(new BigNumber(remainingFillableTakerAssetAmount)
-          .eq(order.remainingFillableTakerAssetAmount))
+      const {
+        isMinAmountValid,
+        isMaxAmountValid,
+      } = await validateOrderAmount(order);
+
+      const diffFilledAmount = !(new BigNumber(filledTakerAssetAmount)
+        .eq(order.filledTakerAssetAmount));
+      const diffRemainingFillableMakerAmount = !(new BigNumber(remainingFillableMakerAssetAmount)
+        .eq(order.remainingFillableMakerAssetAmount));
+      const diffRemainingFillableTakerAmount = !(new BigNumber(remainingFillableTakerAssetAmount)
+        .eq(order.remainingFillableTakerAssetAmount));
+
+
+      if (!isMinAmountValid || !isMaxAmountValid) {
+        logger.debug('ORDER INVALIDATED BECAUSE OF AMOUNT');
+        order.error = !isMinAmountValid ? 'ORDER_TOO_SMALL_AMOUNT' : 'ORDER_TOO_BIG_AMOUNT';
+        order.isShadowed = false;
+        order.isValid = false;
+
+        order.remainingFillableMakerAssetAmount = remainingFillableMakerAssetAmount;
+        order.remainingFillableTakerAssetAmount = remainingFillableTakerAssetAmount;
+        order.filledTakerAssetAmount = filledTakerAssetAmount;
+        await order.save();
+        /* do not spread plainOrder object, it will emit lot of extra keys */
+        const plainOrder = order.toObject();
+        redisClient.publish(
+          'orders',
+          JSON.stringify(
+            constructOrderRecord(
+              clearOrderWithMetaFields(plainOrder),
+            ),
+          ),
+        );
+        orderWatcher.removeOrder(orderHash);
+      } else if (diffFilledAmount
+        || diffRemainingFillableMakerAmount
+        || diffRemainingFillableTakerAmount
         || order.isShadowed
         || !order.isValid
       ) {
@@ -97,7 +130,6 @@ async function watcherCreator(networkId) {
         order.remainingFillableMakerAssetAmount = remainingFillableMakerAssetAmount;
         order.remainingFillableTakerAssetAmount = remainingFillableTakerAssetAmount;
         order.filledTakerAssetAmount = new BigNumber(filledTakerAssetAmount);
-
         await order.save();
         /* do not spread plainOrder object, it will emit lot of extra keys */
         const plainOrder = order.toObject();

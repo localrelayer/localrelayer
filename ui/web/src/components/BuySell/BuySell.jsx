@@ -95,10 +95,12 @@ const BuySell = ({
                 bestOrders={bestOrders}
                 baseSymbol={currentAssetPair?.assetDataA?.assetData?.symbol}
                 quoteSymbol={currentAssetPair?.assetDataB?.assetData?.symbol}
-                onSubmitOrder={onSubmitOrder}
                 currentBalance={currentAssetPair?.assetDataB?.availableBalance}
+                onSubmitOrder={onSubmitOrder}
                 currentBuySellTab={currentBuySellTab}
                 currentOrder={currentOrder}
+                minAmount={currentAssetPair?.assetDataB?.unitMinAmount}
+                maxAmount={currentAssetPair?.assetDataB?.unitMaxAmount}
               />
             </S.BuySellTabs.TabPane>
             <S.BuySellTabs.TabPane
@@ -110,10 +112,12 @@ const BuySell = ({
                 bestOrders={bestOrders}
                 baseSymbol={currentAssetPair?.assetDataA?.assetData?.symbol}
                 quoteSymbol={currentAssetPair?.assetDataB?.assetData?.symbol}
-                onSubmitOrder={onSubmitOrder}
                 currentBalance={currentAssetPair?.assetDataA?.availableBalance}
+                onSubmitOrder={onSubmitOrder}
                 currentBuySellTab={currentBuySellTab}
                 currentOrder={currentOrder}
+                minAmount={currentAssetPair?.assetDataB?.unitMinAmount}
+                maxAmount={currentAssetPair?.assetDataB?.unitMaxAmount}
               />
             </S.BuySellTabs.TabPane>
           </S.BuySellTabs>

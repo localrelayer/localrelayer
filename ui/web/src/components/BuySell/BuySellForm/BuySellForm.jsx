@@ -23,6 +23,8 @@ type Props = {
   currentBuySellTab: String,
   currentOrder: Object,
   bestOrders: Object,
+  minAmount: String,
+  maxAmount: String,
 }
 
 const isNumber = n => !isNaN(+n) && +n !== 0 && isFinite(n) && Math.abs(n) === +n; /* eslint-disable-line */
@@ -58,6 +60,8 @@ const BuySellForm = ({
   currentBuySellTab,
   currentOrder,
   bestOrders,
+  minAmount,
+  maxAmount,
 }: Props) => (
   <Formik
     isInitialValid
@@ -103,16 +107,33 @@ const BuySellForm = ({
         )
           .error;
       }
-      if (currentBuySellTab === 'bid'
+      if (
+        currentBuySellTab === 'bid'
         && isNumber(values.amount)
         && isNumber(values.price)
-        && currentBalance < new BigNumber(values.amount).times(values.price).toNumber()) {
-        errors.balance = 'Insufficient balance';
-      } else if (currentBuySellTab === 'ask'
+      ) {
+        if (currentBalance < new BigNumber(values.amount).times(values.price).toNumber()) {
+          errors.balance = 'Insufficient balance';
+        }
+        if (new BigNumber(values.amount).times(values.price).lt(minAmount)) {
+          errors.balance = 'Too low amount';
+        }
+        if (new BigNumber(values.amount).times(values.price).gt(maxAmount)) {
+          errors.balance = 'Too high amount';
+        }
+      } else if (
+        currentBuySellTab === 'ask'
         && isNumber(values.amount)
-        && isNumber(values.price)
-        && +currentBalance < +values.amount) {
-        errors.balance = 'Insufficient balance';
+      ) {
+        if (+currentBalance < +values.amount) {
+          errors.balance = 'Insufficient balance';
+        }
+        if (new BigNumber(values.amount).lt(minAmount)) {
+          errors.balance = 'Too low amount';
+        }
+        if (new BigNumber(values.amount).gt(maxAmount)) {
+          errors.balance = 'Too high amount';
+        }
       }
       return errors;
     }}
