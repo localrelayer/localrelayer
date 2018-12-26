@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import * as colors from 'web-styles/colors';
 
 export const Bar = styled.div`
   right: 0;
@@ -28,9 +29,17 @@ export const OrderItem = styled.div`
   &:hover {
      cursor: pointer;
   }
-    & div {
-      z-index: 1;
-      width: 30%;
-      text-align: left;
-    }
+  & div {
+    z-index: 1;
+    width: 30%;
+    text-align: left;
+  }
+`;
+
+export const PopoverHeader = styled.div`
+  color: ${props => (props.actionType === 'bids' ? colors.red : colors.green)};
+`;
+
+export const ClickToAction = styled.div`
+  font-size: 12px;
 `;

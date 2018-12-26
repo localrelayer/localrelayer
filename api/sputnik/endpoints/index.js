@@ -1,12 +1,10 @@
 import Koa from 'koa';
+import fetch from 'cross-fetch';
 import Router from 'koa-router';
 import moment from 'moment';
 import {
   BigNumber,
 } from '0x.js';
-import {
-  ExchangeContractErrs,
-} from '@0x/types';
 
 import {
   Order,
@@ -19,10 +17,8 @@ import {
 import {
   constructOrderRecord,
   clearOrderWithMetaFields,
+  COINMARKET_API_KEY,
 } from 'utils';
-import {
-  logger,
-} from 'apiLogger';
 
 const app = new Koa();
 
@@ -371,6 +367,54 @@ sputnikApi.get('/bars', async (ctx) => {
   ctx.body = {
     items: bars,
   };
+});
+
+sputnikApi.get('/fetchMarketQuotes', async (ctx) => {
+  const cachedMarketQuotes = await coRedisClient.get('marketQuotes');
+
+  if (cachedMarketQuotes) {
+    ctx.status = 200;
+    ctx.body = JSON.parse(cachedMarketQuotes);
+  } else {
+    const { symbols } = ctx.request.query;
+    const url = new URL('https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest');
+    url.search = new URLSearchParams({
+      symbol: symbols,
+    });
+    const response = await fetch(
+      url,
+      {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Accept-Encoding': 'deflate, gzip',
+          'X-CMC_PRO_API_KEY': COINMARKET_API_KEY,
+        },
+      },
+    );
+    const quotesData = await response.json();
+
+    if (response.status === 200) {
+      const marketQuotes = {
+        ...Object.keys(quotesData.data).reduce((acc, symbol) => ({
+          ...acc,
+          [symbol]: quotesData.data[symbol],
+        }), {}),
+      };
+      await coRedisClient.set(
+        'marketQuotes',
+        JSON.stringify(marketQuotes),
+        'EX',
+        // 30 mins because 1 request from prod, 3 from us, sum: 48 * 4 = 192 < 333 per day
+        60 * 30,
+      );
+      ctx.status = 200;
+      ctx.body = marketQuotes;
+    } else {
+      ctx.status = response.status;
+      ctx.body = {};
+    }
+  }
 });
 
 app.use(sputnikApi.routes());

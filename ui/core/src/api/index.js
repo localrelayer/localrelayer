@@ -12,6 +12,7 @@ function apiFactory() {
     ['getOpenOrders', '/sputnik/openOrders'],
     ['getBars', '/sputnik/bars'],
     ['getTransactions', '/sputnik/transactions'],
+    ['getMarketQuotes', '/sputnik/fetchMarketQuotes'],
   ];
   let apiUrl = '';
   let mockMethods = {};

@@ -108,6 +108,7 @@ export const getBidOrders = createSelector(
   ) => (
     orders.filter(o => o.metaData.isValid).map(order => ({
       ...order,
+      pair: `${assets[order.makerAssetData].symbol}/${assets[order.takerAssetData].symbol}`,
       amount: toUnitAmount(
         order.metaData.remainingFillableTakerAssetAmount,
         assets[order.takerAssetData].decimals,
@@ -135,6 +136,7 @@ export const getAskOrders = createSelector(
   (orders, assets) => (
     orders.filter(o => o.metaData.isValid).map(order => ({
       ...order,
+      pair: `${assets[order.makerAssetData].symbol}/${assets[order.takerAssetData].symbol}`,
       amount: toUnitAmount(
         order.metaData.remainingFillableMakerAssetAmount,
         assets[order.makerAssetData].decimals,
