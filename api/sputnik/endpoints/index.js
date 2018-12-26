@@ -199,22 +199,23 @@ sputnikApi.get('/tradingHistory', async (ctx) => {
     networkId = 1,
   } = ctx.request.query;
 
-  const query = baseAssetData && quoteAssetData ? {
-    networkId,
-    $or: [{
-      makerAssetData: baseAssetData,
-      takerAssetData: quoteAssetData,
-      filledTakerAssetAmount: { $ne: 0 },
-    }, {
-      makerAssetData: quoteAssetData,
-      takerAssetData: baseAssetData,
-      filledTakerAssetAmount: { $ne: 0 },
-    }],
-  }
-    : {
-      networkId,
-      filledTakerAssetAmount: { $ne: 0 },
-    };
+  const query = (
+    (baseAssetData && quoteAssetData)
+      ? {
+        networkId,
+        $or: [{
+          makerAssetData: baseAssetData,
+          takerAssetData: quoteAssetData,
+          filledTakerAssetAmount: { $ne: 0 },
+        }, {
+          makerAssetData: quoteAssetData,
+          takerAssetData: baseAssetData,
+          filledTakerAssetAmount: { $ne: 0 },
+        }],
+      } : {
+        networkId,
+        filledTakerAssetAmount: { $ne: 0 },
+      });
 
   if (makerAddress) {
     query.makerAddress = makerAddress;

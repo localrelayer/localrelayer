@@ -86,6 +86,10 @@ const orderSchema = mongoose.Schema({
   error: {
     type: String,
   },
+  sourceRelayer: {
+    type: String,
+    index: true,
+  },
   remainingFillableMakerAssetAmount: {
     type: String,
   },
