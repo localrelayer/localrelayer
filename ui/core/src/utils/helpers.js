@@ -46,7 +46,6 @@ export const unitTimeToUnix = (quantity, unit) => {
 
 export const validateExpiration = (quantity, unit) => {
   const isValidQuantity = n => Number.isInteger(+n)
-    && Math.abs(n) === +n
     && n > 0;
   switch (unit) {
     case 'minutes':
