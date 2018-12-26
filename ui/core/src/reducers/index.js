@@ -4,3 +4,4 @@ export orders from './orders';
 export transactions from './transactions';
 export wallet from './wallet';
 export tradingInfo from './tradingInfo';
+export marketQuotes from './marketQuotes';

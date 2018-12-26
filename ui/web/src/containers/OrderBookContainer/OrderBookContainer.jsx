@@ -7,6 +7,9 @@ import type {
 
 import * as webSelectors from 'web-selectors';
 import {
+  coreSelectors,
+} from 'instex-core';
+import {
   uiActions,
 } from 'web-actions';
 import Component from 'web-components/ConnectComponent';
@@ -18,16 +21,19 @@ const OrderBookContainer = (): Node => (
     mapStateToProps={state => ({
       asks: webSelectors.getAskOrdersFormatted(state),
       bids: webSelectors.getBidOrdersFormatted(state),
+      tokenMarketPrice: coreSelectors.getTokenPrice()(state),
     })}
   >
     {({
       asks,
       bids,
+      tokenMarketPrice,
       dispatch,
     }) => (
       <OrderBook
         asks={asks}
         bids={bids}
+        tokenMarketPrice={tokenMarketPrice}
         onOrderClick={(orderId, type) => dispatch(uiActions.setUiState({
           currentOrderId: orderId,
           currentBuySellTab: type,

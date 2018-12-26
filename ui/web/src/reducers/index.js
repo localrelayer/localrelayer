@@ -15,6 +15,7 @@ const rootReducer = combineReducers({
   transactions: coreReducers.transactions,
   wallet: coreReducers.wallet,
   tradingInfo: coreReducers.tradingInfo,
+  marketQuotes: coreReducers.marketQuotes,
   ui,
 });
 
