@@ -25,6 +25,7 @@ import {
   validateExpirationTimeSeconds,
   validateNetworkId,
   getValidationErrors,
+  validateOrderAmount,
 } from 'utils';
 import {
   redisClient,
@@ -99,6 +100,26 @@ export function createPostOrderEndpoint(standardRelayerApi) {
           return;
         }
 
+        const {
+          isMinAmountValid,
+          isMaxAmountValid,
+        } = await validateOrderAmount(submittedOrder);
+
+        if (!isMinAmountValid || !isMaxAmountValid) {
+          logger.debug('Order size is not a valid');
+          ctx.status = 400;
+          ctx.message = 'Validation error';
+          ctx.body = {
+            code: 100,
+            reason: 'Validation Failed',
+            validationErrors: [{
+              field: 'amount',
+              code: 1004,
+              reason: 'Value out of range',
+            }],
+          };
+          return;
+        }
         const decMakerAssetData = (
           assetDataUtils.decodeERC20AssetData(submittedOrder.makerAssetData)
         );

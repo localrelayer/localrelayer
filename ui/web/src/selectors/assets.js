@@ -116,12 +116,28 @@ export const getCurrentAssetPairWithBalance = createSelector(
         totalBalance: assetATotalBalance,
         availableBalance: new BigNumber(assetAAvailableBalance).gte(0)
           ? assetAAvailableBalance : (0).toFixed(8),
+        unitMinAmount: utils.toUnitAmount(
+          currentAssetPair.assetDataA.minAmount,
+          currentAssetPair.assetDataA.assetData.decimals,
+        ),
+        unitMaxAmount: utils.toUnitAmount(
+          currentAssetPair.assetDataA.maxAmount,
+          currentAssetPair.assetDataA.assetData.decimals,
+        ),
       },
       assetDataB: {
         ...currentAssetPair.assetDataB,
         totalBalance: assetBTotalBalance,
         availableBalance: new BigNumber(assetBAvailableBalance).gte(0)
           ? assetBAvailableBalance : (0).toFixed(8),
+        unitMinAmount: utils.toUnitAmount(
+          currentAssetPair.assetDataB.minAmount,
+          currentAssetPair.assetDataB.assetData.decimals,
+        ),
+        unitMaxAmount: utils.toUnitAmount(
+          currentAssetPair.assetDataB.maxAmount,
+          currentAssetPair.assetDataB.assetData.decimals,
+        ),
       },
     });
   },

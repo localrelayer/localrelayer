@@ -1,126 +1,126 @@
 [
   {
     "assetDataA": {
-      "minAmount": "0",
-      "maxAmount": "10000000000000000000",
+      "minAmount": "1000000000",
+      "maxAmount": "10000000000000000000000000",
       "precision": 5,
       "assetData": "0xf47261b00000000000000000000000007c3badf4608380d9da34cc03a966e42fc1c7457a"
     },
     "assetDataB": {
-      "minAmount": "0",
-      "maxAmount": "50000000000000000000",
+      "minAmount": "1000000000",
+      "maxAmount": "10000000000000000000000000",
       "precision": 5,
       "assetData": "0xf47261b0000000000000000000000000d0a1e359811322d97991e03f863a0c30c2cf029c"
     }
   },
   {
     "assetDataA": {
-      "minAmount": "0",
-      "maxAmount": "10000000000000000000",
+      "minAmount": "1000000000",
+      "maxAmount": "10000000000000000000000000",
       "precision": 5,
       "assetData": "0xf47261b000000000000000000000000009b9dfa83d424ab67b959bd17d46f7b30b277387"
     },
     "assetDataB": {
-      "minAmount": "0",
-      "maxAmount": "50000000000000000000",
+      "minAmount": "1000000000",
+      "maxAmount": "10000000000000000000000000",
       "precision": 5,
       "assetData": "0xf47261b0000000000000000000000000d0a1e359811322d97991e03f863a0c30c2cf029c"
     }
   },
   {
     "assetDataA": {
-      "minAmount": "0",
-      "maxAmount": "10000000000000000000",
+      "minAmount": "1000000000",
+      "maxAmount": "10000000000000000000000000",
       "precision": 5,
       "assetData": "0xf47261b0000000000000000000000000b18845c260f680d5b9d84649638813e342e4f8c9"
     },
     "assetDataB": {
-      "minAmount": "0",
-      "maxAmount": "50000000000000000000",
+      "minAmount": "1000000000",
+      "maxAmount": "10000000000000000000000000",
       "precision": 5,
       "assetData": "0xf47261b0000000000000000000000000d0a1e359811322d97991e03f863a0c30c2cf029c"
     }
   },
   {
     "assetDataA": {
-      "minAmount": "0",
-      "maxAmount": "10000000000000000000",
+      "minAmount": "1000000000",
+      "maxAmount": "10000000000000000000000000",
       "precision": 5,
       "assetData": "0xf47261b0000000000000000000000000581ad4507454cd571c083130e95dd1741bbcae1c"
     },
     "assetDataB": {
-      "minAmount": "0",
-      "maxAmount": "50000000000000000000",
+      "minAmount": "1000000000",
+      "maxAmount": "10000000000000000000000000",
       "precision": 5,
       "assetData": "0xf47261b0000000000000000000000000d0a1e359811322d97991e03f863a0c30c2cf029c"
     }
   },
   {
     "assetDataA": {
-      "minAmount": "0",
-      "maxAmount": "10000000000000000000",
+      "minAmount": "1000000000",
+      "maxAmount": "10000000000000000000000000",
       "precision": 5,
       "assetData": "0xf47261b00000000000000000000000006e61b13ff4b931f0bcb45547e4a8715cf187320d"
     },
     "assetDataB": {
-      "minAmount": "0",
-      "maxAmount": "50000000000000000000",
+      "minAmount": "1000000000",
+      "maxAmount": "10000000000000000000000000",
       "precision": 5,
       "assetData": "0xf47261b0000000000000000000000000d0a1e359811322d97991e03f863a0c30c2cf029c"
     }
   },
   {
     "assetDataA": {
-      "minAmount": "0",
-      "maxAmount": "10000000000000000000",
+      "minAmount": "1000000000",
+      "maxAmount": "10000000000000000000000000",
       "precision": 5,
       "assetData": "0xf47261b00000000000000000000000009b33f7bc01872572f7436ecd57555d8dad492a4c"
     },
     "assetDataB": {
-      "minAmount": "0",
-      "maxAmount": "50000000000000000000",
+      "minAmount": "1000000000",
+      "maxAmount": "10000000000000000000000000",
       "precision": 5,
       "assetData": "0xf47261b0000000000000000000000000d0a1e359811322d97991e03f863a0c30c2cf029c"
     }
   },
   {
     "assetDataA": {
-      "minAmount": "0",
-      "maxAmount": "10000000000000000000",
+      "minAmount": "1000000000",
+      "maxAmount": "10000000000000000000000000",
       "precision": 5,
       "assetData": "0xf47261b0000000000000000000000000e8b6a7fa1976ba6c2d3dd81f063eb25d521186bb"
     },
     "assetDataB": {
-      "minAmount": "0",
-      "maxAmount": "50000000000000000000",
+      "minAmount": "1000000000",
+      "maxAmount": "10000000000000000000000000",
       "precision": 5,
       "assetData": "0xf47261b0000000000000000000000000d0a1e359811322d97991e03f863a0c30c2cf029c"
     }
   },
   {
     "assetDataA": {
-      "minAmount": "0",
-      "maxAmount": "10000000000000000000",
+      "minAmount": "1000000000",
+      "maxAmount": "10000000000000000000000000",
       "precision": 5,
       "assetData": "0xf47261b00000000000000000000000009f121afbc98a7a133fbb31fe975205f39e8f08d2"
     },
     "assetDataB": {
-      "minAmount": "0",
-      "maxAmount": "50000000000000000000",
+      "minAmount": "1000000000",
+      "maxAmount": "10000000000000000000000000",
       "precision": 5,
       "assetData": "0xf47261b0000000000000000000000000d0a1e359811322d97991e03f863a0c30c2cf029c"
     }
   },
   {
     "assetDataA": {
-      "minAmount": "0",
-      "maxAmount": "10000000000000000000",
+      "minAmount": "1000000000",
+      "maxAmount": "10000000000000000000000000",
       "precision": 5,
       "assetData": "0xf47261b0000000000000000000000000eee3870657e4716670f185df08652dd848fe8f7e"
     },
     "assetDataB": {
-      "minAmount": "0",
-      "maxAmount": "50000000000000000000",
+      "minAmount": "1000000000",
+      "maxAmount": "10000000000000000000000000",
       "precision": 5,
       "assetData": "0xf47261b0000000000000000000000000d0a1e359811322d97991e03f863a0c30c2cf029c"
     }

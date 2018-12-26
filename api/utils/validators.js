@@ -2,6 +2,12 @@ import {
   SchemaValidator,
 } from '@0x/json-schemas';
 import {
+  BigNumber,
+} from '0x.js';
+import {
+  AssetPair,
+} from 'db';
+import {
   getOrderConfig,
 } from './helpers';
 
@@ -57,5 +63,68 @@ export const getValidationErrors = (instance, schema) => {
     code: 100,
     reason: 'Validation failed',
     validationErrors: errors,
+  };
+};
+
+export const validateMinOrderAmount = async (order) => {
+  const askAssetPair = await AssetPair.findOne({
+    'assetDataA.assetData': order.makerAssetData,
+    'assetDataB.assetData': order.takerAssetData,
+  });
+
+  const bidAssetPair = await AssetPair.findOne({
+    'assetDataA.assetData': order.takerAssetData,
+    'assetDataB.assetData': order.makerAssetData,
+  });
+
+  if (
+    (askAssetPair
+    && (
+      new BigNumber(order.makerAssetAmount).lt(askAssetPair.assetDataA.minAmount)
+      || new BigNumber(order.takerAssetAmount).lt(askAssetPair.assetDataB.minAmount)
+    ))
+    || (bidAssetPair
+    && (
+      new BigNumber(order.makerAssetAmount).lt(bidAssetPair.assetDataB.minAmount)
+      || new BigNumber(order.takerAssetAmount).lt(bidAssetPair.assetDataA.minAmount)
+    ))) {
+    return false;
+  }
+  return true;
+};
+
+export const validateMaxOrderAmount = async (order) => {
+  const askAssetPair = await AssetPair.findOne({
+    'assetDataA.assetData': order.makerAssetData,
+    'assetDataB.assetData': order.takerAssetData,
+  });
+
+  const bidAssetPair = await AssetPair.findOne({
+    'assetDataA.assetData': order.takerAssetData,
+    'assetDataB.assetData': order.makerAssetData,
+  });
+
+  if (
+    (askAssetPair
+    && (
+      new BigNumber(order.makerAssetAmount).gt(askAssetPair.assetDataA.maxAmount)
+      || new BigNumber(order.takerAssetAmount).gt(askAssetPair.assetDataB.maxAmount)
+    ))
+    || (bidAssetPair
+    && (
+      new BigNumber(order.makerAssetAmount).gt(bidAssetPair.assetDataB.maxAmount)
+      || new BigNumber(order.takerAssetAmount).gt(bidAssetPair.assetDataA.maxAmount)
+    ))) {
+    return false;
+  }
+  return true;
+};
+
+export const validateOrderAmount = async (order) => {
+  const isMinAmountValid = await validateMinOrderAmount(order);
+  const isMaxAmountValid = await validateMaxOrderAmount(order);
+  return {
+    isMinAmountValid,
+    isMaxAmountValid,
   };
 };

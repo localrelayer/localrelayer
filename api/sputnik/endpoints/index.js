@@ -18,6 +18,7 @@ import {
   constructOrderRecord,
   clearOrderWithMetaFields,
   COINMARKET_API_KEY,
+  validateOrderAmount,
 } from 'utils';
 
 const app = new Koa();
@@ -80,22 +81,23 @@ sputnikApi.post('/transactions', async (ctx) => {
     const { filledOrders } = transaction.meta;
 
     await Promise.all(filledOrders.map(async (order) => {
-      const foundOrder = await Order.findOne({
+      const dbOrder = await Order.findOne({
         orderHash: order.orderHash,
         isValid: true,
       });
-      if (!foundOrder) {
+
+      if (!dbOrder) {
         return null;
       }
       const remainingFillableTakerAssetAmount = new BigNumber(
-        foundOrder.remainingFillableTakerAssetAmount,
+        dbOrder.remainingFillableTakerAssetAmount,
       ).minus(order.filledAmount);
 
       const remainingFillableMakerAssetAmount = new BigNumber(
-        foundOrder.makerAssetAmount,
+        dbOrder.makerAssetAmount,
       )
         .times(remainingFillableTakerAssetAmount)
-        .div(foundOrder.takerAssetAmount);
+        .div(dbOrder.takerAssetAmount);
 
       const updateQuery = {
         remainingFillableMakerAssetAmount,
@@ -105,6 +107,16 @@ sputnikApi.post('/transactions', async (ctx) => {
       if (remainingFillableTakerAssetAmount.eq(0)) {
         updateQuery.isValid = false;
         updateQuery.isShadowed = true;
+      }
+
+      const {
+        isMinAmountValid,
+        isMaxAmountValid,
+      } = await validateOrderAmount(dbOrder);
+
+      if (!isMinAmountValid || !isMaxAmountValid) {
+        updateQuery.isValid = false;
+        updateQuery.isShadowed = false;
       }
 
       const a = await Order.update(

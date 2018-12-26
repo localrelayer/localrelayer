@@ -257,10 +257,6 @@ export const getMatchedOrders = createSelector(
       assetPair.id.split('_')[0],
       order.makerAssetData,
     );
-    console.log(
-      order.makerAssetAmount,
-      order.takerAssetAmount,
-    );
     const pair = `${assets[order.makerAssetData].symbol}/${assets[order.takerAssetData].symbol}`;
     const amount = orderType === 'bid'
       ? toUnitAmount(
@@ -288,7 +284,6 @@ export const getMatchedOrders = createSelector(
         assets[order.takerAssetData].decimals),
     ).toFixed(8);
 
-    console.log(amount, price, total);
     return {
       ...order,
       pair,
