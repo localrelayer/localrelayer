@@ -91,11 +91,26 @@ function* read({
     } else {
       const data = JSON.parse(message);
       console.warn('Message from socket');
-      console.log(data);
-      yield eff.put(
-        messagesFromSocketChannel,
-        data,
-      );
+      if (data.channel === 'orders') {
+        yield eff.all(
+          data.payload.map(
+            payload => (
+              eff.put(
+                messagesFromSocketChannel,
+                {
+                  ...data,
+                  payload,
+                },
+              )
+            ),
+          ),
+        );
+      } else {
+        yield eff.put(
+          messagesFromSocketChannel,
+          data,
+        );
+      }
 
       if (data.channel === 'tradingInfo') {
         const tradingInfoActions = createActionCreators('read', {

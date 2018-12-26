@@ -115,6 +115,42 @@ export const daemons = [{
     };
   },
 }, {
+  id: 'sraSynchronizer:radar:main',
+  name: 'radar main net syncronizer',
+  type: 'daemon',
+
+  run(cb) {
+    if (dashboardConfig['sraSynchronizer:radar:main'].forkProcess) {
+      return daemonStarter(
+        'sraSynchronizer:radar:main',
+        cb,
+        'npm run sraSynchronizer:radar:main',
+      );
+    }
+    cb();
+    return (ccb) => {
+      ccb();
+    };
+  },
+}, {
+  id: 'sraSynchronizer:radar:kovan',
+  name: 'radar kovan net syncronizer',
+  type: 'daemon',
+
+  run(cb) {
+    if (dashboardConfig['sraSynchronizer:radar:kovan'].forkProcess) {
+      return daemonStarter(
+        'sraSynchronizer:radar:kovan',
+        cb,
+        'npm run sraSynchronizer:radar:kovan',
+      );
+    }
+    cb();
+    return (ccb) => {
+      ccb();
+    };
+  },
+}, {
   id: 'ganacheServer',
   name: 'Ganache server',
   type: 'daemon',
