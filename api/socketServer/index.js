@@ -192,10 +192,10 @@ export function runWebSocketServer() {
               type: 'update',
               channel: 'orders',
               requestId: sub.requestId,
-              payload: {
+              payload: [{
                 order: clearOrder,
                 metaData,
-              },
+              }],
             }));
           }
         }
