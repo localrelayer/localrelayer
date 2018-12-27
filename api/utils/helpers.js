@@ -87,6 +87,7 @@ export const constructOrderRecord = ({
   createdAt,
   completedAt,
   error,
+  sourceRelayer,
   ...order
 }) => ({
   order,
@@ -102,5 +103,6 @@ export const constructOrderRecord = ({
     completedAt,
     lastFilledAt,
     error,
+    sourceRelayer,
   },
 });
