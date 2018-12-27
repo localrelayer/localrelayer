@@ -43,6 +43,11 @@ const OrderItem = ({
           {order.total}
         </div>
         <div>
+          Price USD:
+          {' '}
+          {`${(tokenMarketPrice * order.price).toFixed(2)}`}
+        </div>
+        <div>
           Total USD:
           {' '}
           {`${(tokenMarketPrice * order.total).toFixed(2)}`}
@@ -57,12 +62,20 @@ const OrderItem = ({
     title={(
       <div>
         <S.PopoverHeader actionType={type}>
-          {`${type === 'bids' ? 'Sell' : 'Buy'}`}
+          {`${type === 'bids' ? 'Buy' : 'Sell'}`}
           {' '}
           Order
         </S.PopoverHeader>
         <S.ClickToAction>
-          Click on the row to fill order using form
+          Click on the row
+          {' '}
+          <S.PopoverColoredSpan actionType={type}>
+            to fill
+            {' '}
+            {type === 'bids' ? 'Sell' : 'Buy'}
+          </S.PopoverColoredSpan>
+          {' '}
+          order form
         </S.ClickToAction>
       </div>
 )}
