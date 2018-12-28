@@ -7,7 +7,6 @@ import {
 } from '@0x/types';
 import {
   Order,
-  AssetPair,
 } from 'db';
 import {
   redisClient,
@@ -65,127 +64,133 @@ async function watcherCreator(networkId) {
     console.log(err);
     console.log(orderState);
     console.log('=============');
-    const {
-      isValid,
-      orderHash,
-    } = orderState;
-    const order = await Order.findOne({
-      orderHash,
-    });
-
-    if (isValid) {
+    if (!err && orderState) {
       const {
-        remainingFillableMakerAssetAmount,
-        remainingFillableTakerAssetAmount,
-        filledTakerAssetAmount,
-      } = orderState.orderRelevantState;
+        isValid,
+        orderHash,
+      } = orderState;
+      const order = await Order.findOne({
+        orderHash,
+      });
 
-      if (!(new BigNumber(filledTakerAssetAmount).eq(order.filledTakerAssetAmount))) {
-        order.lastFilledAt = new Date();
-      }
+      if (isValid) {
+        const {
+          remainingFillableMakerAssetAmount,
+          remainingFillableTakerAssetAmount,
+          filledTakerAssetAmount,
+        } = orderState.orderRelevantState;
 
-      const {
-        isMinAmountValid,
-        isMaxAmountValid,
-      } = await validateOrderAmount(order);
-
-      const diffFilledAmount = !(new BigNumber(filledTakerAssetAmount)
-        .eq(order.filledTakerAssetAmount));
-      const diffRemainingFillableMakerAmount = !(new BigNumber(remainingFillableMakerAssetAmount)
-        .eq(order.remainingFillableMakerAssetAmount));
-      const diffRemainingFillableTakerAmount = !(new BigNumber(remainingFillableTakerAssetAmount)
-        .eq(order.remainingFillableTakerAssetAmount));
-
-
-      if (!isMinAmountValid || !isMaxAmountValid) {
-        logger.debug('ORDER INVALIDATED BECAUSE OF AMOUNT');
-        order.error = !isMinAmountValid ? 'ORDER_TOO_SMALL_AMOUNT' : 'ORDER_TOO_BIG_AMOUNT';
-        order.isShadowed = false;
-        order.isValid = false;
-
-        order.remainingFillableMakerAssetAmount = remainingFillableMakerAssetAmount;
-        order.remainingFillableTakerAssetAmount = remainingFillableTakerAssetAmount;
-        order.filledTakerAssetAmount = filledTakerAssetAmount;
-        await order.save();
-        /* do not spread plainOrder object, it will emit lot of extra keys */
-        const plainOrder = order.toObject();
-        redisClient.publish(
-          'orders',
-          JSON.stringify(
-            constructOrderRecord(
-              clearOrderWithMetaFields(plainOrder),
-            ),
-          ),
-        );
-        orderWatcher.removeOrder(orderHash);
-      } else if (diffFilledAmount
-        || diffRemainingFillableMakerAmount
-        || diffRemainingFillableTakerAmount
-        || order.isShadowed
-        || !order.isValid
-      ) {
-        order.isShadowed = false;
-        order.isValid = true;
-
-        order.remainingFillableMakerAssetAmount = remainingFillableMakerAssetAmount;
-        order.remainingFillableTakerAssetAmount = remainingFillableTakerAssetAmount;
-        order.filledTakerAssetAmount = new BigNumber(filledTakerAssetAmount);
-        await order.save();
-        /* do not spread plainOrder object, it will emit lot of extra keys */
-        const plainOrder = order.toObject();
-        redisClient.publish(
-          'orders',
-          JSON.stringify(
-            constructOrderRecord(
-              clearOrderWithMetaFields(plainOrder),
-            ),
-          ),
-        );
-      }
-    } else {
-      order.isValid = false;
-      const { error } = orderState;
-      order.error = error;
-      order.isShadowed = !CLOSE_ORDER_ERRORS.includes(error);
-      if (CLOSE_ORDER_ERRORS.includes(error)) {
-        order.completedAt = new Date().toISOString();
-      }
-
-      if (error === FILL_ERROR) {
-        order.remainingFillableMakerAssetAmount = '0';
-        order.remainingFillableTakerAssetAmount = '0';
-        order.filledTakerAssetAmount = order.takerAssetAmount;
-        order.lastFilledAt = new Date();
-        try {
-          const {
-            tradingInfoRedisKeyMakerTaker,
-            tradingInfoRedisKeyTakerMaker,
-          } = await collectTradingInfo(order, logger);
-
-          redisClient.publish(
-            'tradingInfo',
-            `${tradingInfoRedisKeyMakerTaker}^${tradingInfoRedisKeyTakerMaker}`,
-          );
-        } catch (e) {
-          logger.error(e);
+        if (!(new BigNumber(filledTakerAssetAmount).eq(order.filledTakerAssetAmount))) {
+          order.lastFilledAt = new Date();
         }
-      }
-      /* do not spread plainOrder object, it will emit lot of extra keys */
-      const plainOrder = order.toObject();
-      redisClient.publish(
-        'orders',
-        JSON.stringify(
-          constructOrderRecord(
-            clearOrderWithMetaFields(plainOrder),
+
+        const {
+          isMinAmountValid,
+          isMaxAmountValid,
+        } = await validateOrderAmount(order);
+
+        const diffFilledAmount = !(new BigNumber(filledTakerAssetAmount)
+          .eq(order.filledTakerAssetAmount));
+        const diffRemainingFillableMakerAmount = !(new BigNumber(remainingFillableMakerAssetAmount)
+          .eq(order.remainingFillableMakerAssetAmount));
+        const diffRemainingFillableTakerAmount = !(new BigNumber(remainingFillableTakerAssetAmount)
+          .eq(order.remainingFillableTakerAssetAmount));
+
+
+        if (
+          !isMinAmountValid
+          || !isMaxAmountValid
+        ) {
+          logger.debug('ORDER INVALIDATED BECAUSE OF AMOUNT');
+          order.error = !isMinAmountValid ? 'ORDER_TOO_SMALL_AMOUNT' : 'ORDER_TOO_BIG_AMOUNT';
+          order.isShadowed = false;
+          order.isValid = false;
+
+          order.remainingFillableMakerAssetAmount = remainingFillableMakerAssetAmount;
+          order.remainingFillableTakerAssetAmount = remainingFillableTakerAssetAmount;
+          order.filledTakerAssetAmount = filledTakerAssetAmount;
+          await order.save();
+          /* do not spread plainOrder object, it will emit lot of extra keys */
+          const plainOrder = order.toObject();
+          redisClient.publish(
+            'orders',
+            JSON.stringify(
+              constructOrderRecord(
+                clearOrderWithMetaFields(plainOrder),
+              ),
+            ),
+          );
+          orderWatcher.removeOrder(orderHash);
+        } else if (
+          diffFilledAmount
+          || diffRemainingFillableMakerAmount
+          || diffRemainingFillableTakerAmount
+          || order.isShadowed
+          || !order.isValid
+        ) {
+          order.isShadowed = false;
+          order.isValid = true;
+
+          order.remainingFillableMakerAssetAmount = remainingFillableMakerAssetAmount;
+          order.remainingFillableTakerAssetAmount = remainingFillableTakerAssetAmount;
+          order.filledTakerAssetAmount = new BigNumber(filledTakerAssetAmount);
+          await order.save();
+          /* do not spread plainOrder object, it will emit lot of extra keys */
+          const plainOrder = order.toObject();
+          redisClient.publish(
+            'orders',
+            JSON.stringify(
+              constructOrderRecord(
+                clearOrderWithMetaFields(plainOrder),
+              ),
+            ),
+          );
+        }
+      } else {
+        order.isValid = false;
+        const { error } = orderState;
+        order.error = error;
+        order.isShadowed = !CLOSE_ORDER_ERRORS.includes(error);
+        if (CLOSE_ORDER_ERRORS.includes(error)) {
+          order.completedAt = new Date().toISOString();
+        }
+
+        if (error === FILL_ERROR) {
+          order.remainingFillableMakerAssetAmount = '0';
+          order.remainingFillableTakerAssetAmount = '0';
+          order.filledTakerAssetAmount = order.takerAssetAmount;
+          order.lastFilledAt = new Date();
+          try {
+            const {
+              tradingInfoRedisKeyMakerTaker,
+              tradingInfoRedisKeyTakerMaker,
+            } = await collectTradingInfo(order, logger);
+
+            redisClient.publish(
+              'tradingInfo',
+              `${tradingInfoRedisKeyMakerTaker}^${tradingInfoRedisKeyTakerMaker}`,
+            );
+          } catch (e) {
+            logger.error(e);
+          }
+        }
+        /* do not spread plainOrder object, it will emit lot of extra keys */
+        const plainOrder = order.toObject();
+        redisClient.publish(
+          'orders',
+          JSON.stringify(
+            constructOrderRecord(
+              clearOrderWithMetaFields(plainOrder),
+            ),
           ),
-        ),
-      );
-      await order.save();
-      if (
-        !order.isValid
-        && !order.isShadowed
-      ) {
-        orderWatcher.removeOrder(orderHash);
+        );
+        await order.save();
+        if (
+          !order.isValid
+          && !order.isShadowed
+        ) {
+          orderWatcher.removeOrder(orderHash);
+        }
       }
     }
   });
