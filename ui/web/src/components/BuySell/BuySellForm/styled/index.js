@@ -38,8 +38,9 @@ export const BuySellForm = styled(Form)`
   .ant-form-explain {
     font-size: 10px;
   }
-  .has-error .ant-select-selection {
-    border-color: ${colors['background-color-light']};;
+  .has-error .ant-select-selection,
+  .has-error .ant-select-selection:hover {
+    border-color: ${colors['background-color-light']};
   }
   .has-error .ant-select-open .ant-select-selection,
   .has-error .ant-select-focused .ant-select-selection {

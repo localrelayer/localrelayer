@@ -37,6 +37,10 @@ export const OrderItem = styled.div`
 `;
 
 export const PopoverHeader = styled.div`
+  color: ${props => (props.actionType === 'bids' ? colors.green: colors.red)};
+`;
+
+export const PopoverColoredSpan = styled.span`
   color: ${props => (props.actionType === 'bids' ? colors.red : colors.green)};
 `;
 

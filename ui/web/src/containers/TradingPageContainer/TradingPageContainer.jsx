@@ -8,10 +8,13 @@ import BuySellContainer from 'web-containers/BuySellContainer';
 import UserBalanceContainer from 'web-containers/UserBalanceContainer';
 import UserOrdersContainer from 'web-containers/UserOrdersContainer';
 import TradingChartContainer from 'web-containers/TradingChartContainer';
+import ErrorBoundary from 'web-components/ErrorBoundary';
 
 export default () => (
   <div>
-    <HeaderContainer />
+    <ErrorBoundary>
+      <HeaderContainer />
+    </ErrorBoundary>
     <TradingPageLayout>
       <BuySellContainer key="buySell" />
       <UserBalanceContainer isTradingPage key="userBalance" />

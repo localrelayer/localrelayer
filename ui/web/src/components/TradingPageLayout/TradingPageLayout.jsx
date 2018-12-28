@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import ErrorBoundary from 'web-components/ErrorBoundary';
 import * as S from './styled';
 
 type Props = {
@@ -60,7 +61,9 @@ export const renderLayout = (columns, children) => columns.map(({ rows, containe
       {
         key: row.component,
       },
-      renderedElements,
+      <ErrorBoundary componentKey={row.component}>
+        {renderedElements}
+      </ErrorBoundary>,
     );
   });
   return React.createElement(
