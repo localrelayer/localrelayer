@@ -1,5 +1,8 @@
 import styled from 'styled-components';
 import * as colors from 'web-styles/colors';
+import {
+  Button,
+} from 'antd';
 
 export const Bar = styled.div`
   right: 0;
@@ -37,7 +40,7 @@ export const OrderItem = styled.div`
 `;
 
 export const PopoverHeader = styled.div`
-  color: ${props => (props.actionType === 'bids' ? colors.green: colors.red)};
+  color: ${props => (props.actionType === 'bids' ? colors.green : colors.red)};
 `;
 
 export const PopoverColoredSpan = styled.span`
@@ -46,4 +49,11 @@ export const PopoverColoredSpan = styled.span`
 
 export const ClickToAction = styled.div`
   font-size: 12px;
+`;
+
+export const FillButton = styled(Button).attrs({
+  type: 'primary',
+  block: true,
+})`
+  margin-top: 20px;
 `;
