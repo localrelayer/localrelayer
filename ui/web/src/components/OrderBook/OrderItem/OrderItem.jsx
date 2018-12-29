@@ -23,14 +23,9 @@ const OrderItem = ({
     content={(
       <div>
         <div>
-          Expire:
+          Pair:
           {' '}
-          {order.formattedExpirationTime}
-        </div>
-        <div>
-          Price:
-          {' '}
-          {order.price}
+          {order.pair}
         </div>
         <div>
           Amount:
@@ -38,25 +33,23 @@ const OrderItem = ({
           {order.amount}
         </div>
         <div>
+          Price:
+          {' '}
+          {`$${(tokenMarketPrice * order.price).toFixed(2)}`}
+        </div>
+        <div>
           Total:
           {' '}
-          {order.total}
+          {`$${(tokenMarketPrice * order.total).toFixed(2)}`}
         </div>
         <div>
-          Price USD:
+          Expire:
           {' '}
-          {`${(tokenMarketPrice * order.price).toFixed(2)}`}
+          {order.formattedExpirationTime}
         </div>
-        <div>
-          Total USD:
-          {' '}
-          {`${(tokenMarketPrice * order.total).toFixed(2)}`}
-        </div>
-        <div>
-          Pair:
-          {' '}
-          {order.pair}
-        </div>
+        {/* <S.FillButton>
+          Fill Order
+        </S.FillButton> */}
       </div>
 )}
     title={(
@@ -67,15 +60,7 @@ const OrderItem = ({
           Order
         </S.PopoverHeader>
         <S.ClickToAction>
-          Click on the row
-          {' '}
-          <S.PopoverColoredSpan actionType={type}>
-            to fill
-            {' '}
-            {type === 'bids' ? 'Sell' : 'Buy'}
-          </S.PopoverColoredSpan>
-          {' '}
-          order form
+          Click on the row to fill order form
         </S.ClickToAction>
       </div>
 )}
