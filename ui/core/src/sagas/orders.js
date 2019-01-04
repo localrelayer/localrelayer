@@ -426,7 +426,9 @@ export function* postOrder({
         console.log('BACKEND VALIDATION', err);
         formActions.setFieldError(
           'balance',
-          `Backend validation failed "${err.json.reason}".`,
+          err.json?.reason
+            ? `Backend validation failed "${err.json.reason}".`
+            : err.message.split(/[\n\r]/g)[0],
         );
         formActions.setSubmitting(false);
         return;

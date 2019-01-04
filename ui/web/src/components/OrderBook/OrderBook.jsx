@@ -18,7 +18,9 @@ const OrderBook = ({
   tokenMarketPrice,
   onOrderClick,
 }: Props) => (
-  <S.OrderBook>
+  <S.OrderBook
+    id="orderBook"
+  >
     <S.Header>
       <S.HeaderTh>
           Price

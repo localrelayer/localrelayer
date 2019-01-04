@@ -27,7 +27,7 @@
     "react": "16.7.0-alpha.2",
     "react-dom": "16.7.0-alpha.2",
     "react-hot-loader": "4.6.3",
-    "react-joyride": "1.11.4",
+    "react-joyride": "2.0.1",
     "react-measure": "2.2.2",
     "react-redux": "6.0.0",
     "react-router-dom": "4.3.1",
