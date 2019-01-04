@@ -42,7 +42,9 @@ export default ({
       errors,
       isValid,
     }) => (
-      <S.WrappingBar>
+      <S.WrappingBar
+        id="etherWrapper"
+      >
         <S.Amount>
           <Form.Item
             validateStatus={errors.amount && 'error'}

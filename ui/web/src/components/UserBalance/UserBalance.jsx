@@ -232,6 +232,7 @@ const UserBalance = ({
               )}
             </WrapForm>
             <S.Table
+              id="balanceTable"
               isTradingPage={isTradingPage}
               pagination={false}
               scroll={
