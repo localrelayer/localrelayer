@@ -558,7 +558,14 @@ export function* initialize(): Saga<void> {
   }
 
 
-  const networkId = web3 ? yield eff.call(web3.eth.net.getId) : 1;
+  const networkId = (
+    web3
+      ? (
+        yield eff.call(web3.eth.net.getId)
+      ) : (
+        1
+      )
+  );
 
   if (!utils.getNetwork(networkId).isSupported) {
     yield eff.put(uiActions.setUiState({
@@ -568,7 +575,13 @@ export function* initialize(): Saga<void> {
   api.setApiUrl(config.apiUrl);
   console.log('Web initialize saga');
 
-  const accounts = web3 ? yield eff.call(web3.eth.getAccounts) : [];
+  const accounts = (
+    web3 ? (
+      yield eff.call(web3.eth.getAccounts)
+    ) : (
+      []
+    )
+  );
   const selectedAccount = accounts.length ? accounts[0].toLowerCase() : null;
   yield eff.put(
     coreActions.setWalletState({
