@@ -152,10 +152,13 @@ export function* fetchAssetPairs(opts = { networkId: 1 }) {
     );
     const assets = yield eff.all(
       assetsRaw.map(
-        asset => eff.call(getAssetAdditionalInfo, {
-          assetData: asset,
-          networkId: opts.networkId,
-        }),
+        asset => eff.call(
+          getAssetAdditionalInfo,
+          {
+            assetData: asset,
+            networkId: opts.networkId,
+          },
+        ),
       ),
     );
     yield eff.put(actions.succeeded({
