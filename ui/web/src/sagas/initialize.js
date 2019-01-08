@@ -546,11 +546,16 @@ export function* initialize(): Saga<void> {
   try {
     const settings = JSON.parse(localStorageSettings);
 
-    if (!settings?.setupGuideShown || !web3) {
+    if (!settings?.setupGuideShown || !settings?.wasJoyrideShown || !web3) {
       yield eff.put(uiActions.setUiState({
         isSetupGuideVisible: true,
+        isJoyrideVisible: true,
       }));
-      const newSettings = { ...settings, setupGuideShown: true };
+      const newSettings = {
+        ...settings,
+        setupGuideShown: true,
+        wasJoyrideShown: true,
+      };
       localStorage.setItem('instexSettings', JSON.stringify(newSettings));
     }
   } catch (e) {

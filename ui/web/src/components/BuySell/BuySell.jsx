@@ -33,7 +33,9 @@ const BuySell = ({
   isWeb3ProviderPresent,
   isNetworkSupported,
 }: Props) => (
-  <S.BuySell>
+  <S.BuySell
+    id="buySellForm"
+  >
     <Overlay isShown={!isWeb3ProviderPresent}>
       <div>Connect a wallet to create orders</div>
     </Overlay>

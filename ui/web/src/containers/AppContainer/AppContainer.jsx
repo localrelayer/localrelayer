@@ -20,6 +20,7 @@ import TradingPageContainer from 'web-containers/TradingPageContainer';
 import UserProfilePageContainer from 'web-containers/UserProfilePageContainer';
 import LoaderPage from 'web-components/LoaderPage';
 import Tutorial from 'web-containers/TutorialContainer';
+import JoyrideWrapperContainer from 'web-containers/JoyrideWrapperContainer';
 
 
 const AppContainer = () => (
@@ -38,6 +39,7 @@ const AppContainer = () => (
           <LoaderPage />
         ) : (
           <div>
+            <JoyrideWrapperContainer />
             <Tutorial />
             <Switch>
               <Route

@@ -47,7 +47,10 @@ const Header = ({
     <div>
       <S.Header>
         <S.InstexLogo src={logo} alt="logo" />
-        <S.TokensButton onClick={onTokensClick}>
+        <S.TokensButton
+          id="tradingPairs"
+          onClick={onTokensClick}
+        >
         Tokens(
           {currentAssetPairName}
         )
@@ -97,7 +100,7 @@ const Header = ({
               {'network'}
             </Tag>
           </S.CurrentNetwork>
-          <S.UserProfile>
+          <S.UserProfile id="userProfileAddress">
             <Tag>
               <S.HeaderIcon type="user" />
               {address
