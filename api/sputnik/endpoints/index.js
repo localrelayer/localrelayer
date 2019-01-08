@@ -145,6 +145,29 @@ sputnikApi.post('/transactions', async (ctx) => {
       );
     });
   }
+  if (transaction.name === 'Cancel Order' && !Number.isInteger(transaction.status)) {
+    const query = {
+      isShadowed: true,
+      isValid: false,
+    };
+    await Order.updateOne(
+      {
+        orderHash: transaction.meta.orderHash,
+      },
+      query,
+    );
+    const updatedOrder = await Order.findOne({
+      orderHash: transaction.meta.orderHash,
+    }).lean();
+    redisClient.publish(
+      'orders',
+      JSON.stringify(
+        constructOrderRecord(
+          clearOrderWithMetaFields(updatedOrder),
+        ),
+      ),
+    );
+  }
 
   ctx.message = 'OK';
   ctx.status = 200;

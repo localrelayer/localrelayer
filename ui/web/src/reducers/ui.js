@@ -29,6 +29,7 @@ const initialState: UiState = {
   isTokensPanelIsVisible: false,
   isSetupGuideVisible: false,
   isOrdersInfoModalVisible: false,
+  isJoyrideVisible: false,
 };
 
 const mergeValues = (
