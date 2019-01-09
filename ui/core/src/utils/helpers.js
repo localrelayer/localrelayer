@@ -227,3 +227,5 @@ export const calculateBar = (order, orders) => {
   const totalAmount = orders.reduce((acc, cur) => acc + +cur.amount, 0);
   return `${accumulator / totalAmount * 100 / 12 * 8}%`;
 };
+
+export const isNumber = n => !isNaN(+n) && +n !== 0 && isFinite(n) && Math.abs(n) === +n; /* eslint-disable-line */

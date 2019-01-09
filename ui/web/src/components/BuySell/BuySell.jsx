@@ -3,16 +3,10 @@ import React from 'react';
 import {
   Icon,
   Tooltip,
+  Tabs,
 } from 'antd';
-import {
-  uiActions,
-} from 'web-actions';
-import {
-  getUiState,
-  getCurrentOrder,
-} from 'web-selectors';
-import Component from 'web-components/ConnectComponent';
-import BuySellForm from './BuySellForm';
+import LimitBuySellForm from './LimitBuySellForm';
+import MarketBuySellForm from './MarketBuySellForm';
 import * as S from './styled';
 import {
   Overlay,
@@ -20,18 +14,34 @@ import {
 
 type Props = {
   currentAssetPair: any,
-  onSubmitOrder: Function,
+  onSubmitLimitOrder: Function,
+  onSubmitMarketOrder: Function,
   bestOrders: any,
   isWeb3ProviderPresent: boolean,
   isNetworkSupported: boolean,
+  currentOrder: any,
+  currentBuySellTab: String,
+  setBuySellTab: Function,
+  currentMarketLimitTab: String,
+  setMarketLimitTab: Function,
+  matchedMarketOrders: Array,
+  setMarketAmount: Function,
 };
 
 const BuySell = ({
   currentAssetPair,
   bestOrders,
-  onSubmitOrder,
+  onSubmitLimitOrder,
+  onSubmitMarketOrder,
   isWeb3ProviderPresent,
   isNetworkSupported,
+  currentOrder,
+  currentBuySellTab,
+  setBuySellTab,
+  currentMarketLimitTab,
+  setMarketLimitTab,
+  matchedMarketOrders,
+  setMarketAmount,
 }: Props) => (
   <S.BuySell
     id="buySellForm"
@@ -45,60 +55,104 @@ const BuySell = ({
     <S.BuySellCard
       bordered={false}
     >
-      <Component
-        mapStateToProps={state => ({
-          currentBuySellTab: getUiState('currentBuySellTab')(state),
-          currentOrder: getCurrentOrder(state),
-        })}
+      <S.MarketLimitTabs
+        animated={false}
+        activeKey={currentMarketLimitTab}
+        onChange={setMarketLimitTab}
+        tabBarExtraContent={(
+          currentBuySellTab === 'bid'
+            ? (
+              <S.TabsExtraContent>
+                <Icon type="wallet" />
+                {' '}
+                {currentAssetPair?.assetDataB?.assetData?.symbol}
+                {' '}
+                <Tooltip title={currentAssetPair?.assetDataB?.availableBalance}>
+                  {currentAssetPair?.assetDataB?.availableBalance}
+                </Tooltip>
+              </S.TabsExtraContent>
+            )
+            : (
+              <S.TabsExtraContent>
+                <Icon type="wallet" />
+                {' '}
+                {currentAssetPair?.assetDataA?.assetData?.symbol}
+                {' '}
+                <Tooltip title={currentAssetPair?.assetDataA?.availableBalance}>
+                  {currentAssetPair?.assetDataA?.availableBalance}
+                </Tooltip>
+              </S.TabsExtraContent>
+            )
+        )}
       >
-        {({
-          currentBuySellTab,
-          currentOrder,
-          dispatch,
-        }) => (
+        <Tabs.TabPane
+          tab="Market"
+          key="market"
+        >
+          <S.BuySellTabs
+            type="card"
+            animated={false}
+            activeKey={currentBuySellTab}
+            onChange={setBuySellTab}
+          >
+            <S.BuySellTabs.TabPane
+              key="marketBid"
+              tab="Buy"
+              type="buy"
+            >
+              <MarketBuySellForm
+                type="bid"
+                matchedMarketOrders={matchedMarketOrders}
+                baseSymbol={currentAssetPair?.assetDataA?.assetData?.symbol}
+                quoteSymbol={currentAssetPair?.assetDataB?.assetData?.symbol}
+                currentBalance={currentAssetPair?.assetDataB?.availableBalance}
+                onSubmitOrder={onSubmitMarketOrder}
+                currentBuySellTab={currentBuySellTab}
+                currentOrder={currentOrder}
+                minAmount={currentAssetPair?.assetDataB?.unitMinAmount}
+                maxAmount={currentAssetPair?.assetDataB?.unitMaxAmount}
+                setMarketAmount={setMarketAmount}
+              />
+            </S.BuySellTabs.TabPane>
+            <S.BuySellTabs.TabPane
+              key="marketAsk"
+              tab="Sell"
+              type="sell"
+            >
+              <MarketBuySellForm
+                type="ask"
+                matchedMarketOrders={matchedMarketOrders}
+                baseSymbol={currentAssetPair?.assetDataA?.assetData?.symbol}
+                quoteSymbol={currentAssetPair?.assetDataB?.assetData?.symbol}
+                currentBalance={currentAssetPair?.assetDataA?.availableBalance}
+                onSubmitOrder={onSubmitMarketOrder}
+                currentBuySellTab={currentBuySellTab}
+                currentOrder={currentOrder}
+                minAmount={currentAssetPair?.assetDataB?.unitMinAmount}
+                maxAmount={currentAssetPair?.assetDataB?.unitMaxAmount}
+                setMarketAmount={setMarketAmount}
+              />
+            </S.BuySellTabs.TabPane>
+          </S.BuySellTabs>
+        </Tabs.TabPane>
+        <Tabs.TabPane tab="Limit" key="limit">
           <S.BuySellTabs
             animated={false}
             activeKey={currentBuySellTab}
-            onChange={activeKey => dispatch(uiActions.setUiState({
-              currentBuySellTab: activeKey,
-            }))}
-            tabBarExtraContent={(
-              currentBuySellTab === 'bid'
-                ? (
-                  <S.TabsExtraContent>
-                    <Icon type="wallet" />
-                    {' '}
-                    {currentAssetPair?.assetDataB?.assetData?.symbol}
-                    {' '}
-                    <Tooltip title={currentAssetPair?.assetDataB?.availableBalance}>
-                      {currentAssetPair?.assetDataB?.availableBalance}
-                    </Tooltip>
-                  </S.TabsExtraContent>
-                )
-                : (
-                  <S.TabsExtraContent>
-                    <Icon type="wallet" />
-                    {' '}
-                    {currentAssetPair?.assetDataA?.assetData?.symbol}
-                    {' '}
-                    <Tooltip title={currentAssetPair?.assetDataA?.availableBalance}>
-                      {currentAssetPair?.assetDataA?.availableBalance}
-                    </Tooltip>
-                  </S.TabsExtraContent>
-                )
-            )}
+            onChange={setBuySellTab}
+            type="card"
           >
             <S.BuySellTabs.TabPane
-              key="bid"
+              key="limitBid"
               tab="Buy"
             >
-              <BuySellForm
+              <LimitBuySellForm
                 type="bid"
                 bestOrders={bestOrders}
                 baseSymbol={currentAssetPair?.assetDataA?.assetData?.symbol}
                 quoteSymbol={currentAssetPair?.assetDataB?.assetData?.symbol}
                 currentBalance={currentAssetPair?.assetDataB?.availableBalance}
-                onSubmitOrder={onSubmitOrder}
+                onSubmitOrder={onSubmitLimitOrder}
                 currentBuySellTab={currentBuySellTab}
                 currentOrder={currentOrder}
                 minAmount={currentAssetPair?.assetDataB?.unitMinAmount}
@@ -106,16 +160,16 @@ const BuySell = ({
               />
             </S.BuySellTabs.TabPane>
             <S.BuySellTabs.TabPane
-              key="ask"
+              key="limitAsk"
               tab="Sell"
             >
-              <BuySellForm
+              <LimitBuySellForm
                 type="ask"
                 bestOrders={bestOrders}
                 baseSymbol={currentAssetPair?.assetDataA?.assetData?.symbol}
                 quoteSymbol={currentAssetPair?.assetDataB?.assetData?.symbol}
                 currentBalance={currentAssetPair?.assetDataA?.availableBalance}
-                onSubmitOrder={onSubmitOrder}
+                onSubmitOrder={onSubmitLimitOrder}
                 currentBuySellTab={currentBuySellTab}
                 currentOrder={currentOrder}
                 minAmount={currentAssetPair?.assetDataB?.unitMinAmount}
@@ -123,8 +177,8 @@ const BuySell = ({
               />
             </S.BuySellTabs.TabPane>
           </S.BuySellTabs>
-        )}
-      </Component>
+        </Tabs.TabPane>
+      </S.MarketLimitTabs>
     </S.BuySellCard>
   </S.BuySell>
 );

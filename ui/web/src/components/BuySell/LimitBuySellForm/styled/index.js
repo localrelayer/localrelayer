@@ -106,7 +106,6 @@ export const ExpirationBlock = styled.div`
 `;
 
 export const ExpirationInput = styled(Input)`
-
 `;
 
 export const ExpirationSelect = styled(Select)`

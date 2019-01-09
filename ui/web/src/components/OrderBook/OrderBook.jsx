@@ -10,6 +10,7 @@ type Props = {
   bids: Array<any>,
   tokenMarketPrice: Number,
   onOrderClick: Function,
+  assetPair: any,
 };
 
 const OrderBook = ({
@@ -17,25 +18,34 @@ const OrderBook = ({
   bids,
   tokenMarketPrice,
   onOrderClick,
+  assetPair,
+  onFillClick,
 }: Props) => (
   <S.OrderBook
     id="orderBook"
   >
     <S.Header>
       <S.HeaderTh>
-          Price
+        Price
+        {' '}
+        {assetPair?.assetDataB?.assetData?.symbol}
       </S.HeaderTh>
       <S.HeaderTh>
-          Amount
+        Amount
+        {' '}
+        {assetPair?.assetDataA?.assetData?.symbol}
       </S.HeaderTh>
       <S.HeaderTh>
-          Total
+        Total
+        {' '}
+        {assetPair?.assetDataB?.assetData?.symbol}
       </S.HeaderTh>
     </S.Header>
     <S.Asks>
       <S.AsksItemsList>
         {asks.map(order => (
           <OrderItem
+            onFillClick={onFillClick}
             key={order.id}
             order={order}
             tokenMarketPrice={tokenMarketPrice}
@@ -59,6 +69,7 @@ const OrderBook = ({
       <S.BidsItemsList>
         {bids.map(order => (
           <OrderItem
+            onFillClick={onFillClick}
             key={order.id}
             order={order}
             tokenMarketPrice={tokenMarketPrice}

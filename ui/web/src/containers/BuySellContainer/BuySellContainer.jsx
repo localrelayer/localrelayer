@@ -13,6 +13,8 @@ import Component from 'web-components/ConnectComponent';
 import {
   getCurrentAssetPairWithBalance,
   getUiState,
+  getCurrentOrder,
+  getMatchedMarketOrders,
 } from 'web-selectors';
 import {
   uiActions,
@@ -30,6 +32,10 @@ const BuySellContainer = (): Node => (
       bestOrders: cs.getBestOrders(state),
       isWeb3ProviderPresent: getUiState('isWeb3ProviderPresent')(state),
       isNetworkSupported: getUiState('isNetworkSupported')(state),
+      currentBuySellTab: getUiState('currentBuySellTab')(state),
+      currentMarketLimitTab: getUiState('currentMarketLimitTab')(state),
+      currentOrder: getCurrentOrder(state),
+      matchedMarketOrders: getMatchedMarketOrders(state),
     })}
   >
     {({
@@ -38,25 +44,57 @@ const BuySellContainer = (): Node => (
       dispatch,
       isWeb3ProviderPresent,
       isNetworkSupported,
+      currentBuySellTab,
+      currentOrder,
+      currentMarketLimitTab,
+      matchedMarketOrders,
     }) => (
       <BuySell
         isWeb3ProviderPresent={isWeb3ProviderPresent}
         currentAssetPair={currentAssetPair}
         bestOrders={bestOrders}
         isNetworkSupported={isNetworkSupported}
-        onSubmitOrder={({
+        currentOrder={currentOrder}
+        matchedMarketOrders={matchedMarketOrders}
+        currentBuySellTab={currentBuySellTab}
+        currentMarketLimitTab={currentMarketLimitTab}
+        setBuySellTab={activeTab => dispatch(uiActions.setUiState({
+          currentBuySellTab: activeTab,
+        }))}
+        setMarketLimitTab={activeTab => dispatch(uiActions.setUiState({
+          currentMarketLimitTab: activeTab,
+          currentBuySellTab: `${activeTab}Bid`,
+          currentOrderId: null,
+        }))
+        }
+        setMarketAmount={(amount) => {
+          console.log(amount);
+
+          dispatch(uiActions.setUiState({
+            marketAmount: amount,
+          }));
+        }}
+        onSubmitMarketOrder={(formActions) => {
+          dispatch(coreActions.fillOrderRequest({
+            ...matchedMarketOrders,
+            formActions,
+          }));
+        }}
+        onSubmitLimitOrder={({
           amount,
           price,
           expirationNumber,
           expirationUnit,
           formActions,
           type,
+          shouldMatch,
         }) => {
           dispatch(uiActions.setUiState({
             currentOrderId: null,
           }));
           dispatch(coreActions.postOrderRequest({
             formActions,
+            shouldMatch,
             order: {
               type,
               takerAddress: utils.NULL_ADDRESS,

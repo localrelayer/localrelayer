@@ -23,7 +23,8 @@ const initialState: UiState = {
   isCurrentPairIssue: false,
 
   tradingInfoSubscribeId: null,
-  currentBuySellTab: 'bid',
+  currentBuySellTab: 'marketBid',
+  currentMarketLimitTab: 'market',
 
   isTransactionsPanelIsVisible: false,
   isTokensPanelIsVisible: false,
