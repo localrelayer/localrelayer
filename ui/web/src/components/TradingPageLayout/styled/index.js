@@ -41,10 +41,10 @@ const Element = styled.div`
 `;
 
 export const BuySellWrapper = styled(Element)`
-  height: 400px;
+  height: 450px;
 `;
 export const UserBalanceWrapper = styled(Element)`
-  height: calc(100% - 400px);
+  height: calc(100% - 450px);
 `;
 export const OrderBookWrapper = styled(Element)`
   height: 100%;

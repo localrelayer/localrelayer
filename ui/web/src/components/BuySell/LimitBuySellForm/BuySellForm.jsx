@@ -8,6 +8,7 @@ import {
 } from '0x.js';
 import {
   Icon,
+  Switch,
 } from 'antd';
 import {
   utils,
@@ -27,8 +28,6 @@ type Props = {
   maxAmount: String,
 }
 
-const isNumber = n => !isNaN(+n) && +n !== 0 && isFinite(n) && Math.abs(n) === +n; /* eslint-disable-line */
-
 const truncate = (value, n) => Math.floor(value * (10 ** n)) / (10 ** n);
 
 const setFieldByPercentage = (
@@ -44,7 +43,7 @@ const setFieldByPercentage = (
   setValues(
     {
       ...values,
-      amount: type === 'ask'
+      amount: type === 'askLimit'
         ? truncate(new BigNumber(currentBalance).times(percentage / 100), 8)
         : bidAmount,
     },
@@ -69,7 +68,8 @@ const BuySellForm = ({
       {
         ...currentOrder,
         expirationNumber: 1,
-        expirationUnit: 'hours',
+        expirationUnit: 'months',
+        shouldMatch: true,
       }}
     validateOnBlur={false}
     enableReinitialize
@@ -85,12 +85,12 @@ const BuySellForm = ({
       const errors = {};
       if (!values.amount) {
         errors.amount = 'Required';
-      } else if (!isNumber(values.amount)) {
+      } else if (!utils.isNumber(values.amount)) {
         errors.amount = 'Amount should be a number';
       }
       if (!values.price) {
         errors.price = 'Required';
-      } else if (!isNumber(values.price)) {
+      } else if (!utils.isNumber(values.price)) {
         errors.price = 'Amount should be a number';
       }
       if (!values.expirationNumber) {
@@ -108,9 +108,9 @@ const BuySellForm = ({
           .error;
       }
       if (
-        currentBuySellTab === 'bid'
-        && isNumber(values.amount)
-        && isNumber(values.price)
+        currentBuySellTab === 'bidLimit'
+        && utils.isNumber(values.amount)
+        && utils.isNumber(values.price)
       ) {
         if (currentBalance < new BigNumber(values.amount).times(values.price).toNumber()) {
           errors.balance = 'Insufficient balance';
@@ -122,8 +122,8 @@ const BuySellForm = ({
           errors.balance = 'Too high amount';
         }
       } else if (
-        currentBuySellTab === 'ask'
-        && isNumber(values.amount)
+        currentBuySellTab === 'askLimit'
+        && utils.isNumber(values.amount)
       ) {
         if (+currentBalance < +values.amount) {
           errors.balance = 'Insufficient balance';
@@ -256,39 +256,57 @@ const BuySellForm = ({
             onBlur={handleBlur}
           />
         </S.BuySellForm.Item>
-        <S.BuySellForm.Item
-          label="Expiration"
-          validateStatus={touched.expirationNumber && errors.expirationNumber && 'error'}
-          help={touched.expirationNumber && errors.expirationNumber}
-        >
-          <S.ExpirationBlock>
-            <S.ExpirationInput
-              name="expirationNumber"
-              value={values.expirationNumber}
-              onChange={(e) => {
-                handleChange(e);
-                setFieldTouched('expirationNumber', true, true);
-              }}
-              onBlur={handleBlur}
-              autoComplete="off"
-            />
-            <S.ExpirationSelect
-              name="expirationUnit"
-              value={values.expirationUnit}
+        <div style={{ display: 'flex' }}>
+          <S.BuySellForm.Item
+            style={{ width: '50%' }}
+            label="Expiration"
+            validateStatus={touched.expirationNumber && errors.expirationNumber && 'error'}
+            help={touched.expirationNumber && errors.expirationNumber}
+          >
+            <S.ExpirationBlock>
+              <S.ExpirationInput
+                name="expirationNumber"
+                value={values.expirationNumber}
+                onChange={(e) => {
+                  handleChange(e);
+                  setFieldTouched('expirationNumber', true, true);
+                }}
+                onBlur={handleBlur}
+                autoComplete="off"
+              />
+              <S.ExpirationSelect
+                name="expirationUnit"
+                value={values.expirationUnit}
+                onChange={(value) => {
+                  setValues(
+                    { ...values,
+                      expirationUnit: value },
+                  );
+                }}
+              >
+                <S.ExpirationSelect.Option value="minutes">minutes</S.ExpirationSelect.Option>
+                <S.ExpirationSelect.Option value="hours">hours</S.ExpirationSelect.Option>
+                <S.ExpirationSelect.Option value="days">days</S.ExpirationSelect.Option>
+                <S.ExpirationSelect.Option value="months">months</S.ExpirationSelect.Option>
+              </S.ExpirationSelect>
+            </S.ExpirationBlock>
+          </S.BuySellForm.Item>
+          <S.BuySellForm.Item
+            label={<div style={{ textAlign: 'right' }}>Match orders</div>}
+            style={{ width: '50%', textAlign: 'right' }}
+          >
+            <Switch
+              name="shouldMatch"
+              checked={values.shouldMatch}
               onChange={(value) => {
                 setValues(
                   { ...values,
-                    expirationUnit: value },
+                    shouldMatch: value },
                 );
               }}
-            >
-              <S.ExpirationSelect.Option value="minutes">minutes</S.ExpirationSelect.Option>
-              <S.ExpirationSelect.Option value="hours">hours</S.ExpirationSelect.Option>
-              <S.ExpirationSelect.Option value="days">days</S.ExpirationSelect.Option>
-              <S.ExpirationSelect.Option value="months">months</S.ExpirationSelect.Option>
-            </S.ExpirationSelect>
-          </S.ExpirationBlock>
-        </S.BuySellForm.Item>
+            />
+          </S.BuySellForm.Item>
+        </div>
         <S.BuySellForm.Item
           validateStatus={touched.amount && errors.balance && 'error'}
           help={touched.amount && errors.balance}
@@ -297,7 +315,7 @@ const BuySellForm = ({
             <div>
               Total:
               {' '}
-              {isNumber(values.amount) && isNumber(values.price) && isValid
+              {utils.isNumber(values.amount) && utils.isNumber(values.price) && isValid
                 ? new BigNumber(values.amount).times(values.price).toFixed(6)
                 : '0.000000'
               }
@@ -308,23 +326,6 @@ const BuySellForm = ({
               Fee: 0.000000
               {' '}
               {baseSymbol}
-              <S.AdditionalInfoPopover
-                placement="bottom"
-                content={(
-                  <div>
-                    <div>
-                      Ethereum tx fee: 0.000001
-                      {baseSymbol}
-                    </div>
-                    <div>
-                      Instex fee: 0.000000
-                      {baseSymbol}
-                    </div>
-                  </div>
-                )}
-              >
-                <S.AdditionalInfoIcon type="info-circle-o" />
-              </S.AdditionalInfoPopover>
             </div>
           </S.AdditionalInfo>
           <S.SubmitButton

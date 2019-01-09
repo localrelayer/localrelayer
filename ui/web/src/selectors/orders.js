@@ -12,6 +12,7 @@ import {
 } from '0x.js';
 import {
   getUiState,
+  getCurrentAssetPair,
 } from '.';
 
 export const getCurrentOrder = createSelector(
@@ -135,12 +136,14 @@ export const getCurrentOrder = createSelector(
 export const getAskOrdersFormatted = createSelector(
   [
     cs.getAskOrders,
+    cs.getWalletState('selectedAccount'),
   ],
-  orders => (
+  (orders, userAddress) => (
     orders.map(order => ({
       ...order,
       barWidth: utils.calculateBar(order, orders),
       formattedExpirationTime: utils.formatDate('MM/DD/YYYY HH:mm:ss', order.expirationTimeSeconds * 1000),
+      isUser: order.makerAddress === userAddress,
     }))
   ),
 );
@@ -149,12 +152,14 @@ export const getAskOrdersFormatted = createSelector(
 export const getBidOrdersFormatted = createSelector(
   [
     cs.getBidOrders,
+    cs.getWalletState('selectedAccount'),
   ],
-  orders => (
+  (orders, userAddress) => (
     orders.map(order => ({
       ...order,
       barWidth: utils.calculateBar(order, orders),
       formattedExpirationTime: utils.formatDate('MM/DD/YYYY HH:mm:ss', order.expirationTimeSeconds * 1000),
+      isUser: order.makerAddress === userAddress,
     }))
   ),
 );
@@ -183,4 +188,108 @@ export const getUserOpenOrdersFormatted = createSelector(
       createdAtFormattedShort: utils.formatDate('MM/DD HH:mm', order.metaData.createdAt),
     }))
   ),
+);
+
+export const getMatchedMarketOrders = createSelector(
+  [
+    cs.getBidOrders,
+    cs.getAskOrders,
+    getUiState('currentBuySellTab'),
+    getUiState('marketAmount'),
+    getCurrentAssetPair,
+    cs.getWalletState('selectedAccount'),
+  ],
+  (
+    bids,
+    asks,
+    currentBuySellTab,
+    marketAmount,
+    currentAssetPair,
+    makerAddress,
+  ) => {
+    if (utils.isNumber(marketAmount)) {
+      const type = currentBuySellTab.toLowerCase().includes('bid') ? 'bid' : 'ask';
+      const matchedOrders = type === 'bid' ? asks : bids;
+      const decimals = type === 'bid'
+        ? currentAssetPair.assetDataA.assetData.decimals
+        : currentAssetPair.assetDataB.assetData.decimals;
+
+      const [
+        assetDataA,
+        assetDataB,
+      ] = currentAssetPair.id.split('_');
+
+      const makerAssetData = type === 'bid'
+        ? assetDataA
+        : assetDataB;
+
+      const takerAssetData = type === 'bid'
+        ? assetDataB
+        : assetDataA;
+
+      const result = matchedOrders
+        .filter(order => order.makerAddress !== makerAddress)
+        .reduce((acc, cur) => {
+          let filledMakerAmount;
+          let filledTakerAmount;
+          let neededAssetAmount;
+
+          if (acc.neededAssetAmount.eq(0)) return acc;
+
+          if (type === 'bid') {
+            filledMakerAmount = BigNumber
+              .min(cur.metaData.remainingFillableMakerAssetAmount, acc.neededAssetAmount);
+            filledTakerAmount = new BigNumber(cur.metaData.remainingFillableTakerAssetAmount)
+              .times(filledMakerAmount)
+              .div(cur.metaData.remainingFillableMakerAssetAmount);
+            neededAssetAmount = acc.neededAssetAmount.minus(filledMakerAmount);
+          } else {
+            filledTakerAmount = BigNumber
+              .min(cur.metaData.remainingFillableTakerAssetAmount, acc.neededAssetAmount);
+            filledMakerAmount = new BigNumber(cur.metaData.remainingFillableMakerAssetAmount)
+              .times(filledTakerAmount)
+              .div(cur.metaData.remainingFillableTakerAssetAmount);
+            neededAssetAmount = acc.neededAssetAmount.minus(filledTakerAmount);
+          }
+          return {
+            ordersToFill: acc.ordersToFill.concat(cur),
+            makerAssetFillAmounts: acc.makerAssetFillAmounts.concat(filledMakerAmount),
+            takerAssetFillAmounts: acc.takerAssetFillAmounts.concat(filledTakerAmount),
+            makerFillAmount: acc.makerFillAmount.add(filledMakerAmount),
+            takerFillAmount: acc.takerFillAmount.add(filledTakerAmount),
+            neededAssetAmount,
+          };
+        }, {
+          ordersToFill: [],
+          makerAssetFillAmounts: [],
+          takerAssetFillAmounts: [],
+          makerFillAmount: new BigNumber(0),
+          takerFillAmount: new BigNumber(0),
+          neededAssetAmount: utils.toBaseUnitAmount(marketAmount, decimals),
+        });
+
+      const ordersTotal = type === 'bid'
+        ? utils.toUnitAmount(result.takerFillAmount, decimals)
+        : utils.toUnitAmount(result.makerFillAmount, decimals);
+
+      const ordersAmount = type === 'bid'
+        ? utils.toUnitAmount(result.makerFillAmount, decimals)
+        : utils.toUnitAmount(result.takerFillAmount, decimals);
+
+      return {
+        ...result,
+        ordersTotal: ordersTotal.toFixed(8),
+        ordersAmount: ordersAmount.toFixed(8),
+        order: {
+          makerAssetAmount: result.makerFillAmount,
+          takerAssetAmount: result.takerFillAmount,
+          makerAssetData,
+          takerAssetData,
+        },
+      };
+    }
+    return {
+      ordersTotal: (0).toFixed(8),
+    };
+  },
 );

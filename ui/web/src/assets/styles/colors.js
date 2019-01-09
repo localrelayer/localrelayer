@@ -26,6 +26,7 @@ const colors = {
   white: '#DADDDF',
   'disabled-color': '#ffffff57',
   'disabled-bg': '#182646',
+  'active-tab-color': '#13436d',
 };
 
 module.exports = colors;

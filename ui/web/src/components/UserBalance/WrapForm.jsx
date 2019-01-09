@@ -9,10 +9,11 @@ import {
 import {
   Formik,
 } from 'formik';
+import {
+  utils,
+} from 'instex-core';
 
 import * as S from './styled';
-// use +n !== 0 because empty string (or spaced string) converts to 0
-const isNumber = n => !isNaN(+n) && +n !== 0 && isFinite(n) && Math.abs(n) === +n; /* eslint-disable-line */
 
 type Props = {
   onWithdraw: Function,
@@ -29,7 +30,7 @@ export default ({
     isInitialValid
     validate={(values) => {
       const errors = {};
-      if (values.amount.length && !isNumber(values.amount)) {
+      if (values.amount.length && !utils.isNumber(values.amount)) {
         errors.amount = 'Amount should be a number';
       }
       return errors;

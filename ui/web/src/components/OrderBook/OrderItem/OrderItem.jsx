@@ -3,6 +3,7 @@ import React from 'react';
 import * as colors from 'web-styles/colors';
 import {
   Popover,
+  Icon,
 } from 'antd';
 import * as S from './styled';
 
@@ -11,6 +12,7 @@ type Props = {
   onClick: Function,
   tokenMarketPrice: Number,
   type: String,
+  onFillClick: Function,
 };
 
 const OrderItem = ({
@@ -18,6 +20,7 @@ const OrderItem = ({
   tokenMarketPrice,
   onClick,
   type,
+  onFillClick,
 }: Props) => (
   <Popover
     content={(
@@ -47,9 +50,9 @@ const OrderItem = ({
           {' '}
           {order.formattedExpirationTime}
         </div>
-        {/* <S.FillButton>
+        <S.FillButton onClick={() => onFillClick(order)}>
           Fill Order
-        </S.FillButton> */}
+        </S.FillButton>
       </div>
 )}
     title={(
@@ -83,6 +86,7 @@ const OrderItem = ({
       <div>
         {order.total.slice(0, 12)}
       </div>
+      {order.isUser ? <Icon type="user" /> : <Icon type="global" />}
     </S.OrderItem>
   </Popover>
 );

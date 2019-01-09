@@ -25,6 +25,7 @@ export const OrderItem = styled.div`
   display: flex;
   justify-content: space-around;
   font-size: 12px;
+  padding: 0px 5px;
   min-height: 24px;
   position: relative;
   color: white;

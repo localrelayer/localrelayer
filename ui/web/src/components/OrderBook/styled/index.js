@@ -30,7 +30,7 @@ export const Header = styled.div`
 
 export const HeaderTh = styled.div`
   font-family: "Chinese Quote", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  font-size: 14px;
+  font-size: 0.75rem;
   font-variant: tabular-nums;
   line-height: 1.5;
   vertical-align: middle;
@@ -52,14 +52,8 @@ export const AsksItemsList = styled.div`
   & > div {
     background-color: ${colors['component-background']} !important;
   }
-  &:hover > div {
-    background-color: ${colors['item-hover-bg']} !important;
-  }
   & > div:hover {
     background-color: ${colors['item-hover-bg']} !important;
-  }
-  & > div:hover ~ div {
-    background-color: ${colors['component-background']} !important;
   }
 `;
 
@@ -74,13 +68,7 @@ export const BidsItemsList = styled.div`
   & > div {
   background-color: ${colors['component-background']} !important;
   }
-  &:hover > div {
-  background-color: ${colors['item-hover-bg']} !important;
-  }
   & > div:hover {
   background-color: ${colors['item-hover-bg']} !important;
-  }
-  & > div:hover ~ div {
-  background-color: ${colors['component-background']} !important;
   }
 `;

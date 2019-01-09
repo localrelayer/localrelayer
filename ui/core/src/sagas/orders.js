@@ -13,6 +13,7 @@ import {
   actionTypes,
   sendShowModalRequest,
   setWalletState,
+  sendNotificationRequest,
 } from '../actions';
 import * as selectors from '../selectors';
 import api from '../api';
@@ -172,80 +173,65 @@ export function* fetchUserOrders(opts = {}) {
 }
 
 function* matchOrder({
-  makerAssetAmount,
-  takerAssetAmount,
+  order,
   type,
 }) {
-  // BID order wants smallest (sorted by descending order)
-  // ASK order wants biggest (sorted by ascending order)
-  // So we want first order
-
-  // Order matched if
-
-  // BID:
-  // ask price < bid prices
-
-  // ASK:
-  // bid price < ask price
-
-  // matchedOrder < orderPrice
   let price;
   let matchedOrders = [];
+  const makerAddress = yield eff.select(selectors.getWalletState('selectedAccount'));
 
   if (type === 'bid') {
-    price = new BigNumber(makerAssetAmount).div(takerAssetAmount);
+    price = new BigNumber(order.makerAssetAmount).div(order.takerAssetAmount);
     const askOrders = yield eff.select(selectors.getAskOrders);
 
     matchedOrders = askOrders.filter((askOrder) => {
       const matchedAskOrderPrice = new BigNumber(
         askOrder.takerAssetAmount,
       ).div(askOrder.makerAssetAmount);
-      return matchedAskOrderPrice.lte(price);
+      return matchedAskOrderPrice.lte(price) && askOrder.makerAddress !== makerAddress;
     });
   } else {
-    price = new BigNumber(takerAssetAmount).div(makerAssetAmount);
+    price = new BigNumber(order.takerAssetAmount).div(order.makerAssetAmount);
     const bidOrders = yield eff.select(selectors.getBidOrders);
 
-    matchedOrders = yield eff.all(bidOrders.filter((bidOrder) => {
+    matchedOrders = bidOrders.filter((bidOrder) => {
       const matchedBidOrderPrice = new BigNumber(
         bidOrder.makerAssetAmount,
       ).div(bidOrder.takerAssetAmount);
-      return matchedBidOrderPrice.gte(price);
-    }));
+      return matchedBidOrderPrice.gte(price) && bidOrder.makerAddress !== makerAddress;
+    });
   }
-
-  return matchedOrders;
+  return matchedOrders.reduce((acc, cur) => {
+    const neededAmount = cur.metaData.remainingFillableTakerAssetAmount;
+    const toBeFilledAmount = BigNumber.min(neededAmount, acc.existingAssetAmount);
+    const existingAssetAmount = acc.existingAssetAmount.minus(toBeFilledAmount);
+    const filledMakerAssetAmount = new BigNumber(cur.makerAssetAmount)
+      .times(toBeFilledAmount)
+      .div(cur.takerAssetAmount);
+    return {
+      ordersToFill: acc.ordersToFill.concat(cur),
+      makerAssetFillAmounts: acc.makerAssetFillAmounts.concat(filledMakerAssetAmount),
+      takerAssetFillAmounts: acc.takerAssetFillAmounts.concat(toBeFilledAmount),
+      existingAssetAmount,
+    };
+  }, {
+    ordersToFill: [],
+    makerAssetFillAmounts: [],
+    takerAssetFillAmounts: [],
+    existingAssetAmount: new BigNumber(order.makerAssetAmount),
+  });
 }
 
 export function* fillOrder({
   order,
   formActions,
-  matchedOrders,
+  ordersToFill,
+  makerAssetFillAmounts,
+  takerAssetFillAmounts,
+  existingAssetAmount = new BigNumber(0),
 }) {
   const networkId = yield eff.call(web3.eth.net.getId);
   const contractWrappers = ethApi.getWrappers(networkId);
-
-  let existingAssetAmount = new BigNumber(order.makerAssetAmount);
-
-  const ordersToFill = [];
-  const makerAssetFillAmounts = [];
-  const takerAssetFillAmounts = [];
-
-  while (existingAssetAmount.gt(0) && matchedOrders.length) {
-    const matchedOrder = matchedOrders.shift();
-    const neededAmount = matchedOrder.metaData.remainingFillableTakerAssetAmount;
-    const toBeFilledAmount = BigNumber.min(neededAmount, existingAssetAmount);
-    existingAssetAmount = existingAssetAmount.minus(toBeFilledAmount);
-
-    const filledMakerAssetAmount = new BigNumber(matchedOrder.makerAssetAmount)
-      .times(toBeFilledAmount)
-      .div(matchedOrder.takerAssetAmount);
-
-    ordersToFill.push(matchedOrder);
-    makerAssetFillAmounts.push(filledMakerAssetAmount);
-    takerAssetFillAmounts.push(toBeFilledAmount);
-  }
-
   const taker = yield eff.select(selectors.getWalletState('selectedAccount'));
 
   const toBeViewedOrders = ordersToFill.map((o, i) => {
@@ -260,6 +246,7 @@ export function* fillOrder({
   });
 
   yield eff.put(setWalletState({ matchedOrders: toBeViewedOrders }));
+
 
   yield eff.put(sendShowModalRequest('OrdersInfo'));
   const { isConfirmed } = yield eff.take(actionTypes.CHECK_MODAL_STATUS);
@@ -323,21 +310,44 @@ export function* fillOrder({
           shouldMatch: false,
         });
       } else {
-        formActions.resetForm({
+        formActions?.resetForm({
           expirationNumber: 1,
-          expirationUnit: 'hours',
+          expirationUnit: 'months',
+          shouldMatch: true,
         });
-        formActions.setSubmitting(false);
+        formActions?.setSubmitting(false);
       }
     } catch (e) {
-      console.log('TX FAILED', e);
+      const isMetamaskDenied = e.message === 'SIGNATURE_REQUEST_DENIED';
+      const notificationConfig = {
+        key: 1,
+        placement: 'topLeft',
+        message: isMetamaskDenied ? 'You canceled transaction' : 'Fill transaction failed',
+        description: isMetamaskDenied ? '' : 'You don`t have enough funds or allowance',
+        duration: 3,
+        iconProps: {
+          type: 'close-circle',
+          style: {
+            color: 'red',
+          },
+        },
+      };
+      yield eff.put(sendNotificationRequest(notificationConfig));
+      formActions?.resetForm({
+        expirationNumber: 1,
+        expirationUnit: 'months',
+        shouldMatch: true,
+      });
+      formActions?.setSubmitting(false);
+      console.log('TX FAILED', e.message);
     }
   } else {
-    formActions.resetForm({
+    formActions?.resetForm({
       expirationNumber: 1,
-      expirationUnit: 'hours',
+      expirationUnit: 'months',
+      shouldMatch: true,
     });
-    formActions.setSubmitting(false);
+    formActions?.setSubmitting(false);
   }
   yield eff.put(setWalletState({ matchedOrders: [] }));
 }
@@ -363,17 +373,16 @@ export function* postOrder({
     const contractWrappers = ethApi.getWrappers(networkId);
     const exchangeAddress = getContractAddressesForNetwork(networkId).exchange;
 
-    const matchedOrders = yield eff.call(matchOrder, {
-      makerAssetAmount,
-      takerAssetAmount,
+    const matched = yield eff.call(matchOrder, {
+      order,
       type,
     });
 
-    if (shouldMatch && matchedOrders.length) {
+    if (shouldMatch && matched.ordersToFill.length) {
       yield eff.call(fillOrder, {
         formActions,
-        matchedOrders,
         order,
+        ...matched,
       });
     } else {
       const makerAddress = yield eff.select(selectors.getWalletState('selectedAccount'));
@@ -398,13 +407,14 @@ export function* postOrder({
           ...orderConfigRequest,
           ...orderConfig,
         };
-        const signedOrder = yield eff.call(
-          signatureUtils.ecSignOrderAsync,
-          provider,
-          submitOrder,
-          makerAddress,
-        );
+        let signedOrder;
         try {
+          signedOrder = yield eff.call(
+            signatureUtils.ecSignOrderAsync,
+            provider,
+            submitOrder,
+            makerAddress,
+          );
           yield eff.call(
             [
               contractWrappers.exchange,
@@ -414,29 +424,30 @@ export function* postOrder({
           );
         } catch (err) {
           console.log('NOT VALID', err);
-          formActions.setFieldError(
+          formActions?.setFieldError(
             'balance',
             `Order validation failed: "${utils.zeroExErrToHumanReadableErrMsg(err.message)}".`,
           );
-          formActions.setSubmitting(false);
+          formActions?.setSubmitting(false);
           return;
         }
         yield eff.call(api.postOrder, signedOrder, { networkId });
       } catch (err) {
         console.log('BACKEND VALIDATION', err);
-        formActions.setFieldError(
+        formActions?.setFieldError(
           'balance',
           err.json?.reason
             ? `Backend validation failed "${err.json.reason}".`
             : err.message.split(/[\n\r]/g)[0],
         );
-        formActions.setSubmitting(false);
+        formActions?.setSubmitting(false);
         return;
       }
-      formActions.setSubmitting(false);
-      formActions.resetForm({
+      formActions?.setSubmitting(false);
+      formActions?.resetForm({
         expirationNumber: 1,
-        expirationUnit: 'hours',
+        expirationUnit: 'months',
+        shouldMatch: true,
       });
     }
   } catch (e) {
@@ -478,6 +489,10 @@ export function* cancelOrder({ order }) {
 
 export function* takePostOrder() {
   yield eff.takeEvery(actionTypes.POST_ORDER_REQUEST, postOrder);
+}
+
+export function* takeFillOrder() {
+  yield eff.takeEvery(actionTypes.FILL_ORDER_REQUEST, fillOrder);
 }
 
 export function* takeCancelOrder() {

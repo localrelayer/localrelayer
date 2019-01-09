@@ -668,6 +668,7 @@ export function* initialize(): Saga<void> {
   yield eff.fork(coreSagas.takeApproval);
   yield eff.fork(coreSagas.takeDepositAndWithdraw);
   yield eff.fork(coreSagas.takePostOrder);
+  yield eff.fork(coreSagas.takeFillOrder);
   yield eff.fork(coreSagas.takeCancelOrder);
   yield eff.fork(takeNotification);
   yield eff.fork(takeModalShow);
