@@ -268,7 +268,7 @@ Key
 4F6B18AF7C44ED58C29EF93857CEE839EAB6559FD8164554C3368E6858B159BD
 ```
 
-**feeRecipient(Account 3)**
+**testFeeRecipient(Account 3)**
 ```
 0xc6c3D375B62D66fe0A796eD4ac30bD09fF2D1BE5
 ```
@@ -276,6 +276,13 @@ Key
 ```
 E9037D55FAF01CFC97EAA01F8C2E6B1415A94A99231A9C8AE8E7D17D1EE23B78
 ```
+
+**feeRecipient (Hardware wallet)**
+```
+0x3151e8Ab9bFE754AdA6682b9d75906E06a18A741
+```
+
+
 # Dashboard
 The dashboard is an execution environment implemented as a console application. 
 The main purpose of the dashboard is the automated execution processes, scenarios and tests.
