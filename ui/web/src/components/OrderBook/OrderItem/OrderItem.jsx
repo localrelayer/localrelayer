@@ -5,6 +5,9 @@ import {
   Popover,
   Icon,
 } from 'antd';
+import {
+  utils,
+} from 'instex-core';
 import * as S from './styled';
 
 type Props = {
@@ -49,6 +52,17 @@ const OrderItem = ({
           Expire:
           {' '}
           {order.formattedExpirationTime}
+        </div>
+        <div>
+          Source:
+          {' '}
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href={utils.getSource(order.metaData.sourceRelayer).url}
+          >
+            {utils.getSource(order.metaData.sourceRelayer).name}
+          </a>
         </div>
         <S.FillButton onClick={() => onFillClick(order)}>
           Fill Order

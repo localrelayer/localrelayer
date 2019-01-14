@@ -229,3 +229,17 @@ export const calculateBar = (order, orders) => {
 };
 
 export const isNumber = n => !isNaN(+n) && +n !== 0 && isFinite(n) && Math.abs(n) === +n; /* eslint-disable-line */
+
+export const getSource = (name) => {
+  const sources = {
+    instex: {
+      name: 'Instex',
+      url: 'https://app.instex.io',
+    },
+    radar: {
+      name: 'Radar Relay',
+      url: 'https://app.radarrelay.com',
+    },
+  };
+  return sources[name] || {};
+};
