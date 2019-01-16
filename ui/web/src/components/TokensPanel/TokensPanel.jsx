@@ -22,7 +22,7 @@ type Props = {
   onPairClick: Function,
 }
 
-const columns = [
+const getColumns = quoteTokens => [
   {
     title: 'Pair',
     key: 'pair',
@@ -35,6 +35,11 @@ const columns = [
           record.assetDataB.assetData.symbol,
         ].join('/')}
       </Tooltip>),
+    filters: quoteTokens.map(token => ({
+      text: token.name,
+      value: token.address,
+    })),
+    onFilter: (value, record) => record.assetDataB.assetData.address.indexOf(value) === 0,
   },
   {
     title: 'Last Price',
@@ -74,6 +79,7 @@ const TokensPanel = ({
   onClose,
   listedAssetPairs,
   onPairClick,
+  quoteTokens,
 }: Props): Node => {
   const [searchText, setSearchText] = useState('');
   const s = searchText.toLowerCase();
@@ -96,7 +102,7 @@ const TokensPanel = ({
         </S.SearchBar>
         <S.TokensTable
           rowKey="id"
-          columns={columns}
+          columns={getColumns(quoteTokens)}
           pagination={false}
           onRow={record => ({
             onClick: () => onPairClick(record),

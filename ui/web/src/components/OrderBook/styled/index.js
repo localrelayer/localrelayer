@@ -30,7 +30,7 @@ export const Header = styled.div`
 
 export const HeaderTh = styled.div`
   font-family: "Chinese Quote", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-variant: tabular-nums;
   line-height: 1.5;
   vertical-align: middle;
