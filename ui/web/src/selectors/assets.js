@@ -220,3 +220,13 @@ export const getAssetsWithBalanceAndAllowance = createSelector(
     });
   },
 );
+
+export const getQuoteTokens = createSelector(
+  [
+    cs.getListedAssetPairs,
+  ],
+  assetPairs => Object.values(assetPairs.reduce((acc, cur) => {
+    acc[cur.assetDataB.assetData.address] = cur.assetDataB.assetData;
+    return acc;
+  }, {})),
+);

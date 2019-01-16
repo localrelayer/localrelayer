@@ -10,6 +10,7 @@ type Props = {
   bids: Array<any>,
   tokenMarketPrice: Number,
   onOrderClick: Function,
+  onFillClick: Function,
   assetPair: any,
 };
 
@@ -28,17 +29,23 @@ const OrderBook = ({
       <S.HeaderTh>
         Price
         {' '}
-        {assetPair?.assetDataB?.assetData?.symbol}
+        <small>
+          {assetPair?.assetDataB?.assetData?.symbol}
+        </small>
       </S.HeaderTh>
       <S.HeaderTh>
         Amount
         {' '}
-        {assetPair?.assetDataA?.assetData?.symbol}
+        <small>
+          {assetPair?.assetDataA?.assetData?.symbol}
+        </small>
       </S.HeaderTh>
       <S.HeaderTh>
         Total
         {' '}
-        {assetPair?.assetDataB?.assetData?.symbol}
+        <small>
+          {assetPair?.assetDataB?.assetData?.symbol}
+        </small>
       </S.HeaderTh>
     </S.Header>
     <S.Asks>

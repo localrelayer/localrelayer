@@ -13,6 +13,7 @@ import {
 } from 'web-actions';
 import {
   getUiState,
+  getQuoteTokens,
 } from 'web-selectors';
 import {
   coreSelectors as cs,
@@ -27,6 +28,7 @@ const TransactionsPanelContainer = (): Node => (
       isVisible: getUiState('isTokensPanelIsVisible')(state),
       listedAssetPairs: cs.getListedAssetPairs(state),
       historyType: getUiState('historyType')(state),
+      quoteTokens: getQuoteTokens(state),
     })}
   >
     {({
@@ -34,10 +36,12 @@ const TransactionsPanelContainer = (): Node => (
       listedAssetPairs,
       historyType,
       dispatch,
+      quoteTokens,
     }) => (
       <TokensPanel
         isVisible={isVisible}
         listedAssetPairs={listedAssetPairs}
+        quoteTokens={quoteTokens}
         onClose={() => {
           dispatch(uiActions.setUiState({
             isTokensPanelIsVisible: false,
