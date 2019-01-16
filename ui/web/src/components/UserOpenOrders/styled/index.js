@@ -14,7 +14,7 @@ export const UserOpenOrders = styled.div`
 export const Header = styled.div`
   display: flex;
   justify-content: flex-start;
-  font-size: 18px;
+  padding: 5px;
 `;
 
 export const SearchField = styled.div`
@@ -27,6 +27,7 @@ export const SearchField = styled.div`
 export const Title = styled.div`
   margin-left: 40%;
   width: 55%;
+  font-size: 1rem;
 `;
 
 export const UserOpenOrdersTable = styled(Table)`

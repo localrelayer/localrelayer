@@ -43,7 +43,7 @@ const setFieldByPercentage = (
   setValues(
     {
       ...values,
-      amount: type === 'askLimit'
+      amount: type === 'ask'
         ? truncate(new BigNumber(currentBalance).times(percentage / 100), 8)
         : bidAmount,
     },

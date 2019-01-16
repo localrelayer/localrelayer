@@ -55,5 +55,6 @@ export const TradingHistory = styled.div`
 export const Header = styled.div`
   display: flex;
   justify-content: center;
-  font-size: 18px;
+  font-size: 1rem;
+  padding: 5px;
 `;

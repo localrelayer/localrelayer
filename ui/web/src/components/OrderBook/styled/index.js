@@ -8,11 +8,11 @@ export const OrderBook = styled.div`
 `;
 
 export const Asks = styled.div`
-  height: 47%;
+  height: 45%;
 `;
 
 export const Bids = styled.div`
-  height: 47%;
+  height: 45%;
 `;
 
 export const Spread = styled.div`
