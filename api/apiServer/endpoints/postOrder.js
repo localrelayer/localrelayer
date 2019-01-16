@@ -140,6 +140,7 @@ export function createPostOrderEndpoint(standardRelayerApi) {
           createdAt: new Date().toISOString(),
           orderHash,
           networkId,
+          sourceRelayer: 'instex',
         };
         const userSubmittedOrders = await Order.find({
           makerAddress: order.makerAddress,
