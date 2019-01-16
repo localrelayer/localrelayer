@@ -289,10 +289,13 @@ export function* checkAssetPair({
   );
 
   if (baseAssetResource && quoteAssetResource) {
-    const assetPair = yield eff.select(getResourceById(
+    const assetPair = (yield eff.select(getResourceById(
       'assetPairs',
       `${baseAssetResource.id}_${quoteAssetResource.id}`,
-    ));
+    ))) || (yield eff.select(getResourceById(
+      'assetPairs',
+      `${quoteAssetResource.id}_${baseAssetResource.id}`,
+    )));
     if (assetPair) {
       return {
         assetPair,
@@ -306,10 +309,22 @@ export function* checkAssetPair({
       mergeListIds: true,
     });
 
+    const defaultAssetData = {
+      precision: 8,
+      minAmount: '1000000000',
+      maxAmount: '10000000000000000000000000',
+    };
+
     const notListedAssetPair = {
       id: `${baseAssetResource.id}_${quoteAssetResource.id}`,
-      assetDataA: baseAssetResource,
-      assetDataB: quoteAssetResource,
+      assetDataA: {
+        ...defaultAssetData,
+        assetData: baseAssetResource.id,
+      },
+      assetDataB: {
+        ...defaultAssetData,
+        assetData: quoteAssetResource.id,
+      },
     };
     yield eff.put(actions.succeeded({
       resources: [notListedAssetPair],
