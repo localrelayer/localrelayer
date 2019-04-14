@@ -16,6 +16,7 @@ type Props = {
   tokenMarketPrice: Number,
   type: String,
   onFillClick: Function,
+  quoteToken: String,
 };
 
 const OrderItem = ({
@@ -24,6 +25,7 @@ const OrderItem = ({
   onClick,
   type,
   onFillClick,
+  quoteToken,
 }: Props) => (
   <Popover
     content={(
@@ -34,19 +36,44 @@ const OrderItem = ({
           {order.pair}
         </div>
         <div>
-          Amount:
+          Amount
+          (
+          {quoteToken}
+          ):
           {' '}
           {order.amount}
         </div>
         <div>
-          Price:
+          Price (USD):
           {' '}
           {`$${(tokenMarketPrice * order.price).toFixed(2)}`}
         </div>
         <div>
-          Total:
+          Total (USD):
           {' '}
           {`$${(tokenMarketPrice * order.total).toFixed(2)}`}
+        </div>
+        <div>
+          Price
+          {' '}
+          (
+          {quoteToken}
+          )
+          :
+          {' '}
+          {order.price}
+          {' '}
+        </div>
+        <div>
+          Total
+          {' '}
+          (
+          {quoteToken}
+          )
+          :
+          {' '}
+          {order.total}
+          {' '}
         </div>
         <div>
           Expire:
