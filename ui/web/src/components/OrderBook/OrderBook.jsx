@@ -52,6 +52,7 @@ const OrderBook = ({
       <S.AsksItemsList>
         {asks.map(order => (
           <OrderItem
+            quoteToken={assetPair?.assetDataB?.assetData?.symbol}
             onFillClick={onFillClick}
             key={order.id}
             order={order}
@@ -76,6 +77,7 @@ const OrderBook = ({
       <S.BidsItemsList>
         {bids.map(order => (
           <OrderItem
+            quoteToken={assetPair?.assetDataB?.assetData?.symbol}
             onFillClick={onFillClick}
             key={order.id}
             order={order}

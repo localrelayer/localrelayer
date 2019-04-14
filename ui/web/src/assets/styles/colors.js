@@ -21,7 +21,7 @@ const colors = {
   'background-color-base': '#02323a',
   'firm-color': '#673ab7',
   green: '#279467',
-  red: '#a03756',
+  red: '#ea0070',
   // same as fade(#3782c3, 85%)
   white: '#DADDDF',
   'disabled-color': '#ffffff57',
