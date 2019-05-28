@@ -24,3 +24,4 @@ lerna-debug.log*
 .vscode/
 .version.swp
 .cache/
+*.rdb
