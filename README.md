@@ -14,23 +14,25 @@ This document and all mentioned references are required for reading by every dev
 Jump to:
 
 - [Usage](#usage)
-  * [Git flow](#git-flow)
-  * [Commit message](#commit-message)
-  * [Contributing](#contributing)
-  * [Preparing a good PR](#preparing-a-good-pr)
-  * [Maintaining](#maintaining)
+  - [Git flow](#git-flow)
+  - [Commit message](#commit-message)
+      - [Commitizen](#commitizen)
+  - [Contributing](#contributing)
+  - [Preparing a good PR](#preparing-a-good-pr)
+  - [Maintaining](#maintaining)
 - [Basic concepts](#basic-concepts)
 - [Glossary](#glossary)
-  * [0x protocol](#0x-protocol)
-  * [Web3](#web3)
-  * [MetaMask](#metamask)
-  * [WETH](#weth)
-  * [Order book](#order-book)
-  * [Maker and Taker](#maker-and-taker)
-  * [Relayer](#relayer)
-  * [Shared liquidity](#shared-liquidity)
+  - [0x Protocol](#0x-protocol)
+  - [Web3](#web3)
+  - [Metamask](#metamask)
+  - [WETH](#weth)
+  - [Order book](#order-book)
+  - [Maker and Taker](#maker-and-taker)
+  - [Relayer](#relayer)
+  - [Shared liquidity](#shared-liquidity)
 - [Base/Quote pair and Bid/Ask price explanation](#basequote-pair-and-bidask-price-explanation)
 - [Test Ethereum accounts](#test-ethereum-accounts)
+- [Dashboard](#dashboard)
 
 # Usage
 The repo consist of 3 parts - **api**, **ui** and **landing**.
@@ -45,7 +47,7 @@ Therefore when we schedule a new version, the milestone may have issues for any 
 We use [SemVer](http://semver.org/) specification whuch dictate how version numbers are assigned and incremented.
 
 Each new **Major** and **Minor** version changes is scheduled in
-**[github milestones](https://github.com/web-pal/instex/milestones)** so you can track the progress
+**[github milestones](https://github.com/instex/instex/milestones)** so you can track the progress
 right on the github.
 **Patch** versions is for hotfixes or features which we need to deploy for some reason right now.
 
@@ -277,7 +279,7 @@ Key
 E9037D55FAF01CFC97EAA01F8C2E6B1415A94A99231A9C8AE8E7D17D1EE23B78
 ```
 
-**feeRecipient (Hardware wallet)**
+**Instex feeRecipient (public address of deployed Instex instance)**
 ```
 0x3151e8Ab9bFE754AdA6682b9d75906E06a18A741
 ```
