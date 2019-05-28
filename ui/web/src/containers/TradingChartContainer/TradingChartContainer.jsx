@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import Component from 'web-components/ConnectComponent';
-import TradingChart from 'web-components/TradingChart';
+import TradingChart from 'web-components/TradingChart/TradingChart2';
 
 import {
   api,
