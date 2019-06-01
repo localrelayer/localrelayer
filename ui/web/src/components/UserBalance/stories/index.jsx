@@ -10,7 +10,7 @@ import {
 
 import {
   coreCache,
-} from 'instex-core';
+} from 'localrelayer-core';
 import TradingPageLayout from 'web-components/TradingPageLayout';
 import UserProfilePageLayout from 'web-components/UserProfilePageLayout';
 import 'web-styles/main.less';

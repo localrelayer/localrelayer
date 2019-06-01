@@ -1,5 +1,5 @@
-# Instex
-Instex is a dApp(decentralized application) built on top of [0x protocol](https://0xproject.com/).
+# Local Relayer
+Local Relayer is a dApp(decentralized application) built on top of [0x protocol](https://0xproject.com/).
 It helps traders to discover counter-parties and ferry cryptographically signed orders between them.
 
 The project on an experimental stage in attempts to find the way and to take the place in
@@ -7,12 +7,13 @@ the new decentralized world.
 At this stage, we are working on UI and API interfaces for the open orderbook node(relayer)
 which will be ready for connection in shared liquidity pool with other relayers.
 
-This document and all mentioned references are required for reading by every developer who wants to contibute to Instex.
+This document and all mentioned references are required for reading by every developer who wants to contibute to Local Relayer.
 
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 
 Jump to:
 
+- [Local Relayer](#local-relayer)
 - [Usage](#usage)
   - [Git flow](#git-flow)
   - [Commit message](#commit-message)
@@ -32,14 +33,12 @@ Jump to:
   - [Shared liquidity](#shared-liquidity)
 - [Base/Quote pair and Bid/Ask price explanation](#basequote-pair-and-bidask-price-explanation)
 - [Test Ethereum accounts](#test-ethereum-accounts)
-- [Dashboard](#dashboard)
 
 # Usage
-The repo consist of 3 parts - **api**, **ui** and **landing**.
+The repo consist of 2 parts - **api** and **ui**.
 Each of this part is a separated module with own **Usage** documentation which described how to run it.
 
-At this moment modules not connect with each other by yarn workspaces or lerna packages, so
-they don't have hoisted or shared dependencies.
+At this moment modules not connect with each other by yarn workspaces or lerna packages, so they don't have hoisted or shared dependencies.
 We store it in one repository for the consistent version control.
 It means all these packages have the same version number.
 Therefore when we schedule a new version, the milestone may have issues for any part of the project.
@@ -47,7 +46,7 @@ Therefore when we schedule a new version, the milestone may have issues for any 
 We use [SemVer](http://semver.org/) specification whuch dictate how version numbers are assigned and incremented.
 
 Each new **Major** and **Minor** version changes is scheduled in
-**[github milestones](https://github.com/instex/instex/milestones)** so you can track the progress
+**[github milestones](https://github.com/localrelayer/localrelayer/milestones)** so you can track the progress
 right on the github.
 **Patch** versions is for hotfixes or features which we need to deploy for some reason right now.
 
@@ -168,8 +167,8 @@ adding new (historical) commits or creating a new pull request.
 WIP...
 
 # Basic concepts
-**Instex** is a **relayer** utilizing **open order book strategy** built on top of **0x protocol**.
-If you're brand new to **Instex** and want to understand the basic concepts, see:
+**Local Relayer** is a **relayer** utilizing **open order book strategy** built on top of **0x protocol**.
+If you're brand new to **Local Relayer** and want to understand the basic concepts, see:
 
 - The **[Definition](https://en.wikipedia.org/wiki/Order_book_(trading))** of order book
 - The simple interactive **[Explanation](https://relayer.network/)** of what DEX and relayer are
@@ -237,7 +236,7 @@ stereo cheese harsh ordinary scrub media chair beauty artist poet ranch attack
 
 **Password (you can create your own or use this one just for the convention)**
 ```
-instexMetamask
+localrelayerMetamask
 ```
 
 **Testnet ZRX address**
@@ -278,32 +277,3 @@ Key
 ```
 E9037D55FAF01CFC97EAA01F8C2E6B1415A94A99231A9C8AE8E7D17D1EE23B78
 ```
-
-**Instex feeRecipient (public address of deployed Instex instance)**
-```
-0x3151e8Ab9bFE754AdA6682b9d75906E06a18A741
-```
-
-
-# Dashboard
-The dashboard is an execution environment implemented as a console application. 
-The main purpose of the dashboard is the automated execution processes, scenarios and tests.
-In order to run dashboard execute next commands:
-```
-cd /api
-npm run dashboard
-```
-It contains three elements:
-- **Output** is simply consoled output of currently executing a process (on the left)
-- **Logs** show structured logs of the current process
-                      (current process mark with *) which are taken from redis (on the top right)
-- **Execution list** contains all available processes and scenarios 
-                                          to execute (on the bottom right)
-
-At the footer are displayed available actions for each executing list item. E.g. **r** - run the process, **s** - stop 
-the process, **t** - show/hide scenarios, **Enter** - choose process which logs will be shown in Logs box etc.
-
-In order to add your own process, scenario or test to Execution list, you have to insert it into a suitable array in
-**dashboard/index.js** (i.e. processes, scenarios or tests array). It's possible to select processes that will be execute
-automatically after dashboard starting, for this reason, add process id in **dashboard/.config.js**, pay attention that 
-**.config.js** only stores locally and should never be pushed to remote.

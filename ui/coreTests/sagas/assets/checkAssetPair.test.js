@@ -9,7 +9,7 @@ import {
   coreMocks,
   coreSagas,
   coreReducers,
-} from 'instex-core';
+} from 'localrelayer-core';
 
 import '../../web3InitTests';
 

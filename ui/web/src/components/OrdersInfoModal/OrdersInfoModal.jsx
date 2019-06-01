@@ -3,7 +3,7 @@ import React from 'react';
 
 import {
   utils,
-} from 'instex-core';
+} from 'localrelayer-core';
 import * as S from './styled';
 
 type Props = {

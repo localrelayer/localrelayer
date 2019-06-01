@@ -5,7 +5,7 @@ import {
 import {
   coreSelectors as cs,
   utils,
-} from 'instex-core';
+} from 'localrelayer-core';
 import {
   BigNumber,
 } from '0x.js';

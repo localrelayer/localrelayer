@@ -36,12 +36,7 @@ export const BuySellTabs = styled(Tabs)`
     line-height: 32px !important;
   }
 
-  .ant-tabs-tab:hover {
-    color: white !important;
-  }
-
   .ant-tabs-tab-active {
-    color: white !important; 
     background: ${props => (props.activeKey.includes('Bid') ? '#2794673d' : '#a037563d')} !important;
   }
 

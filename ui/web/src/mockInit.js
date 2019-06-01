@@ -1,7 +1,7 @@
 import {
   api,
   coreMocks,
-} from 'instex-core';
+} from 'localrelayer-core';
 
 import config from 'web-config';
 

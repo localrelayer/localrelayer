@@ -10,8 +10,8 @@ import {
 } from 'antd';
 import {
   utils,
-} from 'instex-core';
-import logo from 'web-assets/logo5.png';
+} from 'localrelayer-core';
+import logo from 'web-assets/rebranding.png';
 import * as S from './styled';
 
 type Props = {
@@ -46,7 +46,7 @@ const Header = ({
   return (
     <div>
       <S.Header>
-        <S.InstexLogo src={logo} alt="logo" />
+        <S.LocalRelayerLogo src={logo} alt="logo" />
         <S.TokensButton
           id="tradingPairs"
           onClick={onTokensClick}

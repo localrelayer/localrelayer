@@ -2,7 +2,7 @@
 import Web3 from 'web3';
 import {
   ethApi,
-} from 'instex-core';
+} from 'localrelayer-core';
 import {
   actionTypes,
 } from 'web-actions';

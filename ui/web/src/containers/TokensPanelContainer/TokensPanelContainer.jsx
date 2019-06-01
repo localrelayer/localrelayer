@@ -17,7 +17,7 @@ import {
 } from 'web-selectors';
 import {
   coreSelectors as cs,
-} from 'instex-core';
+} from 'localrelayer-core';
 import {
   getHistory,
 } from '../../history';

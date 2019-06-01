@@ -1,8 +1,8 @@
 // @flow
 
 import React from 'react';
+import logo from 'web-assets/rebranding.png';
 import * as S from '../styled';
-import logo from '../../../assets/logo5.png';
 import type {
   Props,
 } from './Props';
@@ -16,7 +16,7 @@ const Overview = ({ nextStep }: Props) => (
       We are wallet-to-wallet trading platform that will help you to sell and buy any ERC20 token
       </S.Text>
       <S.Text>
-      You need to follow 3 simple steps to start trading on Instex
+      You need to follow 3 simple steps to start trading on Local Relayer
       </S.Text>
       <S.Text style={{ fontSize: '0.7rem' }}>
         BTW: we take no fees at the moment

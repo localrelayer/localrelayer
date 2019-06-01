@@ -1,7 +1,7 @@
 import * as eff from 'redux-saga/effects';
 import {
   coreActions,
-} from 'instex-core';
+} from 'localrelayer-core';
 import {
   uiActions,
 } from 'web-actions';

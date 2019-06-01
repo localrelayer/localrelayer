@@ -8,7 +8,7 @@ import * as eff from 'redux-saga/effects';
 import createActionCreators from 'redux-resource-action-creators';
 import {
   utils,
-} from 'instex-core';
+} from 'localrelayer-core';
 import {
   actionTypes,
   sendShowModalRequest,

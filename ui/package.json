@@ -1,6 +1,7 @@
 {
-  "name": "instex-ui",
+  "name": "localrelayer-ui",
   "private": true,
+  "license": "MIT",
   "scripts": {
     "flow:all": "flow check",
     "flow:core": "flow check core",

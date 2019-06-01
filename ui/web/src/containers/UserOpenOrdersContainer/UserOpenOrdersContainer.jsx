@@ -7,7 +7,7 @@ import type {
 import * as webSelectors from 'web-selectors';
 import {
   coreActions,
-} from 'instex-core';
+} from 'localrelayer-core';
 import Component from 'web-components/ConnectComponent';
 import UserOpenOrders from 'web-components/UserOpenOrders';
 

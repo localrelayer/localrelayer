@@ -4,7 +4,7 @@ Examples:
 const {
  generateTestOrders,
  tokensMock,
-} = require('instex-core');
+} = require('localrelayer-core');
 
 
 const columns = [

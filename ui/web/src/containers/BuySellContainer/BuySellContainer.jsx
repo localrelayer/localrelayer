@@ -23,7 +23,7 @@ import {
   coreActions,
   utils,
   coreSelectors as cs,
-} from 'instex-core';
+} from 'localrelayer-core';
 
 const BuySellContainer = (): Node => (
   <Component

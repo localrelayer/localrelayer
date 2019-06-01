@@ -6,7 +6,7 @@ import TradingChart from 'web-components/TradingChart';
 import {
   api,
   coreSelectors as cs,
-} from 'instex-core';
+} from 'localrelayer-core';
 import {
   chartActions,
 } from 'web-actions';

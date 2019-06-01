@@ -5,7 +5,7 @@ import {
   Modal,
   Button,
 } from 'antd';
-import type { Token } from 'instex-core/types';
+import type { Token } from 'localrelayer-core/types';
 
 
 type Props = {

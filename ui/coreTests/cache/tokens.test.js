@@ -4,7 +4,7 @@ import {
 } from '@0x/json-schemas';
 import {
   coreCache,
-} from 'instex-core';
+} from 'localrelayer-core';
 
 
 const mainNet = 1;

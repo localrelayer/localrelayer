@@ -36,25 +36,29 @@ export const Column3 = styled(Column)`
   min-width: 750px;
 `;
 
-const Element = styled.div`
-  padding: 5px 5px 0 0;
-`;
+const Element = styled.div``;
 
 export const BuySellWrapper = styled(Element)`
   height: 450px;
+  padding: 10px 5px 5px 10px;
 `;
 export const UserBalanceWrapper = styled(Element)`
   height: calc(100% - 450px);
+  padding: 5px 5px 10px 10px;
 `;
 export const OrderBookWrapper = styled(Element)`
   height: 100%;
+  padding: 10px 5px 10px 5px;
 `;
 export const AssetPairCardWrapper = styled(Element)`
   height: 60px;
+  padding: 10px 10px 0 5px;
 `;
 export const TradingChartWrapper = styled(Element)`
   height: calc(60% - 60px);
+  padding: 10px 10px 5px 5px;
 `;
 export const UserOpenOrdersWrapper = styled(Element)`
   height: 40%;
+  padding: 5px 10px 10px 5px;
 `;

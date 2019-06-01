@@ -5,7 +5,7 @@ import {
 } from 'antd';
 import {
   coreActions,
-} from 'instex-core';
+} from 'localrelayer-core';
 
 
 function* sendNotification({ config }) {

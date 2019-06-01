@@ -1,14 +1,14 @@
 // @flow
 import type {
   AssetPair,
-} from 'instex-core/types';
+} from 'localrelayer-core/types';
 
 import {
   assetDataUtils,
 } from '0x.js';
 import {
   utils,
-} from 'instex-core';
+} from 'localrelayer-core';
 
 
 export const getDatafeed = (
@@ -99,7 +99,7 @@ export const getDatafeed = (
       type: 'bitcoin',
       ticker: assetPair.id,
       has_intraday: true,
-      exchange: 'Instex',
+      exchange: 'Local Relayer',
       has_no_volume: false,
       has_empty_bars: true,
       minmov: 1,

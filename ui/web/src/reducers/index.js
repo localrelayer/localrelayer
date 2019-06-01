@@ -4,7 +4,7 @@ import {
 } from 'redux';
 import {
   coreReducers,
-} from 'instex-core';
+} from 'localrelayer-core';
 
 import ui from './ui';
 

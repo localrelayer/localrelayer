@@ -9,7 +9,7 @@ import type {
 } from 'react';
 import type {
   AssetPair,
-} from 'instex-core/types';
+} from 'localrelayer-core/types';
 
 import {
   ColoredSpan,

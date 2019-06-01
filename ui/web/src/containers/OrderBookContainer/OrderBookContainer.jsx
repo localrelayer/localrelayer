@@ -11,7 +11,7 @@ import * as webSelectors from 'web-selectors';
 import {
   coreSelectors,
   coreActions,
-} from 'instex-core';
+} from 'localrelayer-core';
 import {
   uiActions,
 } from 'web-actions';

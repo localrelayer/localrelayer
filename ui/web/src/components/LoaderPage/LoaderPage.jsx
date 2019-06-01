@@ -1,8 +1,6 @@
 import React, {
   useEffect,
 } from 'react';
-
-import logo from '../../assets/logo5.png';
 import * as S from './styled';
 
 const messages = [
@@ -153,13 +151,6 @@ const LoaderPage = () => {
               <g id="phrases" />
             </g>
           </svg>
-        </div>
-        <div id="footer">
-          <img
-            style={{ height: 100, width: 'auto' }}
-            alt="logo"
-            src={logo}
-          />
         </div>
       </div>
     </S.PageWrapper>

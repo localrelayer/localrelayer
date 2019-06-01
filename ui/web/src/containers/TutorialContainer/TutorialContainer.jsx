@@ -17,7 +17,7 @@ import Tutorial from 'web-components/Tutorial';
 import {
   coreActions,
   coreSelectors as cs,
-} from 'instex-core';
+} from 'localrelayer-core';
 
 
 const TutorialContainer = (): Node => (

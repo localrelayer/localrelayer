@@ -8,7 +8,7 @@ import type {
 import type {
   ResourcesState,
   ResourcesAction,
-} from 'instex-core/types';
+} from 'localrelayer-core/types';
 
 import type {
   UiAction,

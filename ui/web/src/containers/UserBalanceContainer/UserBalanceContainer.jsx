@@ -14,7 +14,7 @@ import UserBalance from 'web-components/UserBalance';
 import {
   coreActions,
   coreSelectors as cs,
-} from 'instex-core';
+} from 'localrelayer-core';
 
 type Props = {
   isTradingPage: Boolean,

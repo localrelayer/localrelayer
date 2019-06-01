@@ -4,7 +4,7 @@ import React, {
 } from 'react';
 import type {
   AssetPair,
-} from 'instex-core/types';
+} from 'localrelayer-core/types';
 
 import colors from 'web-styles/colors';
 import * as S from './styled';
@@ -106,7 +106,6 @@ export default class extends Component<Props> {
       user_id: 'public_user_id',
       custom_css_url: 'chart.css',
       toolbar_bg: colors['component-background'],
-      theme: 'Dark',
       overrides: {
         'paneProperties.leftAxisProperties.autoScale': false,
         'paneProperties.rightAxisProperties.autoScale': false,

@@ -13,7 +13,7 @@ import type {
 } from 'react';
 import type {
   Asset,
-} from 'instex-core';
+} from 'localrelayer-core';
 import Measure from 'react-measure';
 import * as S from './styled';
 import WrapForm from './WrapForm';

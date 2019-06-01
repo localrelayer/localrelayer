@@ -1,5 +1,5 @@
 {
-  "name": "instex-coreTests",
+  "name": "localrelayer-core-tests",
   "private": true,
   "version": "0.0.1",
   "main": "./src",
@@ -15,6 +15,6 @@
     }
   },
   "devDependencies": {
-    "instex-core": "0.0.1"
+    "localrelayer-core": "0.0.1"
   }
 }

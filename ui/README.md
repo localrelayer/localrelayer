@@ -1,4 +1,4 @@
-# Instex-ui
+# Local Relayer UI
 
 ## State architecture
 This architecure based on [redux documentation](http://redux.js.org/), so for deeply understanding just read it.

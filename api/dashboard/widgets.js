@@ -8,7 +8,7 @@ export const screen = blessed.screen({
   warnings: true,
   sendFocus: true,
   log: './logs/dashboard',
-  title: 'Instex dashboard',
+  title: 'Local Relayer Dashboard',
 });
 
 export const fgProcessLoggerWidget = blessed.log({

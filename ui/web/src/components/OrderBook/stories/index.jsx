@@ -12,7 +12,7 @@ import {
 } from '0x.js';
 import {
   coreMocks,
-} from 'instex-core';
+} from 'localrelayer-core';
 import {
   Web3Wrapper,
 } from '@0x/web3-wrapper';

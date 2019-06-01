@@ -11,7 +11,7 @@ import {
 } from 'formik';
 import {
   utils,
-} from 'instex-core';
+} from 'localrelayer-core';
 
 import * as S from './styled';
 

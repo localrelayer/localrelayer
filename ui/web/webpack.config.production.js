@@ -38,7 +38,7 @@ module.exports = env => merge(config(env), {
         region: 'us-west-1',
       },
       s3UploadOptions: {
-        Bucket: 'instex-app',
+        Bucket: 'localrelayer-app',
       },
       cloudfrontInvalidateOptions: {
         DistributionId: 'E2L8JEDH9NXQMT',

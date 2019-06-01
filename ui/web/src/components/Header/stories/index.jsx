@@ -11,7 +11,7 @@ import {
   coreMocks,
   coreCache,
   coreSelectors as cs,
-} from 'instex-core';
+} from 'localrelayer-core';
 import Header from '..';
 
 

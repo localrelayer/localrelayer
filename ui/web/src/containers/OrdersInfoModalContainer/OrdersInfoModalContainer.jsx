@@ -16,7 +16,7 @@ import {
 import {
   coreSelectors as cs,
   coreActions as ca,
-} from 'instex-core';
+} from 'localrelayer-core';
 
 
 const OrdersInfoModalContainer = (): Node => (

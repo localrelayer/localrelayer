@@ -36,5 +36,5 @@ export default {
   ],
   fgProcessLogLevel: 'silly',
   nodemonDelay: 0,
-  tmpFile: '/tmp/instexDashboard',
+  tmpFile: '/tmp/localrelayerDashboard',
 };

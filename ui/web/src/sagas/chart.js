@@ -6,7 +6,7 @@ import * as eff from 'redux-saga/effects';
 
 import {
   utils,
-} from 'instex-core';
+} from 'localrelayer-core';
 import {
   actionTypes,
 } from 'web-actions';

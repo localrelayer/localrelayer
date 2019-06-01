@@ -9,7 +9,7 @@ import {
       $exists: true,
     },
   }, {
-    sourceRelayer: 'instex',
+    sourceRelayer: 'localrelayer',
   });
   console.log('Finished');
   process.exit();

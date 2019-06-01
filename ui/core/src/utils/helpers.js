@@ -232,9 +232,9 @@ export const isNumber = n => !isNaN(+n) && +n !== 0 && isFinite(n) && Math.abs(n
 
 export const getSource = (name) => {
   const sources = {
-    instex: {
-      name: 'Instex',
-      url: 'https://app.instex.io',
+    localrelayer: {
+      name: 'Local Relayer',
+      url: 'https://app.localrelayer.com',
     },
     radar: {
       name: 'Radar Relay',

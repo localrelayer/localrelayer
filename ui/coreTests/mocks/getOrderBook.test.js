@@ -5,7 +5,7 @@ import {
 
 import {
   coreMocks,
-} from 'instex-core';
+} from 'localrelayer-core';
 
 
 const baseAssetData = '0xf47261b0000000000000000000000000e41d2489571d322189246dafa5ebde1f4699f498'; /* ZRX */

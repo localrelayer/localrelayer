@@ -11,7 +11,7 @@ import type {
 } from 'react';
 import type {
   Orders,
-} from 'instex-core/types';
+} from 'localrelayer-core/types';
 
 import {
   OrdersListContainer,

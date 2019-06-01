@@ -13,7 +13,4 @@ export const Tabs = styled(AntdTabs)`
   .ant-tabs-content {
     height: 90%;
   }
-  .ant-tabs-tab-active {
-    color: white !important;
-  }
 `;

@@ -7,7 +7,7 @@ import type {
 
 import {
   coreSelectors as cs,
-} from 'instex-core';
+} from 'localrelayer-core';
 import * as webSelectors from 'web-selectors';
 import {
   uiActions,

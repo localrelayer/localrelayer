@@ -6,7 +6,7 @@ import {
   coreSagas,
   contracts,
   coreCache,
-} from 'instex-core';
+} from 'localrelayer-core';
 
 import '../../web3InitTests';
 

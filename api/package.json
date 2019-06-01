@@ -1,14 +1,10 @@
 {
-  "name": "instex-api",
-  "version": "0.0.1",
-  "description": "Instex api",
+  "name": "localrelayer-api",
+  "description": "Local Relayer API",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
     "build": "NODE_ENV=production npm run clean && babel . -d dist --copy-files",
-    "start": "pm2 start process.yml --env production",
-    "stop": "pm2 stop collector-listener collector-socket",
-    "delete": "pm2 delete collector-listener collector-socket",
     "dashboard": "NODE_ENV=development babel-node ./dashboard/nodemon",
     "api": "babel-node ./apiServer/run",
     "api:dev": "NODE_ENV=development npm run api",
@@ -89,15 +85,15 @@
     "babel-core": "6.26.3",
     "babel-eslint": "10.0.1",
     "blessed": "0.1.81",
+    "chai": "4.2.0",
+    "cli-table": "0.3.1",
     "download-cli": "1.1.1",
     "eslint": "5.10.0",
     "eslint-config-airbnb": "17.1.0",
-    "eslint-plugin-import": "2.14.0",
     "eslint-import-resolver-alias": "1.1.2",
-    "ganache-core": "2.3.3",
-    "cli-table": "0.3.1",
+    "eslint-plugin-import": "2.14.0",
+    "ganache-core": "^2.5.5",
     "mocha": "5.2.0",
-    "chai": "4.2.0",
     "nodemon": "1.18.7"
   }
 }

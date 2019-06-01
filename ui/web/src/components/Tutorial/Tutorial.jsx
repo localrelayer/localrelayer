@@ -51,7 +51,7 @@ const Tutorial = (props: Props) => {
               title={<S.Title>Overview</S.Title>}
               description={(
                 <S.NavText>
-                  Learn the steps to start trading on Instex.
+                  Learn the steps to start trading on LocalRelayer.
                 </S.NavText>)}
             />
             <Steps.Step

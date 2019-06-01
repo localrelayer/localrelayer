@@ -27,7 +27,7 @@ export const UnsupportedNetwork = styled.div`
   border-radius: 4px;
 `;
 
-export const InstexLogo = styled.img`
+export const LocalRelayerLogo = styled.img`
   height: 100%;
   cursor: pointer;
 `;

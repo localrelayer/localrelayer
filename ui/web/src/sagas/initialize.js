@@ -24,7 +24,7 @@ import {
   coreActions,
   api,
   utils,
-} from 'instex-core';
+} from 'localrelayer-core';
 
 import config from 'web-config';
 import {
@@ -542,7 +542,7 @@ export function* initialize(): Saga<void> {
     }));
   }
 
-  const localStorageSettings = localStorage.getItem('instexSettings');
+  const localStorageSettings = localStorage.getItem('localrelayerSettings');
   try {
     const settings = JSON.parse(localStorageSettings);
 
@@ -556,7 +556,7 @@ export function* initialize(): Saga<void> {
         setupGuideShown: true,
         wasJoyrideShown: true,
       };
-      localStorage.setItem('instexSettings', JSON.stringify(newSettings));
+      localStorage.setItem('localrelayerSettings', JSON.stringify(newSettings));
     }
   } catch (e) {
     console.log('Cant parse settings');

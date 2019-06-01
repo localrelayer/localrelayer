@@ -4,7 +4,7 @@ import {
   api,
   coreMocks,
   coreReducers,
-} from 'instex-core';
+} from 'localrelayer-core';
 import {
   runSaga,
 } from 'redux-saga';

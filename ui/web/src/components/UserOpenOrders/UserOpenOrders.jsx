@@ -10,7 +10,7 @@ import {
 } from 'antd';
 import {
   utils,
-} from 'instex-core';
+} from 'localrelayer-core';
 import {
   ColoredSpan,
 } from 'web-components/SharedStyledComponents';

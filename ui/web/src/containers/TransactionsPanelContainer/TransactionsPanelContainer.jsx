@@ -10,7 +10,7 @@ import TransactionsPanel from 'web-components/TransactionsPanel';
 
 import {
   coreSelectors as cs,
-} from 'instex-core';
+} from 'localrelayer-core';
 import {
   uiActions,
 } from 'web-actions';

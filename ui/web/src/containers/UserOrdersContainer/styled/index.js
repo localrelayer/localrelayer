@@ -18,7 +18,4 @@ export const UserOrdersTabs = styled(Tabs)`
      margin: 0;
      border-bottom: 1px solid ${colors['component-background']};
   }
-  .ant-tabs-tab-active {
-    color: white !important;
-  }
 `;

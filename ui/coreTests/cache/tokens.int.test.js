@@ -1,7 +1,7 @@
 import {
   cachedTokens,
   contracts,
-} from 'instex-core';
+} from 'localrelayer-core';
 import '../web3InitTests';
 
 /*

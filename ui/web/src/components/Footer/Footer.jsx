@@ -19,15 +19,15 @@ import {
 const Footer = (): Node => (
   <FooterContainer>
     <LinksContainer>
-      <a target="_blank" rel="noopener noreferrer" href="https://t.me/instex">Telegram (Support)</a>
-      <a target="_blank" rel="noopener noreferrer" href="https://twitter.com/Instex_0x">Twitter</a>
-      <a href="mailto:hi@instex.io">Email</a>
+      <a target="_blank" rel="noopener noreferrer" href="https://t.me/localrelayer">Telegram (Support)</a>
+      <a target="_blank" rel="noopener noreferrer" href="https://twitter.com/localrelayer">Twitter</a>
+      <a href="mailto:hi@localrelayer.com">Email</a>
     </LinksContainer>
     <AlignRight>
       <LinksContainer>
-        <a target="_blank" rel="noopener noreferrer" href="https://goo.gl/forms/R5vADvEL1c4Q6gI43">Submit token</a>
+        {/* <a target="_blank" rel="noopener noreferrer" href="https://goo.gl/forms/R5vADvEL1c4Q6gI43">Submit token</a> */}
         <Link to="/faq">FAQ</Link>
-        <a target="_blank" rel="noopener noreferrer" href="https://twitter.com/Instex_0x">Guide</a>
+        <a target="_blank" rel="noopener noreferrer" href="https://twitter.com/localrelayer">Guide</a>
       </LinksContainer>
     </AlignRight>
   </FooterContainer>

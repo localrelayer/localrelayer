@@ -54,7 +54,6 @@ export const Body = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 50px;
 
   .ant-table-tbody > tr:hover > td {
     background-color: ${colors['item-hover-bg']} !important;
@@ -86,7 +85,7 @@ export const NextButton = styled(Button).attrs({
 `;
 
 export const TutorialImage = styled.img`
-  width: 70%;
+  max-height: 150px;
 `;
 
 export const UserAddress = styled(Tag)`
