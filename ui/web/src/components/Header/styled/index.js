@@ -5,6 +5,9 @@ import {
   Button,
 } from 'antd';
 import * as colors from 'web-styles/colors';
+import {
+  Link,
+} from 'react-router-dom';
 
 export const HeaderIcon = styled(Icon)`
   padding-right: 10px;
@@ -27,9 +30,12 @@ export const UnsupportedNetwork = styled.div`
   border-radius: 4px;
 `;
 
-export const LocalRelayerLogo = styled.img`
-  height: 100%;
+export const LocalRelayerLogo = styled(Link)`
   cursor: pointer;
+
+  & > img {
+    width: 80px;
+  }
 `;
 
 export const Trade = styled.div`

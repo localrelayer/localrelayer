@@ -37,13 +37,16 @@ const Element = styled.div`
 
 
 export const UserBalanceWrapper = styled(Element)`
-  height: 100%
+  height: 100%;
+  padding: 10px 5px 10px 10px;
 `;
 
 export const TradingHistoryWrapper = styled(Element)`
   height: 60%;
+  padding: 10px 10px 5px 5px;
 `;
 
 export const UserOpenOrdersWrapper = styled(Element)`
   height: 40%;
+  padding: 5px 10px 10px 5px;
 `;

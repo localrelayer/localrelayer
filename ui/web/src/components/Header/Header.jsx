@@ -46,7 +46,9 @@ const Header = ({
   return (
     <div>
       <S.Header>
-        <S.LocalRelayerLogo src={logo} alt="logo" />
+        <S.LocalRelayerLogo to={currentLink}>
+          <img src={logo} alt="logo" />
+        </S.LocalRelayerLogo>
         <S.TokensButton
           id="tradingPairs"
           onClick={onTokensClick}
@@ -59,19 +61,19 @@ const Header = ({
         <S.Trade>
           <Link to={currentLink}>
             <S.HeaderIcon type="swap" />
-          Trade
+            Trade
           </Link>
         </S.Trade>
         <S.Account>
           <Link to="/account">
             <S.HeaderIcon type="home" />
-          Account
+            Account
           </Link>
         </S.Account>
         <S.Account>
           <a onClick={onSetupGuideClick}>
             <S.HeaderIcon type="setting" />
-          Setup Guide
+            Setup Guide
           </a>
         </S.Account>
         <S.NotificationContainer>
