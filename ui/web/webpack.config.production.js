@@ -33,15 +33,15 @@ module.exports = env => merge(config(env), {
     }),
     new S3Plugin({
       s3Options: {
-        accessKeyId: 'AKIAIBIKUDUXXS73SUCQ',
-        secretAccessKey: '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',
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
         region: 'us-west-1',
       },
       s3UploadOptions: {
         Bucket: 'localrelayer-app',
       },
       cloudfrontInvalidateOptions: {
-        DistributionId: 'E2L8JEDH9NXQMT',
+        DistributionId: process.env.CLOUDFRONT_DISTRIBUTION,
         Items: ['/*'],
       },
     }),
