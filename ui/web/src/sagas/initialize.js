@@ -108,6 +108,7 @@ function* initializeRoute({
   location,
   webRadioChannel,
   networkId,
+  history,
 }) {
   const selectedAccount = yield eff.select(coreSelectors.getWalletState('selectedAccount'));
   /* fetch pending transactions */
@@ -272,6 +273,7 @@ function* initializeRoute({
         isCurrentPairIssue: true,
         currentPairErrors: errors,
       }));
+      history.push('/');
     }
   }
   if (ordersSubscribeId) {
@@ -465,6 +467,7 @@ function* takeChangeRoute({
   historyChannel,
   webRadioChannel,
   networkId,
+  history,
 }) {
   while (true) {
     const { location } = yield eff.take(historyChannel);
@@ -474,6 +477,7 @@ function* takeChangeRoute({
         location,
         webRadioChannel,
         networkId,
+        history,
       },
     );
   }
@@ -614,7 +618,6 @@ export function* initialize(): Saga<void> {
       networkId,
     },
   );
-
   const history = getHistory(historyType);
   const historyChannel = eventChannel(
     emitter => (
@@ -636,6 +639,7 @@ export function* initialize(): Saga<void> {
       historyChannel,
       webRadioChannel,
       networkId,
+      history,
     },
   );
 
@@ -652,6 +656,7 @@ export function* initialize(): Saga<void> {
         location: history.location,
         webRadioChannel,
         networkId,
+        history,
       },
     );
   }
