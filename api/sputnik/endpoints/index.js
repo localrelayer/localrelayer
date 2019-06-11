@@ -17,9 +17,12 @@ import {
 import {
   constructOrderRecord,
   clearOrderWithMetaFields,
-  COINMARKET_API_KEY,
   validateOrderAmount,
 } from 'utils';
+import {
+  URL,
+  URLSearchParams,
+} from 'url';
 
 const app = new Koa();
 
