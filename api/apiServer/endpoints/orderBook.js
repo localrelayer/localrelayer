@@ -13,7 +13,7 @@ import {
 } from 'utils';
 
 
-const sortOrderbook = (a, b) => {
+export const sortOrderbook = (a, b) => {
   const aPrice = new BigNumber(a.takerAssetAmount).div(a.makerAssetAmount);
   const aTakerFeePrice = new BigNumber(a.takerFee).div(a.takerAssetAmount);
   const bPrice = new BigNumber(b.takerAssetAmount).div(b.makerAssetAmount);

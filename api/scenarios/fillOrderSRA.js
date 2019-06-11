@@ -47,7 +47,7 @@ export async function scenarioAsync() {
   // Initialize the Web3Wrapper, this provides helper functions around fetching
   // account information, balances, general contract logs
   const web3Wrapper = new Web3Wrapper(providerEngine);
-  const [maker, taker] = await web3Wrapper.getAvailableAddressesAsync();
+  const [taker, maker] = await web3Wrapper.getAvailableAddressesAsync();
   const zrxTokenAddress = contractAddresses.zrxToken;
   const etherTokenAddress = contractAddresses.etherToken;
   if (!etherTokenAddress) {

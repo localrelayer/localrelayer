@@ -30,6 +30,7 @@ export default {
     logLevel: 'silly',
   },
   defaultActiveProcesses: [
+    'apiServer',
     'orderWatcher',
     'socketServer',
     'ganacheServer',

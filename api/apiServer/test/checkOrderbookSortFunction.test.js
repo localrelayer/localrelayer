@@ -6,7 +6,7 @@ import {
 
 import {
   sortOrderbook,
-} from '../endpoints';
+} from '../endpoints/orderBook';
 
 const { expect } = chai;
 
@@ -58,8 +58,8 @@ const params = [
 ];
 
 describe('OrderbookSortFunction', () => {
-  it('should check if sort function filter orders correctly', () => {
-    const generatedOrders = params.map(param => createOrder(param));
+  it('should check if sort function filter orders correctly', async () => {
+    const generatedOrders = await Promise.all(params.map(param => createOrder(param)));
     generatedOrders.sort(sortOrderbook);
     expect(generatedOrders[0].sortPlace).to.equal(0);
     expect(generatedOrders[1].sortPlace).to.equal(1);

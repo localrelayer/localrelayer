@@ -19,9 +19,13 @@ describe('OrderByHash', () => {
   let hash;
 
   before(async () => {
+    const order = await createOrder({});
     await request
       .post('/v2/order')
-      .send(createOrder({}));
+      .query({
+        networkId: 50,
+      })
+      .send(order);
     const orders = await Order.find({});
     hash = orders[0].orderHash;
   });
@@ -32,7 +36,10 @@ describe('OrderByHash', () => {
 
   it('should return valid order', async () => {
     const response = await request
-      .get(`/v2/order/${hash}`);
+      .get(`/v2/order/${hash}`)
+      .query({
+        networkId: 50,
+      });
 
     expect(
       validator.isValid(
