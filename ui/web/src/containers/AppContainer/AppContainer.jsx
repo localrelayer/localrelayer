@@ -11,6 +11,9 @@ import {
 import {
   getUiState,
 } from 'web-selectors';
+import {
+  DEFAULT_URL,
+} from 'localrelayer-core/src/utils';
 
 import Component from 'web-components/ConnectComponent';
 import OrdersInfoModalContainer from 'web-containers/OrdersInfoModalContainer';
@@ -21,7 +24,6 @@ import UserProfilePageContainer from 'web-containers/UserProfilePageContainer';
 import LoaderPage from 'web-components/LoaderPage';
 import Tutorial from 'web-containers/TutorialContainer';
 import JoyrideWrapperContainer from 'web-containers/JoyrideWrapperContainer';
-
 
 const AppContainer = () => (
   <Component
@@ -56,7 +58,7 @@ const AppContainer = () => (
                 exact
                 path="*"
                 render={() => (
-                  <Redirect to="/ZRX-WETH" />
+                  <Redirect to={DEFAULT_URL} />
                 )}
               />
             </Switch>
