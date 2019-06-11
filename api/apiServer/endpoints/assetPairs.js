@@ -20,9 +20,6 @@ export function createAssetPairsEndpoint(standardRelayerApi) {
       'assetDataA.assetData': assetDataA,
       'assetDataB.assetData': assetDataB,
       networkId,
-    }, {
-      'assetDataA._id': 0,
-      'assetDataB._id': 0,
     })
       .select('-_id -networkId')
       .skip(perPage * (page - 1))

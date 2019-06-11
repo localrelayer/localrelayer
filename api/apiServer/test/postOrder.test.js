@@ -34,6 +34,9 @@ import {
   request,
   initTestProvider,
 } from './utils';
+import {
+  Order,
+} from '../../db';
 
 
 const validator = new SchemaValidator();
@@ -55,8 +58,9 @@ const testData = {
 };
 
 describe('postOrder', () => {
-  after(() => {
+  after(async () => {
     web3ProviderEngine.stop();
+    await Order.deleteMany();
   });
   describe('create a new order with wrong data', () => {
     it('should response 400 with required fields errors', async () => {
@@ -357,7 +361,10 @@ describe('postOrder', () => {
         makerAddress,
       );
       const response = await request
-        .post(`/v2/order?networkId=${networkId}`)
+        .post('/v2/order')
+        .query({
+          networkId: 50,
+        })
         .send({
           ...order,
           signature,
@@ -454,8 +461,8 @@ describe('postOrder', () => {
             ),
             ...acc,
           }), {
-            makerAssetAmount: '10000000000000000000000',
-            takerAssetAmount: '10000000000000000000000',
+            makerAssetAmount: '10000000000',
+            takerAssetAmount: '10000000000000000000000000000000',
             makerAddress,
           })
       );

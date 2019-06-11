@@ -47,9 +47,16 @@ const params = [
 
 describe('Orderbook', () => {
   before(async () => {
-    await Promise.all(params.map(async param => request
-      .post('/v2/order')
-      .send(createOrder(param))));
+    await Promise.all(params.map(async (param) => {
+      const order = await createOrder(param);
+      const res = await request
+        .post('/v2/order')
+        .query({
+          networkId: 50,
+        })
+        .send(order);
+      return res;
+    }));
   });
 
   after(async () => {
@@ -58,10 +65,11 @@ describe('Orderbook', () => {
 
   it('should return valid orderbook response', async () => {
     const response = await request
-      .get('/v2/orderbook')
+      .get('/v2/orderbook?')
       .query({
         baseAssetData,
         quoteAssetData,
+        networkId: 50,
       });
 
     expect(
@@ -74,7 +82,7 @@ describe('Orderbook', () => {
 
   it('should return orderbook filtered by baseAssetData and quoteAssetData', async () => {
     const response = await request
-      .get('/v2/orderbook')
+      .get('/v2/orderbook?networkId=50')
       .query({
         baseAssetData,
         quoteAssetData,
@@ -114,6 +122,7 @@ describe('Orderbook', () => {
         quoteAssetData,
         page,
         perPage,
+        networkId: 50,
       });
     const secondResponse = await request
       .get('/v2/orderbook')
@@ -122,8 +131,8 @@ describe('Orderbook', () => {
         quoteAssetData,
         page: 2,
         perPage: 1,
+        networkId: 50,
       });
-
     expect(
       firstResponse.body.bids.records[1],
     ).to.eql(secondResponse.body.bids.records[0]);

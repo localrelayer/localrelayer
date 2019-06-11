@@ -10,7 +10,7 @@ import {
 const validator = new SchemaValidator();
 const { expect } = chai;
 
-const assetDataA = '0xf47261b00000000000000000000000000e8d6b471e332f140e7d9dbb99e5e3822f728da6';
+const assetDataA = '0xf47261b00000000000000000000000000200412995f1bafef0d3f97c4e28ac2515ec1ece';
 const assetDataB = '0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2';
 
 describe('AssetPairs', () => {
