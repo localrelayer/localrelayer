@@ -14,7 +14,7 @@ import {
 
 export const getOrderConfig = () => ({
   senderAddress: NULL_ADDRESS,
-  feeRecipientAddress: '0x98dA50C21AF5c48c2b524c89f71588adBd985790',
+  feeRecipientAddress: '0x98da50c21af5c48c2b524c89f71588adbd985790',
   makerFee: '0',
   takerFee: '0',
 });
