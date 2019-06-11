@@ -59,5 +59,3 @@ export const TEST_WALLET_1 = {
 export const TEST_WALLET_2 = {
   mnemonic: 'concert load couple harbor equip island argue ramp clarify fence smart topic',
 };
-
-export const COINMARKET_API_KEY = '6ed28cbd-5758-4335-8bde-48ee7a81271a';

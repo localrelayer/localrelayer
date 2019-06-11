@@ -424,7 +424,7 @@ sputnikApi.get('/fetchMarketQuotes', async (ctx) => {
         headers: {
           Accept: 'application/json',
           'Accept-Encoding': 'deflate, gzip',
-          'X-CMC_PRO_API_KEY': COINMARKET_API_KEY,
+          'X-CMC_PRO_API_KEY': process.env.COINMARKET_API_KEY,
         },
       },
     );
