@@ -38,6 +38,9 @@ import {
   getHistory,
 } from 'web-history';
 import {
+  DEFAULT_URL,
+} from 'localrelayer-core/src/utils';
+import {
   takeSubscribeOnChangeChartBar,
 } from './chart';
 import {
@@ -273,7 +276,11 @@ function* initializeRoute({
         isCurrentPairIssue: true,
         currentPairErrors: errors,
       }));
-      history.push('/');
+      // If url asset pair is same as default one, app goes into recursion
+      if (matchTradingPage.url && (matchTradingPage.url !== DEFAULT_URL)) {
+        // Redirect to main page if wrong asset pair
+        history.push('/');
+      }
     }
   }
   if (ordersSubscribeId) {

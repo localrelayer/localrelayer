@@ -40,3 +40,5 @@ export const ORDER_FIELDS = [
   'expirationTimeSeconds',
   'signature',
 ];
+
+export const DEFAULT_URL = '/ZRX-WETH';
