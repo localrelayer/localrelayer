@@ -106,6 +106,8 @@ export default class extends Component<Props> {
       user_id: 'public_user_id',
       custom_css_url: 'chart.css',
       toolbar_bg: colors['component-background'],
+      theme: 'dark',
+      time_frames: [],
       overrides: {
         'paneProperties.leftAxisProperties.autoScale': false,
         'paneProperties.rightAxisProperties.autoScale': false,
