@@ -12,6 +12,8 @@ import config from 'config';
 import apiEndpoints from './endpoints';
 import sputnikEndpoints from '../sputnik/endpoints';
 
+require('dotenv').config();
+
 const app = new Koa();
 const router = new Router();
 
