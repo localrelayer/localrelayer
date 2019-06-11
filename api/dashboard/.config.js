@@ -16,6 +16,8 @@ export default {
     logLevel: 'silly',
     ethNetworks: [
       'test',
+      'kovan',
+      'main',
     ],
   },
   sputnikSubscribe: {
@@ -23,6 +25,8 @@ export default {
     logLevel: 'silly',
     ethNetworks: [
       'test',
+      'kovan',
+      'main',
     ],
   },
   ganacheServer: {
