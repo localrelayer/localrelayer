@@ -8,7 +8,7 @@
 
 ### Installation
 
-```js
+```
   npm i
   unzip 0x_ganache_snapshot.zip
 ```
