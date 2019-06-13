@@ -1,7 +1,7 @@
 # Local Relayer UI
 
 ## State architecture
-This architecure based on [redux documentation](http://redux.js.org/), so for deeply understanding just read it.
+This architecure based on [redux](http://redux.js.org/), so for deeply understanding just read it.
 
 #### To keep clean project's architecture, use these principles:
 * [Data normalizing](http://redux.js.org/docs/recipes/reducers/NormalizingStateShape.html) is the most important thing that you have to use.
@@ -36,6 +36,16 @@ Actions must begin with some verb - set, fetch, fill, add, delete, etc...
   + [npm](https://www.npmjs.com/) version should be >= 5 `npm -v`
   + [yarn](https://yarnpkg.com/) should be installed globally
 
+#### Chart
+
+At the moment LocalRelayer uses TradingView as charting library. TradingView is free to use but requires licence.
+If you want to run local version with chart you need to get [licence](https://www.tradingview.com/HTML5-stock-forex-bitcoin-charting-library). After receiving access, put charting_library folder here /ui/web/dist/ and add this to the bottom if index.tpl.html file
+```
+<script defer type="text/javascript" src="charting_library/charting_library.min.js"></script>
+```
+
+*We are considering changing to open-source alternative (https://github.com/tradingview/lightweight-charts or https://github.com/rrag/react-stockcharts). Stay updated.*
+
 #### Installation
 
 ```js
@@ -43,20 +53,30 @@ Actions must begin with some verb - set, fetch, fill, add, delete, etc...
   yarn bootstrap
 ```
 
-#### Running dev server(web)
+#### Running dev server
 
 ```js
-  yarn styleguide
+  cd web
+  yarn start
 ```
 
-#### Testing
+#### Testing (needs fixing)
 
 ```js
+  cd web
   yarn test
 ```
 
-#### Linting
+#### Linting (needs fixing)
 
 ```js
+  cd web
   yarn lint
+```
+
+#### Storybook (needs fixing)
+
+```js
+  cd web
+  yarn storybook
 ```
