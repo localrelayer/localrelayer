@@ -1,11 +1,17 @@
 # Local Relayer
-Local Relayer is a dApp(decentralized application) built on top of [0x protocol](https://0xproject.com/).
+Local Relayer is a dApp(decentralized application) built on top of [0x protocol](https://0xproject.com/) v2.
 It helps traders to discover counter-parties and ferry cryptographically signed orders between them.
 
 The project on an experimental stage in attempts to find the way and to take the place in
 the new decentralized world.
 At this stage, we are working on UI and API interfaces for the open orderbook node(relayer)
 which will be ready for connection in shared liquidity pool with other relayers.
+
+LocalReayer is live on **Mainnet** and **Kovan** https://app.localrelayer.com.
+
+You need to use Metamask to interact with exchange.
+
+**There are still plenty of bugs and some things can go wrong, so be aware.**
 
 This document and all mentioned references are required for reading by every developer who wants to contibute to Local Relayer.
 
@@ -14,6 +20,7 @@ This document and all mentioned references are required for reading by every dev
 Jump to:
 
 - [Local Relayer](#local-relayer)
+- [Request for improvement](#request-for-improvements)
 - [Usage](#usage)
   - [Git flow](#git-flow)
   - [Commit message](#commit-message)
@@ -35,6 +42,26 @@ Jump to:
 - [Test Ethereum accounts](#test-ethereum-accounts)
 - [Contacts](#contacts)
 - [Support](#support)
+
+# Request for improvements
+
+Currently there are multiple parts of the project that requires maintaining, refactoring or rewriting.
+Feel free to create issues and/or PRs for any missing or wrongly working functionality.
+
+Here is not full list of things that needs to be done:
+
+- Change TradingView chart to open source alternative
+- Dockerize the project
+- Create documentation
+- Fix linting on ui and api packages
+- Fix tests on ui packages
+- Fix storybook on ui packages
+- Redesign
+- Custom Theming Support
+- Reduce ui bundle size
+- Improve trading emulator
+- Increase test coverage
+- and much more...
 
 # Usage
 The repo consist of 2 parts - **api** and **ui**.
