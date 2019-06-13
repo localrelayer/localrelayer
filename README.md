@@ -18,9 +18,9 @@ Jump to:
   - [Git flow](#git-flow)
   - [Commit message](#commit-message)
       - [Commitizen](#commitizen)
+  - [Opening an issue](#issue)
   - [Contributing](#contributing)
   - [Preparing a good PR](#preparing-a-good-pr)
-  - [Maintaining](#maintaining)
 - [Basic concepts](#basic-concepts)
 - [Glossary](#glossary)
   - [0x Protocol](#0x-protocol)
@@ -33,6 +33,8 @@ Jump to:
   - [Shared liquidity](#shared-liquidity)
 - [Base/Quote pair and Bid/Ask price explanation](#basequote-pair-and-bidask-price-explanation)
 - [Test Ethereum accounts](#test-ethereum-accounts)
+- [Contacts](#contacts)
+- [Support](#support)
 
 # Usage
 The repo consist of 2 parts - **api** and **ui**.
@@ -104,6 +106,10 @@ Read **[How to Write a Git Commit Message](https://chris.beams.io/posts/git-comm
 git commit --amend
 ```
 
+## Issue
+
+For feature request or bug please open an issue with proposed templates.
+
 ## Contributing
 After cloning the repo, initialize the local repository with gitflow(if you use it):
 ```sh
@@ -162,9 +168,6 @@ Each commit should have a descriptive commit message.
 Logical commits within a single pull request rarely overlap in the lines of code they touch.
 - If you want to amend your pull request, rewrite the branch and force-push it instead of
 adding new (historical) commits or creating a new pull request.
-
-## Maintaining
-WIP...
 
 # Basic concepts
 **Local Relayer** is a **relayer** utilizing **open order book strategy** built on top of **0x protocol**.
@@ -277,3 +280,20 @@ Key
 ```
 E9037D55FAF01CFC97EAA01F8C2E6B1415A94A99231A9C8AE8E7D17D1EE23B78
 ```
+
+## Contacts
+
+Join our telegram chat https://t.me/localrelayer
+For propositions and partnerships please contant us by email hi@localrelayer.com
+
+## Support
+
+You can support development by donation:
+
+ETH: 0x98da50c21af5c48c2b524c89f71588adbd985790
+
+-----
+
+*Initially developed by [Tim Reznich](https://github.com/imbaniac) and [Vladimir Pal](https://github.com/VladimirPal)*
+
+*Currently developed by [LambdaBird](https://lambdabird.com/) team*
