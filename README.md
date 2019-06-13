@@ -52,6 +52,7 @@ Here is not full list of things that needs to be done:
 
 - Change TradingView chart to open source alternative
 - Dockerize the project
+- CI/CD
 - Create documentation
 - Fix linting on ui and api packages
 - Fix tests on ui packages
