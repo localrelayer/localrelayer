@@ -21,6 +21,9 @@ Depending on your environment:
     npm run plantAssetPairs:prod
 ```
 
+We are using https://coinmarketcap.com/api/ for fiat conversion, so you'll need to obtain an API_KEY (free tier is enough).
+You need to have a COINMARKET_API_KEY=your_key environment variable either in .env file or in your global environment.
+
 ### Running
 
 You should have redis-server and mongod running in the system
