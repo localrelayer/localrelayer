@@ -1,4 +1,4 @@
-# Local Relayer
+# Local Relayer (NOT SUPPORTED)
 Local Relayer is a dApp(decentralized application) built on top of [0x protocol](https://0xproject.com/) v2.
 It helps traders to discover counter-parties and ferry cryptographically signed orders between them.
 
